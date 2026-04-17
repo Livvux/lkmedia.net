@@ -4,7 +4,7 @@
 
 **Goal:** Relaunch lkmedia.net as minimal, SEO-optimized, Apple-Style agency site on Astro 6.1, deployed to Dokploy, preserving top-traffic blog URLs.
 
-**Architecture:** Astro 6.1 in `hybrid` mode with `@astrojs/node` adapter. SSG for all pages, SSR only for `/api/contact`. Content via Astro Content Collections + MDX. Tailwind v4. Deployed as Docker container on Dokploy, TLS via Traefik.
+**Architecture:** Astro 6.1 in `static` mode with `@astrojs/node` adapter; SSR routes opt in via `export const prerender = false` (e.g. `/api/contact`). `hybrid` was merged into `static` in Astro 5+. Content via Astro Content Collections + MDX. Tailwind v4. Deployed as Docker container on Dokploy, TLS via Traefik.
 
 **Tech Stack:** Astro 6.1.7, Tailwind 4.2.2, @astrojs/mdx 5, @astrojs/sitemap 3, @astrojs/rss 4, @astrojs/node, Resend 6, Cloudflare Turnstile, Plausible, Biome 2.4, Playwright 1.59, Docker (Node 24 LTS).
 

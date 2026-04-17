@@ -32,7 +32,7 @@ für High-Revenue-Leads in Premium-Nischen. Haupttreiber: Traffic (GSC) + Market
 | Animationen    | CSS `animation-timeline: view()/scroll()` + View Transitions API  |
 | JS-Framework   | Keines (Astro Islands nur punktuell)                              |
 | Hosting        | Dokploy (eigener Server, Docker, Traefik)                         |
-| Astro Output   | `hybrid` mit `@astrojs/node` Adapter (standalone)                 |
+| Astro Output   | `static` + `export const prerender = false` auf SSR-Routen; `@astrojs/node` Adapter (standalone). `hybrid` ist in Astro 5+/6 in `static` gemerged. |
 | Container      | Node 24 LTS, Dockerfile im Repo                                   |
 | Lead-API       | Astro Server-Endpoint (`src/pages/api/contact.ts`) → Resend       |
 | Booking        | Cal.com Embed (lazy, Interaction-gated)                           |
