@@ -1,0 +1,36 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getCollection } from 'astro:content';
+
+const posts = (await getCollection('posts', (p) => p.data.lang === 'de' && !p.data.draft))
+  .sort((a, b) => +b.data.pubDate - +a.data.pubDate);
+
+const seo = {
+  title: 'Blog',
+  description: 'Artikel zu SEO, Webentwicklung und Marketing.',
+  canonical: '/blog',
+  lang: 'de' as const,
+  alternateUrls: { de: 'https://lkmedia.net/blog', en: 'https://lkmedia.net/en/blog' },
+};
+
+function urlFor(p: (typeof posts)[number]) {
+  const slug = p.id.replace(/^(de|en)\//, '');
+  return p.data.route === 'root' ? `/${slug}/` : `/blog/${slug}/`;
+}
+---
+<Base seo={seo}>
+  <section class="py-32 px-6 max-w-4xl mx-auto">
+    <h1 class="text-5xl md:text-7xl font-semibold tracking-tight">Blog.</h1>
+    <ul class="mt-16 divide-y divide-white/10">
+      {posts.map((p) => (
+        <li class="py-6">
+          <a href={urlFor(p)} class="group block">
+            <div class="text-xs text-white/40">{p.data.pubDate.toISOString().slice(0, 10)}</div>
+            <div class="text-2xl font-medium mt-1 group-hover:underline">{p.data.title}</div>
+            <div class="text-white/60 mt-1">{p.data.description}</div>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </section>
+</Base>

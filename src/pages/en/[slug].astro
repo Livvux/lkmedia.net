@@ -1,0 +1,19 @@
+---
+import { getCollection, render } from 'astro:content';
+import Post from '../../layouts/Post.astro';
+
+export async function getStaticPaths() {
+  const posts = await getCollection(
+    'posts',
+    (p) => p.data.lang === 'en' && p.data.route === 'root' && !p.data.draft,
+  );
+  return posts.map((p) => ({
+    params: { slug: p.id.replace(/^(de|en)\//, '') },
+    props: { entry: p },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+---
+<Post entry={entry} lang="en"><Content /></Post>
