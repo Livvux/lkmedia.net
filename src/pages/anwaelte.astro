@@ -1,0 +1,108 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import Hero from '../components/landing/Hero.astro';
+import CTABlock from '../components/landing/CTABlock.astro';
+import FaqBlock from '../components/FaqBlock.astro';
+
+const seo = {
+  title: 'Kanzlei Website — Premium-Auftritte für Anwälte',
+  description: 'Kanzlei-Websites, die Mandate bringen. DSGVO- und berufsrechtskonforme Premium-Auftritte für Wirtschafts-, IT- und Steuerrecht.',
+  canonical: '/anwaelte',
+  lang: 'de' as const,
+  alternateUrls: { de: 'https://lkmedia.net/anwaelte', en: 'https://lkmedia.net/en/anwaelte' },
+};
+
+const pains = [
+  { title: 'Online unsichtbar', body: 'Ihre Kanzlei rankt nicht für die Mandate, die Sie wollen. Mitbewerber erscheinen oben — Sie nicht.' },
+  { title: 'Kein Anwalts-Branding', body: 'Der digitale Auftritt spiegelt weder Ihre Expertise noch Ihre Positionierung im Premium-Segment wider.' },
+  { title: 'Mandantenvertrauen fehlt', body: 'Erstanfragen bleiben aus oder kommen unqualifiziert — weil Vertrauen digital nicht aufgebaut wird.' },
+];
+
+const features = [
+  { title: 'DSGVO & Berufsrecht', body: 'Rechtssichere Umsetzung nach BRAO, BORA und DSGVO — inkl. Impressum mit Kammerangabe.' },
+  { title: 'Mandantenportal-Ready', body: 'Vorbereitet für sicheren Dokumentenaustausch und Mandanten-Login, wenn Sie es brauchen.' },
+  { title: 'E-E-A-T Autorenprofile', body: 'Partner- und Associate-Profile mit Expertise-Signalen, die Google und KI-Assistenten zitieren.' },
+  { title: 'Team- und Rechtsgebiets-Seiten', body: 'Strukturierte Übersichten für Dezernate, Partner und Fachbereiche — klar navigierbar.' },
+  { title: 'RA-Verzeichnis-Integration', body: 'Saubere Verlinkung zu BRAK, anwalt.de und Fachanwaltsverzeichnissen für zusätzliche Trust-Signale.' },
+];
+
+const faqs = [
+  { q: 'Darf meine Kanzlei-Website werben?', a: 'Ja — innerhalb der Grenzen von § 43b BRAO und § 6 BORA. Sachliche Information über die berufliche Tätigkeit ist zulässig; reißerische oder vergleichende Werbung nicht. Wir gestalten Copy und Claims genau an dieser Linie.' },
+  { q: 'Brauche ich ein Impressum mit RA-Kammer?', a: 'Ja. Das Impressum muss die zuständige Rechtsanwaltskammer, die Berufsbezeichnung inkl. Staat der Verleihung sowie die maßgeblichen berufsrechtlichen Regelungen enthalten. Das ist bei jeder unserer Kanzlei-Websites Standard.' },
+  { q: 'Wie lange dauert ein Relaunch?', a: 'Ein vollständiger Relaunch liegt typischerweise bei 8–12 Wochen — von Kickoff bis Go-Live. Der Scope, die Anzahl der Anwaltsprofile und der Umfang der Inhalte bestimmen den genauen Rahmen.' },
+  { q: 'Was kostet eine Kanzleiwebsite?', a: 'Projekte starten bei 25k € als Fixpreis auf Scope. Enthalten sind Konzept, Design, Build, Copy-Feinschliff und Launch. Keine Stundenabrechnung, keine Überraschungen.' },
+];
+
+const allCases = await getCollection('cases');
+const relatedCase = allCases.find((c) => c.data.niche === 'anwaelte');
+
+const serviceSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Service',
+  name: 'Kanzlei Website — Premium Web Development für Anwälte',
+  provider: { '@type': 'Organization', name: 'lkmedia', url: 'https://lkmedia.net' },
+  areaServed: 'DE',
+  serviceType: 'Kanzlei-Website',
+  url: 'https://lkmedia.net/anwaelte',
+};
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map((i) => ({
+    '@type': 'Question',
+    name: i.q,
+    acceptedAnswer: { '@type': 'Answer', text: i.a },
+  })),
+};
+---
+<Base seo={seo} jsonLd={[serviceSchema, faqSchema]}>
+  <Hero
+    headline="Kanzlei-Websites, die Mandate bringen."
+    sub="Digitale Premium-Auftritte für Wirtschafts-, IT- und Steuerrecht — DSGVO- und berufsrechtskonform."
+    ctaHref="/kontakt" ctaLabel="Projekt starten" />
+
+  <section class="py-24 px-6 max-w-6xl mx-auto">
+    <h2 class="text-3xl md:text-5xl font-semibold tracking-tight mb-12">Warum Kanzleien zu uns kommen.</h2>
+    <div class="grid md:grid-cols-3 gap-6">
+      {pains.map((p) => (
+        <div class="rounded-2xl border border-red-500/20 bg-red-500/5 p-8">
+          <div class="text-red-400/80 text-sm tracking-widest mb-4">PAIN</div>
+          <h3 class="text-xl font-semibold mb-3">{p.title}</h3>
+          <p class="text-white/70 leading-relaxed">{p.body}</p>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <section class="py-24 px-6 max-w-6xl mx-auto border-t border-white/10">
+    <h2 class="text-3xl md:text-5xl font-semibold tracking-tight mb-12">Was eine Kanzlei-Website heute leisten muss.</h2>
+    <div class="grid md:grid-cols-2 gap-10">
+      {features.map((f) => (
+        <div>
+          <h3 class="text-xl font-semibold mb-3">{f.title}</h3>
+          <p class="text-white/70 leading-relaxed">{f.body}</p>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  {relatedCase && (
+    <section class="py-24 px-6 max-w-6xl mx-auto border-t border-white/10">
+      <div class="text-white/40 text-sm tracking-widest mb-6">PROJEKT</div>
+      <a href={`/cases/${relatedCase.id}`} class="group block">
+        <div class="aspect-[16/7] rounded-2xl overflow-hidden bg-white/5 mb-6">
+          <img src={relatedCase.data.heroImage} alt={relatedCase.data.title} class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" loading="lazy" />
+        </div>
+        <h3 class="text-2xl md:text-4xl font-semibold tracking-tight">{relatedCase.data.title}</h3>
+        <p class="mt-3 text-white/70 max-w-2xl">{relatedCase.data.summary}</p>
+      </a>
+    </section>
+  )}
+
+  <FaqBlock items={faqs} />
+
+  <CTABlock headline="Bereit für mehr Mandate?"
+    formHref="/kontakt" calHref="/kontakt#termin"
+    formLabel="Projekt starten" calLabel="15 min Call" />
+</Base>

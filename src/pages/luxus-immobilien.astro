@@ -1,0 +1,109 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import Hero from '../components/landing/Hero.astro';
+import CTABlock from '../components/landing/CTABlock.astro';
+import FaqBlock from '../components/FaqBlock.astro';
+
+const seo = {
+  title: 'Luxus Immobilien Website — Premium-Auftritte',
+  description: 'Luxus-Immobilien, die online verkaufen. Apple-Grade Objekt-Präsentationen für Off-Market-Villen, Penthouses und Hotels.',
+  canonical: '/luxus-immobilien',
+  lang: 'de' as const,
+  alternateUrls: { de: 'https://lkmedia.net/luxus-immobilien', en: 'https://lkmedia.net/en/luxus-immobilien' },
+};
+
+const pains = [
+  { title: 'Flache Exposés', body: 'PDF-Exposés und generische Portalbilder werden dem Objekt und der Zielgruppe nicht gerecht.' },
+  { title: 'Kein Premium-Feeling', body: 'Der digitale Auftritt wirkt wie ein Standard-Makler — nicht wie ein Partner für 10m €-Transaktionen.' },
+  { title: 'Schwache Conversion', body: 'Interessenten kommen, aber keine qualifizierten Calls. Die Anfrage bleibt anonym oder aus.' },
+];
+
+const features = [
+  { title: 'Video-Hero', body: 'Cinematic Footage statt Hero-Foto. Das Objekt wird zur Erfahrung, bevor die erste Zahl fällt.' },
+  { title: 'Galerie mit Zoom', body: 'Gestochen scharfe Full-Bleed-Galerien mit Detail-Zoom — keine komprimierten Thumbnails.' },
+  { title: 'Virtuelle Touren', body: 'Integration von Matterport, 3D-Walkthroughs und Drohnenaufnahmen — direkt im Design.' },
+  { title: 'Mehrsprachig', body: 'DE / EN / RU / AR auf Wunsch — für internationales Publikum und Family Offices.' },
+  { title: 'Discretion-Mode', body: 'Passwort-geschützte Off-Market-Seiten. Sichtbar nur für qualifizierte Interessenten.' },
+];
+
+const faqs = [
+  { q: 'Wie diskret lassen sich Off-Market-Objekte präsentieren?', a: 'Auf Wunsch arbeiten wir mit passwortgeschützten Seiten, NDA-Flows und Soft-Gate-Anfragen. Das Objekt ist nur für verifizierte Interessenten sichtbar — die SEO-Signale bleiben trotzdem sauber.' },
+  { q: 'Können Sie auch Exklusiv-Mandate für mehrere Objekte abbilden?', a: 'Ja. Wir strukturieren die Seite als Portfolio mit individuellen Objekt-Landingpages, gemeinsamer Brand und optionalem internen Bereich für Makler-Kollaboration.' },
+  { q: 'Wie läuft das Online-Marketing danach?', a: 'Wir setzen auf organisches Premium-SEO, gezielte Presse- und PR-Integrationen und Social-Media-Assets auf Objektbasis. Kein Performance-Marketing-Massenbetrieb.' },
+  { q: 'Ist eine direkte Besichtigungsbuchung möglich?', a: 'Ja — über Cal.com- oder Calendly-Integrationen mit optionaler Vorqualifizierung per Formular. So kommen nur ernsthafte Anfragen auf den Kalender.' },
+  { q: 'Was kostet ein solcher Auftritt?', a: 'Projekte starten bei 25k € als Fixpreis auf Scope. Portfolio-Lösungen mit mehreren Objekten oder Film-Produktion werden individuell kalkuliert.' },
+];
+
+const allCases = await getCollection('cases');
+const relatedCase = allCases.find((c) => c.data.niche === 'luxus-immobilien');
+
+const serviceSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Service',
+  name: 'Luxus-Immobilien Website — Premium Web Development',
+  provider: { '@type': 'Organization', name: 'lkmedia', url: 'https://lkmedia.net' },
+  areaServed: 'DE',
+  serviceType: 'Luxus-Immobilien-Website',
+  url: 'https://lkmedia.net/luxus-immobilien',
+};
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map((i) => ({
+    '@type': 'Question',
+    name: i.q,
+    acceptedAnswer: { '@type': 'Answer', text: i.a },
+  })),
+};
+---
+<Base seo={seo} jsonLd={[serviceSchema, faqSchema]}>
+  <Hero
+    headline="Luxus-Immobilien, die online verkaufen."
+    sub="Apple-Grade Objekt-Präsentationen für Off-Market-Villen, Penthouses und Hotels."
+    ctaHref="/kontakt" ctaLabel="Projekt starten" />
+
+  <section class="py-24 px-6 max-w-6xl mx-auto">
+    <h2 class="text-3xl md:text-5xl font-semibold tracking-tight mb-12">Was im Premium-Segment online fehlt.</h2>
+    <div class="grid md:grid-cols-3 gap-6">
+      {pains.map((p) => (
+        <div class="rounded-2xl border border-red-500/20 bg-red-500/5 p-8">
+          <div class="text-red-400/80 text-sm tracking-widest mb-4">PAIN</div>
+          <h3 class="text-xl font-semibold mb-3">{p.title}</h3>
+          <p class="text-white/70 leading-relaxed">{p.body}</p>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <section class="py-24 px-6 max-w-6xl mx-auto border-t border-white/10">
+    <h2 class="text-3xl md:text-5xl font-semibold tracking-tight mb-12">Was ein Premium-Objekt online braucht.</h2>
+    <div class="grid md:grid-cols-2 gap-10">
+      {features.map((f) => (
+        <div>
+          <h3 class="text-xl font-semibold mb-3">{f.title}</h3>
+          <p class="text-white/70 leading-relaxed">{f.body}</p>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  {relatedCase && (
+    <section class="py-24 px-6 max-w-6xl mx-auto border-t border-white/10">
+      <div class="text-white/40 text-sm tracking-widest mb-6">PROJEKT</div>
+      <a href={`/cases/${relatedCase.id}`} class="group block">
+        <div class="aspect-[16/7] rounded-2xl overflow-hidden bg-white/5 mb-6">
+          <img src={relatedCase.data.heroImage} alt={relatedCase.data.title} class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" loading="lazy" />
+        </div>
+        <h3 class="text-2xl md:text-4xl font-semibold tracking-tight">{relatedCase.data.title}</h3>
+        <p class="mt-3 text-white/70 max-w-2xl">{relatedCase.data.summary}</p>
+      </a>
+    </section>
+  )}
+
+  <FaqBlock items={faqs} />
+
+  <CTABlock headline="Bereit für Off-Market-Anfragen, die sitzen?"
+    formHref="/kontakt" calHref="/kontakt#termin"
+    formLabel="Projekt starten" calLabel="15 min Call" />
+</Base>
