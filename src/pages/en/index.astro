@@ -1,0 +1,48 @@
+---
+import Base from '../../layouts/Base.astro';
+import Hero from '../../components/landing/Hero.astro';
+import ScrollDevice from '../../components/landing/ScrollDevice.astro';
+import ValueCards from '../../components/landing/ValueCards.astro';
+import NicheTiles from '../../components/landing/NicheTiles.astro';
+import CaseTeaser from '../../components/landing/CaseTeaser.astro';
+import Process from '../../components/landing/Process.astro';
+import SocialProof from '../../components/landing/SocialProof.astro';
+import CTABlock from '../../components/landing/CTABlock.astro';
+import { professionalService } from '../../lib/schema';
+
+const seo = {
+  title: 'Premium websites that win clients',
+  description: 'lkmedia builds Apple-grade websites for law firms, luxury real estate and private clinics — with perfect SEO and Lighthouse 100.',
+  canonical: '/en/',
+  lang: 'en' as const,
+  alternateUrls: { de: 'https://lkmedia.net/', en: 'https://lkmedia.net/en/' },
+};
+---
+<Base seo={seo} jsonLd={[professionalService()]}>
+  <Hero
+    headline="Premium websites that win clients."
+    sub="Apple-grade design. Lighthouse 100. Client-focused."
+    ctaHref="/en/contact" ctaLabel="Start a project" />
+  <ScrollDevice image="/landing/device.svg" alt="Client project mockup" />
+  <ValueCards items={[
+    { title: 'Performance', metric: '<1s', body: 'LCP under one second on 4G.' },
+    { title: 'Design', metric: 'A+', body: 'Apple-grade typography, whitespace, finish.' },
+    { title: 'SEO', metric: '100', body: 'Perfect Lighthouse, E-E-A-T-ready, AI-overview-ready.' },
+  ]} />
+  <NicheTiles items={[
+    { href: '/en/law-firms', label: 'Law Firms', image: '/landing/niche-law.svg' },
+    { href: '/en/luxury-real-estate', label: 'Luxury Real Estate', image: '/landing/niche-realestate.svg' },
+    { href: '/en/private-clinics', label: 'Private Clinics', image: '/landing/niche-clinic.svg' },
+  ]} />
+  <CaseTeaser lang="en" />
+  <Process items={[
+    { n: '01', title: 'Brief', body: 'Kickoff, goals, audience, KPIs.' },
+    { n: '02', title: 'Design', body: 'Concept, Figma prototype, copy.' },
+    { n: '03', title: 'Build', body: 'Astro, code, content, performance.' },
+    { n: '04', title: 'Launch', body: 'Deploy, Search Console, monitoring.' },
+  ]} />
+  <SocialProof logos={[]} testimonials={[]} />
+  <CTABlock headline="Ready to win more clients?"
+    formHref="/en/contact" calHref="/en/contact#book"
+    formLabel="Start a project" calLabel="15 min call" />
+</Base>
