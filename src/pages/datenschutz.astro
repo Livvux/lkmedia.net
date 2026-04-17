@@ -1,0 +1,76 @@
+---
+import Base from '../layouts/Base.astro';
+
+const seo = {
+  title: 'Datenschutzerklärung',
+  description: 'Datenschutzerklärung gemäß DSGVO für die Website lkmedia.net.',
+  canonical: '/datenschutz',
+  lang: 'de' as const,
+};
+---
+<Base seo={seo}>
+  <section class="pt-32 pb-24 px-6 max-w-3xl mx-auto prose prose-invert">
+    <h1 class="text-5xl md:text-6xl font-semibold tracking-tight mb-10">Datenschutzerklärung</h1>
+
+    <h2>1. Verantwortlicher</h2>
+    <p>
+      Verantwortlich für die Datenverarbeitung auf dieser Website ist Lucas Kleipoedszus
+      (lkmedia), E-Mail: <a href="mailto:lk@lucaskleipoedszus.com">lk@lucaskleipoedszus.com</a>.
+      Die vollständige Anschrift finden Sie im <a href="/imprint">Impressum</a>.
+    </p>
+
+    <h2>2. Hosting</h2>
+    <p>
+      Diese Website wird auf einem eigenen Server in Deutschland betrieben, verwaltet über
+      Dokploy. Beim Aufruf der Website werden technisch notwendige Server-Logfiles verarbeitet
+      (IP-Adresse, Datum und Uhrzeit, aufgerufene URL, User-Agent). Rechtsgrundlage ist Art. 6
+      Abs. 1 lit. f DSGVO (berechtigtes Interesse an stabilem Betrieb und IT-Sicherheit).
+      Logfiles werden nach spätestens 30 Tagen gelöscht.
+    </p>
+
+    <h2>3. Kontaktformular</h2>
+    <p>
+      Wenn Sie uns über das Kontaktformular Anfragen zukommen lassen, werden Ihre Angaben
+      (Name, E-Mail, Nachricht) zur Bearbeitung der Anfrage gespeichert. Der Versand erfolgt
+      transaktional über den Dienstleister Resend (auf EU-Basis, Auftragsverarbeitung nach
+      Art. 28 DSGVO). Rechtsgrundlage ist Art. 6 Abs. 1 lit. b DSGVO (vorvertragliche
+      Maßnahmen) bzw. Art. 6 Abs. 1 lit. f DSGVO.
+    </p>
+
+    <h2>4. Cookies</h2>
+    <p>
+      Diese Website setzt keine Marketing- oder Tracking-Cookies ein. Lediglich technisch
+      notwendige Cookies (z.B. zur Absicherung von Formularen) können zum Einsatz kommen.
+    </p>
+
+    <h2>5. Analyse mit Plausible</h2>
+    <p>
+      Zur Reichweitenmessung nutzen wir Plausible Analytics. Plausible arbeitet cookie-frei,
+      setzt keine persönlichen Identifier und ist DSGVO-konform. Es werden keine IP-Adressen
+      dauerhaft gespeichert. Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO (berechtigtes
+      Interesse an statistischer Auswertung).
+    </p>
+
+    <h2>6. Cloudflare Turnstile</h2>
+    <p>
+      Zum Schutz unserer Formulare vor automatisierten Anfragen (Bots) setzen wir Cloudflare
+      Turnstile ein. Dabei werden technische Informationen (u.a. IP, User-Agent, anonymisiertes
+      Verhalten) an Cloudflare übermittelt. Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO
+      (berechtigtes Interesse am Schutz vor Missbrauch).
+    </p>
+
+    <h2>7. Ihre Rechte</h2>
+    <p>
+      Sie haben jederzeit das Recht auf Auskunft (Art. 15), Berichtigung (Art. 16), Löschung
+      (Art. 17), Einschränkung der Verarbeitung (Art. 18), Datenübertragbarkeit (Art. 20) sowie
+      Widerspruch (Art. 21 DSGVO). Wenden Sie sich hierzu an die oben genannte E-Mail.
+    </p>
+
+    <h2>8. Beschwerderecht</h2>
+    <p>
+      Sie haben das Recht, sich bei einer Datenschutz-Aufsichtsbehörde zu beschweren, wenn Sie
+      der Ansicht sind, dass die Verarbeitung Ihrer personenbezogenen Daten gegen die DSGVO
+      verstößt.
+    </p>
+  </section>
+</Base>
