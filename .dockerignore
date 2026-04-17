@@ -1,0 +1,13 @@
+node_modules
+.git
+.astro
+dist
+.github
+tests
+test-results
+playwright-report
+docs
+*.md
+.env*
+!.env.example
+.vscode
