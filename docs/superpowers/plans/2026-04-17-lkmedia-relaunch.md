@@ -231,11 +231,11 @@ git commit -m "chore: add playwright e2e setup"
 ### Task 1.1: Content collection schemas
 
 **Files:**
-- Create: `src/content/config.ts`, `src/content/posts/de/.gitkeep`, `src/content/posts/en/.gitkeep`, `src/content/cases/.gitkeep`
+- Create: `src/content.config.ts`, `src/content/posts/de/.gitkeep`, `src/content/posts/en/.gitkeep`, `src/content/cases/.gitkeep`
 
 - [ ] **Step 1: Define schemas**
 
-`src/content/config.ts`:
+`src/content.config.ts`:
 ```ts
 import { defineCollection, z } from 'astro:content';
 
@@ -1287,7 +1287,7 @@ git commit -m "feat: migrate top-10 blog posts from legacy"
 
 Legacy top-URLs dictate routing per-post. Add `route` field to post frontmatter (optional enum: `blog` or `root`):
 
-Update `src/content/config.ts` postSchema:
+Update `src/content.config.ts` postSchema:
 ```ts
 route: z.enum(['blog', 'root']).default('blog'),
 ```
