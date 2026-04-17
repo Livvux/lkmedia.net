@@ -34,13 +34,21 @@ function shouldBypass(path: string): boolean {
   );
 }
 
+function externalOrigin(request: Request, fallback: URL): string {
+  const host = request.headers.get("x-forwarded-host") ?? request.headers.get("host");
+  const proto = request.headers.get("x-forwarded-proto") ?? fallback.protocol.replace(":", "");
+  if (host) return `${proto}://${host}`;
+  return fallback.origin;
+}
+
 export const onRequest = defineMiddleware(async (ctx, next) => {
   const path = ctx.url.pathname;
+  const origin = externalOrigin(ctx.request, ctx.url);
   const target = exactRedirects[path] ?? exactRedirects[path.replace(/\/$/, "")];
-  if (target) return Response.redirect(new URL(target, ctx.url), 301);
+  if (target) return Response.redirect(`${origin}${target}`, 301);
   const res = await next();
   if (res.status === 404 && !shouldBypass(path)) {
-    return Response.redirect(new URL("/blog", ctx.url), 301);
+    return Response.redirect(`${origin}/blog`, 301);
   }
   return res;
 });
