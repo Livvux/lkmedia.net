@@ -31,14 +31,17 @@ für High-Revenue-Leads in Premium-Nischen. Haupttreiber: Traffic (GSC) + Market
 | Images         | Astro Image (sharp) → AVIF                                        |
 | Animationen    | CSS `animation-timeline: view()/scroll()` + View Transitions API  |
 | JS-Framework   | Keines (Astro Islands nur punktuell)                              |
-| Hosting        | Vercel (Fluid Compute, Preview-Deploys, Analytics)                |
-| Lead-API       | Vercel Function → Resend (E-Mail an Lucas)                        |
+| Hosting        | Dokploy (eigener Server, Docker, Traefik)                         |
+| Astro Output   | `hybrid` mit `@astrojs/node` Adapter (standalone)                 |
+| Container      | Node 24 LTS, Dockerfile im Repo                                   |
+| Lead-API       | Astro Server-Endpoint (`src/pages/api/contact.ts`) → Resend       |
 | Booking        | Cal.com Embed (lazy, Interaction-gated)                           |
 | Spam-Schutz    | Honeypot + Cloudflare Turnstile                                   |
 | Analytics      | Plausible (DSGVO) + Google Search Console                         |
 | Lint/Format    | Biome                                                             |
 | E2E-Tests      | Playwright (Smoke: Landing, Kontakt, Blog)                        |
 | CI             | GitHub Actions + Lighthouse CI (≥95 alle Kategorien Gate)         |
+| CD             | Git-Push → Dokploy Auto-Deploy (via Webhook oder API)             |
 | Domain         | lkmedia.net, www → non-www 301                                    |
 
 ---
@@ -169,7 +172,7 @@ Target-Keywords pro Nische (Auszug):
 - `llms.txt` + `llms-full.txt` für AI-Overviews/Citations.
 - Canonical-Tags pro Route.
 - hreflang-Tags auf DE/EN-Paaren.
-- `_redirects` / Vercel rewrites für Legacy-URL-Catch-All.
+- Redirects als Astro-Middleware + Traefik-Fallback für Legacy-URL-Catch-All.
 - IndexNow-Ping bei Publish neuer Posts.
 
 ### 7.2 Meta + Open Graph
@@ -292,7 +295,9 @@ Target-Keywords pro Nische (Auszug):
 │   ├── favicon.ico
 │   ├── logo.svg
 │   └── og/                     (statische OG-Fallbacks)
-└── vercel.json                 (redirects, rewrites)
+├── Dockerfile                  (Node 24 multi-stage: build → runner)
+├── .dockerignore
+└── docker-compose.yml          (optional, für Dokploy Compose-Mode)
 ```
 
 ---
@@ -306,8 +311,12 @@ Target-Keywords pro Nische (Auszug):
 3. **Redirect-Map:** alte URLs → neue (meist 1:1) + Sora-Kill + Catch-All
    `/*` → `/blog` für alle nicht-migrierten Legacy-URLs.
 4. **Build lokal:** `pnpm build` + Lighthouse ≥95 alle Kategorien.
-5. **Staging-Deploy:** Vercel Preview. Smoke-Test via agent-browser (Headless).
-6. **DNS-Cutover:** lkmedia.net A-Record → Vercel. `www.lkmedia.net` 301 → apex.
+5. **Prod-Deploy:** Dokploy-App `lkmedia` mit temporärer Subdomain
+   (`preview.lkmedia.net` oder Dokploy-generiert). Smoke-Test via agent-browser
+   (headless). Rollback-Strategie: `git revert` + Re-Deploy.
+6. **DNS-Cutover:** lkmedia.net A-Record → Dokploy-Server-IP.
+   `www.lkmedia.net` 301 → apex (via Traefik-Middleware).
+   Let's-Encrypt-Zertifikat durch Traefik.
 7. **Post-Launch:**
    - GSC-Property verifizieren und neue Sitemap submitten.
    - IndexNow-Ping für neue Sitemap-Einträge.
