@@ -33,16 +33,16 @@ const bp = blogPosting({
 });
 ---
 <Base seo={seo} jsonLd={[bc, bp]}>
-  <article class="max-w-3xl mx-auto px-6 py-32 prose prose-invert prose-lg">
-    <nav class="text-sm text-white/50 mb-8 not-prose">
+  <article class="max-w-3xl mx-auto px-6 py-32 prose dark:prose-invert prose-lg">
+    <nav class="text-sm text-black/50 dark:text-white/50 mb-8 not-prose">
       <a href={blogIndex}>← Blog</a>
     </nav>
     <h1 class="text-4xl md:text-6xl font-semibold tracking-tight">{entry.data.title}</h1>
-    <div class="text-sm text-white/50 mt-4 not-prose">
+    <div class="text-sm text-black/50 dark:text-white/50 mt-4 not-prose">
       {entry.data.pubDate.toISOString().slice(0, 10)} · {entry.data.author}
     </div>
     <div class="mt-10"><slot /></div>
-    <footer class="mt-20 border-t border-white/10 pt-8 text-sm text-white/50 not-prose">
+    <footer class="mt-20 border-t border-black/10 dark:border-white/10 pt-8 text-sm text-black/50 dark:text-white/50 not-prose">
       {lang === 'de' ? 'Geschrieben von' : 'Written by'} {entry.data.author}.
     </footer>
   </article>

@@ -3,7 +3,7 @@ interface Props { calLink: string; label?: string }
 const { calLink, label = '15 min Call buchen' } = Astro.props;
 ---
 <div id="cal-wrap" class="mt-6">
-  <button id="cal-load" class="h-12 px-6 rounded-full border border-white/30 hover:bg-white/10">{label}</button>
+  <button id="cal-load" class="h-12 px-6 rounded-full border border-black/30 hover:bg-black/10 dark:border-white/30 dark:hover:bg-white/10">{label}</button>
   <div id="cal-target" class="mt-6"></div>
 </div>
 <script type="module" define:vars={{ calLink }}>

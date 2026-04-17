@@ -4,7 +4,7 @@ interface Props { lang: Lang }
 const { lang } = Astro.props;
 const year = new Date().getFullYear();
 ---
-<footer class="border-t border-white/10 text-sm text-white/60">
+<footer class="border-t border-black/10 dark:border-white/10 text-sm text-black/60 dark:text-white/60">
   <div class="max-w-6xl mx-auto px-4 py-10 flex flex-wrap gap-6 justify-between">
     <div>© {year} lkmedia · Lucas Kleipoedszus</div>
     <ul class="flex gap-6">

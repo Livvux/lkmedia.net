@@ -15,14 +15,22 @@ const allLd = [organization(), ...jsonLd];
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <meta name="theme-color" content="#000000" />
+    <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)" />
     <link rel="icon" href="/favicon.ico" sizes="any" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <Seo {...seo} />
     <script type="application/ld+json" set:html={JSON.stringify(allLd)} />
     <script defer data-domain="lkmedia.net" src="https://analytics.vertexmods.com/js/script.js"></script>
+    <script is:inline>
+      (function(){
+        var s=localStorage.getItem('theme');
+        var d=window.matchMedia('(prefers-color-scheme: dark)').matches;
+        if(s==='dark'||(s===null&&d)) document.documentElement.classList.add('dark');
+      })();
+    </script>
   </head>
-  <body class="min-h-screen flex flex-col bg-black text-white antialiased">
+  <body class="min-h-screen flex flex-col bg-white text-black dark:bg-black dark:text-white antialiased">
     <Nav lang={seo.lang} />
     <main class="flex-1"><slot /></main>
     <Footer lang={seo.lang} />

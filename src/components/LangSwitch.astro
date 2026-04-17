@@ -8,6 +8,6 @@ const targetPath = lang === 'de'
   ? `/en${currentPath === '/' ? '' : currentPath}`
   : currentPath.replace(/^\/en/, '') || '/';
 ---
-<a href={targetPath} class="text-xs uppercase tracking-wider text-white/60 hover:text-white">
+<a href={targetPath} class="text-xs uppercase tracking-wider text-black/60 hover:text-black dark:text-white/60 dark:hover:text-white">
   {other}
 </a>

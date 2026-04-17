@@ -2,12 +2,12 @@
 interface Props { headline: string; formHref: string; calHref: string; formLabel: string; calLabel: string }
 const { headline, formHref, calHref, formLabel, calLabel } = Astro.props;
 ---
-<section class="min-h-[70vh] flex items-center justify-center px-6 text-center bg-black border-t border-white/10">
+<section class="min-h-[70vh] flex items-center justify-center px-6 text-center bg-white dark:bg-black border-t border-black/10 dark:border-white/10">
   <div class="max-w-3xl">
     <h2 class="text-4xl md:text-6xl font-semibold tracking-tight">{headline}</h2>
     <div class="mt-10 flex flex-wrap gap-4 justify-center">
-      <a href={formHref} class="inline-flex h-12 px-6 items-center rounded-full bg-white text-black font-medium">{formLabel}</a>
-      <a href={calHref} class="inline-flex h-12 px-6 items-center rounded-full border border-white/30 font-medium">{calLabel}</a>
+      <a href={formHref} class="inline-flex h-12 px-6 items-center rounded-full bg-black text-white dark:bg-white dark:text-black font-medium">{formLabel}</a>
+      <a href={calHref} class="inline-flex h-12 px-6 items-center rounded-full border border-black/30 dark:border-white/30 font-medium">{calLabel}</a>
     </div>
   </div>
 </section>
