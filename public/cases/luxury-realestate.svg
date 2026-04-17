@@ -1,4 +1,58 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" width="1600" height="900" role="img" aria-label="Luxus-Immobilien">
-  <rect width="1600" height="900" fill="#000"/>
-  <text x="800" y="470" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="72" font-weight="500" fill="#fff" letter-spacing="4">Luxus-Immobilien</text>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1600" y2="900" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#110e0b"/>
+      <stop offset="100%" stop-color="#0c0a07"/>
+    </linearGradient>
+    <linearGradient id="sky" x1="800" y1="0" x2="800" y2="600" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.025"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+    <pattern id="dots" x="0" y="0" width="60" height="60" patternUnits="userSpaceOnUse">
+      <circle cx="30" cy="30" r="0.8" fill="#ffffff" opacity="0.05"/>
+    </pattern>
+  </defs>
+  <rect width="1600" height="900" fill="url(#bg)"/>
+  <rect width="1600" height="600" fill="url(#sky)"/>
+  <rect width="1600" height="900" fill="url(#dots)"/>
+  <!-- Central tower -->
+  <rect x="660" y="60" width="280" height="760" fill="#ffffff" opacity="0.04"/>
+  <line x1="720" y1="60" x2="720" y2="820" stroke="#ffffff" stroke-width="0.5" opacity="0.055"/>
+  <line x1="780" y1="60" x2="780" y2="820" stroke="#ffffff" stroke-width="0.5" opacity="0.055"/>
+  <line x1="840" y1="60" x2="840" y2="820" stroke="#ffffff" stroke-width="0.5" opacity="0.055"/>
+  <line x1="900" y1="60" x2="900" y2="820" stroke="#ffffff" stroke-width="0.5" opacity="0.055"/>
+  <line x1="660" y1="130" x2="940" y2="130" stroke="#ffffff" stroke-width="0.5" opacity="0.055"/>
+  <line x1="660" y1="200" x2="940" y2="200" stroke="#ffffff" stroke-width="0.5" opacity="0.055"/>
+  <line x1="660" y1="270" x2="940" y2="270" stroke="#ffffff" stroke-width="0.5" opacity="0.055"/>
+  <line x1="660" y1="340" x2="940" y2="340" stroke="#ffffff" stroke-width="0.5" opacity="0.055"/>
+  <line x1="660" y1="410" x2="940" y2="410" stroke="#ffffff" stroke-width="0.5" opacity="0.055"/>
+  <line x1="660" y1="480" x2="940" y2="480" stroke="#ffffff" stroke-width="0.5" opacity="0.055"/>
+  <line x1="660" y1="550" x2="940" y2="550" stroke="#ffffff" stroke-width="0.5" opacity="0.055"/>
+  <line x1="660" y1="620" x2="940" y2="620" stroke="#ffffff" stroke-width="0.5" opacity="0.055"/>
+  <line x1="660" y1="690" x2="940" y2="690" stroke="#ffffff" stroke-width="0.5" opacity="0.055"/>
+  <line x1="660" y1="760" x2="940" y2="760" stroke="#ffffff" stroke-width="0.5" opacity="0.055"/>
+  <rect x="660" y="60" width="280" height="760" fill="none" stroke="#ffffff" stroke-width="1" opacity="0.11"/>
+  <!-- Left mid building -->
+  <rect x="300" y="240" width="330" height="580" fill="#ffffff" opacity="0.03"/>
+  <line x1="360" y1="240" x2="360" y2="820" stroke="#ffffff" stroke-width="0.5" opacity="0.045"/>
+  <line x1="420" y1="240" x2="420" y2="820" stroke="#ffffff" stroke-width="0.5" opacity="0.045"/>
+  <line x1="480" y1="240" x2="480" y2="820" stroke="#ffffff" stroke-width="0.5" opacity="0.045"/>
+  <line x1="540" y1="240" x2="540" y2="820" stroke="#ffffff" stroke-width="0.5" opacity="0.045"/>
+  <line x1="300" y1="330" x2="630" y2="330" stroke="#ffffff" stroke-width="0.5" opacity="0.045"/>
+  <line x1="300" y1="450" x2="630" y2="450" stroke="#ffffff" stroke-width="0.5" opacity="0.045"/>
+  <line x1="300" y1="570" x2="630" y2="570" stroke="#ffffff" stroke-width="0.5" opacity="0.045"/>
+  <line x1="300" y1="690" x2="630" y2="690" stroke="#ffffff" stroke-width="0.5" opacity="0.045"/>
+  <!-- Right mid building -->
+  <rect x="970" y="180" width="330" height="640" fill="#ffffff" opacity="0.03"/>
+  <line x1="1030" y1="180" x2="1030" y2="820" stroke="#ffffff" stroke-width="0.5" opacity="0.045"/>
+  <line x1="1090" y1="180" x2="1090" y2="820" stroke="#ffffff" stroke-width="0.5" opacity="0.045"/>
+  <line x1="1150" y1="180" x2="1150" y2="820" stroke="#ffffff" stroke-width="0.5" opacity="0.045"/>
+  <line x1="1210" y1="180" x2="1210" y2="820" stroke="#ffffff" stroke-width="0.5" opacity="0.045"/>
+  <line x1="970" y1="270" x2="1300" y2="270" stroke="#ffffff" stroke-width="0.5" opacity="0.045"/>
+  <line x1="970" y1="390" x2="1300" y2="390" stroke="#ffffff" stroke-width="0.5" opacity="0.045"/>
+  <line x1="970" y1="510" x2="1300" y2="510" stroke="#ffffff" stroke-width="0.5" opacity="0.045"/>
+  <line x1="970" y1="630" x2="1300" y2="630" stroke="#ffffff" stroke-width="0.5" opacity="0.045"/>
+  <line x1="970" y1="750" x2="1300" y2="750" stroke="#ffffff" stroke-width="0.5" opacity="0.045"/>
+  <!-- Ground -->
+  <line x1="0" y1="820" x2="1600" y2="820" stroke="#ffffff" stroke-width="1" opacity="0.07"/>
 </svg>

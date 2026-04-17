@@ -3,6 +3,13 @@ import Base from '../../layouts/Base.astro';
 import { getCollection } from 'astro:content';
 const all = await getCollection('cases');
 const cases = all.sort((a, b) => +b.data.pubDate - +a.data.pubDate);
+const nicheLabel: Record<string, string> = {
+  anwaelte: 'Kanzlei',
+  'luxus-immobilien': 'Luxus-Immobilien',
+  privatkliniken: 'Privatklinik',
+  fintech: 'Fintech',
+  other: 'Premium',
+};
 const seo = {
   title: 'Cases',
   description: 'Ausgewählte Projekte: Kanzleien, Luxus-Immobilien, Premium-Marken.',
@@ -20,7 +27,7 @@ const seo = {
           <div class="aspect-[16/9] rounded-2xl overflow-hidden bg-white/5">
             <img src={c.data.heroImage} alt={c.data.title} class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" loading="lazy" />
           </div>
-          <div class="mt-4 text-sm uppercase tracking-wider text-white/50">{c.data.niche}</div>
+          <div class="mt-4 text-sm uppercase tracking-wider text-white/50">{nicheLabel[c.data.niche] ?? c.data.niche}</div>
           <div class="text-2xl font-medium mt-1">{c.data.title}</div>
           <div class="text-white/60 mt-1">{c.data.summary}</div>
         </a>

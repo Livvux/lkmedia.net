@@ -1,4 +1,31 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1000">
-  <rect width="800" height="1000" fill="#0a0a0a"/>
-  <text x="400" y="500" fill="#fff" font-family="sans-serif" font-size="48" text-anchor="middle" dominant-baseline="middle">Kanzleien</text>
+  <defs>
+    <radialGradient id="bg" cx="400" cy="300" r="500" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#1e3a5f"/>
+      <stop offset="60%" stop-color="#0a1525"/>
+      <stop offset="100%" stop-color="#050b14"/>
+    </radialGradient>
+  </defs>
+  <rect width="800" height="1000" fill="url(#bg)"/>
+  <!-- Pediment -->
+  <polyline points="120,370 400,140 680,370" fill="none" stroke="#ffffff" stroke-width="2.5" opacity="0.30"/>
+  <!-- Columns -->
+  <rect x="178" y="370" width="22" height="370" fill="#ffffff" opacity="0.22"/>
+  <rect x="270" y="370" width="16" height="370" fill="#ffffff" opacity="0.14"/>
+  <rect x="358" y="370" width="16" height="370" fill="#ffffff" opacity="0.14"/>
+  <rect x="448" y="370" width="16" height="370" fill="#ffffff" opacity="0.14"/>
+  <rect x="538" y="370" width="16" height="370" fill="#ffffff" opacity="0.14"/>
+  <rect x="598" y="370" width="22" height="370" fill="#ffffff" opacity="0.22"/>
+  <!-- Stylobate -->
+  <rect x="120" y="738" width="560" height="14" fill="#ffffff" opacity="0.22"/>
+  <rect x="100" y="752" width="600" height="8" fill="#ffffff" opacity="0.14"/>
+  <!-- Scales beam -->
+  <line x1="400" y1="210" x2="400" y2="300" stroke="#ffffff" stroke-width="2.5" opacity="0.38"/>
+  <line x1="295" y1="256" x2="505" y2="256" stroke="#ffffff" stroke-width="2" opacity="0.38"/>
+  <line x1="295" y1="256" x2="275" y2="310" stroke="#ffffff" stroke-width="1.2" opacity="0.26"/>
+  <line x1="295" y1="256" x2="315" y2="310" stroke="#ffffff" stroke-width="1.2" opacity="0.26"/>
+  <path d="M 275,310 Q 295,334 315,310" fill="none" stroke="#ffffff" stroke-width="2" opacity="0.30"/>
+  <line x1="505" y1="256" x2="485" y2="310" stroke="#ffffff" stroke-width="1.2" opacity="0.26"/>
+  <line x1="505" y1="256" x2="525" y2="310" stroke="#ffffff" stroke-width="1.2" opacity="0.26"/>
+  <path d="M 485,310 Q 505,334 525,310" fill="none" stroke="#ffffff" stroke-width="2" opacity="0.30"/>
 </svg>

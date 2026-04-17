@@ -1,4 +1,46 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" width="1600" height="900" role="img" aria-label="Anwälte">
-  <rect width="1600" height="900" fill="#000"/>
-  <text x="800" y="470" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="72" font-weight="500" fill="#fff" letter-spacing="4">Anwälte</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" width="1600" height="900" role="img" aria-label="Premium-Kanzlei">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1600" y2="900" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#0e1219"/>
+      <stop offset="100%" stop-color="#080b10"/>
+    </linearGradient>
+    <linearGradient id="glow" x1="800" y1="0" x2="800" y2="700" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.03"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <rect width="1600" height="900" fill="url(#bg)"/>
+  <rect width="1600" height="700" fill="url(#glow)"/>
+  <!-- Grid lines -->
+  <line x1="0" y1="225" x2="1600" y2="225" stroke="#ffffff" stroke-width="0.5" opacity="0.04"/>
+  <line x1="0" y1="450" x2="1600" y2="450" stroke="#ffffff" stroke-width="0.5" opacity="0.04"/>
+  <line x1="0" y1="675" x2="1600" y2="675" stroke="#ffffff" stroke-width="0.5" opacity="0.04"/>
+  <line x1="400" y1="0" x2="400" y2="900" stroke="#ffffff" stroke-width="0.5" opacity="0.04"/>
+  <line x1="800" y1="0" x2="800" y2="900" stroke="#ffffff" stroke-width="0.5" opacity="0.04"/>
+  <line x1="1200" y1="0" x2="1200" y2="900" stroke="#ffffff" stroke-width="0.5" opacity="0.04"/>
+  <!-- Pediment roofline -->
+  <polyline points="240,560 800,140 1360,560" fill="none" stroke="#ffffff" stroke-width="2" opacity="0.15"/>
+  <!-- Columns — 8 -->
+  <rect x="294" y="560" width="24" height="260" fill="#ffffff" opacity="0.09"/>
+  <rect x="434" y="560" width="24" height="260" fill="#ffffff" opacity="0.07"/>
+  <rect x="574" y="560" width="24" height="260" fill="#ffffff" opacity="0.07"/>
+  <rect x="714" y="560" width="24" height="260" fill="#ffffff" opacity="0.07"/>
+  <rect x="854" y="560" width="24" height="260" fill="#ffffff" opacity="0.07"/>
+  <rect x="994" y="560" width="24" height="260" fill="#ffffff" opacity="0.07"/>
+  <rect x="1134" y="560" width="24" height="260" fill="#ffffff" opacity="0.07"/>
+  <rect x="1274" y="560" width="24" height="260" fill="#ffffff" opacity="0.09"/>
+  <!-- Stylobate -->
+  <rect x="240" y="818" width="1120" height="14" fill="#ffffff" opacity="0.09"/>
+  <rect x="200" y="832" width="1200" height="8" fill="#ffffff" opacity="0.06"/>
+  <!-- Scales beam -->
+  <line x1="800" y1="260" x2="800" y2="430" stroke="#ffffff" stroke-width="2" opacity="0.20"/>
+  <line x1="580" y1="360" x2="1020" y2="360" stroke="#ffffff" stroke-width="2" opacity="0.20"/>
+  <!-- Left pan -->
+  <path d="M 540,360 Q 580,410 620,360" fill="none" stroke="#ffffff" stroke-width="1.5" opacity="0.18"/>
+  <line x1="540" y1="360" x2="580" y2="360" stroke="#ffffff" stroke-width="1" opacity="0.12"/>
+  <line x1="620" y1="360" x2="580" y2="360" stroke="#ffffff" stroke-width="1" opacity="0.12"/>
+  <!-- Right pan -->
+  <path d="M 980,360 Q 1020,410 1060,360" fill="none" stroke="#ffffff" stroke-width="1.5" opacity="0.18"/>
+  <line x1="980" y1="360" x2="1020" y2="360" stroke="#ffffff" stroke-width="1" opacity="0.12"/>
+  <line x1="1060" y1="360" x2="1020" y2="360" stroke="#ffffff" stroke-width="1" opacity="0.12"/>
 </svg>

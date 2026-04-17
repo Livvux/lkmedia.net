@@ -1,4 +1,41 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" width="1600" height="900" role="img" aria-label="Premium-Optik">
-  <rect width="1600" height="900" fill="#000"/>
-  <text x="800" y="470" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="72" font-weight="500" fill="#fff" letter-spacing="4">Premium-Optik</text>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1600" y2="900" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#0d0d10"/>
+      <stop offset="100%" stop-color="#090909"/>
+    </linearGradient>
+    <linearGradient id="glow" x1="800" y1="0" x2="800" y2="900" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#d4c8b0" stop-opacity="0.04"/>
+      <stop offset="100%" stop-color="#d4c8b0" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <rect width="1600" height="900" fill="url(#bg)"/>
+  <rect width="1600" height="900" fill="url(#glow)"/>
+  <!-- Subtle grid -->
+  <line x1="0" y1="300" x2="1600" y2="300" stroke="#ffffff" stroke-width="0.5" opacity="0.035"/>
+  <line x1="0" y1="600" x2="1600" y2="600" stroke="#ffffff" stroke-width="0.5" opacity="0.035"/>
+  <line x1="533" y1="0" x2="533" y2="900" stroke="#ffffff" stroke-width="0.5" opacity="0.035"/>
+  <line x1="1067" y1="0" x2="1067" y2="900" stroke="#ffffff" stroke-width="0.5" opacity="0.035"/>
+  <!-- Large outer lens circles -->
+  <circle cx="560" cy="450" r="280" fill="none" stroke="#ffffff" stroke-width="1.5" opacity="0.13"/>
+  <circle cx="1040" cy="450" r="280" fill="none" stroke="#ffffff" stroke-width="1.5" opacity="0.13"/>
+  <!-- Inner lens -->
+  <circle cx="560" cy="450" r="200" fill="none" stroke="#ffffff" stroke-width="0.8" opacity="0.07"/>
+  <circle cx="1040" cy="450" r="200" fill="none" stroke="#ffffff" stroke-width="0.8" opacity="0.07"/>
+  <!-- Lens fill -->
+  <circle cx="560" cy="450" r="280" fill="#ffffff" opacity="0.02"/>
+  <circle cx="1040" cy="450" r="280" fill="#ffffff" opacity="0.02"/>
+  <!-- Bridge -->
+  <line x1="840" y1="450" x2="760" y2="450" stroke="#ffffff" stroke-width="2" opacity="0.16"/>
+  <!-- Frame arms -->
+  <line x1="240" y1="450" x2="160" y2="420" stroke="#ffffff" stroke-width="1.5" opacity="0.12"/>
+  <line x1="1320" y1="450" x2="1440" y2="420" stroke="#ffffff" stroke-width="1.5" opacity="0.12"/>
+  <!-- Lens highlight arcs -->
+  <path d="M 410,320 Q 480,280 560,310" fill="none" stroke="#ffffff" stroke-width="1" opacity="0.10"/>
+  <path d="M 890,320 Q 960,280 1040,310" fill="none" stroke="#ffffff" stroke-width="1" opacity="0.10"/>
+  <!-- Center iris detail -->
+  <circle cx="560" cy="450" r="90" fill="none" stroke="#ffffff" stroke-width="0.5" opacity="0.06"/>
+  <circle cx="560" cy="450" r="40" fill="none" stroke="#ffffff" stroke-width="0.5" opacity="0.08"/>
+  <circle cx="1040" cy="450" r="90" fill="none" stroke="#ffffff" stroke-width="0.5" opacity="0.06"/>
+  <circle cx="1040" cy="450" r="40" fill="none" stroke="#ffffff" stroke-width="0.5" opacity="0.08"/>
 </svg>
