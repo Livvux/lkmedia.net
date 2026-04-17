@@ -1,0 +1,74 @@
+---
+import Base from '../layouts/Base.astro';
+import Hero from '../components/landing/Hero.astro';
+import CTABlock from '../components/landing/CTABlock.astro';
+
+const seo = {
+  title: 'Leistungen',
+  description: 'Premium-Websites, SEO und Conversion für Kanzleien, Luxus-Immobilien und Privatkliniken — von lkmedia.',
+  canonical: '/leistungen',
+  lang: 'de' as const,
+  alternateUrls: { de: 'https://lkmedia.net/leistungen', en: 'https://lkmedia.net/en/leistungen' },
+};
+
+const services = [
+  {
+    n: '01',
+    title: 'Website & Development',
+    body: 'Handgebaute Astro-Sites mit kompromissloser Performance. Jede Zeile Code hat einen Grund.',
+    items: ['Astro & moderne Web-Standards', 'Core Web Vitals im grünen Bereich', 'WCAG-Accessibility', 'Schema.org & strukturierte Daten'],
+  },
+  {
+    n: '02',
+    title: 'SEO & Content',
+    body: 'Sichtbarkeit, die Mandate bringt — nicht nur Traffic. Inhalte, die Google und KI-Assistenten zitieren.',
+    items: ['Keyword- und Intent-Strategie', 'Content-Briefs auf Redaktionsniveau', 'E-E-A-T & Autoren-Signale', 'AI-Overviews & LLM-Visibility'],
+  },
+  {
+    n: '03',
+    title: 'Conversion & Marketing',
+    body: 'Aus Besuchern werden Anfragen. Aus Anfragen werden Mandate. Messbar, iterativ, skalierbar.',
+    items: ['Landing-Pages mit Fokus', 'A/B-Tests auf Signalen', 'Funnels & Lead-Nurturing', 'Reporting, das Entscheidungen trägt'],
+  },
+];
+---
+<Base seo={seo}>
+  <Hero
+    headline="Leistungen."
+    sub="Premium-Websites, SEO, Conversion — eine Hand."
+    ctaHref="/kontakt" ctaLabel="Projekt starten" />
+
+  {services.map((s, i) => (
+    <section class="border-t border-white/10 px-6 py-28 md:py-40">
+      <div class="mx-auto max-w-6xl grid md:grid-cols-12 gap-10 md:gap-16 items-start">
+        <div class={`md:col-span-5 ${i % 2 === 1 ? 'md:order-2' : ''}`}>
+          <div class="text-white/30 text-sm tracking-widest mb-6">{s.n}</div>
+          <h2 class="text-4xl md:text-6xl font-semibold tracking-tight leading-[1.05]">{s.title}</h2>
+        </div>
+        <div class={`md:col-span-7 ${i % 2 === 1 ? 'md:order-1' : ''}`}>
+          <p class="text-lg md:text-2xl text-white/70 leading-relaxed">{s.body}</p>
+          <ul class="mt-10 space-y-4">
+            {s.items.map((it) => (
+              <li class="flex items-start gap-4 text-white/80 text-lg">
+                <span class="mt-2 h-px w-8 bg-white/30 flex-shrink-0"></span>
+                <span>{it}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </section>
+  ))}
+
+  <section class="border-t border-white/10 px-6 py-32 md:py-48 text-center">
+    <div class="mx-auto max-w-3xl">
+      <p class="text-3xl md:text-5xl font-semibold tracking-tight leading-[1.15]">
+        Projekte ab 25k €. Fixpreis auf Scope. Keine Stundenabrechnung.
+      </p>
+    </div>
+  </section>
+
+  <CTABlock headline="Bereit für mehr Mandate?"
+    formHref="/kontakt" calHref="/kontakt#termin"
+    formLabel="Projekt starten" calLabel="15 min Call" />
+</Base>
