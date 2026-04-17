@@ -1,0 +1,23 @@
+{
+  "ci": {
+    "collect": {
+      "url": [
+        "http://localhost:4321/",
+        "http://localhost:4321/leistungen",
+        "http://localhost:4321/anwaelte",
+        "http://localhost:4321/blog"
+      ],
+      "startServerCommand": "node ./dist/server/entry.mjs",
+      "startServerReadyPattern": "Server listening",
+      "numberOfRuns": 1
+    },
+    "assert": {
+      "assertions": {
+        "categories:performance": ["warn", { "minScore": 0.85 }],
+        "categories:accessibility": ["error", { "minScore": 0.90 }],
+        "categories:best-practices": ["warn", { "minScore": 0.90 }],
+        "categories:seo": ["error", { "minScore": 0.90 }]
+      }
+    }
+  }
+}
