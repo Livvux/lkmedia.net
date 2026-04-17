@@ -1,0 +1,38 @@
+---
+import { useTranslations, type Lang } from '../lib/i18n';
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const turnstileKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY;
+const placeholders = lang === 'de'
+  ? { name: 'Name', email: 'E-Mail', company: 'Firma', budget: 'Budget', message: 'Nachricht' }
+  : { name: 'Name', email: 'Email', company: 'Company', budget: 'Budget', message: 'Message' };
+---
+<form method="POST" action="/api/contact" class="space-y-4 max-w-xl">
+  <input type="text" name="website" tabindex="-1" autocomplete="off" class="hidden" aria-hidden="true" />
+  <label class="block">
+    <span class="text-sm text-white/60">{placeholders.name}</span>
+    <input required name="name" class="mt-1 w-full h-12 px-4 rounded-xl bg-white/5 border border-white/10 focus:border-white focus:outline-none" />
+  </label>
+  <label class="block">
+    <span class="text-sm text-white/60">{placeholders.email}</span>
+    <input required type="email" name="email" class="mt-1 w-full h-12 px-4 rounded-xl bg-white/5 border border-white/10" />
+  </label>
+  <label class="block">
+    <span class="text-sm text-white/60">{placeholders.company}</span>
+    <input name="company" class="mt-1 w-full h-12 px-4 rounded-xl bg-white/5 border border-white/10" />
+  </label>
+  <label class="block">
+    <span class="text-sm text-white/60">{placeholders.budget}</span>
+    <select name="budget" class="mt-1 w-full h-12 px-4 rounded-xl bg-white/5 border border-white/10">
+      <option>25–50k</option><option>50–100k</option><option>100k+</option><option>{lang === 'de' ? 'unklar' : 'not sure'}</option>
+    </select>
+  </label>
+  <label class="block">
+    <span class="text-sm text-white/60">{placeholders.message}</span>
+    <textarea required name="message" rows="5" class="mt-1 w-full p-4 rounded-xl bg-white/5 border border-white/10"></textarea>
+  </label>
+  {turnstileKey && <div class="cf-turnstile" data-sitekey={turnstileKey}></div>}
+  <button class="h-12 px-6 rounded-full bg-white text-black font-medium">{t('cta.start')}</button>
+</form>
+{turnstileKey && <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>}

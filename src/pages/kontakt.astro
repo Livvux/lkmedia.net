@@ -1,0 +1,29 @@
+---
+import Base from '../layouts/Base.astro';
+import ContactForm from '../components/ContactForm.astro';
+import CalEmbed from '../components/CalEmbed.astro';
+const seo = {
+  title: 'Kontakt',
+  description: 'Projektanfrage oder 15-Minuten-Call mit Lucas.',
+  canonical: '/kontakt',
+  lang: 'de' as const,
+  alternateUrls: { de: 'https://lkmedia.net/kontakt', en: 'https://lkmedia.net/en/contact' },
+};
+const calLink = import.meta.env.PUBLIC_CAL_LINK ?? 'lucaskleipoedszus/15min';
+---
+<Base seo={seo}>
+  <section class="py-32 px-6 max-w-3xl mx-auto">
+    <h1 class="text-5xl md:text-7xl font-semibold tracking-tight">Kontakt.</h1>
+    <p class="mt-6 text-xl text-white/70">Kurze Nachricht oder direkter Call — wähle, was dir passt.</p>
+    <div class="mt-16 grid md:grid-cols-2 gap-12">
+      <div>
+        <h2 class="text-2xl font-medium">Projektanfrage</h2>
+        <div class="mt-6"><ContactForm lang="de" /></div>
+      </div>
+      <div id="termin">
+        <h2 class="text-2xl font-medium">15-Minuten-Call</h2>
+        <CalEmbed calLink={calLink} label="Call buchen" />
+      </div>
+    </div>
+  </section>
+</Base>

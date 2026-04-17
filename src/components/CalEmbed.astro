@@ -1,0 +1,26 @@
+---
+interface Props { calLink: string; label?: string }
+const { calLink, label = '15 min Call buchen' } = Astro.props;
+---
+<div id="cal-wrap" class="mt-6">
+  <button id="cal-load" class="h-12 px-6 rounded-full border border-white/30 hover:bg-white/10">{label}</button>
+  <div id="cal-target" class="mt-6"></div>
+</div>
+<script type="module" define:vars={{ calLink }}>
+  const btn = document.getElementById('cal-load');
+  btn?.addEventListener('click', async () => {
+    btn.remove();
+    await new Promise((resolve, reject) => {
+      const s = document.createElement('script');
+      s.src = 'https://app.cal.com/embed/embed.js';
+      s.async = true;
+      s.onload = resolve;
+      s.onerror = reject;
+      document.head.appendChild(s);
+    });
+    if (typeof window.Cal === 'function') {
+      window.Cal('init');
+      window.Cal('inline', { elementOrSelector: '#cal-target', calLink });
+    }
+  });
+</script>
