@@ -1,13 +1,25 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme {
   --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text",
                Inter, system-ui, sans-serif;
+  --color-muted: #6e6e73;
+  --color-accent: #0071e3;
+}
+
+:root {
+  --color-bg: #fff;
+  --color-fg: #000;
+  --color-muted: #6e6e73;
+}
+
+.dark {
   --color-bg: #000;
   --color-fg: #fff;
   --color-muted: #86868b;
-  --color-accent: #0071e3;
 }
 
 html { background: var(--color-bg); color: var(--color-fg); font-family: var(--font-sans); }
