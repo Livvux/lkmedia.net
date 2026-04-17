@@ -1,0 +1,30 @@
+---
+import '../styles/global.css';
+import Seo from '../components/Seo.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import { organization } from '../lib/schema';
+import type { SeoProps } from '../lib/seo';
+
+interface Props { seo: SeoProps; jsonLd?: unknown[]; }
+const { seo, jsonLd = [] } = Astro.props as Props;
+const allLd = [organization(), ...jsonLd];
+---
+<!doctype html>
+<html lang={seo.lang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <Seo {...seo} />
+    <script type="application/ld+json" set:html={JSON.stringify(allLd)} />
+    <script defer data-domain="lkmedia.net" src="https://plausible.io/js/script.js"></script>
+  </head>
+  <body class="min-h-screen flex flex-col bg-black text-white antialiased">
+    <Nav lang={seo.lang} />
+    <main class="flex-1"><slot /></main>
+    <Footer lang={seo.lang} />
+  </body>
+</html>

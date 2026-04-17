@@ -1,0 +1,6 @@
+---
+import type { Lang } from '../lib/i18n';
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+---
+<header data-stub="nav" data-lang={lang}></header>

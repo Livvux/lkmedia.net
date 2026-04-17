@@ -1,17 +1,12 @@
 ---
-import "../styles/global.css";
+import Base from '../layouts/Base.astro';
+const seo = {
+  title: 'lkmedia',
+  description: 'Premium-Websites, die Mandate gewinnen.',
+  canonical: '/',
+  lang: 'de' as const,
+};
 ---
-
-<html lang="de">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>lkmedia.net</title>
-	</head>
-	<body>
-		<h1 class="text-4xl font-bold">lkmedia.net</h1>
-	</body>
-</html>
+<Base seo={seo}>
+  <h1 class="text-5xl font-semibold p-10">lkmedia</h1>
+</Base>
