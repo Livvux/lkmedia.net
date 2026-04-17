@@ -48,6 +48,9 @@ importers:
       '@tailwindcss/typography':
         specifier: ^0.5.19
         version: 0.5.19(tailwindcss@4.2.2)
+      playwright:
+        specifier: ^1.59.1
+        version: 1.59.1
       sharp:
         specifier: ^0.34.5
         version: 0.34.5
