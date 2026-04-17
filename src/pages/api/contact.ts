@@ -5,7 +5,7 @@ export const prerender = false;
 
 const RESEND_KEY = import.meta.env.RESEND_API_KEY;
 const TURNSTILE_SECRET = import.meta.env.TURNSTILE_SECRET_KEY;
-const TO = "lk@lucaskleipoedszus.com";
+const TO = "lucas@lkmedia.net";
 const FROM = "lkmedia.net <no-reply@lkmedia.net>";
 
 async function verifyTurnstile(token: string | null, ip: string | null): Promise<boolean> {

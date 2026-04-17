@@ -5,7 +5,7 @@ export const organization = () => ({
   url: "https://lkmedia.net",
   logo: "https://lkmedia.net/logo.svg",
   founder: { "@type": "Person", name: "Lucas Kleipoedszus" },
-  email: "lk@lucaskleipoedszus.com",
+  email: "lucas@lkmedia.net",
   sameAs: ["https://github.com/livvux"],
 });
 

@@ -13,7 +13,7 @@ const body = `# lkmedia
 - [Kontakt](https://lkmedia.net/kontakt)
 
 ## Contact
-- lk@lucaskleipoedszus.com
+- lucas@lkmedia.net
 `;
 
 export const GET: APIRoute = () =>
