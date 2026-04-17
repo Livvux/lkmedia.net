@@ -25,8 +25,8 @@ für High-Revenue-Leads in Premium-Nischen. Haupttreiber: Traffic (GSC) + Market
 
 | Layer          | Wahl                                                              |
 |----------------|-------------------------------------------------------------------|
-| Framework      | Astro 5 (SSG)                                                     |
-| UI             | Tailwind v4 + System-Font-Stack (SF Pro / Inter Fallback)         |
+| Framework      | Astro 6.1 (SSG)                                                   |
+| UI             | Tailwind v4.2 + System-Font-Stack (SF Pro / Inter Fallback)       |
 | Content        | Astro Content Collections v2 + MDX                                |
 | Images         | Astro Image (sharp) → AVIF                                        |
 | Animationen    | CSS `animation-timeline: view()/scroll()` + View Transitions API  |
@@ -40,6 +40,24 @@ für High-Revenue-Leads in Premium-Nischen. Haupttreiber: Traffic (GSC) + Market
 | E2E-Tests      | Playwright (Smoke: Landing, Kontakt, Blog)                        |
 | CI             | GitHub Actions + Lighthouse CI (≥95 alle Kategorien Gate)         |
 | Domain         | lkmedia.net, www → non-www 301                                    |
+
+---
+
+### 2.1 Pinned Latest Versions (Stand 2026-04-17)
+
+| Package               | Version  |
+|-----------------------|----------|
+| astro                 | 6.1.7    |
+| tailwindcss           | 4.2.2    |
+| @astrojs/mdx          | 5.0.3    |
+| @astrojs/sitemap      | 3.7.2    |
+| @astrojs/rss          | 4.0.18   |
+| @biomejs/biome        | 2.4.12   |
+| @playwright/test      | 1.59.1   |
+| resend                | 6.12.0   |
+
+**Policy:** Immer `npm view <pkg> version` vor Setup prüfen, immer latest major pinnen.
+Vor jeder Library-Nutzung Context7 (`npx ctx7@latest`) für aktuelle Docs.
 
 ---
 
