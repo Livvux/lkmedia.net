@@ -1,0 +1,77 @@
+---
+import Base from '../layouts/Base.astro';
+
+const seo = {
+  title: 'Über Lucas',
+  description: 'Lucas Kleipoedszus — Gründer von lkmedia. Premium-Websites für Kanzleien, Luxus-Immobilien und Privatkliniken.',
+  canonical: '/ueber',
+  lang: 'de' as const,
+  alternateUrls: { de: 'https://lkmedia.net/ueber', en: 'https://lkmedia.net/en/about' },
+};
+
+const credentials = [
+  '10+ Jahre Webentwicklung',
+  'SEO-Projekte mit Organic-Traffic-Wachstum',
+  'Schwerpunkt Premium-Nischen',
+  'Astro, TypeScript, Core Web Vitals',
+  'Schreibt selbst (kein AI-Slop)',
+];
+
+const person = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: 'Lucas Kleipoedszus',
+  jobTitle: 'Gründer & Entwickler',
+  url: 'https://lkmedia.net/ueber',
+  email: 'lk@lucaskleipoedszus.com',
+  image: 'https://lkmedia.net/ueber/portrait.svg',
+  worksFor: { '@type': 'Organization', name: 'lkmedia' },
+  knowsAbout: ['Webentwicklung', 'SEO', 'Core Web Vitals', 'Astro', 'TypeScript'],
+  sameAs: ['https://github.com/livvux'],
+};
+---
+<Base seo={seo} jsonLd={[person]}>
+  <section class="pt-32 pb-16 px-6 max-w-4xl mx-auto">
+    <h1 class="text-5xl md:text-7xl font-semibold tracking-tight mb-6">Ich bin Lucas.</h1>
+    <p class="text-xl md:text-2xl text-white/70 leading-relaxed max-w-2xl">
+      Ich baue Premium-Websites, die messbar Umsatz bringen.
+    </p>
+  </section>
+
+  <section class="py-12 px-6 max-w-4xl mx-auto">
+    <div class="aspect-square w-full max-w-md rounded-3xl overflow-hidden bg-white/5">
+      <img src="/ueber/portrait.svg" alt="Portrait Lucas Kleipoedszus" width="800" height="800" class="w-full h-full object-cover" />
+    </div>
+  </section>
+
+  <section class="py-16 px-6 max-w-4xl mx-auto space-y-6 text-lg md:text-xl text-white/80 leading-relaxed">
+    <p>
+      Mein Name ist Lucas Kleipoedszus. Ich bin Full-Stack-Entwickler mit einem Hintergrund in SEO und Marketing — und seit über einem Jahrzehnt baue ich Websites, die nicht nur gut aussehen, sondern wirtschaftlich arbeiten.
+    </p>
+    <p>
+      Ich arbeite mit Kanzleien, Luxus-Immobilien-Maklern und Privatkliniken in Deutschland. Also mit Unternehmen, bei denen ein einzelner Neukunde fünf- oder sechsstellig zählt — und bei denen der digitale Auftritt das erste Signal für Vertrauen ist.
+    </p>
+    <p>
+      Ich schreibe den Code und die Texte selbst. Kein Outsourcing, kein Whitelabel-Team im Hintergrund, kein AI-Slop. Wenn Sie mit mir arbeiten, arbeiten Sie direkt mit dem Menschen, der Ihre Website baut.
+    </p>
+  </section>
+
+  <section class="py-16 px-6 max-w-4xl mx-auto border-t border-white/10">
+    <h2 class="text-3xl md:text-4xl font-semibold tracking-tight mb-10">Credentials</h2>
+    <ul class="space-y-4">
+      {credentials.map((c) => (
+        <li class="flex items-start gap-4 text-lg md:text-xl text-white/80">
+          <span class="text-white/40 mt-1">—</span>
+          <span>{c}</span>
+        </li>
+      ))}
+    </ul>
+  </section>
+
+  <section class="py-24 px-6 max-w-4xl mx-auto border-t border-white/10">
+    <div class="text-white/40 text-sm tracking-widest mb-6">KONTAKT</div>
+    <a href="mailto:lk@lucaskleipoedszus.com" class="block text-3xl md:text-5xl font-semibold tracking-tight hover:text-white/70 transition-colors">
+      Direkte Anfrage: lk@lucaskleipoedszus.com
+    </a>
+  </section>
+</Base>
