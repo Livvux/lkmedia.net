@@ -1,0 +1,16 @@
+---
+interface Props { headline: string; sub: string; ctaHref: string; ctaLabel: string }
+const { headline, sub, ctaHref, ctaLabel } = Astro.props;
+---
+<section class="relative min-h-[92vh] flex items-center justify-center px-6 text-center overflow-hidden">
+  <div class="max-w-4xl">
+    <h1 class="text-[clamp(2.5rem,7vw,6rem)] font-semibold tracking-tight leading-[1.05]">
+      {headline}
+    </h1>
+    <p class="mt-6 text-lg md:text-2xl text-white/70">{sub}</p>
+    <a href={ctaHref} class="inline-flex mt-10 h-12 px-6 items-center rounded-full bg-white text-black font-medium hover:bg-white/90 transition">
+      {ctaLabel} →
+    </a>
+  </div>
+  <div aria-hidden="true" class="absolute bottom-6 left-1/2 -translate-x-1/2 text-white/40 text-xs tracking-widest">SCROLL</div>
+</section>

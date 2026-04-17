@@ -1,0 +1,16 @@
+---
+interface Card { title: string; metric: string; body: string }
+interface Props { items: Card[] }
+const { items } = Astro.props;
+---
+<section class="py-32 px-6">
+  <div class="max-w-6xl mx-auto grid md:grid-cols-3 gap-6">
+    {items.map((c) => (
+      <article class="rounded-3xl bg-white/5 border border-white/10 p-8">
+        <div class="text-5xl font-semibold tracking-tight">{c.metric}</div>
+        <h3 class="mt-6 text-xl font-medium">{c.title}</h3>
+        <p class="mt-2 text-white/60">{c.body}</p>
+      </article>
+    ))}
+  </div>
+</section>

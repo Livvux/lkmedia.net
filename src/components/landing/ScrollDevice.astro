@@ -1,0 +1,28 @@
+---
+interface Props { image: string; alt: string }
+const { image, alt } = Astro.props;
+---
+<section class="relative">
+  <div class="sticky top-0 h-screen flex items-center justify-center">
+    <img src={image} alt={alt} width="1200" height="750"
+      class="max-w-[80vw] max-h-[70vh] object-contain device-scroll" loading="lazy" decoding="async" />
+  </div>
+  <div class="h-[150vh]" aria-hidden="true"></div>
+</section>
+
+<style>
+@supports (animation-timeline: view()) {
+  .device-scroll {
+    animation: deviceZoom linear both;
+    animation-timeline: view();
+    animation-range: entry 0% cover 50%;
+  }
+  @keyframes deviceZoom {
+    from { transform: scale(0.85); opacity: 0.6; }
+    to   { transform: scale(1);   opacity: 1; }
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .device-scroll { animation: none; }
+}
+</style>
