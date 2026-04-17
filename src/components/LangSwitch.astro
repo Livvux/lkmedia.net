@@ -1,0 +1,13 @@
+---
+import type { Lang } from '../lib/i18n';
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const other: Lang = lang === 'de' ? 'en' : 'de';
+const currentPath = Astro.url.pathname;
+const targetPath = lang === 'de'
+  ? `/en${currentPath === '/' ? '' : currentPath}`
+  : currentPath.replace(/^\/en/, '') || '/';
+---
+<a href={targetPath} class="text-xs uppercase tracking-wider text-white/60 hover:text-white">
+  {other}
+</a>

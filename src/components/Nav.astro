@@ -1,6 +1,23 @@
 ---
-import type { Lang } from '../lib/i18n';
+import { useTranslations, pathFor, type Lang } from '../lib/i18n';
+import LangSwitch from './LangSwitch.astro';
 interface Props { lang: Lang }
 const { lang } = Astro.props;
+const t = useTranslations(lang);
+const items = [
+  { href: pathFor('leistungen', lang), label: t('nav.services') },
+  { href: pathFor('cases', lang), label: t('nav.cases') },
+  { href: pathFor('blog', lang), label: t('nav.blog') },
+  { href: pathFor('ueber', lang), label: t('nav.about') },
+  { href: pathFor('kontakt', lang), label: t('nav.contact') },
+];
 ---
-<header data-stub="nav" data-lang={lang}></header>
+<header class="sticky top-0 z-50 bg-black/70 backdrop-blur-md border-b border-white/10">
+  <nav class="max-w-6xl mx-auto flex items-center justify-between h-14 px-4">
+    <a href={pathFor('', lang)} class="font-semibold tracking-tight">lkmedia</a>
+    <ul class="hidden md:flex gap-6 text-sm text-white/80">
+      {items.map((i) => <li><a href={i.href} class="hover:text-white">{i.label}</a></li>)}
+    </ul>
+    <LangSwitch lang={lang} />
+  </nav>
+</header>

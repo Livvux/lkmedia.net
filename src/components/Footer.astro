@@ -1,6 +1,15 @@
 ---
-import type { Lang } from '../lib/i18n';
+import { pathFor, type Lang } from '../lib/i18n';
 interface Props { lang: Lang }
 const { lang } = Astro.props;
+const year = new Date().getFullYear();
 ---
-<footer data-stub="footer" data-lang={lang}></footer>
+<footer class="border-t border-white/10 text-sm text-white/60">
+  <div class="max-w-6xl mx-auto px-4 py-10 flex flex-wrap gap-6 justify-between">
+    <div>© {year} lkmedia · Lucas Kleipoedszus</div>
+    <ul class="flex gap-6">
+      <li><a href={pathFor('imprint', lang)}>Impressum</a></li>
+      <li><a href={pathFor('datenschutz', lang)}>Datenschutz</a></li>
+    </ul>
+  </div>
+</footer>
