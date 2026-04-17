@@ -29,6 +29,7 @@
     "@astrojs/check": "^0.9.8",
     "@biomejs/biome": "^2.4.12",
     "@playwright/test": "^1.59.1",
+    "@tailwindcss/typography": "^0.5.19",
     "typescript": "^6.0.3",
     "vitest": "^4.1.4"
   }

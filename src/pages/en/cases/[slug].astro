@@ -1,0 +1,40 @@
+---
+import { getCollection, render } from 'astro:content';
+import Base from '../../../layouts/Base.astro';
+import { breadcrumbs } from '../../../lib/schema';
+
+export async function getStaticPaths() {
+  const cases = await getCollection('cases');
+  return cases.map((c) => ({ params: { slug: c.id }, props: { entry: c } }));
+}
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+const seo = {
+  title: entry.data.title,
+  description: entry.data.summary,
+  canonical: `/en/cases/${entry.id}`,
+  lang: 'en' as const,
+  ogImage: entry.data.heroImage,
+  alternateUrls: {
+    de: `https://lkmedia.net/cases/${entry.id}`,
+    en: `https://lkmedia.net/en/cases/${entry.id}`,
+  },
+};
+const bc = breadcrumbs([
+  { name: 'Home', url: 'https://lkmedia.net/en/' },
+  { name: 'Cases', url: 'https://lkmedia.net/en/cases' },
+  { name: entry.data.title, url: `https://lkmedia.net/en/cases/${entry.id}` },
+]);
+---
+<Base seo={seo} jsonLd={[bc]}>
+  <article class="max-w-3xl mx-auto px-6 py-32">
+    <nav class="text-sm text-white/50 mb-8"><a href="/en/cases">← Cases</a></nav>
+    <div class="text-sm uppercase tracking-wider text-white/50">{entry.data.niche} · {entry.data.client}</div>
+    <h1 class="text-4xl md:text-6xl font-semibold tracking-tight mt-3">{entry.data.title}</h1>
+    <p class="text-xl text-white/70 mt-6">{entry.data.summary}</p>
+    <img src={entry.data.heroImage} alt={entry.data.title} class="mt-10 w-full aspect-[16/9] object-cover rounded-2xl bg-white/5" />
+    <div class="mt-12 prose prose-invert max-w-none">
+      <Content />
+    </div>
+  </article>
+</Base>
