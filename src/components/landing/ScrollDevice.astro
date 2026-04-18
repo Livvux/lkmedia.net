@@ -5,7 +5,7 @@ const { image, alt } = Astro.props;
 <section class="relative">
   <div class="sticky top-0 h-screen flex items-center justify-center">
     <img src={image} alt={alt} width="1200" height="750"
-      class="max-w-[80vw] max-h-[70vh] object-contain device-scroll" loading="lazy" decoding="async" />
+      class="max-w-[80vw] max-h-[70vh] object-contain rounded-2xl device-scroll" loading="lazy" decoding="async" />
   </div>
   <div class="h-[150vh]" aria-hidden="true"></div>
 </section>
