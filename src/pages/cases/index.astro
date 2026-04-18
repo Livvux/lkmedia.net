@@ -24,12 +24,12 @@ const seo = {
     <div class="mt-16 grid md:grid-cols-2 gap-8">
       {cases.map((c) => (
         <a href={`/cases/${c.id}`} class="group block">
-          <div class="aspect-[16/9] rounded-2xl overflow-hidden bg-white/5">
+          <div class="aspect-[16/9] rounded-2xl overflow-hidden bg-black/5 dark:bg-white/5">
             <img src={c.data.heroImage} alt={c.data.title} class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" loading="lazy" />
           </div>
-          <div class="mt-4 text-sm uppercase tracking-wider text-white/50">{nicheLabel[c.data.niche] ?? c.data.niche}</div>
+          <div class="mt-4 text-sm uppercase tracking-wider text-black/50 dark:text-white/50">{nicheLabel[c.data.niche] ?? c.data.niche}</div>
           <div class="text-2xl font-medium mt-1">{c.data.title}</div>
-          <div class="text-white/60 mt-1">{c.data.summary}</div>
+          <div class="text-black/60 dark:text-white/60 mt-1">{c.data.summary}</div>
         </a>
       ))}
     </div>

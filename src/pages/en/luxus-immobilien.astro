@@ -70,33 +70,33 @@ const faqSchema = {
         <div class="rounded-2xl border border-red-500/20 bg-red-500/5 p-8">
           <div class="text-red-400/80 text-sm tracking-widest mb-4">PAIN</div>
           <h3 class="text-xl font-semibold mb-3">{p.title}</h3>
-          <p class="text-white/70 leading-relaxed">{p.body}</p>
+          <p class="text-black/70 dark:text-white/70 leading-relaxed">{p.body}</p>
         </div>
       ))}
     </div>
   </section>
 
-  <section class="py-24 px-6 max-w-6xl mx-auto border-t border-white/10">
+  <section class="py-24 px-6 max-w-6xl mx-auto border-t border-black/10 dark:border-white/10">
     <h2 class="text-3xl md:text-5xl font-semibold tracking-tight mb-12">What a premium property needs online.</h2>
     <div class="grid md:grid-cols-2 gap-10">
       {features.map((f) => (
         <div>
           <h3 class="text-xl font-semibold mb-3">{f.title}</h3>
-          <p class="text-white/70 leading-relaxed">{f.body}</p>
+          <p class="text-black/70 dark:text-white/70 leading-relaxed">{f.body}</p>
         </div>
       ))}
     </div>
   </section>
 
   {relatedCase && (
-    <section class="py-24 px-6 max-w-6xl mx-auto border-t border-white/10">
-      <div class="text-white/40 text-sm tracking-widest mb-6">PROJECT</div>
+    <section class="py-24 px-6 max-w-6xl mx-auto border-t border-black/10 dark:border-white/10">
+      <div class="text-black/40 dark:text-white/40 text-sm tracking-widest mb-6">PROJECT</div>
       <a href={`/en/cases/${relatedCase.id}`} class="group block">
-        <div class="aspect-[16/7] rounded-2xl overflow-hidden bg-white/5 mb-6">
+        <div class="aspect-[16/7] rounded-2xl overflow-hidden bg-black/5 dark:bg-white/5 mb-6">
           <img src={relatedCase.data.heroImage} alt={relatedCase.data.title} class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" loading="lazy" />
         </div>
         <h3 class="text-2xl md:text-4xl font-semibold tracking-tight">{relatedCase.data.title}</h3>
-        <p class="mt-3 text-white/70 max-w-2xl">{relatedCase.data.summary}</p>
+        <p class="mt-3 text-black/70 dark:text-white/70 max-w-2xl">{relatedCase.data.summary}</p>
       </a>
     </section>
   )}

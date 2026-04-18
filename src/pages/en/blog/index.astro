@@ -21,13 +21,13 @@ function urlFor(p: (typeof posts)[number]) {
 <Base seo={seo}>
   <section class="py-32 px-6 max-w-4xl mx-auto">
     <h1 class="text-5xl md:text-7xl font-semibold tracking-tight">Blog.</h1>
-    <ul class="mt-16 divide-y divide-white/10">
+    <ul class="mt-16 divide-y divide-black/10 dark:divide-white/10">
       {posts.map((p) => (
         <li class="py-6">
           <a href={urlFor(p)} class="group block">
-            <div class="text-xs text-white/40">{p.data.pubDate.toISOString().slice(0, 10)}</div>
+            <div class="text-xs text-black/40 dark:text-white/40">{p.data.pubDate.toISOString().slice(0, 10)}</div>
             <div class="text-2xl font-medium mt-1 group-hover:underline">{p.data.title}</div>
-            <div class="text-white/60 mt-1">{p.data.description}</div>
+            <div class="text-black/60 dark:text-white/60 mt-1">{p.data.description}</div>
           </a>
         </li>
       ))}

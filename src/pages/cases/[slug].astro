@@ -24,12 +24,12 @@ const bc = breadcrumbs([
 ---
 <Base seo={seo} jsonLd={[bc]}>
   <article class="max-w-3xl mx-auto px-6 py-32">
-    <nav class="text-sm text-white/50 mb-8"><a href="/cases">← Cases</a></nav>
-    <div class="text-sm uppercase tracking-wider text-white/50">{entry.data.niche} · {entry.data.client}</div>
+    <nav class="text-sm text-black/50 dark:text-white/50 mb-8"><a href="/cases">← Cases</a></nav>
+    <div class="text-sm uppercase tracking-wider text-black/50 dark:text-white/50">{entry.data.niche} · {entry.data.client}</div>
     <h1 class="text-4xl md:text-6xl font-semibold tracking-tight mt-3">{entry.data.title}</h1>
-    <p class="text-xl text-white/70 mt-6">{entry.data.summary}</p>
-    <img src={entry.data.heroImage} alt={entry.data.title} class="mt-10 w-full aspect-[16/9] object-cover rounded-2xl bg-white/5" />
-    <div class="mt-12 prose prose-invert max-w-none">
+    <p class="text-xl text-black/70 dark:text-white/70 mt-6">{entry.data.summary}</p>
+    <img src={entry.data.heroImage} alt={entry.data.title} class="mt-10 w-full aspect-[16/9] object-cover rounded-2xl bg-black/5 dark:bg-white/5" />
+    <div class="mt-12 prose dark:prose-invert max-w-none">
       <Content />
     </div>
   </article>

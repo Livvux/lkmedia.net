@@ -33,18 +33,18 @@ const person = {
 <Base seo={seo} jsonLd={[person]}>
   <section class="pt-32 pb-16 px-6 max-w-4xl mx-auto">
     <h1 class="text-5xl md:text-7xl font-semibold tracking-tight mb-6">I'm Lucas.</h1>
-    <p class="text-xl md:text-2xl text-white/70 leading-relaxed max-w-2xl">
+    <p class="text-xl md:text-2xl text-black/70 dark:text-white/70 leading-relaxed max-w-2xl">
       I build premium websites that measurably drive revenue.
     </p>
   </section>
 
   <section class="py-12 px-6 max-w-4xl mx-auto">
-    <div class="aspect-square w-full max-w-md rounded-3xl overflow-hidden bg-white/5">
+    <div class="aspect-square w-full max-w-md rounded-3xl overflow-hidden bg-black/5 dark:bg-white/5">
       <img src="/ueber/portrait.svg" alt="Portrait of Lucas Kleipoedszus" width="800" height="800" class="w-full h-full object-cover" />
     </div>
   </section>
 
-  <section class="py-16 px-6 max-w-4xl mx-auto space-y-6 text-lg md:text-xl text-white/80 leading-relaxed">
+  <section class="py-16 px-6 max-w-4xl mx-auto space-y-6 text-lg md:text-xl text-black/80 dark:text-white/80 leading-relaxed">
     <p>
       My name is Lucas Kleipoedszus. I'm a full-stack developer with a background in SEO and marketing — and for more than a decade I've been building websites that not only look good, but also perform commercially.
     </p>
@@ -56,21 +56,21 @@ const person = {
     </p>
   </section>
 
-  <section class="py-16 px-6 max-w-4xl mx-auto border-t border-white/10">
+  <section class="py-16 px-6 max-w-4xl mx-auto border-t border-black/10 dark:border-white/10">
     <h2 class="text-3xl md:text-4xl font-semibold tracking-tight mb-10">Credentials</h2>
     <ul class="space-y-4">
       {credentials.map((c) => (
-        <li class="flex items-start gap-4 text-lg md:text-xl text-white/80">
-          <span class="text-white/40 mt-1">—</span>
+        <li class="flex items-start gap-4 text-lg md:text-xl text-black/80 dark:text-white/80">
+          <span class="text-black/40 dark:text-white/40 mt-1">—</span>
           <span>{c}</span>
         </li>
       ))}
     </ul>
   </section>
 
-  <section class="py-24 px-6 max-w-4xl mx-auto border-t border-white/10">
-    <div class="text-white/40 text-sm tracking-widest mb-6">CONTACT</div>
-    <a href="mailto:lucas@lkmedia.net" class="block text-3xl md:text-5xl font-semibold tracking-tight hover:text-white/70 transition-colors">
+  <section class="py-24 px-6 max-w-4xl mx-auto border-t border-black/10 dark:border-white/10">
+    <div class="text-black/40 dark:text-white/40 text-sm tracking-widest mb-6">CONTACT</div>
+    <a href="mailto:lucas@lkmedia.net" class="block text-3xl md:text-5xl font-semibold tracking-tight hover:text-black/70 dark:text-white/70 transition-colors">
       Direct inquiry: lucas@lkmedia.net
     </a>
   </section>
