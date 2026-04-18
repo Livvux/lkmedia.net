@@ -57,8 +57,8 @@ const { headline, sub, ctaHref, ctaLabel, secondaryHref, secondaryLabel, deviceI
 
     <!-- Device column -->
     {deviceImage && (
-      <div class="hidden md:flex items-end justify-center h-[92vh] relative">
-        <div class="absolute bottom-0 left-1/2 -translate-x-1/2 w-[320px] h-[240px] bg-black/[0.03] dark:bg-white/[0.03] blur-3xl rounded-full pointer-events-none" aria-hidden="true"></div>
+      <div class="hidden md:flex items-center justify-center relative">
+        <div class="absolute left-1/2 -translate-x-1/2 w-[320px] h-[240px] bg-black/[0.03] dark:bg-white/[0.03] blur-3xl rounded-full pointer-events-none" aria-hidden="true"></div>
         <div class="device-wrap relative z-10">
           <img
             src={deviceImage}
@@ -79,7 +79,7 @@ const { headline, sub, ctaHref, ctaLabel, secondaryHref, secondaryLabel, deviceI
 <style>
   .device-wrap {
     transform: perspective(700px) rotateY(-16deg) rotateX(5deg);
-    transform-origin: bottom center;
+    transform-origin: center center;
     filter: drop-shadow(-28px 20px 60px rgba(0,0,0,.8));
   }
 </style>
