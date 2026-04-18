@@ -16,16 +16,21 @@ const placeholders = lang === 'de'
   </label>
   <label class="block">
     <span class="text-sm text-black/60 dark:text-white/60">{placeholders.email}</span>
-    <input required type="email" name="email" class="mt-1 w-full h-12 px-4 rounded-xl bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10" />
+    <input required type="email" name="email" class="mt-1 w-full h-12 px-4 rounded-xl bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 focus:border-black dark:focus:border-white focus:outline-none" />
   </label>
   <label class="block">
     <span class="text-sm text-black/60 dark:text-white/60">{placeholders.company}</span>
-    <input name="company" class="mt-1 w-full h-12 px-4 rounded-xl bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10" />
+    <input name="company" class="mt-1 w-full h-12 px-4 rounded-xl bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 focus:border-black dark:focus:border-white focus:outline-none" />
   </label>
   <label class="block">
     <span class="text-sm text-black/60 dark:text-white/60">{placeholders.budget}</span>
-    <select name="budget" class="mt-1 w-full h-12 px-4 rounded-xl bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10">
-      <option>25–50k</option><option>50–100k</option><option>100k+</option><option>{lang === 'de' ? 'unklar' : 'not sure'}</option>
+    <select name="budget" class="mt-1 w-full h-12 px-4 rounded-xl bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 focus:border-black dark:focus:border-white focus:outline-none">
+      <option value="" disabled selected>{lang === 'de' ? '— Budget wählen —' : '— Select budget —'}</option>
+      <option value="< 5k">&lt; 5k</option>
+      <option value="5–15k">5–15k</option>
+      <option value="15–30k">15–30k</option>
+      <option value="30k+">30k+</option>
+      <option value="unklar">{lang === 'de' ? 'unklar' : 'not sure'}</option>
     </select>
   </label>
   <label class="block">
@@ -33,6 +38,13 @@ const placeholders = lang === 'de'
     <textarea required name="message" rows="5" class="mt-1 w-full p-4 rounded-xl bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10"></textarea>
   </label>
   {turnstileKey && <div class="cf-turnstile" data-sitekey={turnstileKey}></div>}
-  <button class="h-12 px-6 rounded-full bg-black text-white dark:bg-white dark:text-black font-medium">{t('cta.start')}</button>
+  <button id="contact-submit" class="h-12 px-6 rounded-full bg-black text-white dark:bg-white dark:text-black font-medium disabled:opacity-50">{t('cta.start')}</button>
 </form>
 {turnstileKey && <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>}
+<script>
+  const form = document.querySelector<HTMLFormElement>('form[action="/api/contact"]');
+  const btn = document.getElementById('contact-submit') as HTMLButtonElement | null;
+  form?.addEventListener('submit', () => {
+    if (btn) { btn.disabled = true; btn.textContent = '…'; }
+  });
+</script>
