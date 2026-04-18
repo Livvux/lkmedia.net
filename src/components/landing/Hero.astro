@@ -1,16 +1,85 @@
 ---
-interface Props { headline: string; sub: string; ctaHref: string; ctaLabel: string }
-const { headline, sub, ctaHref, ctaLabel } = Astro.props;
+interface Props {
+  headline: string
+  sub: string
+  ctaHref: string
+  ctaLabel: string
+  secondaryHref?: string
+  secondaryLabel?: string
+  deviceImage?: string
+  deviceAlt?: string
+}
+const { headline, sub, ctaHref, ctaLabel, secondaryHref, secondaryLabel, deviceImage, deviceAlt } = Astro.props;
 ---
-<section class="relative min-h-[92vh] flex items-center justify-center px-6 text-center overflow-hidden">
-  <div class="max-w-4xl">
-    <h1 class="text-[clamp(2.5rem,7vw,6rem)] font-semibold tracking-tight leading-[1.05]">
-      {headline}
-    </h1>
-    <p class="mt-6 text-lg md:text-2xl text-black/70 dark:text-white/70">{sub}</p>
-    <a href={ctaHref} class="inline-flex mt-10 h-12 px-6 items-center rounded-full bg-black text-white dark:bg-white dark:text-black font-medium hover:bg-black/90 dark:hover:bg-white/90 transition">
-      {ctaLabel} →
-    </a>
+<section class="relative min-h-[92vh] flex items-center overflow-hidden px-6">
+  <div class="max-w-7xl mx-auto w-full grid md:grid-cols-2 gap-12 items-center">
+
+    <!-- Text column -->
+    <div class="flex flex-col items-start">
+      <span class="mb-6 inline-block rounded-full border border-black/10 dark:border-white/10 bg-white dark:bg-black px-3 py-1 text-[0.65rem] font-medium uppercase tracking-widest text-black dark:text-white">
+        Web Design &amp; SEO
+      </span>
+
+      <h1 class="text-[clamp(2.2rem,5vw,4.5rem)] font-semibold tracking-tight leading-[1.05] text-left">
+        {headline}
+      </h1>
+
+      <p class="mt-5 text-base md:text-lg text-black/50 dark:text-white/50 text-left">{sub}</p>
+
+      <!-- Metrics -->
+      <div class="mt-6 flex gap-6">
+        <div>
+          <div class="text-xl font-semibold text-black/90 dark:text-white/90">&lt;1s</div>
+          <div class="text-[0.6rem] uppercase tracking-widest text-black/30 dark:text-white/30 mt-0.5">LCP</div>
+        </div>
+        <div>
+          <div class="text-xl font-semibold text-black/90 dark:text-white/90">100</div>
+          <div class="text-[0.6rem] uppercase tracking-widest text-black/30 dark:text-white/30 mt-0.5">Lighthouse</div>
+        </div>
+        <div>
+          <div class="text-xl font-semibold text-black/90 dark:text-white/90">A+</div>
+          <div class="text-[0.6rem] uppercase tracking-widest text-black/30 dark:text-white/30 mt-0.5">Design</div>
+        </div>
+      </div>
+
+      <!-- CTAs -->
+      <div class="mt-8 flex items-center gap-5">
+        <a href={ctaHref} class="inline-flex h-11 px-6 items-center rounded-full bg-black text-white dark:bg-white dark:text-black text-sm font-medium hover:bg-black/90 dark:hover:bg-white/90 transition">
+          {ctaLabel} →
+        </a>
+        {secondaryHref && secondaryLabel && (
+          <a href={secondaryHref} class="text-sm text-black/40 dark:text-white/40 hover:text-black/70 dark:hover:text-white/70 transition">
+            {secondaryLabel}
+          </a>
+        )}
+      </div>
+    </div>
+
+    <!-- Device column -->
+    {deviceImage && (
+      <div class="hidden md:flex items-end justify-center h-[92vh] relative">
+        <div class="absolute bottom-0 left-1/2 -translate-x-1/2 w-[320px] h-[240px] bg-black/[0.03] dark:bg-white/[0.03] blur-3xl rounded-full pointer-events-none" aria-hidden="true"></div>
+        <div class="device-wrap relative z-10">
+          <img
+            src={deviceImage}
+            alt={deviceAlt ?? ''}
+            width="1440"
+            height="900"
+            class="rounded-t-2xl border border-b-0 border-black/10 dark:border-white/10 object-cover object-top"
+            loading="eager"
+            decoding="async"
+            style="max-width: 480px; width: 100%;"
+          />
+        </div>
+      </div>
+    )}
   </div>
-  <div aria-hidden="true" class="absolute bottom-6 left-1/2 -translate-x-1/2 text-black/40 dark:text-white/40 text-xs tracking-widest">SCROLL</div>
 </section>
+
+<style>
+  .device-wrap {
+    transform: perspective(700px) rotateY(-16deg) rotateX(5deg);
+    transform-origin: bottom center;
+    filter: drop-shadow(-28px 20px 60px rgba(0,0,0,.8));
+  }
+</style>

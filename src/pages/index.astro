@@ -11,7 +11,7 @@ import CTABlock from '../components/landing/CTABlock.astro';
 import { professionalService } from '../lib/schema';
 
 const seo = {
-  title: 'Premium-Websites, die Mandate gewinnen',
+  title: 'Premium-Websites, die Kunden gewinnen',
   description: 'lkmedia baut Apple-Grade Websites für Kanzleien, Luxus-Immobilien und Privatkliniken — mit perfektem SEO und Lighthouse 100.',
   canonical: '/',
   lang: 'de' as const,
@@ -20,10 +20,13 @@ const seo = {
 ---
 <Base seo={seo} jsonLd={[professionalService()]}>
   <Hero
-    headline="Premium-Websites, die Mandate gewinnen."
-    sub="Apple-Grade Design. Lighthouse 100. Mandats-Fokus."
-    ctaHref="/kontakt" ctaLabel="Projekt starten" />
-  <ScrollDevice image="/landing/device.webp" alt="Kundenprojekt: P&M Plakatwerbung" />
+    headline="Premium-Websites, die Kunden gewinnen."
+    sub="Apple-Grade Design. Lighthouse 100. Conversion-optimiert."
+    ctaHref="/kontakt" ctaLabel="Projekt starten"
+    secondaryHref="/kontakt#termin" secondaryLabel="15 min Call"
+    deviceImage="/landing/device.webp"
+    deviceAlt="Kundenprojekt: P&M Plakatwerbung" />
+  <ScrollDevice image="/landing/device-2.webp" alt="Kundenprojekt: Patricks Fahrschule" />
   <ValueCards items={[
     { title: 'Performance', metric: '<1s', body: 'LCP unter einer Sekunde auf 4G.' },
     { title: 'Design', metric: 'A+', body: 'Apple-Grade Typografie, Whitespace, Feinschliff.' },
@@ -41,7 +44,7 @@ const seo = {
     { n: '03', title: 'Build', body: 'Astro, Code, Content, Performance.' },
     { n: '04', title: 'Launch', body: 'Deploy, Search Console, Monitoring.' },
   ]} />
-  <CTABlock headline="Bereit für mehr Mandate?"
+  <CTABlock headline="Bereit für mehr Kunden?"
     formHref="/kontakt" calHref="/kontakt#termin"
     formLabel="Projekt starten" calLabel="15 min Call" />
 </Base>
