@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hero Hintergrund – Optionen</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #0a0a0a; color: #fff; font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif; padding: 32px 24px 60px; }
+  h1 { font-size: 1.1rem; font-weight: 500; color: #888; letter-spacing: .08em; text-transform: uppercase; margin-bottom: 8px; }
+  p.lead { color: #555; font-size: .9rem; margin-bottom: 40px; }
+
+  .options { display: flex; flex-direction: column; gap: 20px; }
+
+  .card {
+    border: 1.5px solid #222;
+    border-radius: 16px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: border-color .2s, transform .15s;
+    position: relative;
+  }
+  .card:hover { border-color: #444; transform: translateY(-2px); }
+  .card.selected { border-color: #fff !important; }
+  .card.selected::after {
+    content: '✓ Ausgewählt';
+    position: absolute; top: 14px; right: 14px;
+    background: #fff; color: #000;
+    font-size: .7rem; font-weight: 600; letter-spacing: .06em;
+    padding: 3px 10px; border-radius: 20px;
+  }
+
+  /* ── OPTION A: Split Layout ── */
+  .preview-a {
+    height: 220px;
+    background: #0a0a0a;
+    display: flex;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .preview-a .text-col {
+    padding: 0 0 0 48px;
+    flex: 1;
+    z-index: 2;
+  }
+  .preview-a h2 { font-size: 1.6rem; font-weight: 600; line-height: 1.1; letter-spacing: -.03em; }
+  .preview-a p { font-size: .75rem; color: #888; margin-top: 8px; }
+  .preview-a .cta {
+    margin-top: 16px;
+    display: inline-block;
+    background: #fff; color: #000;
+    font-size: .7rem; font-weight: 600;
+    padding: 7px 18px; border-radius: 20px;
+  }
+  .preview-a .device-col {
+    flex: 1;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    height: 100%;
+    position: relative;
+  }
+  .preview-a .device-mockup {
+    width: 200px;
+    height: 180px;
+    background: linear-gradient(135deg, #1a1a1a 0%, #111 100%);
+    border-radius: 16px 16px 0 0;
+    border: 1.5px solid #333;
+    border-bottom: none;
+    position: relative;
+    overflow: hidden;
+    transform: perspective(400px) rotateY(-8deg) rotateX(3deg);
+    transform-origin: bottom left;
+    box-shadow: -20px 20px 60px rgba(0,0,0,.6);
+  }
+  .preview-a .screen-content {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(160deg, #111 0%, #1a1a1a 40%, #0d0d0d 100%);
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+  }
+  .preview-a .screen-bar { height: 3px; width: 40%; background: #fff; border-radius: 2px; margin-bottom: 6px; }
+  .preview-a .screen-line { height: 2px; background: #2a2a2a; border-radius: 2px; margin: 3px 0; }
+  .preview-a .screen-line.short { width: 60%; }
+
+  /* ── OPTION B: Gradient Mesh ── */
+  .preview-b {
+    height: 220px;
+    background: #0a0a0a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .preview-b .mesh {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 50% at 30% 50%, rgba(99,102,241,.18) 0%, transparent 70%),
+      radial-gradient(ellipse 50% 60% at 75% 40%, rgba(139,92,246,.12) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 40% at 55% 80%, rgba(59,130,246,.1) 0%, transparent 70%);
+  }
+  .preview-b .noise {
+    position: absolute;
+    inset: 0;
+    opacity: .04;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 150px;
+  }
+  .preview-b .text-wrap { position: relative; z-index: 2; }
+  .preview-b h2 { font-size: 1.6rem; font-weight: 600; letter-spacing: -.03em; }
+  .preview-b p { font-size: .75rem; color: rgba(255,255,255,.5); margin-top: 8px; }
+  .preview-b .cta {
+    margin-top: 16px;
+    display: inline-block;
+    background: #fff; color: #000;
+    font-size: .7rem; font-weight: 600;
+    padding: 7px 18px; border-radius: 20px;
+  }
+
+  /* ── OPTION C: Grid + Glow ── */
+  .preview-c {
+    height: 220px;
+    background: #0a0a0a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .preview-c .grid-bg {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,.04) 1px, transparent 1px);
+    background-size: 40px 40px;
+    mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 40%, transparent 100%);
+  }
+  .preview-c .glow {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 300px;
+    height: 200px;
+    background: radial-gradient(ellipse, rgba(255,255,255,.06) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .preview-c .text-wrap { position: relative; z-index: 2; }
+  .preview-c h2 { font-size: 1.6rem; font-weight: 600; letter-spacing: -.03em; }
+  .preview-c p { font-size: .75rem; color: rgba(255,255,255,.5); margin-top: 8px; }
+  .preview-c .cta {
+    margin-top: 16px;
+    display: inline-block;
+    background: #fff; color: #000;
+    font-size: .7rem; font-weight: 600;
+    padding: 7px 18px; border-radius: 20px;
+  }
+
+  /* Labels */
+  .card-label {
+    padding: 16px 20px;
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    border-top: 1px solid #1a1a1a;
+  }
+  .letter {
+    width: 26px; height: 26px;
+    border-radius: 50%;
+    border: 1px solid #333;
+    display: flex; align-items: center; justify-content: center;
+    font-size: .7rem; font-weight: 600; color: #888;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .card.selected .letter { background: #fff; color: #000; border-color: #fff; }
+  .label-text h3 { font-size: .9rem; font-weight: 500; margin-bottom: 3px; }
+  .label-text p { font-size: .78rem; color: #666; line-height: 1.45; }
+</style>
+</head>
+<body>
+<h1>Hero-Hintergrund</h1>
+<p class="lead">Welche Richtung fühlt sich richtig an? Klick zum Auswählen.</p>
+
+<div class="options">
+
+  <!-- A: Split Layout -->
+  <div class="card" onclick="toggle(this,'a')">
+    <div class="preview-a">
+      <div class="text-col">
+        <h2>Premium-Websites,<br>die Kunden gewinnen.</h2>
+        <p>Apple-Grade Design · Lighthouse 100</p>
+        <span class="cta">Projekt starten →</span>
+      </div>
+      <div class="device-col">
+        <div class="device-mockup">
+          <div class="screen-content">
+            <div class="screen-bar"></div>
+            <div class="screen-line"></div>
+            <div class="screen-line short"></div>
+            <div class="screen-line"></div>
+            <div class="screen-line short"></div>
+            <div class="screen-line"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-label">
+      <div class="letter">A</div>
+      <div class="label-text">
+        <h3>Mockup hoch — Split Layout</h3>
+        <p>Text links, Gerät rechts. Zeigt sofort ein echtes Projekt. Bewährt bei Agenturen & SaaS.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- B: Gradient Mesh -->
+  <div class="card" onclick="toggle(this,'b')">
+    <div class="preview-b">
+      <div class="mesh"></div>
+      <div class="noise"></div>
+      <div class="text-wrap">
+        <h2>Premium-Websites,<br>die Kunden gewinnen.</h2>
+        <p>Apple-Grade Design · Lighthouse 100</p>
+        <div><span class="cta">Projekt starten →</span></div>
+      </div>
+    </div>
+    <div class="card-label">
+      <div class="letter">B</div>
+      <div class="label-text">
+        <h3>Gradient Mesh — Atmosphärisch</h3>
+        <p>Sanfte Farbverläufe (Indigo / Violett) hinter dem Text. Behält zentriertes Layout, fühlt sich premium an.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- C: Grid + Glow -->
+  <div class="card" onclick="toggle(this,'c')">
+    <div class="preview-c">
+      <div class="grid-bg"></div>
+      <div class="glow"></div>
+      <div class="text-wrap">
+        <h2>Premium-Websites,<br>die Kunden gewinnen.</h2>
+        <p>Apple-Grade Design · Lighthouse 100</p>
+        <div><span class="cta">Projekt starten →</span></div>
+      </div>
+    </div>
+    <div class="card-label">
+      <div class="letter">C</div>
+      <div class="label-text">
+        <h3>Grid + Glow — Minimal / Tech</h3>
+        <p>Subtiles Liniengitter mit Lichtschimmer in der Mitte. Sauber, Apple-nah, kein Kitsch.</p>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  let selected = null;
+  function toggle(el, choice) {
+    if (selected) selected.classList.remove('selected');
+    if (selected === el) { selected = null; return; }
+    el.classList.add('selected');
+    selected = el;
+    // Record for state_dir if helper available
+    if (window.__companion) window.__companion.select(choice, el.querySelector('h3')?.textContent);
+  }
+</script>
+</body>
+</html>

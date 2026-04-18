@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gerät-Stil im Hero</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #0a0a0a; color: #fff; font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif; padding: 32px 24px 60px; }
+  h1 { font-size: 1.1rem; font-weight: 500; color: #888; letter-spacing: .08em; text-transform: uppercase; margin-bottom: 8px; }
+  p.lead { color: #555; font-size: .9rem; margin-bottom: 40px; }
+
+  .options { display: flex; flex-direction: column; gap: 20px; }
+  .card {
+    border: 1.5px solid #222; border-radius: 16px; overflow: hidden;
+    cursor: pointer; transition: border-color .2s, transform .15s; position: relative;
+  }
+  .card:hover { border-color: #444; transform: translateY(-2px); }
+  .card.selected { border-color: #fff !important; }
+  .card.selected::after {
+    content: '✓ Ausgewählt'; position: absolute; top: 14px; right: 14px;
+    background: #fff; color: #000; font-size: .7rem; font-weight: 600;
+    letter-spacing: .06em; padding: 3px 10px; border-radius: 20px;
+  }
+
+  /* Shared hero shell */
+  .hero {
+    height: 220px; background: #0a0a0a;
+    display: flex; align-items: center; overflow: hidden;
+  }
+  .hero-text {
+    padding: 0 0 0 40px; flex: 1; z-index: 2;
+  }
+  .hero-text h2 { font-size: 1.4rem; font-weight: 600; letter-spacing: -.03em; line-height: 1.15; }
+  .hero-text p { font-size: .7rem; color: #666; margin-top: 7px; }
+  .hero-text .cta {
+    margin-top: 14px; display: inline-block;
+    background: #fff; color: #000; font-size: .65rem; font-weight: 600;
+    padding: 6px 16px; border-radius: 20px;
+  }
+  .hero-device { flex: 1; display: flex; align-items: flex-end; justify-content: center; height: 100%; position: relative; }
+
+  /* ── A: 3D perspective angled ── */
+  .device-3d {
+    width: 210px; height: 185px;
+    background: #111;
+    border-radius: 14px 14px 0 0;
+    border: 1.5px solid #2a2a2a;
+    border-bottom: none;
+    transform: perspective(500px) rotateY(-14deg) rotateX(4deg) scale(1.05);
+    transform-origin: bottom left;
+    box-shadow: -24px 16px 60px rgba(0,0,0,.7), 0 0 0 1px rgba(255,255,255,.04);
+    overflow: hidden;
+    position: relative;
+  }
+  .screen-a {
+    width: 100%; height: 100%;
+    background: linear-gradient(160deg, #141414 0%, #1c1c1c 50%, #0f0f0f 100%);
+    padding: 10px;
+  }
+  .bar { height: 3px; width: 45%; background: #e5e5e5; border-radius: 2px; margin-bottom: 8px; }
+  .line { height: 2px; background: #252525; border-radius: 2px; margin: 4px 0; }
+  .line.s { width: 65%; }
+  .line.xs { width: 40%; }
+  .img-placeholder {
+    width: 100%; height: 55px;
+    background: linear-gradient(135deg, #1e1e1e, #262626);
+    border-radius: 6px; margin: 8px 0;
+    border: 1px solid #2e2e2e;
+  }
+
+  /* ── B: Straight flat ── */
+  .device-flat {
+    width: 210px; height: 175px;
+    background: #111;
+    border-radius: 12px 12px 0 0;
+    border: 1.5px solid #2a2a2a;
+    border-bottom: none;
+    box-shadow: 0 -8px 60px rgba(0,0,0,.5), 0 0 0 1px rgba(255,255,255,.03);
+    overflow: hidden;
+  }
+  .screen-b {
+    width: 100%; height: 100%;
+    background: linear-gradient(160deg, #141414 0%, #1a1a1a 100%);
+    padding: 10px;
+  }
+
+  /* ── C: Browser chrome ── */
+  .device-browser {
+    width: 240px; height: 185px;
+    background: #1a1a1a;
+    border-radius: 10px 10px 0 0;
+    border: 1.5px solid #2a2a2a;
+    border-bottom: none;
+    box-shadow: 0 -12px 50px rgba(0,0,0,.5);
+    overflow: hidden;
+    transform: perspective(600px) rotateY(-8deg) rotateX(2deg) scale(1.02);
+    transform-origin: bottom left;
+  }
+  .browser-bar {
+    height: 28px;
+    background: #222;
+    border-bottom: 1px solid #333;
+    display: flex;
+    align-items: center;
+    padding: 0 10px;
+    gap: 6px;
+    flex-shrink: 0;
+  }
+  .dot { width: 8px; height: 8px; border-radius: 50%; }
+  .dot-r { background: #ff5f57; }
+  .dot-y { background: #ffbd2e; }
+  .dot-g { background: #28c840; }
+  .url-bar {
+    flex: 1; height: 14px;
+    background: #2a2a2a; border-radius: 4px;
+    margin-left: 8px;
+    font-size: .45rem; color: #555;
+    display: flex; align-items: center; padding: 0 6px;
+  }
+  .screen-c {
+    width: 100%;
+    height: calc(100% - 28px);
+    background: linear-gradient(160deg, #141414 0%, #1a1a1a 100%);
+    padding: 10px;
+  }
+
+  /* labels */
+  .card-label { padding: 14px 20px; display: flex; align-items: flex-start; gap: 14px; border-top: 1px solid #1a1a1a; }
+  .letter { width: 26px; height: 26px; border-radius: 50%; border: 1px solid #333; display: flex; align-items: center; justify-content: center; font-size: .7rem; font-weight: 600; color: #888; flex-shrink: 0; margin-top: 1px; }
+  .card.selected .letter { background: #fff; color: #000; border-color: #fff; }
+  .label-text h3 { font-size: .9rem; font-weight: 500; margin-bottom: 3px; }
+  .label-text p { font-size: .78rem; color: #666; line-height: 1.45; }
+</style>
+</head>
+<body>
+<h1>Gerät-Stil im Hero</h1>
+<p class="lead">Wie soll das Website-Mockup rechts aussehen?</p>
+
+<div class="options">
+
+  <!-- A: 3D Angled -->
+  <div class="card" onclick="toggle(this,'a')">
+    <div class="hero">
+      <div class="hero-text">
+        <h2>Premium-Websites,<br>die Kunden gewinnen.</h2>
+        <p>Apple-Grade Design · Lighthouse 100</p>
+        <span class="cta">Projekt starten →</span>
+      </div>
+      <div class="hero-device">
+        <div class="device-3d">
+          <div class="screen-a">
+            <div class="bar"></div>
+            <div class="line"></div>
+            <div class="line s"></div>
+            <div class="img-placeholder"></div>
+            <div class="line"></div>
+            <div class="line xs"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-label">
+      <div class="letter">A</div>
+      <div class="label-text">
+        <h3>3D-Perspektive — angeschrägt</h3>
+        <p>Gerät mit rotateY leicht gekippt, Tiefenwirkung durch Schatten. Premium, dramatisch — Apple Product Page-Feeling.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- B: Flat -->
+  <div class="card" onclick="toggle(this,'b')">
+    <div class="hero">
+      <div class="hero-text">
+        <h2>Premium-Websites,<br>die Kunden gewinnen.</h2>
+        <p>Apple-Grade Design · Lighthouse 100</p>
+        <span class="cta">Projekt starten →</span>
+      </div>
+      <div class="hero-device">
+        <div class="device-flat">
+          <div class="screen-b">
+            <div class="bar"></div>
+            <div class="line"></div>
+            <div class="line s"></div>
+            <div class="img-placeholder"></div>
+            <div class="line"></div>
+            <div class="line xs"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-label">
+      <div class="letter">B</div>
+      <div class="label-text">
+        <h3>Flat — gerade, kein Winkel</h3>
+        <p>Sauber von unten ins Bild wachsend. Weniger dramatisch, funktioniert gut wenn das echte Screenshot stark genug ist.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- C: Browser Chrome -->
+  <div class="card" onclick="toggle(this,'c')">
+    <div class="hero">
+      <div class="hero-text">
+        <h2>Premium-Websites,<br>die Kunden gewinnen.</h2>
+        <p>Apple-Grade Design · Lighthouse 100</p>
+        <span class="cta">Projekt starten →</span>
+      </div>
+      <div class="hero-device">
+        <div class="device-browser">
+          <div class="browser-bar">
+            <div class="dot dot-r"></div>
+            <div class="dot dot-y"></div>
+            <div class="dot dot-g"></div>
+            <div class="url-bar">patricks-fahrschule.de</div>
+          </div>
+          <div class="screen-c">
+            <div class="bar"></div>
+            <div class="line"></div>
+            <div class="line s"></div>
+            <div class="img-placeholder"></div>
+            <div class="line"></div>
+            <div class="line xs"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-label">
+      <div class="letter">C</div>
+      <div class="label-text">
+        <h3>Browser-Chrome — mit Adressleiste</h3>
+        <p>macOS-Style Fenster mit Traffic Lights + URL. Zeigt explizit "das ist eine echte Website". Leicht angewinkelt.</p>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  let selected = null;
+  function toggle(el, choice) {
+    if (selected) selected.classList.remove('selected');
+    if (selected === el) { selected = null; return; }
+    el.classList.add('selected');
+    selected = el;
+    if (window.__companion) window.__companion.select(choice, el.querySelector('h3')?.textContent);
+  }
+</script>
+</body>
+</html>
