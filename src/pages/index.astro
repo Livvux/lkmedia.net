@@ -1,7 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
 import Hero from '../components/landing/Hero.astro';
-import ScrollDevice from '../components/landing/ScrollDevice.astro';
 import ValueCards from '../components/landing/ValueCards.astro';
 import NicheTiles from '../components/landing/NicheTiles.astro';
 import CaseTeaser from '../components/landing/CaseTeaser.astro';
@@ -27,7 +26,6 @@ const seo = {
     deviceImage="/landing/device.webp"
     deviceAlt="Kundenprojekt: Klavierbau Hans Milde"
     deviceHref="https://klavierbau-milde.de" />
-  <ScrollDevice image="/landing/patricks-fahrschule.webp" alt="Kundenprojekt: Patricks Fahrschule" />
   <ValueCards items={[
     { title: 'Performance', metric: '<1s', body: 'LCP unter einer Sekunde auf 4G.' },
     { title: 'Design', metric: 'A+', body: 'Apple-Grade Typografie, Whitespace, Feinschliff.' },
