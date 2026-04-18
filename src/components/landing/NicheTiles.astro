@@ -10,7 +10,7 @@ const { items } = Astro.props;
       <a href={t.href} class="group relative aspect-[4/5] rounded-3xl overflow-hidden block border border-black/10 hover:border-black/20 dark:border-white/10 dark:hover:border-white/20 transition-colors">
         <img src={t.image} alt="" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" loading="lazy" />
         <div class="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent"></div>
-        <div class="absolute bottom-0 p-8 text-2xl font-semibold">{t.label} →</div>
+        <div class="absolute bottom-0 p-8 text-2xl font-semibold text-white">{t.label} →</div>
       </a>
     ))}
   </div>
