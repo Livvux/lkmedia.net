@@ -1,7 +1,7 @@
 import { chromium } from 'playwright';
 import sharp from 'sharp';
 import fs from 'node:fs/promises';
-const URL = 'https://pm-plakatwerbung.de';
+const URL = 'https://klavierbau-milde.de';
 const browser = await chromium.launch();
 
 // Desktop 2x retina

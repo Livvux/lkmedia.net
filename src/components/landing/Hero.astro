@@ -8,8 +8,9 @@ interface Props {
   secondaryLabel?: string
   deviceImage?: string
   deviceAlt?: string
+  deviceHref?: string
 }
-const { headline, sub, ctaHref, ctaLabel, secondaryHref, secondaryLabel, deviceImage, deviceAlt } = Astro.props;
+const { headline, sub, ctaHref, ctaLabel, secondaryHref, secondaryLabel, deviceImage, deviceAlt, deviceHref } = Astro.props;
 ---
 <section class="relative min-h-[92vh] flex items-center overflow-hidden px-6">
   <div class="max-w-7xl mx-auto w-full grid md:grid-cols-2 gap-12 items-center">
@@ -59,7 +60,7 @@ const { headline, sub, ctaHref, ctaLabel, secondaryHref, secondaryLabel, deviceI
     {deviceImage && (
       <div class="hidden md:flex items-center justify-center relative">
         <div class="absolute left-1/2 -translate-x-1/2 w-[320px] h-[240px] bg-black/[0.03] dark:bg-white/[0.03] blur-3xl rounded-full pointer-events-none" aria-hidden="true"></div>
-        <div class="device-wrap relative z-10">
+        <div class="device-wrap relative z-10 group">
           <img
             src={deviceImage}
             alt={deviceAlt ?? ''}
@@ -70,6 +71,18 @@ const { headline, sub, ctaHref, ctaLabel, secondaryHref, secondaryLabel, deviceI
             decoding="async"
             style="max-width: 480px; width: 100%;"
           />
+          {deviceHref && (
+            <a
+              href={deviceHref}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="absolute inset-0 rounded-t-2xl flex items-center justify-center bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+            >
+              <span class="flex items-center gap-2 rounded-full bg-white text-black text-sm font-medium px-5 py-2.5 shadow-lg">
+                Website ansehen <span aria-hidden="true">→</span>
+              </span>
+            </a>
+          )}
         </div>
       </div>
     )}
