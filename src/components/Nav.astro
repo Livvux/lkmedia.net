@@ -47,39 +47,39 @@ const closeLabel = lang === 'de' ? 'Menü schließen' : 'Close menu';
       </button>
     </div>
   </nav>
-
-  <div
-    id="mobile-menu"
-    class="md:hidden fixed inset-x-0 top-14 bottom-0 z-40 bg-white/95 dark:bg-black/95 backdrop-blur-xl pointer-events-none"
-    style="clip-path: inset(0 0 100% 0); transition: clip-path 350ms cubic-bezier(0.4, 0, 0.2, 1);"
-    data-menu-panel
-    aria-hidden="true"
-  >
-    <ul class="flex flex-col px-6 pt-4 pb-8 divide-y divide-black/10 dark:divide-white/10" data-menu-list>
-      {items.map((i, idx) => (
-        <li
-          class="opacity-0 translate-y-2 transition-all duration-300 ease-out"
-          style={`transition-delay: ${80 + idx * 60}ms;`}
-          data-menu-item
-        >
-          <a
-            href={i.href}
-            class="block py-4 text-2xl font-medium tracking-tight text-black/90 hover:text-black dark:text-white/90 dark:hover:text-white"
-          >
-            {i.label}
-          </a>
-        </li>
-      ))}
-    </ul>
-  </div>
 </header>
+
+<div
+  id="mobile-menu"
+  class="md:hidden fixed inset-x-0 top-14 bottom-0 z-40 bg-white/95 dark:bg-black/95 backdrop-blur-xl pointer-events-none"
+  style="clip-path: inset(0 0 100% 0); transition: clip-path 350ms cubic-bezier(0.4, 0, 0.2, 1);"
+  data-menu-panel
+  aria-hidden="true"
+>
+  <ul class="flex flex-col px-6 pt-4 pb-8 divide-y divide-black/10 dark:divide-white/10" data-menu-list>
+    {items.map((i, idx) => (
+      <li
+        class="opacity-0 translate-y-2 transition-all duration-300 ease-out"
+        style={`transition-delay: ${80 + idx * 60}ms;`}
+        data-menu-item
+      >
+        <a
+          href={i.href}
+          class="block py-4 text-2xl font-medium tracking-tight text-black/90 hover:text-black dark:text-white/90 dark:hover:text-white"
+        >
+          {i.label}
+        </a>
+      </li>
+    ))}
+  </ul>
+</div>
 
 <script>
   const header = document.querySelector('[data-site-header]');
   if (header) {
     const toggle = header.querySelector<HTMLButtonElement>('[data-menu-toggle]');
-    const panel = header.querySelector<HTMLElement>('[data-menu-panel]');
-    const items = header.querySelectorAll<HTMLElement>('[data-menu-item]');
+    const panel = document.querySelector<HTMLElement>('[data-menu-panel]');
+    const items = document.querySelectorAll<HTMLElement>('[data-menu-item]');
     const barTop = header.querySelector<HTMLElement>('[data-bar="top"]');
     const barBottom = header.querySelector<HTMLElement>('[data-bar="bottom"]');
     const links = panel?.querySelectorAll<HTMLAnchorElement>('a') ?? [];
