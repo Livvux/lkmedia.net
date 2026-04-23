@@ -58,9 +58,9 @@ const { headline, sub, ctaHref, ctaLabel, secondaryHref, secondaryLabel, deviceI
 
     <!-- Device column -->
     {deviceImage && (
-      <div class="hidden md:flex items-center justify-center relative">
+      <div class="hidden md:flex items-center justify-center relative hero-device-container">
         <div class="absolute left-1/2 -translate-x-1/2 w-[320px] h-[240px] bg-black/[0.03] dark:bg-white/[0.03] blur-3xl rounded-full pointer-events-none" aria-hidden="true"></div>
-        <div class="device-wrap relative z-10 group">
+        <div class="device-wrap hero-device relative z-10 group">
           <img
             src={deviceImage}
             alt={deviceAlt ?? ''}
@@ -94,5 +94,46 @@ const { headline, sub, ctaHref, ctaLabel, secondaryHref, secondaryLabel, deviceI
     transform: perspective(700px) rotateY(-16deg) rotateX(5deg);
     transform-origin: center center;
     filter: drop-shadow(-12px 12px 32px rgba(0,0,0,.18));
+  }
+
+  @supports (animation-timeline: view()) {
+    .hero-device-container {
+      animation: heroDeviceContainer linear both;
+      animation-timeline: view();
+      animation-range: entry 0% cover 120%;
+    }
+
+    .hero-device {
+      animation: heroDeviceZoom linear both;
+      animation-timeline: view();
+      animation-range: entry 0% cover 120%;
+    }
+
+    @keyframes heroDeviceContainer {
+      from {
+        transform: translateY(0);
+      }
+      to {
+        transform: translateY(-10vh);
+      }
+    }
+
+    @keyframes heroDeviceZoom {
+      from {
+        transform: perspective(700px) rotateY(-16deg) rotateX(5deg) scale(1);
+        filter: drop-shadow(-12px 12px 32px rgba(0,0,0,.18));
+      }
+      to {
+        transform: perspective(700px) rotateY(0deg) rotateX(0deg) scale(1.8);
+        filter: drop-shadow(0px 30px 80px rgba(0,0,0,.3));
+      }
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero-device-container,
+    .hero-device {
+      animation: none !important;
+    }
   }
 </style>

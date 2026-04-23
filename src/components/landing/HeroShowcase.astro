@@ -1,0 +1,210 @@
+---
+interface Feature { label: string; sub: string }
+interface Props {
+  headline: string
+  sub: string
+  ctaHref: string
+  ctaLabel: string
+  secondaryHref?: string
+  secondaryLabel?: string
+  image: string
+  alt: string
+  deviceHref?: string
+  features: Feature[]
+}
+const { headline, sub, ctaHref, ctaLabel, secondaryHref, secondaryLabel, image, alt, deviceHref, features } = Astro.props;
+const trackHeight = `${(features.length + 4) * 100}vh`;
+---
+
+<div class="hero-showcase" style={`min-height: ${trackHeight}`}>
+  <!-- Sticky wrapper -->
+  <div class="sticky top-0 h-screen overflow-hidden">
+    <!-- Hero text -->
+    <section class="absolute inset-0 flex items-center px-6 z-20">
+      <div class="max-w-7xl mx-auto w-full grid md:grid-cols-2 gap-12 items-center">
+        <div class="hero-text-layer flex flex-col items-start">
+          <span class="mb-6 inline-block rounded-full border border-black/10 dark:border-white/10 bg-white dark:bg-black px-3 py-1 text-[0.65rem] font-medium uppercase tracking-widest text-black dark:text-white">
+            Web Design &amp; SEO
+          </span>
+
+          <h1 class="text-[clamp(2.2rem,5vw,4.5rem)] font-semibold tracking-tight leading-[1.05] text-left">
+            {headline}
+          </h1>
+
+          <p class="mt-5 text-base md:text-lg text-black/50 dark:text-white/50 text-left">{sub}</p>
+
+          <div class="mt-6 flex gap-6">
+            <div>
+              <div class="text-xl font-semibold text-black/90 dark:text-white/90">&lt;1s</div>
+              <div class="text-[0.6rem] uppercase tracking-widest text-black/30 dark:text-white/30 mt-0.5">LCP</div>
+            </div>
+            <div>
+              <div class="text-xl font-semibold text-black/90 dark:text-white/90">100</div>
+              <div class="text-[0.6rem] uppercase tracking-widest text-black/30 dark:text-white/30 mt-0.5">Lighthouse</div>
+            </div>
+            <div>
+              <div class="text-xl font-semibold text-black/90 dark:text-white/90">A+</div>
+              <div class="text-[0.6rem] uppercase tracking-widest text-black/30 dark:text-white/30 mt-0.5">Design</div>
+            </div>
+          </div>
+
+          <div class="mt-8 flex items-center gap-5">
+            <a href={ctaHref} class="inline-flex h-11 px-6 items-center rounded-full bg-black text-white dark:bg-white dark:text-black text-sm font-medium hover:bg-black/90 dark:hover:bg-white/90 transition">
+              {ctaLabel} →
+            </a>
+            {secondaryHref && secondaryLabel && (
+              <a href={secondaryHref} class="text-sm text-black/40 dark:text-white/40 hover:text-black/70 dark:hover:text-white/70 transition">
+                {secondaryLabel}
+              </a>
+            )}
+          </div>
+        </div>
+
+        <!-- Device column -->
+        <div class="hidden md:flex items-center justify-center relative hero-device-col">
+          <div class="absolute left-1/2 -translate-x-1/2 w-[320px] h-[240px] bg-black/[0.03] dark:bg-white/[0.03] blur-3xl rounded-full pointer-events-none" aria-hidden="true"></div>
+          <div class="device-wrap hero-device relative z-10 group">
+            <img
+              src={image}
+              alt={alt}
+              width="1440"
+              height="900"
+              class="rounded-t-2xl border border-b-0 border-black/10 dark:border-white/10 object-cover object-top"
+              loading="eager"
+              decoding="async"
+              style="max-width: 480px; width: 100%;"
+            />
+            {deviceHref && (
+              <a
+                href={deviceHref}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="absolute inset-0 rounded-t-2xl flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+              >
+                <span class="flex items-center gap-2 rounded-full bg-white text-black text-sm font-medium px-5 py-2.5 shadow-lg">
+                  Website ansehen <span aria-hidden="true">→</span>
+                </span>
+              </a>
+            )}
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- Spacer: Slides start after device zoom completes (~200vh) -->
+  <div class="h-[200vh] relative z-30" aria-hidden="true"></div>
+
+  <!-- Feature slides -->
+  <div class="relative z-30">
+    {features.map((f) => (
+      <div class="h-screen flex items-center justify-center px-6">
+        <div class="feature-slide max-w-xl text-center bg-white/80 dark:bg-black/60 backdrop-blur-xl rounded-3xl p-8 md:p-12 border border-black/10 dark:border-white/10 shadow-lg">
+          <div class="text-5xl md:text-7xl font-semibold tracking-tight">{f.label}</div>
+          <p class="mt-4 text-lg md:text-xl text-black/60 dark:text-white/60">{f.sub}</p>
+        </div>
+      </div>
+    ))}
+  </div>
+</div>
+
+<style is:global>
+/* Hero text (left column): fade out in first 80vh of scroll */
+@supports (animation-timeline: scroll(root)) {
+  .hero-text-layer {
+    animation: heroTextOut linear both;
+    animation-timeline: scroll(root);
+    animation-range: 0px 80vh;
+    pointer-events: none;
+  }
+
+  @keyframes heroTextOut {
+    from {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    to {
+      opacity: 0;
+      transform: translateY(-40px);
+    }
+  }
+
+  /* Device column: slight dimming instead of disappearing */
+  .hero-device-col {
+    animation: heroDeviceDim linear both;
+    animation-timeline: scroll(root);
+    animation-range: 80vh 200vh;
+  }
+
+  @keyframes heroDeviceDim {
+    from {
+      opacity: 1;
+      filter: brightness(1);
+    }
+    to {
+      opacity: 0.85;
+      filter: brightness(0.7);
+    }
+  }
+}
+
+/* Device: 3D angle → flat + zoom in 0–250vh */
+@supports (animation-timeline: scroll(root)) {
+  .hero-device {
+    animation: deviceZoom linear both;
+    animation-timeline: scroll(root);
+    animation-range: 0px 250vh;
+    transform-origin: center center;
+  }
+
+  @keyframes deviceZoom {
+    from {
+      transform: perspective(700px) rotateY(-16deg) rotateX(5deg) scale(1);
+      opacity: 1;
+    }
+    to {
+      transform: perspective(700px) rotateY(0deg) rotateX(0deg) scale(1.85);
+      opacity: 1;
+    }
+  }
+}
+
+/* Feature slides: reveal with view() - starts after device zoom completes (~200vh) */
+@supports (animation-timeline: view()) {
+  .feature-slide {
+    animation: featureReveal linear both;
+    animation-timeline: view();
+    animation-range: entry 0% cover 40%;
+  }
+
+  @keyframes featureReveal {
+    from {
+      opacity: 0;
+      transform: translateY(30px) scale(0.96);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .hero-showcase,
+  .hero-text-layer,
+  .hero-device,
+  .hero-device-col,
+  .feature-slide {
+    animation: none !important;
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+}
+
+.device-wrap {
+  filter: drop-shadow(-12px 12px 32px rgba(0,0,0,.18));
+  transition: filter 0.3s;
+}
+</style>

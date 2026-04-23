@@ -1,0 +1,105 @@
+---
+interface Feature { label: string; sub: string }
+interface Props {
+  image: string
+  alt: string
+  features: Feature[]
+}
+const { image, alt, features } = Astro.props;
+---
+
+<section class="relative py-32 px-6 scroll-showcase">
+  <div class="max-w-6xl mx-auto">
+    <div class="grid md:grid-cols-2 gap-12 items-center">
+      <!-- Device -->
+      <div class="order-2 md:order-1 relative">
+        <img
+          src={image}
+          alt={alt}
+          width="1440"
+          height="900"
+          class="showcase-device rounded-2xl shadow-2xl object-cover border border-black/10 dark:border-white/10 w-full"
+          loading="lazy"
+          decoding="async"
+        />
+      </div>
+
+      <!-- Features list -->
+      <div class="order-1 md:order-2 space-y-12">
+        {features.map((f) => (
+          <div class="feature-item">
+            <div class="text-5xl md:text-6xl font-semibold tracking-tight">{f.label}</div>
+            <p class="mt-2 text-lg text-black/60 dark:text-white/60">{f.sub}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+@supports (animation-timeline: view()) {
+  .scroll-showcase {
+    opacity: 0;
+    animation: showcaseReveal linear both;
+    animation-timeline: view();
+    animation-range: entry 20% cover 50%;
+  }
+
+  @keyframes showcaseReveal {
+    from {
+      opacity: 0;
+      transform: translateY(40px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .showcase-device {
+    animation: deviceSettle linear both;
+    animation-timeline: view();
+    animation-range: entry 20% cover 50%;
+  }
+
+  @keyframes deviceSettle {
+    from {
+      transform: scale(1.1);
+      opacity: 0.8;
+    }
+    to {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+
+  .feature-item {
+    animation: featureReveal linear both;
+    animation-timeline: view();
+    animation-range: entry 30% cover 60%;
+  }
+
+  @keyframes featureReveal {
+    from {
+      opacity: 0;
+      transform: translateX(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scroll-showcase,
+  .showcase-device,
+  .feature-item {
+    animation: none !important;
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+}
+</style>

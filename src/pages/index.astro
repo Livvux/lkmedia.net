@@ -1,7 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
-import Hero from '../components/landing/Hero.astro';
-import ValueCards from '../components/landing/ValueCards.astro';
+import HeroShowcase from '../components/landing/HeroShowcase.astro';
 import NicheTiles from '../components/landing/NicheTiles.astro';
 import CaseTeaser from '../components/landing/CaseTeaser.astro';
 import Process from '../components/landing/Process.astro';
@@ -18,19 +17,21 @@ const seo = {
 };
 ---
 <Base seo={seo} jsonLd={[professionalService()]}>
-  <Hero
+  <HeroShowcase
     headline="Premium-Websites, die Kunden gewinnen."
     sub="Apple-Grade Design. Lighthouse 100. Conversion-optimiert."
     ctaHref="/kontakt" ctaLabel="Projekt starten"
     secondaryHref="/kontakt#termin" secondaryLabel="15 min Call"
-    deviceImage="/landing/device.webp"
-    deviceAlt="Kundenprojekt: Klavierbau Hans Milde"
-    deviceHref="https://klavierbau-milde.de" />
-  <ValueCards items={[
-    { title: 'Performance', metric: '<1s', body: 'LCP unter einer Sekunde auf 4G.' },
-    { title: 'Design', metric: 'A+', body: 'Apple-Grade Typografie, Whitespace, Feinschliff.' },
-    { title: 'SEO', metric: '100', body: 'Lighthouse perfekt, E-E-A-T-konform, AI-Overview-ready.' },
-  ]} />
+    image="/landing/device.webp"
+    alt="Kundenprojekt: Klavierbau Hans Milde"
+    deviceHref="https://klavierbau-milde.de"
+    features={[
+      { label: '<1s', sub: 'LCP unter einer Sekunde auf 4G. Lighthouse 100.' },
+      { label: 'A+', sub: 'Apple-Grade Typografie, Whitespace, Feinschliff.' },
+      { label: '100', sub: 'Lighthouse perfekt. E-E-A-T-konform. AI-Overview-ready.' },
+      { label: 'WCAG', sub: 'Barrierefrei nach BITV 2.0 / WCAG 2.2.' },
+    ]}
+  />
   <NicheTiles items={[
     { href: '/anwaelte', label: 'Kanzleien', image: '/landing/niche-law.svg' },
     { href: '/luxus-immobilien', label: 'Luxus-Immobilien', image: '/landing/niche-realestate.svg' },
