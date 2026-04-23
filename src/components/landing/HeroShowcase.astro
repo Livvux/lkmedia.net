@@ -21,7 +21,7 @@ const trackHeight = `${(features.length + 4) * 100}vh`;
   <div class="sticky top-0 h-screen overflow-hidden">
     <!-- Hero text -->
     <section class="absolute inset-0 flex items-center px-6 z-20">
-      <div class="max-w-7xl mx-auto w-full grid md:grid-cols-2 gap-12 items-center">
+      <div class="max-w-7xl mx-auto w-full flex flex-col md:grid md:grid-cols-2 gap-6 md:gap-12 items-center">
         <div class="hero-text-layer flex flex-col items-start">
           <span class="mb-6 inline-block rounded-full border border-black/10 dark:border-white/10 bg-white dark:bg-black px-3 py-1 text-[0.65rem] font-medium uppercase tracking-widest text-black dark:text-white">
             Web Design &amp; SEO
@@ -58,20 +58,10 @@ const trackHeight = `${(features.length + 4) * 100}vh`;
               </a>
             )}
           </div>
-          {deviceHref && (
-            <a
-              href={deviceHref}
-              target="_blank"
-              rel="noopener noreferrer"
-              class="md:hidden mt-4 text-sm text-black/40 dark:text-white/40 hover:text-black/70 dark:hover:text-white/70 transition"
-            >
-              Website ansehen →
-            </a>
-          )}
         </div>
 
         <!-- Device column -->
-        <div class="hidden md:flex items-center justify-center relative hero-device-col">
+        <div class="flex items-center justify-center relative hero-device-col">
           <div class="absolute left-1/2 -translate-x-1/2 w-[320px] h-[240px] bg-black/[0.03] dark:bg-white/[0.03] blur-3xl rounded-full pointer-events-none" aria-hidden="true"></div>
           <div class="device-wrap hero-device relative z-10 group">
             <img
@@ -79,17 +69,16 @@ const trackHeight = `${(features.length + 4) * 100}vh`;
               alt={alt}
               width="1440"
               height="900"
-              class="rounded-t-2xl border border-b-0 border-black/10 dark:border-white/10 object-cover object-top"
+              class="rounded-t-2xl border border-b-0 border-black/10 dark:border-white/10 object-cover object-top w-full max-w-[200px] md:max-w-[480px]"
               loading="eager"
               decoding="async"
-              style="max-width: 480px; width: 100%;"
             />
             {deviceHref && (
               <a
                 href={deviceHref}
                 target="_blank"
                 rel="noopener noreferrer"
-                class="absolute inset-0 rounded-t-2xl flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+                class="absolute inset-0 rounded-t-2xl flex items-center justify-center opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-200"
               >
                 <span class="flex items-center gap-2 rounded-full bg-white text-black text-sm font-medium px-5 py-2.5 shadow-lg">
                   Website ansehen <span aria-hidden="true">→</span>
@@ -195,6 +184,20 @@ const trackHeight = `${(features.length + 4) * 100}vh`;
     to {
       opacity: 1;
       transform: translateY(0) scale(1);
+    }
+  }
+}
+
+/* Mobile: smaller zoom scale so it doesn't overflow 390px viewport */
+@media (max-width: 767px) {
+  @keyframes deviceZoom {
+    from {
+      transform: perspective(700px) rotateY(-16deg) rotateX(5deg) scale(1);
+      opacity: 1;
+    }
+    to {
+      transform: perspective(700px) rotateY(0deg) rotateX(0deg) scale(1.3);
+      opacity: 1;
     }
   }
 }
