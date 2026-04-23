@@ -54,6 +54,16 @@ const { headline, sub, ctaHref, ctaLabel, secondaryHref, secondaryLabel, deviceI
           </a>
         )}
       </div>
+      {deviceHref && (
+        <a
+          href={deviceHref}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="md:hidden mt-4 text-sm text-black/40 dark:text-white/40 hover:text-black/70 dark:hover:text-white/70 transition"
+        >
+          Website ansehen →
+        </a>
+      )}
     </div>
 
     <!-- Device column -->
