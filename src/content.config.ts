@@ -12,6 +12,7 @@ const postSchema = z.object({
   ogImage: z.string().optional(),
   draft: z.boolean().default(false),
   canonicalUrl: z.string().url().optional(),
+  noindex: z.boolean().default(false),
   route: z.enum(["blog", "root"]).default("blog"),
 });
 
