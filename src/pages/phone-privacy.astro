@@ -1,0 +1,35 @@
+---
+import Base from '../layouts/Base.astro';
+
+const seo = {
+  title: 'Phone Datenschutz',
+  description: 'Datenschutzhinweise für die macOS-App Phone.',
+  canonical: '/phone-privacy',
+  lang: 'de' as const,
+  alternateUrls: { de: 'https://lkmedia.net/phone-privacy', en: 'https://lkmedia.net/en/phone-privacy' },
+};
+---
+<Base seo={seo}>
+  <section class="pt-32 pb-24 px-6 max-w-3xl mx-auto prose dark:prose-invert">
+    <h1>Datenschutz für Phone</h1>
+    <p>Stand: 29. September 2026</p>
+    <p>Verantwortlich ist Lucas Kleipoedszus (lkmedia), <a href="mailto:lucas@lkmedia.net">lucas@lkmedia.net</a>. Die Anschrift steht im <a href="/imprint">Impressum</a>.</p>
+
+    <h2>Verarbeitung in der App</h2>
+    <p>Phone speichert SIP-Einstellungen, Anrufverlauf, Favoriten, Wählregeln und Geräteeinstellungen lokal auf deinem Mac. SIP-Kennwörter liegen im macOS-Schlüsselbund. Die App verwendet kein eigenes Benutzerkonto, keine Cloud-Synchronisierung und keine App-Analyse oder Werbeverfolgung.</p>
+    <p>Wenn du den Zugriff erlaubst, liest Phone Kontakte, um sie in der App anzuzeigen und anzurufen. Für Gespräche verwendet die App das Mikrofon. Berechtigungen kannst du in den macOS-Systemeinstellungen ändern. Die App zeichnet Gespräche nicht auf.</p>
+
+    <h2>SIP-Anbieter und Telefonanlage</h2>
+    <p>Zum Anmelden und Telefonieren überträgt Phone die erforderlichen SIP-Signale und Gesprächsdaten direkt an den von dir eingerichteten SIP-Server und die jeweiligen Gesprächspartner. Je nach Konto können dabei Rufnummern, IP-Adressen und Gesprächsmedien verarbeitet werden. Für die Datenverarbeitung durch deinen Anbieter gelten dessen Datenschutzhinweise. Bei unverschlüsseltem SIP oder RTP können Daten im Netzwerk mitgelesen werden; die App kennzeichnet diese Einstellung.</p>
+
+    <h2>Apple und In-App-Käufe</h2>
+    <p>Optional kannst du Phone Pro als einmaligen In-App-Kauf über Apple erwerben. Kauf und Zahlungsdaten werden durch Apple verarbeitet. Phone prüft über StoreKit nur, ob ein gültiger Kauf für die Freischaltung vorliegt. Weitere Informationen findest du in <a href="https://www.apple.com/legal/privacy/">Apples Datenschutzhinweisen</a>.</p>
+
+    <h2>Support und Website</h2>
+    <p>Wenn du uns per E-Mail kontaktierst, verarbeiten wir deine Nachricht und E-Mail-Adresse zur Bearbeitung deiner Anfrage. Für den Besuch dieser Website gelten zusätzlich die <a href="/datenschutz">Datenschutzhinweise von lkmedia.net</a>.</p>
+
+    <h2>Deine Rechte</h2>
+    <p>Du kannst deine lokal gespeicherten Daten in der App beziehungsweise auf deinem Mac verwalten und die App-Berechtigungen widerrufen. Für Auskunft, Berichtigung, Löschung oder weitere Datenschutzfragen kontaktiere uns unter <a href="mailto:lucas@lkmedia.net">lucas@lkmedia.net</a>. Du kannst dich zudem bei einer Datenschutz-Aufsichtsbehörde beschweren.</p>
+    <p><a href="/help">Zur Phone-Hilfe</a></p>
+  </section>
+</Base>

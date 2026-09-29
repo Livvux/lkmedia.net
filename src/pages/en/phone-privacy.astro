@@ -1,0 +1,30 @@
+---
+import Base from '../../layouts/Base.astro';
+
+const seo = {
+  title: 'Phone Privacy Policy',
+  description: 'Privacy information for the Phone macOS app.',
+  canonical: '/en/phone-privacy',
+  lang: 'en' as const,
+  alternateUrls: { de: 'https://lkmedia.net/phone-privacy', en: 'https://lkmedia.net/en/phone-privacy' },
+};
+---
+<Base seo={seo}>
+  <section class="pt-32 pb-24 px-6 max-w-3xl mx-auto prose dark:prose-invert">
+    <h1>Phone Privacy Policy</h1>
+    <p>Last updated: September 29, 2026</p>
+    <p>Controller: Lucas Kleipoedszus (lkmedia), <a href="mailto:lucas@lkmedia.net">lucas@lkmedia.net</a>. The postal address is in the <a href="/imprint">imprint</a>.</p>
+    <h2>Data processed in the app</h2>
+    <p>Phone stores SIP settings, call history, favorites, dialing rules, and device settings locally on your Mac. SIP passwords are stored in macOS Keychain. The app has no Phone account, cloud sync, app analytics, or advertising tracking.</p>
+    <p>With your permission, Phone reads contacts to show and call them. It uses the microphone for calls. You can change permissions in macOS System Settings. The app does not record calls.</p>
+    <h2>SIP provider and telephone system</h2>
+    <p>To register and place calls, Phone sends the necessary SIP signaling and call media directly to the SIP server you configure and to call participants. Depending on your account, phone numbers, IP addresses, and call media may be processed. Your provider's privacy policy covers its processing. Unencrypted SIP or RTP can be read on the network; the app identifies those settings.</p>
+    <h2>Apple and in-app purchases</h2>
+    <p>You can optionally buy Phone Pro once through Apple's in-app purchase system. Apple processes purchase and payment data. Phone uses StoreKit only to check whether a valid purchase grants access. See <a href="https://www.apple.com/legal/privacy/">Apple's privacy policy</a>.</p>
+    <h2>Support and website</h2>
+    <p>If you email us, we process your message and email address to respond. Visits to this website are also covered by the <a href="/datenschutz">lkmedia.net website privacy notice</a>.</p>
+    <h2>Your rights</h2>
+    <p>You can manage locally stored data on your Mac and revoke app permissions. Contact <a href="mailto:lucas@lkmedia.net">lucas@lkmedia.net</a> for access, correction, deletion, or other privacy questions. You may also complain to a data protection authority.</p>
+    <p><a href="/en/help">Phone Support</a></p>
+  </section>
+</Base>
