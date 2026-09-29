@@ -1,0 +1,30 @@
+---
+import Base from '../../layouts/Base.astro';
+
+const seo = {
+  title: 'Phone Support',
+  description: 'Help and contact for the Phone macOS app.',
+  canonical: '/en/help',
+  lang: 'en' as const,
+  alternateUrls: { de: 'https://lkmedia.net/help', en: 'https://lkmedia.net/en/help' },
+};
+---
+<Base seo={seo}>
+  <section class="pt-32 pb-24 px-6 max-w-3xl mx-auto prose dark:prose-invert">
+    <h1>Phone Support</h1>
+    <p>Phone is a SIP calling app for macOS. You need a SIP account from a provider or telephone system to make calls.</p>
+    <h2>Connect a FRITZ!Box</h2>
+    <ol>
+      <li>Set up an IP telephone as a telephone device in your FRITZ!Box.</li>
+      <li>Choose “Add FRITZ!Box” under Phone Settings → Accounts.</li>
+      <li>Enter the IP telephone username and password, not the router administrator password.</li>
+      <li>Check the router address; the preset uses 192.168.178.1.</li>
+    </ol>
+    <p>The local FRITZ!Box preset uses unencrypted SIP and RTP. Use it only on a trusted home network or through a VPN.</p>
+    <h2>Connection problems</h2>
+    <p>Check that your Mac can reach the telephone system, your credentials belong to the IP telephone, and the transport and security settings match the server. The Diagnostics tab shows connection status without passwords or call contents.</p>
+    <h2>Contact</h2>
+    <p>Email <a href="mailto:lucas@lkmedia.net?subject=Phone%20Support">lucas@lkmedia.net</a> with your macOS and Phone versions, SIP provider or telephone system, and the steps leading to the problem. Do not send passwords.</p>
+    <p><a href="/en/phone-privacy">Phone privacy policy</a> · <a href="/imprint">Imprint</a></p>
+  </section>
+</Base>

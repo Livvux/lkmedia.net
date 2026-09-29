@@ -1,0 +1,33 @@
+---
+import Base from '../layouts/Base.astro';
+
+const seo = {
+  title: 'Phone Hilfe',
+  description: 'Hilfe und Kontakt für die macOS-App Phone.',
+  canonical: '/help',
+  lang: 'de' as const,
+  alternateUrls: { de: 'https://lkmedia.net/help', en: 'https://lkmedia.net/en/help' },
+};
+---
+<Base seo={seo}>
+  <section class="pt-32 pb-24 px-6 max-w-3xl mx-auto prose dark:prose-invert">
+    <h1>Phone Hilfe</h1>
+    <p>Phone ist eine SIP-Telefon-App für macOS. Für Anrufe benötigst du ein SIP-Konto bei deinem Anbieter oder einer Telefonanlage.</p>
+
+    <h2>FRITZ!Box verbinden</h2>
+    <ol>
+      <li>Richte in deiner FRITZ!Box ein IP-Telefon als Telefoniegerät ein.</li>
+      <li>Wähle in Phone unter Einstellungen → Accounts „Add FRITZ!Box“.</li>
+      <li>Trage Benutzername und Kennwort des IP-Telefons ein. Das Router-Administratorkennwort ist dafür nicht geeignet.</li>
+      <li>Prüfe die Router-Adresse; die Vorlage verwendet 192.168.178.1.</li>
+    </ol>
+    <p>Die lokale FRITZ!Box-Vorlage verwendet unverschlüsseltes SIP und RTP. Nutze sie nur in einem vertrauenswürdigen Heimnetz oder über ein VPN.</p>
+
+    <h2>Wenn keine Verbindung zustande kommt</h2>
+    <p>Prüfe, ob dein Mac die Telefonanlage erreicht, die Anmeldedaten zum IP-Telefon gehören und die unter Einstellungen → Accounts angezeigten Transport- und Sicherheitsoptionen zum Server passen. Der Tab „Diagnostics“ zeigt Verbindungsstatus ohne Kennwörter oder Gesprächsinhalte.</p>
+
+    <h2>Kontakt</h2>
+    <p>Schreibe an <a href="mailto:lucas@lkmedia.net?subject=Phone%20Support">lucas@lkmedia.net</a> und nenne die macOS-Version, die Phone-Version, den SIP-Anbieter oder die Telefonanlage und die Schritte bis zum Problem. Sende keine Kennwörter.</p>
+    <p><a href="/phone-privacy">Datenschutz für Phone</a> · <a href="/imprint">Impressum</a></p>
+  </section>
+</Base>
