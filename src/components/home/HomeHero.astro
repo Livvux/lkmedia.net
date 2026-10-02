@@ -1,0 +1,305 @@
+---
+import type { HomeContent } from '../../lib/home-content';
+interface Props { hero: HomeContent['hero']; lang: 'de' | 'en' }
+const { hero, lang } = Astro.props;
+
+// Floating "signal" cards around the headline – purely decorative.
+const floats = [
+  { cls: 'f-score', label: '100', sub: 'Lighthouse', tint: 'var(--ok)' },
+  { cls: 'f-rank', label: '#1', sub: 'Google', tint: 'oklch(0.7 0.15 250)' },
+  { cls: 'f-lcp', label: '0.7s', sub: 'LCP', tint: 'oklch(0.75 0.14 190)' },
+  { cls: 'f-a11y', label: 'AA', sub: 'WCAG', tint: 'oklch(0.72 0.15 300)' },
+  { cls: 'f-ai', label: 'AI', sub: lang === 'de' ? 'zitiert' : 'cited', tint: 'oklch(0.76 0.15 75)' },
+  { cls: 'f-code', label: '</>', sub: 'Astro', tint: 'oklch(0.7 0.18 30)' },
+];
+---
+<section class="hero">
+  <div class="grid-bg" aria-hidden="true"></div>
+  <div class="hero-glow" aria-hidden="true"></div>
+
+  <div class="hero-float" aria-hidden="true">
+    {floats.map((f) => (
+      <span class={`float ${f.cls}`} style={`--tint:${f.tint}`}>
+        <span class="float-card">
+          <span class="float-label">{f.label}</span>
+          <span class="float-sub">{f.sub}</span>
+        </span>
+      </span>
+    ))}
+  </div>
+
+  <div class="wrap hero-inner">
+    <h1 class="hero-title display">
+      <span data-rise>{hero.lines[0]}</span><br />
+      <span data-rise style="--d:90ms">{hero.lines[1]}</span><br />
+      <span data-rise style="--d:180ms" class="hero-muted">{hero.lines[2]}</span>
+    </h1>
+    <p class="hero-sub" data-rise style="--d:300ms">{hero.sub}</p>
+
+    <div class="hero-actions" data-rise style="--d:400ms">
+      <a href={hero.cta.href} class="btn btn-primary btn-lg">
+        {hero.cta.label}
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+      <a href={hero.secondary.href} class="mono-link">
+        <span class="dot" aria-hidden="true"></span>{hero.secondary.label}
+      </a>
+    </div>
+    <p class="hero-note" data-rise style="--d:460ms">{hero.note}</p>
+
+    <div data-rise style="--d:560ms">
+      <div class="hero-preview">
+        <figure class="browser">
+          <div class="browser-bar" aria-hidden="true">
+            <span class="browser-dots"><i></i><i></i><i></i></span>
+            <span class="browser-url">
+              <svg width="11" height="11" viewBox="0 0 16 16" fill="none"><rect x="3" y="7" width="10" height="7" rx="1.5" stroke="currentColor" stroke-width="1.4"/><path d="M5.5 7V5a2.5 2.5 0 015 0v2" stroke="currentColor" stroke-width="1.4"/></svg>
+              klavierbau-milde.de
+            </span>
+            <span class="browser-dots invisible"><i></i><i></i><i></i></span>
+          </div>
+          <img
+            src="/landing/shots/klavierbau-milde-1440.webp"
+            srcset="/landing/shots/klavierbau-milde-1440.webp 1440w, /landing/shots/klavierbau-milde-2880.webp 2880w"
+            sizes="(max-width: 1240px) calc(100vw - 40px), 1180px"
+            width="2880"
+            height="1800"
+            alt={lang === 'de' ? 'Kundenprojekt: Website von Klavierbau Hans Milde' : 'Client project: Klavierbau Hans Milde website'}
+            loading="eager"
+            fetchpriority="high"
+            decoding="async"
+          />
+          <figcaption class="sr-only">klavierbau-milde.de</figcaption>
+        </figure>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    overflow: hidden;
+    padding: 24px 0 96px;
+    text-align: center;
+  }
+  .hero-glow {
+    pointer-events: none;
+    position: absolute;
+    left: 50%;
+    top: 46%;
+    width: min(1100px, 120vw);
+    height: 600px;
+    transform: translateX(-50%);
+    background: radial-gradient(closest-side, oklch(0.68 0.17 250 / 0.16), transparent);
+    filter: blur(20px);
+  }
+  .hero-inner {
+    position: relative;
+  }
+  .hero-title {
+    max-width: 18ch;
+    margin: 72px auto 24px;
+    font-size: clamp(42px, 6vw, 84px);
+  }
+  .hero-title span {
+    display: inline-block;
+  }
+  .hero-muted {
+    color: var(--fg-dim);
+  }
+  .hero-sub {
+    max-width: 640px;
+    margin: 0 auto 36px;
+    color: var(--fg-muted);
+    font-size: clamp(16px, 1.4vw, 19px);
+    line-height: 1.55;
+    letter-spacing: -0.005em;
+    text-wrap: pretty;
+  }
+  .hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 16px 28px;
+  }
+  .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 999px;
+    background: var(--ok);
+    box-shadow: 0 0 0 4px color-mix(in oklch, var(--ok) 20%, transparent);
+  }
+  .hero-note {
+    margin-top: 20px;
+    font-size: 13px;
+    color: var(--fg-dim);
+  }
+
+  /* Browser preview */
+  .hero-preview {
+    margin: 72px auto 0;
+    max-width: 1180px;
+    perspective: 2000px;
+  }
+  .browser {
+    position: relative;
+    overflow: hidden;
+    border: 1px solid var(--border-strong);
+    border-radius: 14px;
+    background: var(--bg-elev);
+    box-shadow:
+      0 0 0 1px #00000080,
+      0 40px 100px -30px #000000d9,
+      0 0 120px -40px oklch(0.68 0.17 250 / 0.35);
+    transform: rotateX(8deg);
+    transform-origin: 50% 0;
+    transition: transform 1.2s var(--ease-out);
+  }
+  .hero-preview:hover .browser {
+    transform: rotateX(0deg);
+  }
+  .browser-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 40px;
+    padding: 0 14px;
+    border-bottom: 1px solid var(--border);
+    background: #0f0f12;
+  }
+  .browser-dots {
+    display: inline-flex;
+    gap: 6px;
+  }
+  .browser-dots i {
+    width: 10px;
+    height: 10px;
+    border-radius: 999px;
+    background: #ffffff1f;
+  }
+  .browser-url {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    height: 24px;
+    padding: 0 12px;
+    border-radius: 6px;
+    background: #ffffff0a;
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    color: var(--fg-dim);
+  }
+  .browser img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  /* Floating cards */
+  .hero-float {
+    pointer-events: none;
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+  }
+  .float {
+    position: absolute;
+    top: var(--y);
+    left: 50%;
+    transform: translate(calc(-50% + var(--x)), 0) rotate(var(--rot));
+  }
+  .float-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    width: var(--s, 84px);
+    height: var(--s, 84px);
+    border-radius: 20px;
+    border: 1px solid var(--border-strong);
+    background:
+      radial-gradient(120% 120% at 30% 0%, color-mix(in oklch, var(--tint) 22%, transparent), transparent 60%),
+      #121215e6;
+    box-shadow:
+      0 20px 40px -18px #000,
+      inset 0 1px 0 #ffffff14;
+    opacity: 0;
+    animation-name: float-in, bob;
+    animation-duration: 0.9s, var(--dur, 9s);
+    animation-delay: var(--in, 600ms), calc(var(--in, 600ms) + 0.9s);
+    animation-timing-function: var(--ease-out), ease-in-out;
+    animation-iteration-count: 1, infinite;
+    animation-direction: normal, alternate;
+    animation-fill-mode: forwards, none;
+  }
+  .float-label {
+    font-size: 22px;
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    color: color-mix(in oklch, var(--tint) 70%, white);
+    line-height: 1;
+  }
+  .float-sub {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--fg-dim);
+  }
+  @keyframes float-in {
+    from {
+      opacity: 0;
+      transform: translateY(16px) scale(0.92);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  @keyframes bob {
+    from {
+      opacity: 1;
+      transform: translate(0, 0);
+    }
+    to {
+      opacity: 1;
+      transform: translate(var(--dx, 3px), var(--dy, -10px));
+    }
+  }
+
+  .f-score { --x: max(-560px, -40vw); --y: 90px; --rot: -8deg; --s: 92px; --dur: 9.2s; --in: 700ms; }
+  .f-rank { --x: min(560px, 40vw); --y: 70px; --rot: 7deg; --s: 88px; --dur: 10.5s; --in: 780ms; --dx: -3px; }
+  .f-lcp { --x: max(-460px, -33vw); --y: 290px; --rot: 6deg; --s: 72px; --dur: 8.5s; --in: 860ms; --dy: -8px; }
+  .f-a11y { --x: min(470px, 34vw); --y: 300px; --rot: -6deg; --s: 74px; --dur: 11.5s; --in: 940ms; }
+  .f-ai { --x: max(-650px, -46vw); --y: 470px; --rot: 4deg; --s: 66px; --dur: 9.8s; --in: 1020ms; --dx: -2px; }
+  .f-code { --x: min(650px, 46vw); --y: 470px; --rot: -5deg; --s: 66px; --dur: 7.8s; --in: 1100ms; --dy: -12px; }
+
+  @media (max-width: 1080px) {
+    .f-ai,
+    .f-code {
+      display: none;
+    }
+  }
+  @media (max-width: 820px) {
+    .hero-float {
+      display: none;
+    }
+    .hero-title {
+      margin-top: 40px;
+    }
+    .browser {
+      transform: none;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .float-card {
+      animation: none;
+      opacity: 1;
+    }
+    .browser {
+      transform: none;
+      transition: none;
+    }
+  }
+</style>

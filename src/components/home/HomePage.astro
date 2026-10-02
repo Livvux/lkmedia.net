@@ -1,0 +1,29 @@
+---
+import type { Lang } from '../../lib/i18n';
+import { homeContent } from '../../lib/home-content';
+import HomeHero from './HomeHero.astro';
+import ProjectMarquee from './ProjectMarquee.astro';
+import FeatureSplit from './FeatureSplit.astro';
+import LighthousePanel from './LighthousePanel.astro';
+import AiAnswerPanel from './AiAnswerPanel.astro';
+import NicheGrid from './NicheGrid.astro';
+import ProcessSteps from './ProcessSteps.astro';
+import CraftSection from './CraftSection.astro';
+import FinalCta from './FinalCta.astro';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const c = homeContent[lang];
+---
+<HomeHero hero={c.hero} lang={lang} />
+<ProjectMarquee proof={c.proof} lang={lang} />
+<FeatureSplit eyebrow={c.speed.eyebrow} title={c.speed.title} sub={c.speed.sub} points={c.speed.points}>
+  <LighthousePanel scores={c.speed.scores} vitals={c.speed.vitals} url="klavierbau-milde.de" />
+</FeatureSplit>
+<FeatureSplit eyebrow={c.ai.eyebrow} title={c.ai.title} sub={c.ai.sub} points={c.ai.points} reverse>
+  <AiAnswerPanel question={c.ai.question} answer={c.ai.answer} sources={c.ai.sources} lang={lang} />
+</FeatureSplit>
+<NicheGrid niches={c.niches} />
+<ProcessSteps process={c.process} />
+<CraftSection craft={c.craft} />
+<FinalCta cta={c.cta} />

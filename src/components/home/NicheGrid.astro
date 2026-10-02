@@ -1,0 +1,98 @@
+---
+import type { HomeContent } from '../../lib/home-content';
+interface Props { niches: HomeContent['niches'] }
+const { niches } = Astro.props;
+---
+<section class="niches">
+  <div class="wrap">
+    <div class="max-w-2xl" data-reveal>
+      <h2 class="section-title">{niches.title}</h2>
+      <p class="section-sub mt-5">{niches.sub}</p>
+    </div>
+    <ul class="niche-grid">
+      {niches.items.map((n, i) => (
+        <li data-reveal style={`--d:${i * 70}ms`}>
+          <a href={n.href} class="niche card">
+            <span class="eyebrow">{n.tag}</span>
+            <h3 class="niche-title">{n.title}</h3>
+            <p class="niche-body">{n.body}</p>
+            <span class="niche-arrow" aria-hidden="true">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M5 11l6-6M6 5h5v5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
+
+<style>
+  .niches {
+    padding: 112px 0;
+    border-top: 1px solid var(--border);
+  }
+  .niche-grid {
+    display: grid;
+    gap: 16px;
+    margin-top: 56px;
+  }
+  @media (min-width: 640px) {
+    .niche-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (min-width: 1024px) {
+    .niche-grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+  .niche {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 200px;
+    padding: 24px;
+    transition:
+      border-color 0.2s,
+      background 0.2s;
+  }
+  .niche:hover {
+    border-color: var(--border-strong);
+    background: #141417;
+  }
+  .niche-title {
+    margin-top: auto;
+    padding-top: 32px;
+    font-size: 22px;
+    font-weight: 600;
+    letter-spacing: -0.03em;
+  }
+  .niche-body {
+    margin-top: 8px;
+    font-size: 14px;
+    line-height: 1.55;
+    color: var(--fg-muted);
+  }
+  .niche-arrow {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    display: grid;
+    place-items: center;
+    width: 32px;
+    height: 32px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    color: var(--fg-dim);
+    transition:
+      color 0.2s,
+      border-color 0.2s,
+      transform 0.3s var(--ease-out);
+  }
+  .niche:hover .niche-arrow {
+    color: var(--fg);
+    border-color: var(--border-strong);
+    transform: rotate(0deg) translate(2px, -2px);
+  }
+</style>

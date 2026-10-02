@@ -1,0 +1,72 @@
+---
+interface Props {
+  eyebrow: string;
+  title: string;
+  sub: string;
+  points: string[];
+  reverse?: boolean;
+  id?: string;
+}
+const { eyebrow, title, sub, points, reverse = false, id } = Astro.props;
+---
+<section class="split" id={id}>
+  <div class={`wrap split-inner ${reverse ? 'is-reverse' : ''}`}>
+    <div class="split-copy" data-reveal>
+      <div class="eyebrow">{eyebrow}</div>
+      <h2 class="section-title mt-4">{title}</h2>
+      <p class="section-sub mt-5">{sub}</p>
+      <ul class="split-points">
+        {points.map((p) => (
+          <li>
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span>{p}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+    <div class="split-visual" data-reveal style="--d:120ms">
+      <slot />
+    </div>
+  </div>
+</section>
+
+<style>
+  .split {
+    padding: 112px 0;
+    border-top: 1px solid var(--border);
+  }
+  .split-inner {
+    display: grid;
+    gap: 56px;
+    align-items: center;
+  }
+  @media (min-width: 960px) {
+    .split-inner {
+      grid-template-columns: 1fr 1.1fr;
+      gap: 80px;
+    }
+    .split-inner.is-reverse .split-copy {
+      order: 2;
+    }
+  }
+  .split-copy {
+    max-width: 520px;
+  }
+  .split-points {
+    margin-top: 32px;
+    display: grid;
+    gap: 14px;
+  }
+  .split-points li {
+    display: flex;
+    gap: 12px;
+    font-size: 15px;
+    line-height: 1.5;
+    color: var(--fg);
+  }
+  .split-points svg {
+    flex-shrink: 0;
+    margin-top: 3px;
+    color: var(--ok);
+  }
+</style>

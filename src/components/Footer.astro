@@ -1,15 +1,107 @@
 ---
-import { pathFor, type Lang } from '../lib/i18n';
+import { routeFor, useTranslations, type Lang } from '../lib/i18n';
 interface Props { lang: Lang }
 const { lang } = Astro.props;
+const t = useTranslations(lang);
 const year = new Date().getFullYear();
+const de = lang === 'de';
+
+const columns = [
+  {
+    title: de ? 'Agentur' : 'Studio',
+    links: [
+      { href: routeFor('services', lang), label: t('nav.services') },
+      { href: routeFor('cases', lang), label: t('nav.cases') },
+      { href: routeFor('about', lang), label: t('nav.about') },
+      { href: routeFor('blog', lang), label: t('nav.blog') },
+    ],
+  },
+  {
+    title: de ? 'Branchen' : 'Industries',
+    links: [
+      { href: routeFor('lawFirms', lang), label: de ? 'Kanzleien' : 'Law firms' },
+      { href: routeFor('realEstate', lang), label: de ? 'Luxus-Immobilien' : 'Luxury real estate' },
+      { href: routeFor('clinics', lang), label: de ? 'Privatkliniken' : 'Private clinics' },
+    ],
+  },
+  {
+    title: de ? 'Rechtliches' : 'Legal',
+    links: [
+      { href: routeFor('imprint', lang), label: de ? 'Impressum' : 'Imprint' },
+      { href: routeFor('privacy', lang), label: de ? 'Datenschutz' : 'Privacy' },
+      { href: routeFor('contact', lang), label: t('nav.contact') },
+    ],
+  },
+];
 ---
-<footer class="border-t border-black/10 dark:border-white/10 text-sm text-black/60 dark:text-white/60">
-  <div class="max-w-6xl mx-auto px-4 py-10 flex flex-wrap gap-6 justify-between">
-    <div>© {year} lkmedia · Lucas Kleipoedszus</div>
-    <ul class="flex gap-6">
-      <li><a href={pathFor('imprint', lang)}>Impressum</a></li>
-      <li><a href={pathFor('datenschutz', lang)}>Datenschutz</a></li>
-    </ul>
+<footer class="footer">
+  <div class="wrap footer-inner">
+    <div class="footer-brand">
+      <div class="footer-name">lkmedia</div>
+      <p class="footer-tag">
+        {de ? 'Webdesign & SEO aus Rastatt.' : 'Web design & SEO from Rastatt, Germany.'}
+      </p>
+      <p class="footer-meta">© {year} lkmedia · Lucas Kleipoedszus</p>
+    </div>
+    <div class="footer-cols">
+      {columns.map((col) => (
+        <div>
+          <div class="eyebrow mb-4">{col.title}</div>
+          <ul class="space-y-2.5">
+            {col.links.map((l) => <li><a href={l.href} class="footer-link">{l.label}</a></li>)}
+          </ul>
+        </div>
+      ))}
+    </div>
   </div>
 </footer>
+
+<style>
+  .footer {
+    border-top: 1px solid var(--border);
+    font-size: 14px;
+  }
+  .footer-inner {
+    display: grid;
+    gap: 48px;
+    padding-top: 64px;
+    padding-bottom: 64px;
+  }
+  @media (min-width: 768px) {
+    .footer-inner {
+      grid-template-columns: 1fr 1.4fr;
+    }
+  }
+  .footer-name {
+    font-size: 18px;
+    font-weight: 650;
+    letter-spacing: -0.03em;
+  }
+  .footer-tag {
+    margin-top: 8px;
+    color: var(--fg-muted);
+  }
+  .footer-meta {
+    margin-top: 24px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--fg-faint);
+  }
+  .footer-cols {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 32px;
+  }
+  @media (min-width: 640px) {
+    .footer-cols {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+  .footer-link {
+    color: var(--fg-muted);
+    transition: color 0.18s;
+  }
+  .footer-link:hover {
+    color: var(--fg);
+  }
+</style>

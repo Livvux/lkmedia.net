@@ -1,11 +1,6 @@
 ---
 import Base from '../../layouts/Base.astro';
-import HeroShowcase from '../../components/landing/HeroShowcase.astro';
-import NicheTiles from '../../components/landing/NicheTiles.astro';
-import CaseTeaser from '../../components/landing/CaseTeaser.astro';
-import Process from '../../components/landing/Process.astro';
-import SocialProof from '../../components/landing/SocialProof.astro';
-import CTABlock from '../../components/landing/CTABlock.astro';
+import HomePage from '../../components/home/HomePage.astro';
 import { professionalService } from '../../lib/schema';
 
 const seo = {
@@ -17,34 +12,5 @@ const seo = {
 };
 ---
 <Base seo={seo} jsonLd={[professionalService()]}>
-  <HeroShowcase
-    headline="Premium websites that win clients."
-    sub="Premium websites that convince and get found."
-    ctaHref="/en/contact" ctaLabel="Start a project"
-    secondaryHref="/en/contact#book" secondaryLabel="15 min call"
-    image="/landing/device.webp"
-    alt="Client project: Klavierbau Hans Milde"
-    deviceHref="https://klavierbau-milde.de"
-    features={[
-      { label: 'Lightning Fast', sub: 'Zero wait time on any device – even on mobile.' },
-      { label: 'Exclusive Design', sub: 'Premium presence like leading luxury brands.' },
-      { label: 'Google Optimized', sub: 'Top rankings & visibility in AI searches.' },
-      { label: 'Accessible', sub: 'Available to all visitors – legally compliant.' },
-    ]}
-  />
-  <NicheTiles items={[
-    { href: '/en/law-firms', label: 'Law Firms', image: '/landing/niche-law.svg' },
-    { href: '/en/luxury-real-estate', label: 'Luxury Real Estate', image: '/landing/niche-realestate.svg' },
-    { href: '/en/private-clinics', label: 'Private Clinics', image: '/landing/niche-clinic.svg' },
-  ]} />
-  <CaseTeaser lang="en" />
-  <Process items={[
-    { n: '01', title: 'Brief', body: 'Kickoff, goals, audience, KPIs.' },
-    { n: '02', title: 'Design', body: 'Concept, Figma prototype, copy.' },
-    { n: '03', title: 'Build', body: 'Astro, code, content, performance.' },
-    { n: '04', title: 'Launch', body: 'Deploy, Search Console, monitoring.' },
-  ]} />
-  <CTABlock headline="Ready to win more clients?"
-    formHref="/en/contact" calHref="/en/contact#book"
-    formLabel="Start a project" calLabel="15 min call" />
+  <HomePage lang="en" />
 </Base>

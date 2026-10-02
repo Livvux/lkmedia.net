@@ -1,37 +1,39 @@
 ---
-import { useTranslations, pathFor, type Lang } from '../lib/i18n';
+import { routeFor, useTranslations, type Lang } from '../lib/i18n';
 import LangSwitch from './LangSwitch.astro';
-import ThemeToggle from './ThemeToggle.astro';
 interface Props { lang: Lang }
 const { lang } = Astro.props;
 const t = useTranslations(lang);
 const items = [
-  { href: pathFor('leistungen', lang), label: t('nav.services') },
-  { href: pathFor('cases', lang), label: t('nav.cases') },
-  { href: pathFor('blog', lang), label: t('nav.blog') },
-  { href: pathFor('ueber', lang), label: t('nav.about') },
-  { href: pathFor('kontakt', lang), label: t('nav.contact') },
+  { href: routeFor('services', lang), label: t('nav.services') },
+  { href: routeFor('cases', lang), label: t('nav.cases') },
+  { href: routeFor('blog', lang), label: t('nav.blog') },
+  { href: routeFor('about', lang), label: t('nav.about') },
 ];
+const contactHref = routeFor('contact', lang);
 const menuLabel = lang === 'de' ? 'Menü' : 'Menu';
 const closeLabel = lang === 'de' ? 'Menü schließen' : 'Close menu';
 ---
-<header class="sticky top-0 z-50 bg-white/70 dark:bg-black/70 backdrop-blur-md border-b border-black/10 dark:border-white/10" data-site-header>
-  <nav class="max-w-6xl mx-auto flex items-center justify-between h-14 px-4">
-    <a href={pathFor('', lang)} aria-label="lkmedia – Startseite" class="text-black dark:text-white flex items-center">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 836.36 873.35" fill="currentColor" class="h-7 w-auto" aria-hidden="true">
+<header class="nav" data-site-header>
+  <nav class="nav-inner wrap">
+    <a href={routeFor('home', lang)} aria-label="lkmedia – Startseite" class="nav-brand">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 836.36 873.35" fill="currentColor" class="h-[18px] w-auto" aria-hidden="true">
         <path d="M712.53,695.46l122.93,170.26c.99,1.38,1.2,4.24.44,5.12s-3.14,2.24-4.67,2.24l-179.68.26c-21.41.03-39.95-8.79-52.65-26.03l-187.57-257.86h-3.74s-.07,277.39-.07,277.39c0,3.08-2.27,5.48-5.17,5.48l-146.83-.08c-3.32,0-5.1-2-5.1-5.47V4.47c0-2.42,4.19-4.42,6.05-4.42l94.76.1c29.85,2.3,53.4,24.25,56.17,54.03l.3,454.32,154.92-197.1,77-99.1c10.11-14.56,25.73-25.63,44.15-25.66l144.2-.24c1.21,0,3.55.95,4.04,1.81.59,1.03.09,3.29-.68,5.06l-216.59,267.94-37.9,46.25,135.69,188Z"/>
         <path d="M113.77,871.76c-57.29-3.66-112.89-53.22-112.97-109.88L.19,337.09,0,6.34C0,2.75,1.93-.02,5.56,0l117.36.72c31.22,1.37,55.48,27.65,55.48,58.51l.02,807.52c0,3.63-2.91,5.57-5.96,5.54l-58.68-.53Z"/>
       </svg>
+      <span class="nav-brand-name">lkmedia</span>
     </a>
-    <ul class="hidden md:flex gap-6 text-sm text-black/80 dark:text-white/80">
-      {items.map((i) => <li><a href={i.href} class="hover:text-black dark:hover:text-white">{i.label}</a></li>)}
+
+    <ul class="nav-links">
+      {items.map((i) => <li><a href={i.href} class="nav-link">{i.label}</a></li>)}
     </ul>
-    <div class="flex items-center gap-3">
-      <ThemeToggle />
+
+    <div class="nav-right">
       <LangSwitch lang={lang} />
+      <a href={contactHref} class="btn btn-primary nav-cta">{t('cta.start')}</a>
       <button
         type="button"
-        class="md:hidden relative z-[60] h-10 w-10 -mr-2 inline-flex items-center justify-center text-black/80 hover:text-black dark:text-white/80 dark:hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-black/40 dark:focus-visible:ring-white/40 rounded"
+        class="nav-toggle"
         aria-label={menuLabel}
         aria-expanded="false"
         aria-controls="mobile-menu"
@@ -39,7 +41,6 @@ const closeLabel = lang === 'de' ? 'Menü schließen' : 'Close menu';
         data-open-label={menuLabel}
         data-close-label={closeLabel}
       >
-        <span class="sr-only">{menuLabel}</span>
         <span class="block relative w-5 h-3.5" aria-hidden="true">
           <span class="absolute left-0 right-0 top-0 h-px bg-current transition-transform duration-300 ease-out origin-center" data-bar="top"></span>
           <span class="absolute left-0 right-0 bottom-0 h-px bg-current transition-transform duration-300 ease-out origin-center" data-bar="bottom"></span>
@@ -49,41 +50,143 @@ const closeLabel = lang === 'de' ? 'Menü schließen' : 'Close menu';
   </nav>
 </header>
 
-<div
-  id="mobile-menu"
-  class="md:hidden fixed inset-x-0 top-14 bottom-0 z-40 bg-white/95 dark:bg-black/95 backdrop-blur-xl pointer-events-none"
-  style="clip-path: inset(0 0 100% 0); transition: clip-path 350ms cubic-bezier(0.4, 0, 0.2, 1);"
-  data-menu-panel
-  aria-hidden="true"
->
-  <ul class="flex flex-col px-6 pt-4 pb-8 divide-y divide-black/10 dark:divide-white/10" data-menu-list>
-    {items.map((i, idx) => (
-      <li
-        class="opacity-0 translate-y-2 transition-all duration-300 ease-out"
-        style={`transition-delay: ${80 + idx * 60}ms;`}
-        data-menu-item
-      >
-        <a
-          href={i.href}
-          class="block py-4 text-2xl font-medium tracking-tight text-black/90 hover:text-black dark:text-white/90 dark:hover:text-white"
-        >
-          {i.label}
-        </a>
+<div id="mobile-menu" class="mobile-menu" data-menu-panel aria-hidden="true" inert>
+  <ul class="flex flex-col px-5 pt-4 pb-8">
+    {[...items, { href: contactHref, label: t('nav.contact') }].map((i, idx) => (
+      <li class="mobile-item" style={`--d:${80 + idx * 50}ms`} data-menu-item>
+        <a href={i.href} class="block py-4 text-3xl font-semibold tracking-[-0.03em] text-[var(--fg)]">{i.label}</a>
       </li>
     ))}
   </ul>
 </div>
 
+<style>
+  .nav {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: color-mix(in srgb, var(--bg) 75%, transparent);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.3s;
+  }
+  .nav.is-scrolled {
+    border-bottom-color: var(--border);
+  }
+  .nav-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    height: 60px;
+  }
+  .nav-brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    color: var(--fg);
+  }
+  .nav-brand-name {
+    font-size: 16px;
+    font-weight: 650;
+    letter-spacing: -0.03em;
+    line-height: 1;
+  }
+  .nav-links {
+    display: none;
+    gap: 4px;
+  }
+  .nav-link {
+    padding: 6px 12px;
+    font-size: 14px;
+    color: var(--fg-muted);
+    letter-spacing: -0.01em;
+    transition: color 0.18s;
+  }
+  .nav-link:hover {
+    color: var(--fg);
+  }
+  .nav-right {
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .nav-cta {
+    display: none;
+    height: 36px;
+    padding: 0 16px;
+    font-size: 14px;
+  }
+  .nav-toggle {
+    position: relative;
+    z-index: 60;
+    width: 40px;
+    height: 40px;
+    margin-right: -8px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--fg-muted);
+    border-radius: 8px;
+  }
+  @media (min-width: 768px) {
+    .nav-links {
+      display: flex;
+    }
+    .nav-cta {
+      display: inline-flex;
+    }
+    .nav-toggle {
+      display: none;
+    }
+  }
+  .mobile-menu {
+    position: fixed;
+    inset: 60px 0 0 0;
+    z-index: 40;
+    background: color-mix(in srgb, var(--bg) 96%, transparent);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    clip-path: inset(0 0 100% 0);
+    pointer-events: none;
+    transition: clip-path 350ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .mobile-menu.is-open {
+    clip-path: inset(0 0 0 0);
+    pointer-events: auto;
+  }
+  .mobile-item {
+    border-bottom: 1px solid var(--border);
+    opacity: 0;
+    transform: translateY(8px);
+    transition:
+      opacity 0.3s ease-out,
+      transform 0.3s ease-out;
+    transition-delay: var(--d);
+  }
+  .mobile-menu.is-open .mobile-item {
+    opacity: 1;
+    transform: none;
+  }
+  @media (min-width: 768px) {
+    .mobile-menu {
+      display: none;
+    }
+  }
+</style>
+
 <script>
-  const header = document.querySelector('[data-site-header]');
+  const header = document.querySelector<HTMLElement>('[data-site-header]');
   if (header) {
+    const onScroll = () => header.classList.toggle('is-scrolled', window.scrollY > 8);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+
     const toggle = header.querySelector<HTMLButtonElement>('[data-menu-toggle]');
     const panel = document.querySelector<HTMLElement>('[data-menu-panel]');
-    const items = document.querySelectorAll<HTMLElement>('[data-menu-item]');
     const barTop = header.querySelector<HTMLElement>('[data-bar="top"]');
     const barBottom = header.querySelector<HTMLElement>('[data-bar="bottom"]');
-    const links = panel?.querySelectorAll<HTMLAnchorElement>('a') ?? [];
-
     const openLabel = toggle?.dataset.openLabel ?? 'Menu';
     const closeLabel = toggle?.dataset.closeLabel ?? 'Close menu';
 
@@ -92,39 +195,24 @@ const closeLabel = lang === 'de' ? 'Menü schließen' : 'Close menu';
       toggle.setAttribute('aria-expanded', String(open));
       toggle.setAttribute('aria-label', open ? closeLabel : openLabel);
       panel.setAttribute('aria-hidden', String(!open));
-      panel.style.clipPath = open ? 'inset(0 0 0% 0)' : 'inset(0 0 100% 0)';
-      panel.classList.toggle('pointer-events-auto', open);
-      panel.classList.toggle('pointer-events-none', !open);
+      panel.toggleAttribute('inert', !open);
+      panel.classList.toggle('is-open', open);
       document.documentElement.classList.toggle('overflow-hidden', open);
-      document.body.classList.toggle('overflow-hidden', open);
       if (barTop && barBottom) {
         barTop.style.transform = open ? 'translateY(7px) rotate(45deg)' : '';
         barBottom.style.transform = open ? 'translateY(-6px) rotate(-45deg)' : '';
       }
-      items.forEach((item) => {
-        item.classList.toggle('opacity-100', open);
-        item.classList.toggle('translate-y-0', open);
-        item.classList.toggle('opacity-0', !open);
-        item.classList.toggle('translate-y-2', !open);
-      });
     };
 
-    toggle?.addEventListener('click', () => {
-      const open = toggle.getAttribute('aria-expanded') === 'true';
-      setOpen(!open);
-    });
-
-    links.forEach((l) => l.addEventListener('click', () => setOpen(false)));
-
+    toggle?.addEventListener('click', () => setOpen(toggle.getAttribute('aria-expanded') !== 'true'));
+    panel?.querySelectorAll('a').forEach((l) => l.addEventListener('click', () => setOpen(false)));
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape' && toggle?.getAttribute('aria-expanded') === 'true') {
         setOpen(false);
-        toggle?.focus();
+        toggle.focus();
       }
     });
-
-    const mql = window.matchMedia('(min-width: 768px)');
-    mql.addEventListener('change', (e) => {
+    window.matchMedia('(min-width: 768px)').addEventListener('change', (e) => {
       if (e.matches) setOpen(false);
     });
   }
