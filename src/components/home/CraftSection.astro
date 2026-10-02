@@ -1,0 +1,104 @@
+---
+import type { HomeContent } from '../../lib/home-content';
+interface Props { craft: HomeContent['craft'] }
+const { craft } = Astro.props;
+---
+<section class="craft">
+  <div class="wrap craft-inner">
+    <div data-reveal>
+      <h2 class="section-title">{craft.title}</h2>
+      <p class="section-sub mt-5 max-w-md">{craft.sub}</p>
+      <pre class="code" aria-hidden="true"><code><span class="c">// lkmedia.config</span>
+<span class="k">export default</span> {'{'}
+  builder: <span class="s">null</span>,
+  plugins: <span class="n">0</span>,
+  template: <span class="s">false</span>,
+  handmade: <span class="s">true</span>,
+{'}'}</code></pre>
+    </div>
+    <ul class="craft-list">
+      {craft.items.map((it, i) => (
+        <li data-reveal style={`--d:${i * 70}ms`}>
+          <h3 class="craft-title">{it.title}</h3>
+          <p class="craft-body">{it.body}</p>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
+
+<style>
+  .craft {
+    padding: 112px 0;
+    border-top: 1px solid var(--border);
+  }
+  .craft-inner {
+    display: grid;
+    gap: 56px;
+  }
+  @media (min-width: 960px) {
+    .craft-inner {
+      grid-template-columns: 1fr 1.2fr;
+      gap: 80px;
+    }
+  }
+  .code {
+    margin-top: 36px;
+    max-width: 380px;
+    padding: 20px 22px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--bg-elev);
+    font-family: var(--font-mono);
+    font-size: 13px;
+    line-height: 1.75;
+    color: var(--fg-muted);
+    overflow-x: auto;
+  }
+  .c {
+    color: var(--fg-faint);
+  }
+  .k {
+    color: oklch(0.72 0.15 300);
+  }
+  .s {
+    color: oklch(0.76 0.15 75);
+  }
+  .n {
+    color: var(--ok);
+  }
+  .craft-list {
+    display: grid;
+    gap: 0;
+    border-top: 1px solid var(--border);
+  }
+  @media (min-width: 640px) {
+    .craft-list {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  .craft-list li {
+    padding: 28px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  @media (min-width: 640px) {
+    .craft-list li:nth-child(odd) {
+      padding-right: 28px;
+      border-right: 1px solid var(--border);
+    }
+    .craft-list li:nth-child(even) {
+      padding-left: 28px;
+    }
+  }
+  .craft-title {
+    font-size: 17px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+  .craft-body {
+    margin-top: 8px;
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--fg-muted);
+  }
+</style>

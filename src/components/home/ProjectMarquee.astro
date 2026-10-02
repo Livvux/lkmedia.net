@@ -1,0 +1,157 @@
+---
+import type { HomeContent } from '../../lib/home-content';
+import { routeFor, type Lang } from '../../lib/i18n';
+interface Props { proof: HomeContent['proof']; lang: Lang }
+const { proof, lang } = Astro.props;
+const casesBase = routeFor('cases', lang);
+// Duplicate the list so the CSS loop is seamless; the copy is hidden from assistive tech.
+const groups = [false, true];
+---
+<section class="proof" aria-labelledby="proof-title">
+  <div class="wrap proof-head" data-reveal>
+    <h2 id="proof-title" class="section-title">
+      {proof.title} <span class="text-[var(--fg-dim)]">{proof.highlight}</span>
+    </h2>
+    <p class="section-sub mt-4">{proof.sub}</p>
+  </div>
+
+  <div class="marquee" data-reveal style="--d:120ms">
+    <div class="track">
+      {groups.map((isCopy) => (
+        <ul class="group" aria-hidden={isCopy ? 'true' : undefined}>
+          {proof.shots.map((s) => (
+            <li>
+              <a
+                href={`${casesBase}/${s.slug}`}
+                class="shot"
+                tabindex={isCopy ? -1 : undefined}
+                aria-label={`${proof.caseLabel}: ${s.client}`}
+              >
+                <div class="shot-img">
+                  <img
+                    src={`/landing/shots/${s.slug}-1440.webp`}
+                    width="1440"
+                    height="900"
+                    alt=""
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </div>
+                <div class="shot-meta">
+                  <div class="shot-top">
+                    <span class="shot-client">{s.client}</span>
+                    <span class="shot-domain">{s.domain}</span>
+                  </div>
+                  <p class="shot-result">{s.result}</p>
+                </div>
+              </a>
+            </li>
+          ))}
+        </ul>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .proof {
+    padding: 120px 0 128px;
+    border-top: 1px solid var(--border);
+  }
+  .proof-head {
+    text-align: center;
+    margin-bottom: 56px;
+  }
+  .marquee {
+    overflow: hidden;
+    mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+  }
+  .track {
+    display: flex;
+    width: max-content;
+    animation: scroll 48s linear infinite;
+  }
+  .marquee:hover .track,
+  .marquee:focus-within .track {
+    animation-play-state: paused;
+  }
+  .group {
+    display: flex;
+    gap: 20px;
+    padding-right: 20px;
+  }
+  @keyframes scroll {
+    to {
+      transform: translateX(-50%);
+    }
+  }
+  .shot {
+    display: block;
+    width: clamp(300px, 34vw, 440px);
+    overflow: hidden;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    background: var(--bg-card);
+    transition:
+      border-color 0.2s,
+      transform 0.3s var(--ease-out);
+  }
+  .shot:hover {
+    border-color: var(--border-strong);
+    transform: translateY(-3px);
+  }
+  .shot-img {
+    aspect-ratio: 16 / 10;
+    overflow: hidden;
+    border-bottom: 1px solid var(--border);
+  }
+  .shot-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top;
+    transition: transform 0.8s var(--ease-out);
+  }
+  .shot:hover .shot-img img {
+    transform: scale(1.03);
+  }
+  .shot-meta {
+    padding: 16px 18px 18px;
+  }
+  .shot-top {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .shot-client {
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: -0.015em;
+  }
+  .shot-domain {
+    white-space: nowrap;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--fg-faint);
+  }
+  .shot-result {
+    margin-top: 6px;
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--fg-muted);
+  }
+  @media (max-width: 640px) {
+    .shot-domain {
+      display: none;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .track {
+      animation: none;
+    }
+    .marquee {
+      overflow-x: auto;
+    }
+  }
+</style>

@@ -7,7 +7,13 @@ const currentPath = Astro.url.pathname;
 const targetPath = lang === 'de'
   ? `/en${currentPath === '/' ? '' : currentPath}`
   : currentPath.replace(/^\/en/, '') || '/';
+const label = other === 'en' ? 'Switch to English' : 'Auf Deutsch wechseln';
 ---
-<a href={targetPath} class="text-xs uppercase tracking-wider text-black/60 hover:text-black dark:text-white/60 dark:hover:text-white">
+<a
+  href={targetPath}
+  hreflang={other}
+  aria-label={label}
+  class="font-mono text-xs uppercase tracking-wider text-[var(--fg-dim)] transition-colors hover:text-[var(--fg)]"
+>
   {other}
 </a>

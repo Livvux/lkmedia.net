@@ -1,0 +1,155 @@
+---
+interface Props {
+  scores: { label: string; value: number }[];
+  vitals: { label: string; value: string }[];
+  url: string;
+}
+const { scores, vitals, url } = Astro.props;
+const R = 26;
+const C = 2 * Math.PI * R;
+---
+<div class="panel card" aria-hidden="true">
+  <div class="panel-bar">
+    <span class="font-mono text-[11px] text-[var(--fg-dim)]">lighthouse · mobile</span>
+    <span class="font-mono text-[11px] text-[var(--fg-faint)]">{url}</span>
+  </div>
+  <div class="rings">
+    {scores.map((s, i) => (
+      <div class="score" style={`--i:${i}`}>
+        <svg viewBox="0 0 64 64" width="72" height="72">
+          <circle cx="32" cy="32" r={R} class="score-track" />
+          <circle
+            cx="32"
+            cy="32"
+            r={R}
+            class="score-value"
+            stroke-dasharray={C}
+            style={`--c:${C};--off:${C * (1 - s.value / 100)}`}
+          />
+        </svg>
+        <span class="score-num">{s.value}</span>
+        <span class="score-label">{s.label}</span>
+      </div>
+    ))}
+  </div>
+  <div class="vitals">
+    {vitals.map((v) => (
+      <div class="vital">
+        <span class="vital-dot"></span>
+        <span class="vital-label">{v.label}</span>
+        <span class="vital-value">{v.value}</span>
+      </div>
+    ))}
+  </div>
+</div>
+
+<style>
+  .panel {
+    overflow: hidden;
+    box-shadow: 0 40px 80px -40px #000;
+  }
+  .panel-bar {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 12px 18px;
+    border-bottom: 1px solid var(--border);
+  }
+  .rings {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 28px 12px;
+    padding: 36px 20px 32px;
+  }
+  @media (min-width: 560px) {
+    .rings {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+  .score {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+  .score svg {
+    transform: rotate(-90deg);
+  }
+  .score-track,
+  .score-value {
+    fill: none;
+    stroke-width: 5;
+  }
+  .score-track {
+    stroke: color-mix(in oklch, var(--ok) 14%, transparent);
+  }
+  .score-value {
+    stroke: var(--ok);
+    stroke-linecap: round;
+    stroke-dashoffset: var(--c);
+    transition: stroke-dashoffset 1.4s var(--ease-out);
+    transition-delay: calc(var(--i) * 120ms + 300ms);
+  }
+  :global(.is-visible) .score-value {
+    stroke-dashoffset: var(--off);
+  }
+  .score-num {
+    position: absolute;
+    top: 36px;
+    transform: translateY(-50%);
+    font-family: var(--font-mono);
+    font-size: 18px;
+    font-weight: 500;
+    color: var(--ok);
+  }
+  .score-label {
+    font-size: 13px;
+    color: var(--fg-muted);
+    text-align: center;
+  }
+  .vitals {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    border-top: 1px solid var(--border);
+  }
+  .vital {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 16px 18px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+  }
+  .vital + .vital {
+    border-left: 1px solid var(--border);
+  }
+  @media (max-width: 559px) {
+    .vitals {
+      grid-template-columns: 1fr;
+    }
+    .vital + .vital {
+      border-left: 0;
+      border-top: 1px solid var(--border);
+    }
+  }
+  .vital-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 999px;
+    background: var(--ok);
+  }
+  .vital-label {
+    color: var(--fg-dim);
+  }
+  .vital-value {
+    margin-left: auto;
+    color: var(--fg);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .score-value {
+      transition: none;
+      stroke-dashoffset: var(--off);
+    }
+  }
+</style>

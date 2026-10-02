@@ -35,6 +35,27 @@ export function pathFor(path: string, lang: Lang): string {
   return lang === "de" ? `/${clean}` : `/en/${clean}`;
 }
 
+/** Named routes → real localized paths (EN slugs differ from DE for some pages). */
+export const routes = {
+  home: { de: "/", en: "/en/" },
+  services: { de: "/leistungen", en: "/en/leistungen" },
+  cases: { de: "/cases", en: "/en/cases" },
+  blog: { de: "/blog", en: "/en/blog" },
+  about: { de: "/ueber", en: "/en/about" },
+  contact: { de: "/kontakt", en: "/en/contact" },
+  lawFirms: { de: "/anwaelte", en: "/en/anwaelte" },
+  realEstate: { de: "/luxus-immobilien", en: "/en/luxus-immobilien" },
+  clinics: { de: "/privatkliniken", en: "/privatkliniken" },
+  imprint: { de: "/imprint", en: "/imprint" },
+  privacy: { de: "/datenschutz", en: "/datenschutz" },
+} as const satisfies Record<string, Record<Lang, string>>;
+
+export type RouteName = keyof typeof routes;
+
+export function routeFor(name: RouteName, lang: Lang): string {
+  return routes[name][lang];
+}
+
 export function useTranslations(lang: Lang) {
   return (key: keyof (typeof ui)["de"]) => ui[lang][key] ?? ui.de[key];
 }
