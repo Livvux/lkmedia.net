@@ -1,0 +1,702 @@
+---
+import Base from '../layouts/Base.astro';
+import FeatureSplit from '../components/home/FeatureSplit.astro';
+import LighthousePanel from '../components/home/LighthousePanel.astro';
+import ProcessSteps from '../components/home/ProcessSteps.astro';
+import FinalCta from '../components/home/FinalCta.astro';
+import FaqBlock from '../components/FaqBlock.astro';
+import { breadcrumbs } from '../lib/schema';
+import { routeFor } from '../lib/i18n';
+
+const url = 'https://lkmedia.net/fahrschule-webdesign';
+const contact = routeFor('contact', 'de');
+const caseStudy = '/case-study-patricks-fahrschule-local-seo';
+
+const seo = {
+  title: 'Fahrschule Webdesign – Websites, die Fahrschüler bringen',
+  description:
+    'Webdesign für Fahrschulen: schnelle Websites mit Online-Anmeldung, Standortseiten und Local SEO. Unsere Fahrschul-Kunden ranken auf Platz 1 – in 5 Städten.',
+  canonical: '/fahrschule-webdesign',
+  lang: 'de' as const,
+  alternateUrls: { de: url },
+};
+
+const stats = [
+  { value: '#1', label: 'in 5 Städten gleichzeitig' },
+  { value: '671', label: 'Klicks auf den Namen in 90 Tagen' },
+  { value: '2', label: 'Sprachen, eine Zielgruppe mehr' },
+];
+
+const pains = [
+  {
+    n: '01',
+    title: 'Seite 2 bei Google',
+    body: 'Wer „Fahrschule + Ort“ sucht, ruft die ersten drei Treffer an. Steht Ihre Fahrschule nicht dort, existiert sie für diese Fahrschüler nicht.',
+  },
+  {
+    n: '02',
+    title: 'Gebaut für Desktop, besucht am Handy',
+    body: 'Ihre Zielgruppe ist 17 und hat kein Notebook. Lädt die Seite zäh oder ist das Formular fummelig, ist der Tab zu – und die Konkurrenz einen Wisch entfernt.',
+  },
+  {
+    n: '03',
+    title: 'Anfragen per Telefon-Pingpong',
+    body: 'Rückrufe, verpasste Anrufe, fehlende Unterlagen. Ohne strukturierte Online-Anmeldung kostet jeder neue Fahrschüler Sie unnötig Zeit im Büro.',
+  },
+];
+
+const features = [
+  {
+    title: 'Online-Anmeldung',
+    body: 'Klasse wählen, Standort wählen, Daten eingeben – fertig. Die Anfrage landet vollständig in Ihrem Postfach, ohne Rückfragen.',
+  },
+  {
+    title: 'Eine Seite pro Standort',
+    body: 'Eigene, inhaltlich eigenständige Seiten für jeden Ort, den Sie abdecken. Genau so rankt Patricks Fahrschule in fünf Städten auf Platz 1.',
+  },
+  {
+    title: 'Führerscheinklassen klar erklärt',
+    body: 'B, BE, B196, A1, A2, A, AM, Mofa – jede Klasse mit Ablauf, Voraussetzungen und Kosten. Beantwortet Fragen, bevor das Telefon klingelt.',
+  },
+  {
+    title: 'Transparente Preise',
+    body: 'Grundbetrag, Fahrstunden, Sonderfahrten, Prüfungsgebühren: übersichtlich dargestellt. Das schafft Vertrauen und filtert unpassende Anfragen.',
+  },
+  {
+    title: 'Google-Unternehmensprofil',
+    body: 'Einrichtung und Optimierung für jeden Standort – damit Sie im Maps-Pack erscheinen, wo die meisten Klicks passieren.',
+  },
+  {
+    title: 'Theorie- & Ferienkurse',
+    body: 'Termine für Theorieunterricht, Intensiv- und Ferienkurse, die Sie selbst pflegen können. Kein Anruf beim Webdesigner für jede Änderung.',
+  },
+  {
+    title: 'Mehrsprachig',
+    body: 'Fahrschüler, die auf Englisch, Rumänisch, Türkisch oder Arabisch suchen, finden fast nie ein Angebot. Ein unbesetzter Kanal für Ihre Fahrschule.',
+  },
+  {
+    title: 'Bewertungen sichtbar',
+    body: 'Echte Google-Bewertungen prominent eingebunden – denn Eltern zahlen mit und lesen genau, was andere über Sie sagen.',
+  },
+  {
+    title: 'DSGVO ohne Banner-Hölle',
+    body: 'Datensparsame Analytics, lokal eingebundene Schriften, sauberes Impressum. Rechtssicher, ohne Ihre Besucher mit Pop-ups zu vergraulen.',
+  },
+];
+
+const serp = [
+  {
+    domain: 'patricks-fahrschule.de',
+    path: '› fahrschule-durmersheim',
+    title: 'Fahrschule Durmersheim – Führerschein B, A & BE | Patricks Fahrschule',
+    desc: 'Deine Fahrschule in Durmersheim: Theorie, Fahrstunden und Prüfung aus einer Hand. Jetzt online anmelden …',
+    primary: true,
+  },
+  {
+    domain: 'fahrschule-beispiel.de',
+    path: '',
+    title: 'Fahrschule Beispiel – Startseite',
+    desc: 'Herzlich willkommen auf unserer Homepage. Hier finden Sie Informationen über unsere …',
+    primary: false,
+  },
+];
+
+const process = {
+  title: 'In wenigen Wochen online.',
+  sub: 'Ein Ansprechpartner von Anfang bis Ende. Sie liefern Wissen über Ihre Fahrschule, wir den Rest.',
+  steps: [
+    { n: '01', title: 'Erstgespräch', body: 'Standorte, Klassen, Wettbewerb und Ziele – in 30 Minuten geklärt.' },
+    { n: '02', title: 'Konzept & Texte', body: 'Seitenstruktur, Keyword-Plan je Standort und Texte, die Fahrschüler ansprechen.' },
+    { n: '03', title: 'Design & Build', body: 'Handgebaut, mobil zuerst, mit Online-Anmeldung und strukturierten Daten.' },
+    { n: '04', title: 'Launch & Ranking', body: 'Search Console, Google-Profile, Monitoring – und Feinschliff, bis es rankt.' },
+  ],
+};
+
+const faqs = [
+  {
+    q: 'Was kostet eine Website für eine Fahrschule?',
+    a: 'Sie erhalten einen Fixpreis auf Basis des Umfangs: Anzahl der Standorte, Führerscheinklassen, Sprachen und Funktionen wie Online-Anmeldung oder Kurskalender. Keine Stundenabrechnung, keine versteckten Kosten. Das genaue Angebot bekommen Sie nach einem kostenlosen Erstgespräch.',
+  },
+  {
+    q: 'Wie schnell rankt meine Fahrschule bei Google?',
+    a: 'Für den eigenen Fahrschulnamen meist innerhalb weniger Tage nach dem Launch. Für „Fahrschule + Ort“ hängt es von Wettbewerb und Ausgangslage ab – in kleineren Städten sind erste Top-Platzierungen oft nach wenigen Wochen bis Monaten möglich. Ein sauber gepflegtes Google-Unternehmensprofil beschleunigt das deutlich.',
+  },
+  {
+    q: 'Wir haben mehrere Filialen. Brauchen wir mehrere Websites?',
+    a: 'Nein. Eine Website mit einer eigenständigen Unterseite pro Standort ist die stärkere Lösung: Die Domain bündelt die Autorität, und jede Standortseite rankt für ihren eigenen Ort. Dazu kommt ein eigenes Google-Unternehmensprofil pro Filiale.',
+  },
+  {
+    q: 'Kann ich Kurstermine und Preise selbst ändern?',
+    a: 'Ja. Theorie- und Ferienkurse, Preise und Neuigkeiten pflegen Sie selbst, ohne Programmierkenntnisse. Für alles Größere sind wir direkt erreichbar – ohne Ticketsystem.',
+  },
+  {
+    q: 'Funktioniert die Online-Anmeldung mit meiner Fahrschulsoftware?',
+    a: 'Die Anmeldung kommt standardmäßig als strukturierte E-Mail mit allen Angaben bei Ihnen an. Nutzen Sie Software mit Online-Schnittstelle oder Anmelde-Link, binden wir diese direkt ein.',
+  },
+  {
+    q: 'Lohnt sich eine neue Website, wenn wir sowieso ausgebucht sind?',
+    a: 'Gerade dann. Eine gute Website sorgt dafür, dass die richtigen Fahrschüler kommen: die Klassen, die Sie füllen wollen, aus den Orten, die Sie bedienen – und mit vollständigen Unterlagen. Außerdem gewinnen Sie Fahrlehrer: Viele Bewerber prüfen Ihre Website, bevor sie sich melden.',
+  },
+];
+
+const cta = {
+  lines: ['Mehr Fahrschüler.', 'Weniger Telefon-Pingpong.'] as [string, string],
+  sub: 'Lassen Sie uns in 15 Minuten prüfen, wo Ihre Fahrschule bei Google steht – und was nötig ist, um nach oben zu kommen.',
+  primary: { label: 'Projekt starten', href: contact },
+  secondary: { label: '15-min-Call buchen', href: `${contact}#termin` },
+};
+
+const serviceSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Service',
+  name: 'Fahrschule Webdesign',
+  serviceType: 'Webdesign und Local SEO für Fahrschulen',
+  description: seo.description,
+  provider: { '@type': 'Organization', name: 'lkmedia', url: 'https://lkmedia.net' },
+  areaServed: { '@type': 'Country', name: 'Deutschland' },
+  audience: { '@type': 'BusinessAudience', audienceType: 'Fahrschulen' },
+  url,
+};
+const crumbs = breadcrumbs([
+  { name: 'Start', url: 'https://lkmedia.net/' },
+  { name: 'Leistungen', url: 'https://lkmedia.net/leistungen' },
+  { name: 'Fahrschule Webdesign', url },
+]);
+---
+<Base seo={seo} jsonLd={[serviceSchema, crumbs]}>
+  <!-- Hero -->
+  <section class="hero">
+    <div class="grid-bg" aria-hidden="true"></div>
+    <div class="hero-glow" aria-hidden="true"></div>
+    <div class="wrap hero-inner">
+      <div class="eyebrow" data-rise>Fahrschule Webdesign</div>
+      <h1 class="hero-title display">
+        <span data-rise style="--d:60ms">Webdesign für Fahrschulen,</span>
+        <span data-rise style="--d:150ms" class="hero-muted">das Fahrschüler bringt.</span>
+      </h1>
+      <p class="hero-sub" data-rise style="--d:260ms">
+        Schnelle, mobile Websites mit Online-Anmeldung und eigener Seite für jeden Standort.
+        Damit Ihre Fahrschule bei „Fahrschule + Ort“ ganz oben steht – und nicht die Konkurrenz.
+      </p>
+      <div class="hero-actions" data-rise style="--d:360ms">
+        <a href={contact} class="btn btn-primary btn-lg">
+          Kostenloses Erstgespräch
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+        <a href={caseStudy} class="mono-link"><span class="dot" aria-hidden="true"></span>Case: #1 in 5 Städten</a>
+      </div>
+
+      <dl class="stats" data-rise style="--d:460ms">
+        {stats.map((s) => (
+          <div class="stat">
+            <dt class="stat-label">{s.label}</dt>
+            <dd class="stat-value">{s.value}</dd>
+          </div>
+        ))}
+      </dl>
+
+      <div class="hero-preview" data-rise style="--d:560ms">
+        <figure class="browser">
+          <div class="browser-bar" aria-hidden="true">
+            <span class="browser-dots"><i></i><i></i><i></i></span>
+            <span class="browser-url">patricks-fahrschule.de</span>
+            <span class="browser-dots invisible"><i></i><i></i><i></i></span>
+          </div>
+          <img
+            src="/landing/shots/patricks-fahrschule-1440.webp"
+            srcset="/landing/shots/patricks-fahrschule-1440.webp 1440w, /landing/shots/patricks-fahrschule-2880.webp 2880w"
+            sizes="(max-width: 1240px) calc(100vw - 40px), 1080px"
+            width="1440"
+            height="900"
+            alt="Fahrschul-Website von Patricks Fahrschule, gestaltet von lkmedia"
+            loading="eager"
+            fetchpriority="high"
+            decoding="async"
+          />
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pains -->
+  <section class="block">
+    <div class="wrap">
+      <div class="max-w-2xl" data-reveal>
+        <div class="eyebrow">Das Problem</div>
+        <h2 class="section-title mt-4">Warum die meisten Fahrschul-Websites keine Fahrschüler bringen.</h2>
+      </div>
+      <ul class="pain-grid">
+        {pains.map((p, i) => (
+          <li class="card pain" data-reveal style={`--d:${i * 80}ms`}>
+            <span class="pain-n">{p.n}</span>
+            <h3 class="card-title">{p.title}</h3>
+            <p class="card-body">{p.body}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- Local SEO -->
+  <FeatureSplit
+    eyebrow="Local SEO"
+    title="Platz 1 für „Fahrschule + Ihr Ort“."
+    sub="Fahrschüler suchen lokal. Darum bekommt jeder Ihrer Standorte eine eigene, eigenständige Seite, ein eigenes Google-Unternehmensprofil und strukturierte Daten, die Google und KI-Assistenten verstehen."
+    points={[
+      'Eigene Standortseite pro Ort, keine Copy-Paste-Texte',
+      'Google-Unternehmensprofil für jede Filiale eingerichtet',
+      'Schema-Markup für Fahrschule, Kurse und Bewertungen',
+    ]}
+  >
+    <div class="serp card" aria-hidden="true">
+      <div class="serp-bar">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><circle cx="7" cy="7" r="4.5" stroke="currentColor" stroke-width="1.5"/><path d="M10.5 10.5L14 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        <span>fahrschule durmersheim</span>
+      </div>
+      <ol class="serp-list">
+        {serp.map((r, i) => (
+          <li class={`serp-item ${r.primary ? 'is-primary' : ''}`}>
+            <span class="serp-pos">#{i + 1}</span>
+            <div class="min-w-0">
+              <div class="serp-url">{r.domain} <span class="text-[var(--fg-faint)]">{r.path}</span></div>
+              <div class="serp-title">{r.title}</div>
+              <p class="serp-desc">{r.desc}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </FeatureSplit>
+
+  <!-- Features -->
+  <section class="block">
+    <div class="wrap">
+      <div class="max-w-2xl" data-reveal>
+        <div class="eyebrow">Leistungsumfang</div>
+        <h2 class="section-title mt-4">Was eine Fahrschul-Website heute können muss.</h2>
+        <p class="section-sub mt-5">Kein Baukasten-Template mit Stockfoto vom Lenkrad. Sondern eine Website, die die Fragen Ihrer Fahrschüler beantwortet und Anmeldungen einsammelt.</p>
+      </div>
+      <ul class="feature-grid">
+        {features.map((f, i) => (
+          <li class="feature" data-reveal style={`--d:${(i % 3) * 70}ms`}>
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <h3 class="card-title">{f.title}</h3>
+            <p class="card-body">{f.body}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- Speed -->
+  <FeatureSplit
+    eyebrow="Mobile Performance"
+    title="Schneller da als der Daumen weg ist."
+    sub="Fast alle Ihre Besucher kommen vom Smartphone – oft im Bus, mit wackeligem Netz. Wir bauen statisch und schlank, ohne WordPress-Plugins. Das mögen Fahrschüler und Google gleichermaßen."
+    points={[
+      'Core Web Vitals im grünen Bereich als Abnahmekriterium',
+      'Anmeldeformular in unter einer Minute ausgefüllt',
+      'Keine Plugin-Updates, keine Sicherheitslücken',
+    ]}
+    reverse
+  >
+    <LighthousePanel
+      scores={[
+        { label: 'Performance', value: 100 },
+        { label: 'Barrierefreiheit', value: 100 },
+        { label: 'Best Practices', value: 100 },
+        { label: 'SEO', value: 100 },
+      ]}
+      vitals={[
+        { label: 'LCP', value: '0.8 s' },
+        { label: 'INP', value: '52 ms' },
+        { label: 'CLS', value: '0.00' },
+      ]}
+      url="fahrschul-website"
+    />
+  </FeatureSplit>
+
+  <!-- Case -->
+  <section class="block">
+    <div class="wrap">
+      <a href={caseStudy} class="case card" data-reveal>
+        <div class="case-img">
+          <img src="/cases/patricks-fahrschule.webp" alt="Website von Patricks Fahrschule im Raum Rastatt" loading="lazy" decoding="async" />
+        </div>
+        <div class="case-copy">
+          <div class="eyebrow">Case Study · Patricks Fahrschule</div>
+          <h2 class="case-title">Position 1 in Rastatt, Durmersheim, Sinzheim, Iffezheim und Kuppenheim.</h2>
+          <p class="card-body mt-4">
+            Fünf Standorte, fünf eigene Seiten, fünf Google-Profile – plus rumänischsprachige Inhalte
+            für eine Zielgruppe, die keine andere Fahrschule in der Region anspricht.
+          </p>
+          <blockquote class="quote">
+            „Klasse Typ, fachlich Top! Wünsche, Änderungen und Fragen werden immer sofort bearbeitet und beantwortet.“
+            <footer>Patrick Janiak, Inhaber</footer>
+          </blockquote>
+          <span class="mono-link mt-6">Ganze Case Study lesen →</span>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <ProcessSteps process={process} />
+
+  <!-- FAQ -->
+  <section class="block">
+    <div class="wrap text-center" data-reveal>
+      <div class="eyebrow">FAQ</div>
+      <h2 class="section-title mt-4">Häufige Fragen zum Fahrschul-Webdesign.</h2>
+    </div>
+    <FaqBlock items={faqs} />
+    <p class="wrap text-center card-body">
+      Mehr Ideen für Ihre Fahrschule:
+      <a href="/marketing-ideen-fahrschule" class="underline underline-offset-4 hover:text-[var(--fg)]">15+ Marketing-Strategien für Fahrschulen</a>
+    </p>
+  </section>
+
+  <FinalCta cta={cta} />
+</Base>
+
+<style>
+  .hero {
+    position: relative;
+    overflow: hidden;
+    padding: 72px 0 96px;
+    text-align: center;
+  }
+  .hero-glow {
+    pointer-events: none;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: min(1100px, 120vw);
+    height: 600px;
+    transform: translateX(-50%);
+    background: radial-gradient(closest-side, oklch(0.68 0.17 250 / 0.16), transparent);
+    filter: blur(20px);
+  }
+  .hero-inner {
+    position: relative;
+  }
+  .hero-title {
+    max-width: 16ch;
+    margin: 20px auto 24px;
+    font-size: clamp(40px, 6vw, 80px);
+  }
+  .hero-title span {
+    display: block;
+  }
+  .hero-muted {
+    color: var(--fg-dim);
+  }
+  .hero-sub {
+    max-width: 640px;
+    margin: 0 auto 36px;
+    color: var(--fg-muted);
+    font-size: clamp(16px, 1.4vw, 19px);
+    line-height: 1.55;
+    text-wrap: pretty;
+  }
+  .hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 16px 28px;
+  }
+  .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 999px;
+    background: var(--ok);
+    box-shadow: 0 0 0 4px color-mix(in oklch, var(--ok) 20%, transparent);
+  }
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    max-width: 720px;
+    margin: 56px auto 0;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    background: #ffffff05;
+  }
+  .stat {
+    display: flex;
+    flex-direction: column-reverse;
+    gap: 6px;
+    padding: 20px 16px;
+  }
+  .stat + .stat {
+    border-left: 1px solid var(--border);
+  }
+  .stat-value {
+    font-size: clamp(26px, 3vw, 36px);
+    font-weight: 600;
+    letter-spacing: -0.04em;
+    line-height: 1;
+  }
+  .stat-label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--fg-dim);
+  }
+  @media (max-width: 560px) {
+    .stats {
+      grid-template-columns: 1fr;
+    }
+    .stat + .stat {
+      border-left: 0;
+      border-top: 1px solid var(--border);
+    }
+  }
+
+  .hero-preview {
+    max-width: 1080px;
+    margin: 64px auto 0;
+    perspective: 2000px;
+  }
+  .browser {
+    overflow: hidden;
+    border: 1px solid var(--border-strong);
+    border-radius: 14px;
+    background: var(--bg-elev);
+    box-shadow:
+      0 0 0 1px #00000080,
+      0 40px 100px -30px #000000d9,
+      0 0 120px -40px oklch(0.68 0.17 250 / 0.35);
+    transform: rotateX(8deg);
+    transform-origin: 50% 0;
+    transition: transform 1.2s var(--ease-out);
+  }
+  .hero-preview:hover .browser {
+    transform: none;
+  }
+  .browser-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 40px;
+    padding: 0 14px;
+    border-bottom: 1px solid var(--border);
+    background: #0f0f12;
+  }
+  .browser-dots {
+    display: inline-flex;
+    gap: 6px;
+  }
+  .browser-dots i {
+    width: 10px;
+    height: 10px;
+    border-radius: 999px;
+    background: #ffffff1f;
+  }
+  .browser-url {
+    padding: 4px 12px;
+    border-radius: 6px;
+    background: #ffffff0a;
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    color: var(--fg-dim);
+  }
+  .browser img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  .block {
+    padding: 112px 0;
+    border-top: 1px solid var(--border);
+  }
+  .card-title {
+    font-size: 19px;
+    font-weight: 600;
+    letter-spacing: -0.025em;
+  }
+  .card-body {
+    margin-top: 8px;
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--fg-muted);
+  }
+
+  .pain-grid {
+    display: grid;
+    gap: 16px;
+    margin-top: 56px;
+  }
+  @media (min-width: 900px) {
+    .pain-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+  .pain {
+    padding: 28px;
+  }
+  .pain-n {
+    display: block;
+    margin-bottom: 40px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--warn);
+  }
+
+  .feature-grid {
+    display: grid;
+    gap: 40px 32px;
+    margin-top: 64px;
+  }
+  @media (min-width: 640px) {
+    .feature-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (min-width: 1024px) {
+    .feature-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+  .feature {
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+  }
+  .feature svg {
+    margin-bottom: 14px;
+    color: var(--ok);
+  }
+
+  .serp {
+    overflow: hidden;
+    box-shadow: 0 40px 80px -40px #000;
+  }
+  .serp-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 16px;
+    padding: 10px 16px;
+    border: 1px solid var(--border-strong);
+    border-radius: 999px;
+    font-size: 14px;
+    color: var(--fg-muted);
+  }
+  .serp-list {
+    display: grid;
+    gap: 4px;
+    padding: 4px 16px 16px;
+  }
+  .serp-item {
+    display: flex;
+    gap: 14px;
+    padding: 16px;
+    border-radius: var(--radius);
+    opacity: 0.45;
+  }
+  .serp-item.is-primary {
+    opacity: 1;
+    border: 1px solid color-mix(in oklch, var(--ok) 35%, transparent);
+    background: color-mix(in oklch, var(--ok) 6%, transparent);
+  }
+  .serp-pos {
+    flex-shrink: 0;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--fg-dim);
+  }
+  .is-primary .serp-pos {
+    color: var(--ok);
+  }
+  .serp-url {
+    font-size: 12px;
+    color: var(--fg-muted);
+  }
+  .serp-title {
+    margin-top: 4px;
+    font-size: 16px;
+    line-height: 1.35;
+    color: oklch(0.78 0.11 250);
+  }
+  .serp-desc {
+    margin-top: 4px;
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--fg-dim);
+  }
+
+  .case {
+    display: grid;
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+  .case:hover {
+    border-color: var(--border-strong);
+  }
+  @media (min-width: 960px) {
+    .case {
+      grid-template-columns: 1.1fr 1fr;
+    }
+  }
+  .case-img {
+    overflow: hidden;
+    border-bottom: 1px solid var(--border);
+  }
+  @media (min-width: 960px) {
+    .case-img {
+      border-bottom: 0;
+      border-right: 1px solid var(--border);
+    }
+  }
+  .case-img img {
+    width: 100%;
+    height: 100%;
+    min-height: 280px;
+    object-fit: cover;
+    object-position: top;
+    transition: transform 0.8s var(--ease-out);
+  }
+  .case:hover .case-img img {
+    transform: scale(1.03);
+  }
+  .case-copy {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: clamp(28px, 4vw, 48px);
+  }
+  .case-title {
+    margin-top: 16px;
+    font-size: clamp(24px, 2.6vw, 34px);
+    font-weight: 600;
+    letter-spacing: -0.035em;
+    line-height: 1.12;
+    text-wrap: balance;
+  }
+  .quote {
+    margin-top: 28px;
+    padding-left: 16px;
+    border-left: 2px solid var(--border-strong);
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--fg);
+  }
+  .quote footer {
+    margin-top: 8px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--fg-dim);
+  }
+
+  @media (max-width: 820px) {
+    .browser {
+      transform: none;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .browser,
+    .case-img img {
+      transform: none;
+      transition: none;
+    }
+  }
+</style>
