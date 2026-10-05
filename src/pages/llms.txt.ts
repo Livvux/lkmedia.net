@@ -10,6 +10,7 @@ const body = `# lkmedia
 - [Anwälte](https://lkmedia.net/anwaelte)
 - [Luxus-Immobilien](https://lkmedia.net/luxus-immobilien)
 - [Privatkliniken](https://lkmedia.net/privatkliniken)
+- [Fahrschule Webdesign](https://lkmedia.net/fahrschule-webdesign)
 - [Kontakt](https://lkmedia.net/kontakt)
 
 ## Contact

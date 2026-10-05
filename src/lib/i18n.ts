@@ -46,6 +46,7 @@ export const routes = {
   lawFirms: { de: "/anwaelte", en: "/en/anwaelte" },
   realEstate: { de: "/luxus-immobilien", en: "/en/luxus-immobilien" },
   clinics: { de: "/privatkliniken", en: "/privatkliniken" },
+  drivingSchools: { de: "/fahrschule-webdesign", en: "/fahrschule-webdesign" },
   imprint: { de: "/imprint", en: "/imprint" },
   privacy: { de: "/datenschutz", en: "/datenschutz" },
 } as const satisfies Record<string, Record<Lang, string>>;
