@@ -7,8 +7,8 @@ export const prerender = false;
 const sessionId = Astro.url.searchParams.get('session_id') ?? '';
 const fehler = Astro.url.searchParams.get('fehler');
 const stripeKey = process.env.STRIPE_SECRET_KEY ?? import.meta.env.STRIPE_SECRET_KEY;
-// Ohne Key (lokal) Formular zeigen; in Produktion nur nach bezahlter Bestellung.
-const { paid } = stripeKey ? await checkSession(sessionId, stripeKey) : { paid: true };
+// Ohne Key nur im Dev-Server Formular zeigen; in Produktion nur nach bezahlter Bestellung.
+const { paid } = stripeKey ? await checkSession(sessionId, stripeKey) : { paid: import.meta.env.DEV };
 
 const seo = {
   title: 'docweb Onboarding',
