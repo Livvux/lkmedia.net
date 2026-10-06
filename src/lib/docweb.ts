@@ -6,6 +6,7 @@ export const DOCWEB = {
   demoUrl: "https://docweb.lkmedia.net",
   // Stripe Payment Link (öffentlich, kein Secret). Success-URL → /docweb/onboarding?session_id=…
   paymentLink: "https://buy.stripe.com/cNi3cw7zU3LL2OMgaGeAg0o",
+  paymentLinkId: "plink_1UNQdyJ3L2AI7fPZDrHjVYkn",
 } as const;
 
 const TYPES = ["arzt", "psychotherapie", "zahnarzt"] as const;
@@ -65,7 +66,8 @@ export function parseOnboarding(f: FormData): ParseResult {
   if (!TYPES.includes(typ)) errors.push("Praxistyp ungültig");
   const telefon = required("telefon", "Telefon", 40);
   const email = required("email", "E-Mail", 120);
-  if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) errors.push("E-Mail ungültig");
+  if (email && !/^[^\s@,;<>"']+@[^\s@,;<>"']+\.[^\s@,;<>"']+$/.test(email))
+    errors.push("E-Mail ungültig");
 
   const bookingType = str(f, "booking_type") as Onboarding["praxis"]["booking"]["type"];
   if (!BOOKING.includes(bookingType)) errors.push("Terminbuchung ungültig");
@@ -180,9 +182,12 @@ export async function checkSession(
     if (!r.ok) return { paid: false };
     const s = (await r.json()) as {
       payment_status?: string;
+      payment_link?: string | null;
       customer_details?: { email?: string };
     };
-    return { paid: s.payment_status === "paid", email: s.customer_details?.email };
+    // Nur Käufe über den docweb-Link zählen, nicht andere Produkte im selben Stripe-Konto.
+    const paid = s.payment_status === "paid" && s.payment_link === DOCWEB.paymentLinkId;
+    return { paid, email: s.customer_details?.email };
   } catch (error) {
     console.error("[docweb] Stripe session check failed", error);
     return { paid: false };

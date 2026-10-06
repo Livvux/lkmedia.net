@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 import { parse } from 'yaml';
-import { checkSession, parseOnboarding, toKundeYaml } from '../../src/lib/docweb';
+import { DOCWEB, checkSession, parseOnboarding, toKundeYaml } from '../../src/lib/docweb';
 
 function form(overrides: Record<string, string | string[]> = {}): FormData {
   const base: Record<string, string | string[]> = {
@@ -45,6 +45,10 @@ describe('parseOnboarding', () => {
     expect(r.ok).toBe(false);
   });
 
+  it('lehnt Mehrfach-Adressen in der E-Mail ab', () => {
+    expect(parseOnboarding(form({ email: 'a@b.de,x@y.de' })).ok).toBe(false);
+  });
+
   it('lehnt ungültige Typen und Farben ab', () => {
     expect(parseOnboarding(form({ typ: 'heiler' })).ok).toBe(false);
     expect(parseOnboarding(form({ wunschfarbe: 'red;}' })).ok).toBe(false);
@@ -79,9 +83,14 @@ describe('checkSession', () => {
   const ok = (body: unknown) => vi.fn(async () => new Response(JSON.stringify(body), { status: 200 }));
 
   it('bezahlte Session → paid + E-Mail', async () => {
-    const f = ok({ payment_status: 'paid', customer_details: { email: 'a@b.de' } });
+    const f = ok({ payment_status: 'paid', payment_link: DOCWEB.paymentLinkId, customer_details: { email: 'a@b.de' } });
     expect(await checkSession('cs_live_abc', 'sk', f)).toEqual({ paid: true, email: 'a@b.de' });
     expect(f).toHaveBeenCalledWith('https://api.stripe.com/v1/checkout/sessions/cs_live_abc', expect.anything());
+  });
+
+  it('bezahlte Session eines anderen Produkts → nicht paid', async () => {
+    const f = ok({ payment_status: 'paid', payment_link: 'plink_other' });
+    expect((await checkSession('cs_live_abc', 'sk', f)).paid).toBe(false);
   });
 
   it('unbezahlte Session → nicht paid', async () => {
