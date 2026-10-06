@@ -1,0 +1,159 @@
+---
+import Base from '../../layouts/Base.astro';
+import Hero from '../../components/landing/Hero.astro';
+import FaqBlock from '../../components/FaqBlock.astro';
+import { DOCWEB } from '../../lib/docweb';
+
+const seo = {
+  title: 'docweb — Website für Arztpraxen zum Festpreis',
+  description: `Praxis-Website für Ärzte, Psychotherapeuten und Zahnärzte: barrierefrei, ohne Tracking, in der EU gehostet. ${DOCWEB.setupPrice} einmalig + ${DOCWEB.monthlyPrice}/Monat, online buchbar.`,
+  canonical: '/docweb',
+  lang: 'de' as const,
+  alternateUrls: { de: 'https://lkmedia.net/docweb' },
+};
+
+const features = [
+  { title: 'Online-Termine', body: 'Doctolib, samedi oder eigener Buchungslink – prominent auf jeder Seite. Ohne Online-Buchung: Telefon oder E-Mail als Termin-Button.' },
+  { title: 'Barrierefrei nach WCAG 2.2 AA', body: 'Jede Seite wird automatisch auf Barrieren geprüft: Kontraste, Tastaturbedienung, Screenreader. Erklärung zur Barrierefreiheit inklusive.' },
+  { title: 'Kein Tracking, kein Cookie-Banner', body: 'Keine Google Fonts, keine Karten-Embeds, keine Analyse-Tools. Patientendaten verlassen Ihre Website nicht.' },
+  { title: 'Lokal gefunden werden', body: 'Strukturierte Daten für Google (Praxis, Ärzte, Öffnungszeiten, FAQ), Arzt-Profilseiten und llms.txt für KI-Suchen wie ChatGPT.' },
+  { title: 'Alles, was Patienten suchen', body: 'Leistungen, Team, Öffnungszeiten mit „jetzt geöffnet“, Anfahrt, Notfallnummern, FAQ und Ratgeber.' },
+  { title: 'Rechtstexte für Heilberufe', body: 'Impressum mit Kammer, Berufsbezeichnung und Berufsordnung sowie Datenschutzerklärung – als Entwurf vorbereitet, von uns geprüft.' },
+];
+
+const audiences = [
+  { title: 'Arztpraxen', body: 'Hausärzte, Fachärzte, MVZ – auch mit mehreren Standorten.' },
+  { title: 'Psychotherapie', body: 'Psychologische und ärztliche Psychotherapeuten, Kinder- und Jugendlichentherapie.' },
+  { title: 'Zahnarztpraxen', body: 'Zahnärzte und Kieferorthopäden.' },
+];
+
+const steps = [
+  { n: '01', title: 'Online buchen', body: 'Paket per Stripe bezahlen – Rechnung mit ausgewiesener Umsatzsteuer kommt automatisch.' },
+  { n: '02', title: 'Onboarding ausfüllen', body: 'Praxisdaten, Team, Leistungen, Öffnungszeiten. Logo und Fotos schicken Sie per Mail.' },
+  { n: '03', title: 'Vorschau prüfen', body: 'Sie erhalten einen Vorschau-Link und geben Texte und Rechtsangaben frei.' },
+  { n: '04', title: 'Live gehen', body: 'Wir schalten Ihre Domain auf. Hosting, Updates und kleine Änderungen übernehmen wir.' },
+];
+
+const included = [
+  'Individuelle Praxis-Website mit Ihren Inhalten und Ihrer Farbe',
+  'Seiten: Start, Leistungen, Team, Praxis, Kontakt, FAQ, Ratgeber',
+  'Impressum, Datenschutz und Barrierefreiheitserklärung (Entwurf)',
+  'Hosting in der EU, SSL, tägliche Backups',
+  'Updates und kleine Inhaltsänderungen (bis 30 Min./Monat)',
+  'Ihre Domain – oder wir helfen bei der Registrierung',
+];
+
+const faqs = [
+  { q: 'Was kostet docweb?', a: `${DOCWEB.setupPrice} einmalig für die Einrichtung und ${DOCWEB.monthlyPrice} pro Monat für Hosting, Wartung und kleine Änderungen – jeweils inklusive Umsatzsteuer. Die Mindestlaufzeit beträgt 12 Monate.` },
+  { q: 'Wie schnell ist meine Website online?', a: 'Sobald das Onboarding vollständig ist und wir Logo/Fotos haben, erhalten Sie in der Regel innerhalb von 7 Werktagen eine Vorschau. Live geht die Seite nach Ihrer Freigabe.' },
+  { q: 'Ist die Website DSGVO-konform?', a: 'docweb lädt keine externen Dienste: keine Cookies, kein Tracking, keine Google Fonts, keine Karten-Embeds. Die Online-Terminbuchung wird nur verlinkt. Hosting erfolgt in der EU.' },
+  { q: 'Gibt es ein Kontaktformular?', a: 'Bewusst nicht standardmäßig: Über Formulare würden Patienten Gesundheitsdaten senden, was zusätzliche technische und vertragliche Anforderungen mit sich bringt. Patienten erreichen Sie per Telefon, E-Mail oder Online-Terminbuchung.' },
+  { q: 'Kann ich Inhalte später ändern lassen?', a: 'Ja. Kleine Änderungen (Öffnungszeiten, Urlaub, neue Teammitglieder, Texte) sind im Monatspreis enthalten. Schreiben Sie uns einfach eine Mail.' },
+  { q: 'Sind die Rechtstexte rechtssicher?', a: 'Wir bereiten Impressum und Datenschutzerklärung mit den berufsrechtlichen Pflichtangaben vor. Eine Rechtsberatung ersetzt das nicht – bitte prüfen Sie die Texte vor dem Go-live bzw. lassen Sie sie prüfen.' },
+  { q: 'Was passiert nach 12 Monaten?', a: 'Der Vertrag verlängert sich monatlich und ist dann monatlich kündbar. Auf Wunsch übergeben wir Ihnen den Quellcode, damit Sie die Website bei einem anderen Anbieter weiter betreiben können.' },
+];
+
+const productSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Product',
+  name: 'docweb – Website für Arztpraxen',
+  description: seo.description,
+  brand: { '@type': 'Organization', name: 'lkmedia' },
+  url: 'https://lkmedia.net/docweb',
+  offers: {
+    '@type': 'Offer',
+    price: '1490.00',
+    priceCurrency: 'EUR',
+    availability: 'https://schema.org/InStock',
+    url: 'https://lkmedia.net/docweb',
+  },
+};
+---
+<Base seo={seo} jsonLd={[productSchema]}>
+  <Hero
+    headline="Die Website für Ihre Praxis. Fertig in einer Woche."
+    sub={`Für Arztpraxen, Psychotherapie und Zahnärzte – barrierefrei, ohne Tracking, in der EU gehostet. ${DOCWEB.setupPrice} einmalig + ${DOCWEB.monthlyPrice}/Monat.`}
+    ctaHref="#preis" ctaLabel="Paket ansehen"
+    secondaryHref={DOCWEB.demoUrl} secondaryLabel="Demo ansehen"
+    deviceImage="/images/docweb-demo.webp" deviceAlt="Startseite der docweb-Demo: Hausarztpraxis mit Öffnungszeiten und Online-Terminbuchung"
+    deviceHref={DOCWEB.demoUrl} />
+
+  <section class="py-24 px-6 max-w-6xl mx-auto">
+    <h2 class="text-3xl md:text-5xl font-semibold tracking-tight mb-12">Für wen docweb gemacht ist.</h2>
+    <div class="grid md:grid-cols-3 gap-6">
+      {audiences.map((a) => (
+        <div class="rounded-2xl border border-black/10 dark:border-white/10 p-8">
+          <h3 class="text-xl font-semibold mb-3">{a.title}</h3>
+          <p class="text-black/70 dark:text-white/70 leading-relaxed">{a.body}</p>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <section class="py-24 px-6 max-w-6xl mx-auto border-t border-black/10 dark:border-white/10">
+    <h2 class="text-3xl md:text-5xl font-semibold tracking-tight mb-12">Was Ihre Website kann.</h2>
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
+      {features.map((f) => (
+        <div>
+          <h3 class="text-xl font-semibold mb-3">{f.title}</h3>
+          <p class="text-black/70 dark:text-white/70 leading-relaxed">{f.body}</p>
+        </div>
+      ))}
+    </div>
+    <a href={DOCWEB.demoUrl} target="_blank" rel="noopener" class="mt-12 inline-flex h-11 px-6 items-center rounded-full border border-black/30 dark:border-white/30 text-sm font-medium">
+      Live-Demo öffnen →
+    </a>
+  </section>
+
+  <section class="py-24 px-6 max-w-6xl mx-auto border-t border-black/10 dark:border-white/10">
+    <h2 class="text-3xl md:text-5xl font-semibold tracking-tight mb-12">So läuft es ab.</h2>
+    <ol class="grid md:grid-cols-4 gap-8">
+      {steps.map((s) => (
+        <li>
+          <div class="text-sm tracking-widest text-black/40 dark:text-white/40 mb-3">{s.n}</div>
+          <h3 class="text-xl font-semibold mb-2">{s.title}</h3>
+          <p class="text-black/70 dark:text-white/70 leading-relaxed">{s.body}</p>
+        </li>
+      ))}
+    </ol>
+  </section>
+
+  <section id="preis" class="py-24 px-6 max-w-6xl mx-auto border-t border-black/10 dark:border-white/10 scroll-mt-20">
+    <div class="grid lg:grid-cols-2 gap-12 items-start">
+      <div>
+        <h2 class="text-3xl md:text-5xl font-semibold tracking-tight">Ein Paket. Ein Preis.</h2>
+        <p class="mt-5 text-lg text-black/70 dark:text-white/70 leading-relaxed">
+          Kein Angebot, kein Baukasten, keine Agentur-Stundensätze. Sie buchen online, wir bauen und betreuen Ihre Website.
+        </p>
+      </div>
+      <div class="rounded-2xl border border-black/10 dark:border-white/15 bg-black/[0.02] dark:bg-white/[0.03] p-8 md:p-10">
+        <div class="text-sm tracking-widest text-black/50 dark:text-white/50">DOCWEB KOMPLETTPAKET</div>
+        <div class="mt-4 flex flex-wrap items-baseline gap-x-3">
+          <span class="text-5xl font-semibold tracking-tight">{DOCWEB.setupPrice}</span>
+          <span class="text-black/60 dark:text-white/60">einmalig</span>
+        </div>
+        <div class="mt-1 text-xl"><span class="font-semibold">+ {DOCWEB.monthlyPrice}</span> <span class="text-black/60 dark:text-white/60">/ Monat</span></div>
+        <p class="mt-2 text-sm text-black/50 dark:text-white/50">inkl. USt. · 12 Monate Mindestlaufzeit, danach monatlich kündbar</p>
+        <ul class="mt-8 space-y-3">
+          {included.map((i) => (
+            <li class="flex gap-3"><span aria-hidden="true" class="text-black/40 dark:text-white/40">✓</span><span>{i}</span></li>
+          ))}
+        </ul>
+        <a href={DOCWEB.paymentLink} class="mt-10 flex h-12 w-full items-center justify-center rounded-full bg-black text-white dark:bg-white dark:text-black font-medium hover:bg-black/90 dark:hover:bg-white/90 transition">
+          Jetzt starten →
+        </a>
+        <p class="mt-3 text-center text-xs text-black/50 dark:text-white/50">
+          Sichere Zahlung über Stripe · Es gelten die <a href="/docweb/agb" class="underline">AGB für docweb</a>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <FaqBlock items={faqs} />
+
+  <section class="py-24 px-6 text-center border-t border-black/10 dark:border-white/10">
+    <h2 class="text-3xl md:text-5xl font-semibold tracking-tight">Lieber erst sprechen?</h2>
+    <p class="mt-4 text-black/70 dark:text-white/70">15 Minuten, unverbindlich – wir klären, ob docweb zu Ihrer Praxis passt.</p>
+    <a href="/kontakt#termin" class="mt-8 inline-flex h-12 px-6 items-center rounded-full border border-black/30 dark:border-white/30 font-medium">Kurzes Gespräch buchen</a>
+  </section>
+</Base>

@@ -1,0 +1,138 @@
+---
+import Base from '../../layouts/Base.astro';
+import { checkSession } from '../../lib/docweb';
+
+export const prerender = false;
+
+const sessionId = Astro.url.searchParams.get('session_id') ?? '';
+const fehler = Astro.url.searchParams.get('fehler');
+const stripeKey = process.env.STRIPE_SECRET_KEY ?? import.meta.env.STRIPE_SECRET_KEY;
+// Ohne Key nur im Dev-Server Formular zeigen; in Produktion nur nach bezahlter Bestellung.
+const { paid } = stripeKey ? await checkSession(sessionId, stripeKey) : { paid: import.meta.env.DEV };
+
+const seo = {
+  title: 'docweb Onboarding',
+  description: 'Praxisdaten für Ihre docweb-Website übermitteln.',
+  canonical: '/docweb/onboarding',
+  lang: 'de' as const,
+  noindex: true,
+};
+
+const input = 'mt-1 w-full h-12 px-4 rounded-xl bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 focus:border-black dark:focus:border-white focus:outline-none';
+const area = 'mt-1 w-full p-4 rounded-xl bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 focus:border-black dark:focus:border-white focus:outline-none';
+const label = 'text-sm text-black/60 dark:text-white/60';
+const legend = 'text-xl font-semibold mb-4';
+---
+<Base seo={seo}>
+  <section class="py-24 px-6 max-w-3xl mx-auto">
+    {!paid ? (
+      <>
+        <h1 class="text-4xl md:text-5xl font-semibold tracking-tight">Bestellung nicht gefunden.</h1>
+        <p class="mt-6 text-lg text-black/70 dark:text-white/70">
+          Das Onboarding ist nach dem Kauf über Stripe erreichbar. Falls Sie bereits bezahlt haben, nutzen Sie bitte den Link aus Ihrer Bestätigungsmail
+          oder schreiben Sie an <a class="underline" href="mailto:lucas@lkmedia.net">lucas@lkmedia.net</a>.
+        </p>
+        <a href="/docweb" class="inline-flex mt-10 h-12 px-6 items-center rounded-full border border-black/30 dark:border-white/30">Zu docweb</a>
+      </>
+    ) : (
+      <>
+        <h1 class="text-4xl md:text-5xl font-semibold tracking-tight">Danke für Ihre Bestellung!</h1>
+        <p class="mt-6 text-lg text-black/70 dark:text-white/70">
+          Damit wir Ihre Website bauen können, brauchen wir ein paar Angaben. Das dauert etwa 10 Minuten.
+          Felder mit * sind Pflicht. Logo und Fotos schicken Sie bitte als Antwort auf unsere Bestätigungsmail.
+        </p>
+        <p class="mt-4 text-sm text-black/50 dark:text-white/50">Bitte tragen Sie hier keine Patientendaten ein.</p>
+
+        {fehler && (
+          <div role="alert" class="mt-8 rounded-xl border border-red-500/40 bg-red-500/10 p-5">
+            <p class="font-semibold">Bitte prüfen Sie Ihre Angaben:</p>
+            <p class="mt-2 text-sm">{fehler}</p>
+          </div>
+        )}
+
+        <form method="POST" action="/api/docweb-onboarding" class="mt-12 space-y-12">
+          <input type="hidden" name="session_id" value={sessionId} />
+          <input type="text" name="website" tabindex="-1" autocomplete="off" class="hidden" aria-hidden="true" />
+
+          <fieldset class="space-y-4">
+            <legend class={legend}>Praxis</legend>
+            <label class="block"><span class={label}>Name der Praxis *</span><input required name="praxis_name" maxlength="200" class={input} placeholder="Hausarztpraxis Dr. Muster" /></label>
+            <label class="block"><span class={label}>Fachrichtung *</span><input required name="fachrichtung" maxlength="200" class={input} placeholder="Allgemeinmedizin" /></label>
+            <label class="block"><span class={label}>Praxisart *</span>
+              <select required name="typ" class={input}>
+                <option value="arzt">Arztpraxis</option>
+                <option value="psychotherapie">Psychotherapie</option>
+                <option value="zahnarzt">Zahnarztpraxis</option>
+              </select>
+            </label>
+            <label class="block"><span class={label}>Kurzbeschreibung (2–3 Sätze)</span><textarea name="beschreibung" rows="3" maxlength="1000" class={area}></textarea></label>
+            <div>
+              <span class={label}>Versicherungen</span>
+              <div class="mt-2 flex flex-wrap gap-6">
+                <label class="flex items-center gap-2"><input type="checkbox" name="kassen" value="gesetzlich" checked /> Gesetzlich</label>
+                <label class="flex items-center gap-2"><input type="checkbox" name="kassen" value="privat" checked /> Privat</label>
+                <label class="flex items-center gap-2"><input type="checkbox" name="kassen" value="selbstzahler" /> Selbstzahler</label>
+              </div>
+            </div>
+            <div class="grid md:grid-cols-2 gap-4">
+              <label class="block"><span class={label}>Telefon *</span><input required type="tel" name="telefon" maxlength="40" class={input} /></label>
+              <label class="block"><span class={label}>E-Mail der Praxis *</span><input required type="email" name="email" maxlength="120" class={input} /></label>
+            </div>
+            <div class="grid md:grid-cols-2 gap-4">
+              <label class="block"><span class={label}>Wunschdomain</span><input name="wunschdomain" maxlength="120" class={input} placeholder="praxis-muster.de" /></label>
+              <label class="block"><span class={label}>Wunschfarbe</span><input type="color" name="wunschfarbe" value="#0f766e" class={`${input} p-1`} /></label>
+            </div>
+          </fieldset>
+
+          <fieldset class="space-y-4">
+            <legend class={legend}>Terminbuchung</legend>
+            <label class="block"><span class={label}>Wie buchen Patienten Termine? *</span>
+              <select required name="booking_type" class={input}>
+                <option value="doctolib">Doctolib</option>
+                <option value="samedi">samedi</option>
+                <option value="link">Anderer Online-Link</option>
+                <option value="phone">Nur telefonisch</option>
+                <option value="email">Per E-Mail</option>
+              </select>
+            </label>
+            <label class="block"><span class={label}>Link zur Online-Buchung (falls vorhanden)</span><input type="url" name="booking_url" maxlength="500" pattern="https://.*" class={input} placeholder="https://www.doctolib.de/…" /></label>
+          </fieldset>
+
+          <fieldset class="space-y-4">
+            <legend class={legend}>Standort</legend>
+            <label class="block"><span class={label}>Straße und Hausnummer *</span><input required name="strasse" maxlength="200" class={input} /></label>
+            <div class="grid md:grid-cols-[10rem_1fr] gap-4">
+              <label class="block"><span class={label}>PLZ *</span><input required name="plz" inputmode="numeric" pattern="\d{5}" maxlength="5" class={input} /></label>
+              <label class="block"><span class={label}>Ort *</span><input required name="ort" maxlength="200" class={input} /></label>
+            </div>
+            <label class="block"><span class={label}>Öffnungs- und Sprechzeiten *</span><textarea required name="oeffnungszeiten" rows="4" maxlength="2000" class={area} placeholder={'Mo, Di, Do 8–12 und 15–18 Uhr\nMi, Fr 8–12 Uhr'}></textarea></label>
+            <label class="block"><span class={label}>Barrierefreiheit / Anfahrt</span><textarea name="barrierefreiheit" rows="2" maxlength="500" class={area} placeholder="Aufzug, ebenerdiger Zugang, Parkplätze, ÖPNV …"></textarea></label>
+            <p class="text-sm text-black/50 dark:text-white/50">Mehrere Standorte? Bitte unten unter „Hinweise“ angeben.</p>
+          </fieldset>
+
+          <fieldset class="space-y-4">
+            <legend class={legend}>Team & Leistungen</legend>
+            <label class="block"><span class={label}>Ärztinnen, Ärzte, Therapeuten * (eine Person pro Zeile: Name, Titel, Schwerpunkte)</span><textarea required name="team" rows="4" maxlength="5000" class={area} placeholder="Dr. med. Anna Muster, Fachärztin für Allgemeinmedizin, Diabetologie"></textarea></label>
+            <label class="block"><span class={label}>Leistungen * (eine pro Zeile, gern mit kurzer Erklärung)</span><textarea required name="leistungen" rows="6" maxlength="5000" class={area}></textarea></label>
+            <label class="block"><span class={label}>Häufige Fragen Ihrer Patienten</span><textarea name="faq_wuensche" rows="3" maxlength="3000" class={area}></textarea></label>
+          </fieldset>
+
+          <fieldset class="space-y-4">
+            <legend class={legend}>Angaben für das Impressum</legend>
+            <label class="block"><span class={label}>Zuständige Kammer *</span><input required name="kammer" maxlength="200" class={input} placeholder="Ärztekammer Nordrhein" /></label>
+            <label class="block"><span class={label}>Kassenärztliche / -zahnärztliche Vereinigung</span><input name="kv" maxlength="200" class={input} /></label>
+            <label class="block"><span class={label}>Gesetzliche Berufsbezeichnung und Staat der Verleihung *</span><input required name="berufsbezeichnung" maxlength="200" class={input} placeholder="Ärztin (Deutschland)" /></label>
+            <label class="block"><span class={label}>Berufshaftpflichtversicherung (Name, Anschrift)</span><input name="haftpflicht" maxlength="300" class={input} /></label>
+          </fieldset>
+
+          <fieldset class="space-y-4">
+            <legend class={legend}>Hinweise</legend>
+            <label class="block"><span class={label}>Alles, was wir sonst wissen sollten</span><textarea name="hinweise" rows="4" maxlength="3000" class={area}></textarea></label>
+          </fieldset>
+
+          <button type="submit" class="inline-flex h-12 px-8 items-center rounded-full bg-black text-white dark:bg-white dark:text-black font-medium">Angaben absenden</button>
+        </form>
+      </>
+    )}
+  </section>
+</Base>
