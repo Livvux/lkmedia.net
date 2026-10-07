@@ -66,9 +66,11 @@ describe('handleSubmission', () => {
     });
   });
   it('SMTP-Fehler → /fehler?grund=versand', async () => {
-    vi.spyOn(console, 'error').mockImplementation(() => {});
+    const spy = vi.spyOn(console, 'error').mockImplementation(() => {});
     const r = await handleSubmission(input(), deps({ send: async () => { throw new Error('smtp down'); } }));
     expect(r).toEqual({ status: 303, location: `${ORIGIN}/fehler?grund=versand` });
+    expect(spy).toHaveBeenCalled();
+    expect(JSON.stringify(spy.mock.calls)).not.toContain('Max Kunde');
   });
 });
 

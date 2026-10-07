@@ -6,7 +6,7 @@ export const prerender = false;
 
 const allow = createRateLimiter(5, 10 * 60 * 1000);
 
-/** Hinter Traefik: der letzte X-Forwarded-For-Eintrag stammt vom Proxy selbst, nicht vom Client. */
+/** Traefik (einziger Edge-Proxy) hängt die Client-IP als letzten X-Forwarded-For-Eintrag an; frühere Einträge sind client-geliefert und fälschbar. */
 function clientIp(request: Request, fallback: string): string {
   const xff = request.headers.get("x-forwarded-for");
   return xff?.split(",").at(-1)?.trim() || fallback;

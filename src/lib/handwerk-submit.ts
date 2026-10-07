@@ -64,11 +64,8 @@ export async function handleSubmission(i: SubmitInput, deps: SubmitDeps): Promis
   try {
     await deps.send({ ...parsed.mail, to: site.email });
   } catch (error) {
-    // Daten nicht still verlieren: Inhalt (ohne Anhänge) loggen, Absender sieht Fehler mit Telefon.
-    console.error("[handwerk] Versand fehlgeschlagen", i.siteId, i.form, error, {
-      subject: parsed.mail.subject,
-      text: parsed.mail.text,
-    });
+    // Nur Metadaten loggen (keine personenbezogenen Daten); Absender sieht /fehler mit Telefonnummer.
+    console.error("[handwerk] Versand fehlgeschlagen", i.siteId, i.form, error);
     return go("/fehler?grund=versand");
   }
   return go(`/danke?f=${i.form}`);
