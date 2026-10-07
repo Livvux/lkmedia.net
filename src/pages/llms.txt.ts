@@ -11,6 +11,7 @@ const body = `# lkmedia
 - [Luxus-Immobilien](https://lkmedia.net/luxus-immobilien)
 - [Privatkliniken](https://lkmedia.net/privatkliniken)
 - [Fahrschule Webdesign](https://lkmedia.net/fahrschule-webdesign)
+- [Websites für Handwerker (handwerkweb)](https://lkmedia.net/handwerk)
 - [Kontakt](https://lkmedia.net/kontakt)
 
 ## Contact

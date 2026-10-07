@@ -1,0 +1,163 @@
+---
+import Base from '../../layouts/Base.astro';
+import Hero from '../../components/landing/Hero.astro';
+import FaqBlock from '../../components/FaqBlock.astro';
+import { HANDWERKWEB } from '../../lib/handwerkweb';
+
+const seo = {
+  title: 'handwerkweb — Website für Handwerksbetriebe zum Festpreis',
+  description: `Website für SHK- und Elektrobetriebe: Leistungen, Referenzen, Einsatzgebiet, Projektanfrage mit Fotos und Bewerbung. ${HANDWERKWEB.setupPrice} + ${HANDWERKWEB.monthlyPrice}/Monat.`,
+  canonical: '/handwerk',
+  lang: 'de' as const,
+  alternateUrls: { de: 'https://lkmedia.net/handwerk' },
+};
+
+const ctaHref = HANDWERKWEB.paymentLink || '/kontakt#termin';
+const ctaLabel = HANDWERKWEB.paymentLink ? 'Jetzt starten →' : 'Gespräch vereinbaren →';
+
+const features = [
+  { title: 'Anfragen mit allen Angaben', body: 'Anliegen, PLZ, Objektart, Zeitrahmen, Beschreibung und bis zu 5 Fotos – strukturiert per Mail. Kein Hinterhertelefonieren für die Basics.' },
+  { title: 'Bewerbung in 60 Sekunden', body: 'Kurzbewerbung ohne Pflicht-Lebenslauf: Stelle, Name, Telefon, Erfahrung. Ihre Stellen erscheinen zusätzlich in Google for Jobs.' },
+  { title: 'Referenzen, die überzeugen', body: 'Projekte mit Ort, Jahr und Fotos. Zeigt, was Sie können – und wo Sie schon gearbeitet haben.' },
+  { title: 'Ihr Einsatzgebiet', body: 'Orte und PLZ-Gebiete auf einer eigenen Seite – lokal gefunden werden. Anfragen von außerhalb werden markiert.' },
+  { title: 'Leistungsseiten', body: 'Heizung, Wärmepumpe, Bad, Elektro, Wallbox, PV: je Leistung eine Seite mit klaren Infos und Anfrage-Button.' },
+  { title: 'Schnell, sicher, ohne Tracking', body: 'Statische Website, kein Cookie-Banner, keine Google Fonts, Hosting in der EU, barrierefrei nach WCAG 2.2 AA.' },
+];
+
+const audiences = [
+  { title: 'Sanitär, Heizung, Klima', body: 'SHK-Betriebe, Heizungsbauer, Badsanierer, Wärmepumpen-Fachbetriebe.' },
+  { title: 'Elektro', body: 'Elektroinstallateure, E-Check, Wallbox und Photovoltaik.' },
+  { title: 'Beides unter einem Dach', body: 'Haustechnik-Betriebe mit mehreren Gewerken – eine Website für alles.' },
+];
+
+const steps = [
+  { n: '01', title: 'Online buchen', body: 'Paket per Stripe bezahlen – Rechnung mit ausgewiesener Umsatzsteuer kommt automatisch.' },
+  { n: '02', title: 'Onboarding ausfüllen', body: 'Betriebsdaten, Leistungen, Einsatzgebiet, offene Stellen. Logo und Projektfotos per Mail.' },
+  { n: '03', title: 'Vorschau prüfen', body: 'Sie erhalten einen Vorschau-Link und geben Texte und Rechtsangaben frei.' },
+  { n: '04', title: 'Live gehen', body: 'Wir schalten Ihre Domain auf. Hosting, Updates und kleine Änderungen übernehmen wir.' },
+];
+
+const included = [
+  'Individuelle Website mit Ihren Inhalten, Ihrem Logo und Ihrer Farbe',
+  'Seiten: Start, Leistungen, Referenzen, Einsatzgebiet, Über uns, Karriere, Anfrage',
+  'Projektanfrage mit Foto-Upload und Kurzbewerbung – direkt in Ihr Postfach',
+  'Stellenanzeigen mit Google-for-Jobs-Auszeichnung',
+  'Impressum, Datenschutz und Barrierefreiheitserklärung (Entwurf)',
+  'Hosting in der EU, SSL, Backups, Updates',
+  'Kleine Inhaltsänderungen (bis 30 Min./Monat), z. B. neue Referenz oder Stelle',
+];
+
+const faqs = [
+  { q: 'Was kostet handwerkweb?', a: `${HANDWERKWEB.setupPrice} einmalig für die Einrichtung und ${HANDWERKWEB.monthlyPrice} pro Monat für Hosting, Wartung, Formularversand und kleine Änderungen – jeweils inklusive Umsatzsteuer. Die Mindestlaufzeit beträgt 12 Monate.` },
+  { q: 'Wie schnell ist meine Website online?', a: 'Sobald das Onboarding vollständig ist und wir Logo und Fotos haben, erhalten Sie in der Regel innerhalb von 7 Werktagen eine Vorschau. Live geht die Seite nach Ihrer Freigabe.' },
+  { q: 'Wo landen Anfragen und Bewerbungen?', a: 'Per E-Mail in Ihrem Postfach, inklusive Fotos bzw. Lebenslauf als Anhang. Sie können direkt auf die Mail antworten. Wir speichern die Einsendungen nicht.' },
+  { q: 'Ich habe kaum Fotos von Projekten.', a: 'Handyfotos reichen. Wir wählen aus und optimieren sie. Neue Referenzen ergänzen wir laufend im Rahmen der monatlichen Änderungen.' },
+  { q: 'Ist die Website DSGVO-konform?', a: 'Die Website lädt keine externen Dienste: keine Cookies, kein Tracking, keine Google Fonts, keine Karten-Embeds. Formulare werden über unseren Server in der EU an Sie weitergeleitet; dafür schließen wir einen Auftragsverarbeitungsvertrag.' },
+  { q: 'Sind die Rechtstexte rechtssicher?', a: 'Wir bereiten Impressum (inkl. Handwerkskammer) und Datenschutzerklärung vor. Eine Rechtsberatung ersetzt das nicht – bitte prüfen Sie die Texte vor dem Go-live bzw. lassen Sie sie prüfen.' },
+  { q: 'Was passiert nach 12 Monaten?', a: 'Der Vertrag verlängert sich monatlich und ist dann monatlich kündbar. Auf Wunsch übergeben wir Ihnen den Quellcode.' },
+];
+
+const productSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Product',
+  name: 'handwerkweb – Website für Handwerksbetriebe',
+  description: seo.description,
+  brand: { '@type': 'Organization', name: 'lkmedia' },
+  url: 'https://lkmedia.net/handwerk',
+  offers: {
+    '@type': 'Offer',
+    price: '1990.00',
+    priceCurrency: 'EUR',
+    availability: 'https://schema.org/InStock',
+    url: 'https://lkmedia.net/handwerk',
+  },
+};
+---
+<Base seo={seo} jsonLd={[productSchema]}>
+  <Hero
+    headline="Mehr passende Aufträge. Mehr Bewerbungen."
+    sub={`Die Website für SHK- und Elektrobetriebe: zeigt Ihre Arbeit und sorgt dafür, dass Anfragen mit den richtigen Angaben ankommen. ${HANDWERKWEB.setupPrice} einmalig + ${HANDWERKWEB.monthlyPrice}/Monat.`}
+    ctaHref="#preis" ctaLabel="Paket ansehen"
+    secondaryHref={HANDWERKWEB.demoUrl} secondaryLabel="Demo ansehen"
+    deviceImage="/images/handwerkweb-demo.webp" deviceAlt="Startseite der handwerkweb-Demo: Haustechnik-Betrieb mit Leistungen, Einsatzgebiet und Anfrage-Button"
+    deviceHref={HANDWERKWEB.demoUrl} />
+
+  <section class="py-24 px-6 max-w-6xl mx-auto">
+    <h2 class="text-3xl md:text-5xl font-semibold tracking-tight mb-12">Für wen handwerkweb gemacht ist.</h2>
+    <div class="grid md:grid-cols-3 gap-6">
+      {audiences.map((a) => (
+        <div class="rounded-2xl border border-black/10 dark:border-white/10 p-8">
+          <h3 class="text-xl font-semibold mb-3">{a.title}</h3>
+          <p class="text-black/70 dark:text-white/70 leading-relaxed">{a.body}</p>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <section class="py-24 px-6 max-w-6xl mx-auto border-t border-black/10 dark:border-white/10">
+    <h2 class="text-3xl md:text-5xl font-semibold tracking-tight mb-12">Was Ihre Website kann.</h2>
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
+      {features.map((f) => (
+        <div>
+          <h3 class="text-xl font-semibold mb-3">{f.title}</h3>
+          <p class="text-black/70 dark:text-white/70 leading-relaxed">{f.body}</p>
+        </div>
+      ))}
+    </div>
+    <a href={HANDWERKWEB.demoUrl} target="_blank" rel="noopener" class="mt-12 inline-flex h-11 px-6 items-center rounded-full border border-black/30 dark:border-white/30 text-sm font-medium">
+      Live-Demo öffnen →
+    </a>
+  </section>
+
+  <section class="py-24 px-6 max-w-6xl mx-auto border-t border-black/10 dark:border-white/10">
+    <h2 class="text-3xl md:text-5xl font-semibold tracking-tight mb-12">So läuft es ab.</h2>
+    <ol class="grid md:grid-cols-4 gap-8">
+      {steps.map((s) => (
+        <li>
+          <div class="text-sm tracking-widest text-black/40 dark:text-white/40 mb-3">{s.n}</div>
+          <h3 class="text-xl font-semibold mb-2">{s.title}</h3>
+          <p class="text-black/70 dark:text-white/70 leading-relaxed">{s.body}</p>
+        </li>
+      ))}
+    </ol>
+  </section>
+
+  <section id="preis" class="py-24 px-6 max-w-6xl mx-auto border-t border-black/10 dark:border-white/10 scroll-mt-20">
+    <div class="grid lg:grid-cols-2 gap-12 items-start">
+      <div>
+        <h2 class="text-3xl md:text-5xl font-semibold tracking-tight">Ein Paket. Ein Preis.</h2>
+        <p class="mt-5 text-lg text-black/70 dark:text-white/70 leading-relaxed">
+          Kein Angebot, kein Baukasten, keine Agentur-Stundensätze. Wir bauen und betreuen Ihre Website, zeigen Ihre Arbeit und sorgen dafür, dass Anfragen mit den richtigen Angaben ankommen.
+        </p>
+      </div>
+      <div class="rounded-2xl border border-black/10 dark:border-white/15 bg-black/[0.02] dark:bg-white/[0.03] p-8 md:p-10">
+        <div class="text-sm tracking-widest text-black/50 dark:text-white/50">HANDWERKWEB KOMPLETTPAKET</div>
+        <div class="mt-4 flex flex-wrap items-baseline gap-x-3">
+          <span class="text-5xl font-semibold tracking-tight">{HANDWERKWEB.setupPrice}</span>
+          <span class="text-black/60 dark:text-white/60">einmalig</span>
+        </div>
+        <div class="mt-1 text-xl"><span class="font-semibold">+ {HANDWERKWEB.monthlyPrice}</span> <span class="text-black/60 dark:text-white/60">/ Monat</span></div>
+        <p class="mt-2 text-sm text-black/50 dark:text-white/50">inkl. USt. · 12 Monate Mindestlaufzeit, danach monatlich kündbar</p>
+        <ul class="mt-8 space-y-3">
+          {included.map((i) => (
+            <li class="flex gap-3"><span aria-hidden="true" class="text-black/40 dark:text-white/40">✓</span><span>{i}</span></li>
+          ))}
+        </ul>
+        <a href={ctaHref} class="mt-10 flex h-12 w-full items-center justify-center rounded-full bg-black text-white dark:bg-white dark:text-black font-medium hover:bg-black/90 dark:hover:bg-white/90 transition">
+          {ctaLabel}
+        </a>
+        <p class="mt-3 text-center text-xs text-black/50 dark:text-white/50">
+          Sichere Zahlung über Stripe · Es gelten die <a href="/handwerk/agb" class="underline">AGB für handwerkweb</a>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <FaqBlock items={faqs} />
+
+  <section class="py-24 px-6 text-center border-t border-black/10 dark:border-white/10">
+    <h2 class="text-3xl md:text-5xl font-semibold tracking-tight">Lieber erst sprechen?</h2>
+    <p class="mt-4 text-black/70 dark:text-white/70">15 Minuten, unverbindlich – wir klären, ob handwerkweb zu Ihrem Betrieb passt.</p>
+    <a href="/kontakt#termin" class="mt-8 inline-flex h-12 px-6 items-center rounded-full border border-black/30 dark:border-white/30 font-medium">Kurzes Gespräch buchen</a>
+  </section>
+</Base>
