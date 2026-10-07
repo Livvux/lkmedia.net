@@ -1,0 +1,61 @@
+---
+import type { Service } from '../../lib/services-content';
+interface Props { service: Service; reverse?: boolean }
+const { service, reverse = false } = Astro.props;
+---
+<section id={service.id} class:list={['service-section', { 'is-reverse': reverse }]} aria-labelledby={`${service.id}-heading`}>
+  <div class="wrap service-layout">
+    <div class="service-copy">
+      <h2 id={`${service.id}-heading`} class="service-heading">
+        <span class="service-name">{service.name}</span>
+        <span class="section-title">{service.title}</span>
+      </h2>
+      <p class="section-sub service-body">{service.body}</p>
+      <ul class="service-points">
+        {service.points.map((point) => (
+          <li>
+            <svg width="17" height="17" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8.5l3 3 7-7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
+            <span>{point}</span>
+          </li>
+        ))}
+      </ul>
+      <a class="service-case" href={service.link.href}>
+        {service.link.label}
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
+      </a>
+    </div>
+    <div class="service-visual"><slot /></div>
+  </div>
+</section>
+
+<style>
+  .service-section { scroll-margin-top: 156px; padding: 112px 0; border-bottom: 1px solid var(--border); }
+  .service-layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.04fr); align-items: center; gap: 88px; }
+  .service-copy { max-width: 530px; }
+  .service-heading { display: flex; flex-direction: column-reverse; gap: 20px; }
+  .service-heading .section-title { display: block; }
+  .service-name { display: block; font-size: 14px; font-weight: 500; line-height: 1.5; color: var(--accent); }
+  .service-body { margin-top: 16px; }
+  .service-points { display: grid; gap: 15px; margin-top: 30px; }
+  .service-points li { display: flex; align-items: flex-start; gap: 12px; font-size: 14px; line-height: 1.65; color: var(--fg); }
+  .service-points svg { flex: 0 0 auto; margin-top: 3px; color: var(--ok); }
+  .service-case { display: inline-flex; align-items: center; gap: 10px; min-height: 44px; margin-top: 24px; font-size: 14px; color: var(--fg-muted); text-underline-offset: 5px; }
+  .service-case svg { flex: 0 0 auto; transition: transform 180ms var(--ease-out); }
+  .service-case:hover { color: var(--fg); text-decoration: underline; }
+  .service-case:hover svg { transform: translateX(3px); }
+  .service-visual { min-width: 0; }
+  @media (min-width: 960px) { .is-reverse .service-copy { order: 2; } }
+  @media (max-width: 1100px) { .service-layout { gap: 48px; } }
+  @media (max-width: 959px) {
+    .service-layout { grid-template-columns: minmax(0, 1fr); gap: 40px; }
+    .service-copy { max-width: 680px; }
+    .service-visual { max-width: 640px; width: 100%; }
+  }
+  @media (max-width: 640px) {
+    .service-section { padding: 64px 0; scroll-margin-top: 138px; }
+    .service-heading { gap: 16px; }
+    .service-points { margin-top: 24px; gap: 12px; }
+    .service-case { margin-top: 20px; }
+  }
+  @media (prefers-reduced-motion: reduce) { .service-case svg { transition: none; } }
+</style>
