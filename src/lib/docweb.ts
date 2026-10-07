@@ -1,4 +1,5 @@
 // docweb – Website-Paket für Arztpraxen (Produktseite /docweb, Onboarding nach Stripe-Checkout).
+import { checkPaidSession, SESSION_ID } from "./stripe";
 
 export const DOCWEB = {
   setupPrice: "1.490 €",
@@ -12,7 +13,6 @@ export const DOCWEB = {
 const TYPES = ["arzt", "psychotherapie", "zahnarzt"] as const;
 const BOOKING = ["doctolib", "samedi", "link", "phone", "email"] as const;
 const KASSEN = ["gesetzlich", "privat", "selbstzahler"] as const;
-const SESSION_ID = /^cs_(test|live)_[A-Za-z0-9]{1,200}$/;
 
 export interface Onboarding {
   sessionId: string;
@@ -168,28 +168,6 @@ hinweise: ${q(d.hinweise)}
 `;
 }
 
-/** Prüft per Stripe-API, ob die Checkout-Session bezahlt ist. */
-export async function checkSession(
-  id: string,
-  secretKey: string,
-  fetchFn: typeof fetch = fetch,
-): Promise<{ paid: boolean; email?: string }> {
-  if (!SESSION_ID.test(id)) return { paid: false };
-  try {
-    const r = await fetchFn(`https://api.stripe.com/v1/checkout/sessions/${id}`, {
-      headers: { Authorization: `Bearer ${secretKey}` },
-    });
-    if (!r.ok) return { paid: false };
-    const s = (await r.json()) as {
-      payment_status?: string;
-      payment_link?: string | null;
-      customer_details?: { email?: string };
-    };
-    // Nur Käufe über den docweb-Link zählen, nicht andere Produkte im selben Stripe-Konto.
-    const paid = s.payment_status === "paid" && s.payment_link === DOCWEB.paymentLinkId;
-    return { paid, email: s.customer_details?.email };
-  } catch (error) {
-    console.error("[docweb] Stripe session check failed", error);
-    return { paid: false };
-  }
-}
+/** Prüft per Stripe-API, ob die Checkout-Session über den docweb-Link bezahlt ist. */
+export const checkSession = (id: string, secretKey: string, fetchFn: typeof fetch = fetch) =>
+  checkPaidSession(id, secretKey, DOCWEB.paymentLinkId, fetchFn);
