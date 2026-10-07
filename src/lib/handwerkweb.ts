@@ -64,15 +64,18 @@ export function parseOnboarding(f: FormData): ParseResult {
   const name = required("betrieb_name", "Betriebsname");
   const gewerke = f
     .getAll("gewerke")
-    .map(String)
+    .flatMap((v) => String(v).split(","))
+    .map((g) => g.trim())
+    .filter((g, i, a) => a.indexOf(g) === i)
     .filter((g): g is (typeof GEWERKE)[number] => (GEWERKE as readonly string[]).includes(g));
   if (!gewerke.length) errors.push("Mindestens ein Gewerk wählen");
   const telefon = required("telefon", "Telefon", 40);
   const email = required("email", "E-Mail", 120);
   if (email && !EMAIL.test(email)) errors.push("E-Mail ungültig");
-  const wunschfarbe = str(f, "wunschfarbe", 7);
+  // Erst prüfen, dann speichern: Abschneiden vor der Prüfung ließe "761234" durchgehen.
+  const wunschfarbe = str(f, "wunschfarbe", 100);
   if (wunschfarbe && !/^#[0-9a-fA-F]{6}$/.test(wunschfarbe)) errors.push("Wunschfarbe ungültig");
-  const plz = required("plz", "PLZ", 5);
+  const plz = required("plz", "PLZ", 100);
   if (plz && !/^\d{5}$/.test(plz)) errors.push("PLZ muss fünfstellig sein");
 
   const data: Onboarding = {

@@ -29,6 +29,8 @@ export const ERFAHRUNG = [
 export const MAX_FILES = 5;
 export const MAX_TOTAL_BYTES = 15 * 1024 * 1024;
 const IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp", "image/heic", "image/heif"];
+/** Manche Browser (v. a. iOS/Windows) liefern bei HEIC keinen MIME-Type. */
+const HEIC_BY_EXT: Record<string, string> = { heic: "image/heic", heif: "image/heif" };
 const CV_TYPES = [...IMAGE_TYPES, "application/pdf"];
 const EMAIL = /^[^\s@,;<>"']+@[^\s@,;<>"']+\.[^\s@,;<>"']+$/;
 /** Schneller ausgefüllt = Bot. `dauer` setzt ein Inline-Script; ohne JS fehlt es → kein Urteil. */
@@ -64,7 +66,7 @@ const rows = (r: [string, string][]) =>
 export function isBot(f: FormData): boolean {
   if (str(f, "website")) return true;
   const dauer = str(f, "dauer");
-  return dauer !== "" && Number(dauer) < MIN_FILL_MS;
+  return dauer !== "" && !(Number(dauer) >= MIN_FILL_MS);
 }
 
 async function collectFiles(
@@ -75,11 +77,13 @@ async function collectFiles(
   const files = f.getAll(field).filter((v): v is File => typeof v !== "string" && v.size > 0);
   if (files.length > MAX_FILES) return null;
   if (files.reduce((n, x) => n + x.size, 0) > MAX_TOTAL_BYTES) return null;
-  if (files.some((x) => !allowed.includes(x.type))) return null;
+  const typeOf = (x: File) =>
+    x.type || HEIC_BY_EXT[/\.(heic|heif)$/i.exec(x.name)?.[1].toLowerCase() ?? ""] || "";
+  if (files.some((x) => !allowed.includes(typeOf(x)))) return null;
   return Promise.all(
     files.map(async (x, i) => ({
       filename: x.name.replace(/[^\w.\- äöüÄÖÜß]/g, "_").slice(0, 100) || `datei-${i + 1}`,
-      contentType: x.type,
+      contentType: typeOf(x),
       content: Buffer.from(await x.arrayBuffer()),
     })),
   );

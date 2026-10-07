@@ -14,11 +14,13 @@ export async function sendMail(m: OutgoingMail): Promise<void> {
   const user = env("SMTP_USER");
   const pass = env("SMTP_PASS");
   if (!host || !user || !pass) throw new Error("SMTP nicht konfiguriert (SMTP_HOST/USER/PASS)");
+  const port = Number(env("SMTP_PORT") ?? 587);
+  const secure = port === 465;
   transport ??= nodemailer.createTransport({
     host,
-    port: Number(env("SMTP_PORT") ?? 587),
-    secure: false,
-    requireTLS: true,
+    port,
+    secure,
+    requireTLS: !secure,
     auth: { user, pass },
   });
   await transport.sendMail({

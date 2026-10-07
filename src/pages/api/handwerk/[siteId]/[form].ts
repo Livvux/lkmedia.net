@@ -1,16 +1,11 @@
 import type { APIRoute } from "astro";
+import { clientIp } from "../../../../lib/client-ip";
 import { createRateLimiter, handleSubmission } from "../../../../lib/handwerk-submit";
 import { sendMail } from "../../../../lib/mailer";
 
 export const prerender = false;
 
 const allow = createRateLimiter(5, 10 * 60 * 1000);
-
-/** Traefik (einziger Edge-Proxy) hängt die Client-IP als letzten X-Forwarded-For-Eintrag an; frühere Einträge sind client-geliefert und fälschbar. */
-function clientIp(request: Request, fallback: string): string {
-  const xff = request.headers.get("x-forwarded-for");
-  return xff?.split(",").at(-1)?.trim() || fallback;
-}
 
 export const POST: APIRoute = async ({ params, request, clientAddress }) => {
   const r = await handleSubmission(

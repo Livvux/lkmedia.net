@@ -99,4 +99,21 @@ describe('isBot', () => {
   it('zu schnell abgeschickt', () => expect(isBot(fd({ dauer: '800' }))).toBe(true));
   it('ohne JS (kein dauer) ist kein Bot', () => expect(isBot(fd({}))).toBe(false));
   it('normal ausgefüllt', () => expect(isBot(fd({ dauer: '45000' }))).toBe(false));
+  it('nicht-numerisches dauer ist Bot', () => expect(isBot(fd({ dauer: 'abc' }))).toBe(true));
+  it('negatives dauer ist Bot', () => expect(isBot(fd({ dauer: '-5' }))).toBe(true));
+});
+
+describe('HEIC ohne MIME-Type', () => {
+  it('erkennt .HEIC/.heif anhand der Endung', async () => {
+    const r = await parseAnfrage(
+      anfrage({ fotos: [img('IMG_1.HEIC', 10, ''), img('b.heif', 10, '')] }),
+      [],
+    );
+    expect(r.ok).toBe(true);
+    if (r.ok) expect(r.mail.attachments.map((a) => a.contentType)).toEqual(['image/heic', 'image/heif']);
+  });
+  it('lehnt leeren Typ mit anderer Endung ab', async () => {
+    const r = await parseAnfrage(anfrage({ fotos: img('x.exe', 10, '') }), []);
+    expect(r).toEqual({ ok: false, grund: 'dateien' });
+  });
 });

@@ -32,6 +32,17 @@ describe('parseOnboarding', () => {
     expect(r.ok).toBe(true);
     if (r.ok) expect(r.data.betrieb.gewerke).toEqual(['shk', 'elektro']);
   });
+  it('splittet kommagetrennte Gewerke (Radio "Beides")', () => {
+    const r = parseOnboarding(form({ gewerke: 'shk,elektro' }));
+    expect(r.ok).toBe(true);
+    if (r.ok) expect(r.data.betrieb.gewerke).toEqual(['shk', 'elektro']);
+  });
+  it('lehnt zu lange PLZ und Wunschfarbe ab (kein Abschneiden)', () => {
+    const a = parseOnboarding(form({ plz: '761234' }));
+    expect(!a.ok && a.errors.join()).toMatch(/PLZ/);
+    const b = parseOnboarding(form({ wunschfarbe: '#1234567890' }));
+    expect(!b.ok && b.errors.join()).toMatch(/Wunschfarbe/);
+  });
   it('verlangt mindestens ein Gewerk', () => {
     const r = parseOnboarding(form({ gewerke: [] }));
     expect(!r.ok && r.errors.join()).toMatch(/Gewerk/);

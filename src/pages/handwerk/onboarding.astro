@@ -59,8 +59,9 @@ const legend = 'text-xl font-semibold mb-4';
             <div>
               <span class={label}>Gewerke *</span>
               <div class="mt-2 flex flex-wrap gap-6">
-                <label class="flex items-center gap-2"><input type="checkbox" name="gewerke" value="shk" /> Sanitär, Heizung, Klima</label>
-                <label class="flex items-center gap-2"><input type="checkbox" name="gewerke" value="elektro" /> Elektro</label>
+                <label class="flex items-center gap-2"><input type="radio" name="gewerke" value="shk" required /> Sanitär, Heizung, Klima</label>
+                <label class="flex items-center gap-2"><input type="radio" name="gewerke" value="elektro" required /> Elektro</label>
+                <label class="flex items-center gap-2"><input type="radio" name="gewerke" value="shk,elektro" required /> Beides</label>
               </div>
             </div>
             <label class="flex items-center gap-2"><input type="checkbox" name="meisterbetrieb" value="ja" /> Meisterbetrieb</label>
