@@ -28,4 +28,6 @@ export default defineConfig({
     routing: { prefixDefaultLocale: false },
   },
   prefetch: { prefetchAll: true, defaultStrategy: 'viewport' },
+  // Eigener CSRF-Check in src/middleware.ts (Proxy-Origin + Handwerker-Endpoint), siehe src/lib/csrf.ts.
+  security: { checkOrigin: false },
 });
