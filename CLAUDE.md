@@ -51,6 +51,10 @@ Dynamic routes: `src/pages/[slug].astro` (root-level posts), `src/pages/blog/`, 
 
 `src/pages/api/contact.ts` — Resend-backed contact form handler (requires `RESEND_API_KEY` env).
 
+`src/pages/api/docweb-onboarding.ts` / `handwerk-onboarding.ts` — Onboarding nach Stripe-Checkout (Payment-Link-Check in `src/lib/stripe.ts`).
+
+`src/pages/api/handwerk/[siteId]/[form].ts` — Formular-Endpoint für handwerkweb-Kunden-Websites (Projektanfrage, Bewerbung). Empfänger/Origins nur aus `src/lib/handwerk-sites.ts`; Versand per SMTP (`src/lib/mailer.ts`, Env `SMTP_*`). Astros `security.checkOrigin` ist aus; CSRF prüft `src/lib/csrf.ts` in der Middleware.
+
 ### Scripts
 
 - `scripts/device-mockup.mjs` — generates landing device mockup image.

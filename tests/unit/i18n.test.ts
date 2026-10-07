@@ -14,6 +14,7 @@ describe('i18n', () => {
     expect(routeFor('about', 'en')).toBe('/en/about');
     expect(routeFor('home', 'de')).toBe('/');
     expect(routeFor('home', 'en')).toBe('/en/');
+    expect(routeFor('craftsmen', 'de')).toBe('/handwerk');
   });
   it('translates keys', () => {
     const t = useTranslations('de');
