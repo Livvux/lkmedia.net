@@ -1,0 +1,41 @@
+---
+import { homeContent } from '../../lib/home-content';
+import type { Lang } from '../../lib/i18n';
+import { servicesContent } from '../../lib/services-content';
+import ProcessSteps from '../home/ProcessSteps.astro';
+import FinalCta from '../home/FinalCta.astro';
+import ServicesHero from './ServicesHero.astro';
+import ServiceNavigation from './ServiceNavigation.astro';
+import ServiceSection from './ServiceSection.astro';
+import ServiceVisual from './ServiceVisual.astro';
+import ServicesProof from './ServicesProof.astro';
+import ServicesDetails from './ServicesDetails.astro';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const content = servicesContent[lang];
+---
+<div class="services-page">
+  <ServicesHero hero={content.hero} lang={lang} />
+  <ServiceNavigation label={content.hero.navigationLabel} services={content.services} />
+  {content.services.map((service, index) => (
+    <ServiceSection service={service} reverse={index % 2 === 1}>
+      <ServiceVisual kind={service.id} lang={lang} />
+    </ServiceSection>
+  ))}
+  <ServicesProof proof={content.proof} lang={lang} />
+  <ProcessSteps process={homeContent[lang].process} />
+  <ServicesDetails investment={content.investment} faq={content.faq} />
+  <FinalCta cta={content.cta} />
+</div>
+
+<style>
+  .services-page { --fg-dim: #a1a1aa; }
+  .services-page :global([data-reveal]) { opacity: 1; transform: none; transition: none; }
+  .services-page :global(.display) { letter-spacing: -0.04em; }
+  @media (max-width: 640px) {
+    .services-page :global(.process) { padding-block: 64px; }
+    .services-page :global(.steps) { margin-top: 40px; gap: 28px; }
+    .services-page :global(.final) { padding: 88px 0; }
+  }
+</style>

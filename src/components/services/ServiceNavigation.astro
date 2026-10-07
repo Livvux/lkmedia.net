@@ -1,0 +1,60 @@
+---
+import type { ServicesContent } from '../../lib/services-content';
+interface Props { label: string; services: ServicesContent['services'] }
+const { label, services } = Astro.props;
+const labels = { websites: 'Websites', seo: 'SEO & Content', conversion: 'Conversion' };
+---
+<nav class="service-navigation" aria-label={label}>
+  <div class="wrap service-links">
+    {services.map((service) => (
+      <a href={`#${service.id}`} data-service-link>
+        <span>{labels[service.id]}</span>
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M8 3v10M4 9l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
+      </a>
+    ))}
+  </div>
+</nav>
+
+<style>
+  .service-navigation { position: sticky; top: 60px; z-index: 30; border-block: 1px solid var(--border); background: var(--bg); }
+  .service-links { display: flex; justify-content: center; gap: 48px; }
+  .service-links a { position: relative; min-height: 64px; display: inline-flex; align-items: center; justify-content: center; gap: 24px; padding: 0 4px; font-size: 14px; color: var(--fg-muted); transition: color 180ms; }
+  .service-links a::after { position: absolute; content: ''; height: 2px; inset: auto 0 -1px; background: var(--fg); transform: scaleX(0); transition: transform 200ms var(--ease-out); }
+  .service-links a:hover, .service-links a[aria-current] { color: var(--fg); }
+  .service-links a[aria-current]::after { transform: scaleX(1); }
+  .service-links svg { color: var(--fg-muted); }
+  @media (max-width: 640px) {
+    .service-links { display: grid; grid-template-columns: 1fr 1.2fr 1fr; gap: 10px; }
+    .service-links a { min-height: 56px; font-size: 12px; gap: 8px; }
+    .service-links svg { display: none; }
+  }
+  @media (prefers-reduced-motion: reduce) { .service-links a, .service-links a::after { transition: none; } }
+</style>
+
+<script>
+  const links = [...document.querySelectorAll<HTMLAnchorElement>('[data-service-link]')];
+  const sections = links.map((link) => document.getElementById(link.hash.slice(1)));
+  let frame = 0;
+  function updateCurrentService() {
+    frame = 0;
+    let current: string | undefined;
+    const anchorOffset = sections[0] ? Number.parseFloat(getComputedStyle(sections[0]).scrollMarginTop) : 0;
+    const activationLine = Math.max(window.innerHeight * 0.4, anchorOffset + 1);
+    for (const section of sections) {
+      if (section && section.getBoundingClientRect().top <= activationLine) {
+        current = `#${section.id}`;
+      }
+    }
+    for (const link of links) {
+      if (link.hash === current) link.setAttribute('aria-current', 'location');
+      else link.removeAttribute('aria-current');
+    }
+  }
+  function scheduleUpdate() {
+    if (!frame) frame = requestAnimationFrame(updateCurrentService);
+  }
+  window.addEventListener('scroll', scheduleUpdate, { passive: true });
+  window.addEventListener('resize', scheduleUpdate, { passive: true });
+  window.addEventListener('pageshow', scheduleUpdate);
+  updateCurrentService();
+</script>
