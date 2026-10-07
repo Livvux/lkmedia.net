@@ -6,19 +6,19 @@ import { DOCWEB } from '../../lib/docweb';
 
 const seo = {
   title: 'docweb — Website für Arztpraxen zum Festpreis',
-  description: `Praxis-Website für Ärzte, Psychotherapeuten und Zahnärzte: barrierefrei, ohne Tracking, in der EU gehostet. ${DOCWEB.setupPrice} einmalig + ${DOCWEB.monthlyPrice}/Monat, online buchbar.`,
+  description: `Website für Arztpraxen, Psychotherapie und Zahnärzte: für alle gut lesbar, ohne Datensammeln, Server in der EU, mit Terminkalender. ${DOCWEB.setupPrice} einmalig + ${DOCWEB.monthlyPrice}/Monat.`,
   canonical: '/docweb',
   lang: 'de' as const,
   alternateUrls: { de: 'https://lkmedia.net/docweb' },
 };
 
 const features = [
-  { title: 'Online-Termine', body: 'Doctolib, samedi oder eigener Buchungslink – prominent auf jeder Seite. Ohne Online-Buchung: Telefon oder E-Mail als Termin-Button.' },
-  { title: 'Barrierefrei nach WCAG 2.2 AA', body: 'Jede Seite wird automatisch auf Barrieren geprüft: Kontraste, Tastaturbedienung, Screenreader. Erklärung zur Barrierefreiheit inklusive.' },
-  { title: 'Kein Tracking, kein Cookie-Banner', body: 'Keine Google Fonts, keine Karten-Embeds, keine Analyse-Tools. Patientendaten verlassen Ihre Website nicht.' },
-  { title: 'Lokal gefunden werden', body: 'Strukturierte Daten für Google (Praxis, Ärzte, Öffnungszeiten, FAQ), Arzt-Profilseiten und llms.txt für KI-Suchen wie ChatGPT.' },
-  { title: 'Alles, was Patienten suchen', body: 'Leistungen, Team, Öffnungszeiten mit „jetzt geöffnet“, Anfahrt, Notfallnummern, FAQ und Ratgeber.' },
-  { title: 'Rechtstexte für Heilberufe', body: 'Impressum mit Kammer, Berufsbezeichnung und Berufsordnung sowie Datenschutzerklärung – als Entwurf vorbereitet, von uns geprüft.' },
+  { title: 'Terminkalender Ihrer Praxis', body: 'Der Knopf „Termin buchen“ steht auf jeder Seite und öffnet den Kalender Ihrer Praxis bei Ihrem Kalender-Dienst, zum Beispiel Doctolib oder samedi. Dort wählen Patienten einen freien Termin. Wir verbinden den Kalender und prüfen vor dem Start, dass die Buchung klappt. Telefon und E-Mail bleiben immer sichtbar.' },
+  { title: 'Für alle verständlich', body: 'Kurze Sätze, Alltagswörter, Fachbegriffe erklären wir direkt im Text. Große Schrift, starke Kontraste, Bedienung auch ohne Maus und mit Vorlese-Programmen. Jede Seite wird automatisch nach dem Standard für barrierefreie Websites (WCAG 2.2 AA) geprüft. Die gesetzliche Erklärung zur Barrierefreiheit gehört dazu.' },
+  { title: 'Keine Datensammler, kein Cookie-Banner', body: 'Wir binden keine fremden Dienste ein: keine Google-Schriften, keine Karten von Dritten, keine Besucher-Statistik. Daten Ihrer Patienten verlassen Ihre Website nicht.' },
+  { title: 'Immer aktuell', body: 'Die Anzeige „Jetzt geöffnet“ kennt die Feiertage Ihres Bundeslands und Ihren Urlaub und zeigt dann „Heute geschlossen“. Alle 3 Monate prüfen wir Ihre Seite von uns aus auf veraltete Angaben und melden uns bei Ihnen.' },
+  { title: 'Gut gefunden werden', body: 'Google und KI-Assistenten wie ChatGPT finden Ihre Praxis, Ihr Team und Ihre Öffnungszeiten leichter, weil wir diese Angaben so hinterlegen, dass Suchmaschinen sie lesen können.' },
+  { title: 'Rechtstexte für Heilberufe', body: 'Impressum mit Kammer, Berufsbezeichnung und Berufsordnung sowie Datenschutzerklärung. Wir bereiten sie als Entwurf vor, Sie prüfen und geben frei.' },
 ];
 
 const audiences = [
@@ -28,29 +28,34 @@ const audiences = [
 ];
 
 const steps = [
-  { n: '01', title: 'Online buchen', body: 'Paket per Stripe bezahlen – Rechnung mit ausgewiesener Umsatzsteuer kommt automatisch.' },
-  { n: '02', title: 'Onboarding ausfüllen', body: 'Praxisdaten, Team, Leistungen, Öffnungszeiten. Logo und Fotos schicken Sie per Mail.' },
-  { n: '03', title: 'Vorschau prüfen', body: 'Sie erhalten einen Vorschau-Link und geben Texte und Rechtsangaben frei.' },
-  { n: '04', title: 'Live gehen', body: 'Wir schalten Ihre Domain auf. Hosting, Updates und kleine Änderungen übernehmen wir.' },
+  { n: '01', title: 'Paket bestellen', body: 'Sie bezahlen online mit Stripe. Die Rechnung mit ausgewiesener Umsatzsteuer kommt automatisch per E-Mail.' },
+  { n: '02', title: 'Praxisdaten eintragen', body: 'Praxis, Team, Leistungen, Öffnungszeiten, Urlaub und Link zu Ihrem Terminkalender. Logo und Fotos schicken Sie per E-Mail.' },
+  { n: '03', title: 'Vorschau ansehen', body: 'Sie bekommen einen Link zu Ihrer neuen Website, lesen alle Texte und Rechtsangaben und geben sie frei.' },
+  { n: '04', title: 'Website geht online', body: 'Wir prüfen, dass Ihr Terminkalender sich öffnet und freie Termine zeigt, und schalten Ihre Internetadresse (Domain) auf. Betrieb, Updates und kleine Änderungen übernehmen wir.' },
 ];
 
 const included = [
-  'Individuelle Praxis-Website mit Ihren Inhalten und Ihrer Farbe',
-  'Seiten: Start, Leistungen, Team, Praxis, Kontakt, FAQ, Ratgeber',
-  'Impressum, Datenschutz und Barrierefreiheitserklärung (Entwurf)',
-  'Hosting in der EU, SSL, tägliche Backups',
-  'Updates und kleine Inhaltsänderungen (bis 30 Min./Monat)',
-  'Ihre Domain – oder wir helfen bei der Registrierung',
+  'Website mit Ihren Texten, Fotos und Ihrer Farbe',
+  'Seiten: Start, Leistungen, Team, Praxis, Kontakt, Häufige Fragen, Ratgeber',
+  'Terminknopf mit Anbindung an den Kalender Ihrer Praxis – von uns eingerichtet und getestet',
+  'Öffnungszeiten mit Feiertagen und Urlaub, Prüfung auf veraltete Angaben alle 3 Monate',
+  'Impressum, Datenschutz und Erklärung zur Barrierefreiheit (als Entwurf zur Freigabe)',
+  'Betrieb auf Servern in der EU, verschlüsselte Verbindung (das Schloss im Browser) und tägliche Sicherungen',
+  'Technische Updates und kleine Änderungen (bis 30 Minuten im Monat)',
+  'Ihre Internetadresse (Domain) – oder wir helfen bei der Anmeldung',
 ];
 
 const faqs = [
-  { q: 'Was kostet docweb?', a: `${DOCWEB.setupPrice} einmalig für die Einrichtung und ${DOCWEB.monthlyPrice} pro Monat für Hosting, Wartung und kleine Änderungen – jeweils inklusive Umsatzsteuer. Die Mindestlaufzeit beträgt 12 Monate.` },
-  { q: 'Wie schnell ist meine Website online?', a: 'Sobald das Onboarding vollständig ist und wir Logo/Fotos haben, erhalten Sie in der Regel innerhalb von 7 Werktagen eine Vorschau. Live geht die Seite nach Ihrer Freigabe.' },
-  { q: 'Ist die Website DSGVO-konform?', a: 'docweb lädt keine externen Dienste: keine Cookies, kein Tracking, keine Google Fonts, keine Karten-Embeds. Die Online-Terminbuchung wird nur verlinkt. Hosting erfolgt in der EU.' },
-  { q: 'Gibt es ein Kontaktformular?', a: 'Bewusst nicht standardmäßig: Über Formulare würden Patienten Gesundheitsdaten senden, was zusätzliche technische und vertragliche Anforderungen mit sich bringt. Patienten erreichen Sie per Telefon, E-Mail oder Online-Terminbuchung.' },
-  { q: 'Kann ich Inhalte später ändern lassen?', a: 'Ja. Kleine Änderungen (Öffnungszeiten, Urlaub, neue Teammitglieder, Texte) sind im Monatspreis enthalten. Schreiben Sie uns einfach eine Mail.' },
-  { q: 'Sind die Rechtstexte rechtssicher?', a: 'Wir bereiten Impressum und Datenschutzerklärung mit den berufsrechtlichen Pflichtangaben vor. Eine Rechtsberatung ersetzt das nicht – bitte prüfen Sie die Texte vor dem Go-live bzw. lassen Sie sie prüfen.' },
-  { q: 'Was passiert nach 12 Monaten?', a: 'Der Vertrag verlängert sich monatlich und ist dann monatlich kündbar. Auf Wunsch übergeben wir Ihnen den Quellcode, damit Sie die Website bei einem anderen Anbieter weiter betreiben können.' },
+  { q: 'Was kostet docweb?', a: `${DOCWEB.setupPrice} einmalig für die Einrichtung und ${DOCWEB.monthlyPrice} pro Monat für Betrieb, Wartung und kleine Änderungen – jeweils inklusive Umsatzsteuer. Der Vertrag läuft mindestens 12 Monate. Nicht enthalten sind die Kosten Ihres Terminkalender-Dienstes (siehe unten).` },
+  { q: 'Wie schnell ist meine Website online?', a: 'Sobald Sie Ihre Praxisdaten eingetragen und uns Logo und Fotos geschickt haben, erhalten Sie in der Regel innerhalb von 7 Werktagen einen Vorschau-Link. Online geht die Seite, nachdem Sie sie freigegeben haben.' },
+  { q: 'Wie funktioniert die Terminbuchung?', a: 'Auf jeder Seite steht der Knopf „Termin buchen“. Er führt zum Kalender Ihrer Praxis bei Ihrem Kalender-Dienst, zum Beispiel Doctolib oder samedi. Dort wählen Patienten einen freien Termin und schließen die Buchung ab. Wir richten den Link ein und prüfen vor dem Start, dass er zu Ihrem Kalender führt und freie Termine zeigt. Telefon und E-Mail bleiben zusätzlich sichtbar. Die Demo führt nur zur Startseite von Doctolib, weil sie keine echte Praxis ist.' },
+  { q: 'Was kostet der Terminkalender?', a: 'Den Kalender buchen Sie direkt bei Ihrem Kalender-Dienst, zum Beispiel Doctolib oder samedi. Dessen Preise legt der Dienst fest, sie hängen vom Tarif ab und sind nicht im docweb-Preis enthalten. Wir verbinden Ihre Website mit dem Kalender, schließen aber keinen Vertrag für Sie ab. Haben Sie noch keinen Kalender, beraten wir Sie kurz bei der Auswahl. Ohne Online-Kalender nehmen wir Telefon oder E-Mail als Weg zum Termin.' },
+  { q: 'Wie steht es um den Datenschutz (DSGVO)?', a: 'Ihre Website lädt keine fremden Dienste: keine Cookies, keine Besucher-Statistik, keine Google-Schriften, keine Karten von Dritten. Die Server stehen in der EU. Nur wenn Patienten auf „Termin buchen“ klicken, verlassen sie Ihre Seite und kommen zu Ihrem Kalender-Dienst.' },
+  { q: 'Gibt es ein Kontaktformular?', a: 'Bewusst nicht. Über ein Formular würden Patienten Gesundheitsdaten schicken, und dafür sind zusätzliche technische und rechtliche Vorkehrungen nötig. Patienten erreichen Sie per Telefon, E-Mail oder über den Terminkalender.' },
+  { q: 'Bleibt meine Website aktuell?', a: 'Ja, dafür gibt es zwei Dinge. Erstens kennt die Anzeige „Jetzt geöffnet“ die gesetzlichen Feiertage Ihres Bundeslands und Ihren eingetragenen Urlaub. Zweitens prüfen wir alle 3 Monate von uns aus Terminlink, Öffnungszeiten, Telefon, E-Mail, Team und Leistungen und schicken Ihnen danach eine kurze Nachricht. Urlaub und geänderte Sprechzeiten müssen Sie uns mitteilen – wir können sie nicht erraten.' },
+  { q: 'Kann ich Inhalte später ändern lassen?', a: 'Ja. Kleine Änderungen (Öffnungszeiten, Urlaub, neue Teammitglieder, Texte) sind im Monatspreis enthalten, bis zu 30 Minuten im Monat. Schreiben Sie uns einfach eine E-Mail.' },
+  { q: 'Sind die Rechtstexte rechtssicher?', a: 'Wir bereiten Impressum und Datenschutzerklärung mit den Pflichtangaben für Heilberufe vor. Eine Rechtsberatung ersetzt das nicht. Bitte prüfen Sie die Texte, bevor Ihre Website online geht, oder lassen Sie sie prüfen.' },
+  { q: 'Was passiert nach 12 Monaten?', a: 'Danach läuft der Vertrag monatlich weiter und Sie können jeden Monat kündigen. Wenn Sie möchten, bekommen Sie den Quellcode (das ist der Programmtext Ihrer Website), damit Sie die Website bei einem anderen Anbieter weiter betreiben können.' },
 ];
 
 const productSchema = {
@@ -72,10 +77,10 @@ const productSchema = {
 <Base seo={seo} jsonLd={[productSchema]}>
   <Hero
     headline="Die Website für Ihre Praxis. Fertig in einer Woche."
-    sub={`Für Arztpraxen, Psychotherapie und Zahnärzte – barrierefrei, ohne Tracking, in der EU gehostet. ${DOCWEB.setupPrice} einmalig + ${DOCWEB.monthlyPrice}/Monat.`}
+    sub={`Für Arztpraxen, Psychotherapie und Zahnärzte – für alle gut lesbar, ohne Datensammeln, auf Servern in der EU, mit Terminkalender. ${DOCWEB.setupPrice} einmalig + ${DOCWEB.monthlyPrice}/Monat.`}
     ctaHref="#preis" ctaLabel="Paket ansehen"
     secondaryHref={DOCWEB.demoUrl} secondaryLabel="Demo ansehen"
-    deviceImage="/images/docweb-demo.webp" deviceAlt="Startseite der docweb-Demo: Hausarztpraxis mit Öffnungszeiten und Online-Terminbuchung"
+    deviceImage="/images/docweb-demo.webp" deviceAlt="Startseite der docweb-Demo: Hausarztpraxis mit Öffnungszeiten und Terminbuchung"
     deviceHref={DOCWEB.demoUrl} />
 
   <section class="py-24 px-6 max-w-6xl mx-auto">
@@ -103,6 +108,7 @@ const productSchema = {
     <a href={DOCWEB.demoUrl} target="_blank" rel="noopener" class="mt-12 inline-flex h-11 px-6 items-center rounded-full border border-black/30 dark:border-white/30 text-sm font-medium">
       Live-Demo öffnen →
     </a>
+    <p class="mt-4 text-sm text-black/50 dark:text-white/50">Die Demo zeigt eine erfundene Praxis. Ihr Terminknopf führt dort nur zur Startseite von Doctolib – bei Ihnen direkt zu Ihrem eigenen Kalender.</p>
   </section>
 
   <section class="py-24 px-6 max-w-6xl mx-auto border-t border-black/10 dark:border-white/10">
@@ -123,7 +129,7 @@ const productSchema = {
       <div>
         <h2 class="text-3xl md:text-5xl font-semibold tracking-tight">Ein Paket. Ein Preis.</h2>
         <p class="mt-5 text-lg text-black/70 dark:text-white/70 leading-relaxed">
-          Kein Angebot, kein Baukasten, keine Agentur-Stundensätze. Sie buchen online, wir bauen und betreuen Ihre Website.
+          Kein langes Angebot, kein Baukasten, keine Stundensätze. Sie bestellen online, wir bauen und betreuen Ihre Website.
         </p>
       </div>
       <div class="rounded-2xl border border-black/10 dark:border-white/15 bg-black/[0.02] dark:bg-white/[0.03] p-8 md:p-10">
@@ -133,12 +139,15 @@ const productSchema = {
           <span class="text-black/60 dark:text-white/60">einmalig</span>
         </div>
         <div class="mt-1 text-xl"><span class="font-semibold">+ {DOCWEB.monthlyPrice}</span> <span class="text-black/60 dark:text-white/60">/ Monat</span></div>
-        <p class="mt-2 text-sm text-black/50 dark:text-white/50">inkl. USt. · 12 Monate Mindestlaufzeit, danach monatlich kündbar</p>
+        <p class="mt-2 text-sm text-black/50 dark:text-white/50">inklusive Umsatzsteuer · Vertrag mindestens 12 Monate, danach jeden Monat kündbar</p>
         <ul class="mt-8 space-y-3">
           {included.map((i) => (
             <li class="flex gap-3"><span aria-hidden="true" class="text-black/40 dark:text-white/40">✓</span><span>{i}</span></li>
           ))}
         </ul>
+        <p class="mt-6 text-sm text-black/60 dark:text-white/60">
+          Nicht im Preis: die Gebühren Ihres Kalender-Dienstes (zum Beispiel Doctolib oder samedi). Diese zahlen Sie direkt an den Dienst.
+        </p>
         <a href={DOCWEB.paymentLink} class="mt-10 flex h-12 w-full items-center justify-center rounded-full bg-black text-white dark:bg-white dark:text-black font-medium hover:bg-black/90 dark:hover:bg-white/90 transition">
           Jetzt starten →
         </a>

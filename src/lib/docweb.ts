@@ -12,6 +12,11 @@ export const DOCWEB = {
 const TYPES = ["arzt", "psychotherapie", "zahnarzt"] as const;
 const BOOKING = ["doctolib", "samedi", "link", "phone", "email"] as const;
 const KASSEN = ["gesetzlich", "privat", "selbstzahler"] as const;
+// Startseiten der Anbieter sind kein Praxiskalender – der Link muss zur Seite der Praxis führen.
+const PROVIDER_HOST = {
+  doctolib: /(^|\.)doctolib\.[a-z]+$/,
+  samedi: /(^|\.)samedi\.(de|com)$/,
+} as const;
 const SESSION_ID = /^cs_(test|live)_[A-Za-z0-9]{1,200}$/;
 
 export interface Onboarding {
@@ -33,6 +38,7 @@ export interface Onboarding {
     plz: string;
     ort: string;
     oeffnungszeiten: string;
+    urlaub: string;
     barrierefreiheit: string;
   };
   team: string;
@@ -48,6 +54,22 @@ const str = (f: FormData, k: string, max = 200) =>
   String(f.get(k) ?? "")
     .trim()
     .slice(0, max);
+
+function providerProblem(type: string, url: string): string | null {
+  const host =
+    type === "doctolib" ? PROVIDER_HOST.doctolib : type === "samedi" ? PROVIDER_HOST.samedi : null;
+  if (!host) return null;
+  try {
+    const { hostname, pathname } = new URL(url);
+    if (!host.test(hostname))
+      return `Der Terminlink gehört nicht zu ${type === "doctolib" ? "Doctolib" : "samedi"}`;
+    if (pathname.replace(/\/+$/, "") === "")
+      return "Der Terminlink führt nur zur Startseite des Kalender-Dienstes – bitte den Link zu Ihrem eigenen Kalender eintragen";
+    return null;
+  } catch {
+    return "Der Terminlink ist keine gültige Adresse";
+  }
+}
 
 export function parseOnboarding(f: FormData): ParseResult {
   const errors: string[] = [];
@@ -74,6 +96,9 @@ export function parseOnboarding(f: FormData): ParseResult {
   const bookingUrl = str(f, "booking_url", 500);
   if (["doctolib", "samedi", "link"].includes(bookingType) && !/^https:\/\/\S+$/.test(bookingUrl)) {
     errors.push("Link zur Online-Terminbuchung fehlt (https://…)");
+  } else {
+    const problem = providerProblem(bookingType, bookingUrl);
+    if (problem) errors.push(problem);
   }
 
   const wunschfarbe = str(f, "wunschfarbe", 7);
@@ -104,6 +129,7 @@ export function parseOnboarding(f: FormData): ParseResult {
       plz,
       ort: required("ort", "Ort"),
       oeffnungszeiten: required("oeffnungszeiten", "Öffnungszeiten", 2000),
+      urlaub: str(f, "urlaub", 1000),
       barrierefreiheit: str(f, "barrierefreiheit", 500),
     },
     team: required("team", "Team", 5000),
@@ -153,6 +179,7 @@ standorte:
     ort: ${q(d.standort.ort)}
     barrierefreiheit: ${q(d.standort.barrierefreiheit)}
     oeffnungszeiten: ${q(d.standort.oeffnungszeiten)}
+    urlaub: ${q(d.standort.urlaub)}
 
 team: ${q(d.team)}
 leistungen: ${q(d.leistungen)}

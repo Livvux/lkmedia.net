@@ -45,6 +45,22 @@ describe('parseOnboarding', () => {
     expect(r.ok).toBe(false);
   });
 
+  it('lehnt die Anbieter-Startseite als Terminlink ab', () => {
+    const r = parseOnboarding(form({ booking_type: 'doctolib', booking_url: 'https://www.doctolib.de/' }));
+    expect(r.ok).toBe(false);
+    if (!r.ok) expect(r.errors.join(' ')).toMatch(/Startseite des Kalender-Dienstes/);
+  });
+
+  it('lehnt einen Link ab, der nicht zum gewählten Anbieter passt', () => {
+    expect(parseOnboarding(form({ booking_type: 'samedi', booking_url: 'https://www.doctolib.de/x' })).ok).toBe(false);
+  });
+
+  it('akzeptiert den Kalender-Link einer Praxis', () => {
+    const doctolib = form({ booking_type: 'doctolib', booking_url: 'https://www.doctolib.de/praxis/rastatt/dr-test' });
+    expect(parseOnboarding(doctolib).ok).toBe(true);
+    expect(parseOnboarding(form({ booking_type: 'link', booking_url: 'https://termine.praxis-test.de/' })).ok).toBe(true);
+  });
+
   it('lehnt Mehrfach-Adressen in der E-Mail ab', () => {
     expect(parseOnboarding(form({ email: 'a@b.de,x@y.de' })).ok).toBe(false);
   });
@@ -76,6 +92,15 @@ describe('toKundeYaml', () => {
     expect(parsed.hinweise).toBe("'quote' & @at");
     expect(parsed.bestellung.stripe_session).toBe('cs_live_a1B2c3');
     expect(parsed.standorte[0].plz).toBe('76437');
+    expect(parsed.standorte[0].urlaub).toBe('');
+  });
+});
+
+describe('Urlaub', () => {
+  it('wird übernommen und ins kunde.yaml geschrieben', () => {
+    const r = parseOnboarding(form({ urlaub: '24.12.2026 bis 01.01.2027 Weihnachtsurlaub' }));
+    if (!r.ok) throw new Error(r.errors.join());
+    expect(parse(toKundeYaml(r.data, '2026-10-06')).standorte[0].urlaub).toBe('24.12.2026 bis 01.01.2027 Weihnachtsurlaub');
   });
 });
 
