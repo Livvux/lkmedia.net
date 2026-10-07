@@ -1,0 +1,114 @@
+---
+import Base from '../../layouts/Base.astro';
+import { checkSession } from '../../lib/handwerkweb';
+
+export const prerender = false;
+
+const sessionId = Astro.url.searchParams.get('session_id') ?? '';
+const fehler = Astro.url.searchParams.get('fehler');
+const stripeKey = process.env.STRIPE_SECRET_KEY ?? import.meta.env.STRIPE_SECRET_KEY;
+// Ohne Key nur im Dev-Server Formular zeigen; in Produktion nur nach bezahlter Bestellung.
+const { paid } = stripeKey ? await checkSession(sessionId, stripeKey) : { paid: import.meta.env.DEV };
+
+const seo = {
+  title: 'handwerkweb Onboarding',
+  description: 'Betriebsdaten für Ihre handwerkweb-Website übermitteln.',
+  canonical: '/handwerk/onboarding',
+  lang: 'de' as const,
+  noindex: true,
+};
+
+const input = 'mt-1 w-full h-12 px-4 rounded-xl bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 focus:border-black dark:focus:border-white focus:outline-none';
+const area = 'mt-1 w-full p-4 rounded-xl bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 focus:border-black dark:focus:border-white focus:outline-none';
+const label = 'text-sm text-black/60 dark:text-white/60';
+const legend = 'text-xl font-semibold mb-4';
+---
+<Base seo={seo}>
+  <section class="py-24 px-6 max-w-3xl mx-auto">
+    {!paid ? (
+      <>
+        <h1 class="text-4xl md:text-5xl font-semibold tracking-tight">Bestellung nicht gefunden.</h1>
+        <p class="mt-6 text-lg text-black/70 dark:text-white/70">
+          Das Onboarding ist nach dem Kauf über Stripe erreichbar. Falls Sie bereits bezahlt haben, nutzen Sie bitte den Link aus Ihrer Bestätigungsmail
+          oder schreiben Sie an <a class="underline" href="mailto:lucas@lkmedia.net">lucas@lkmedia.net</a>.
+        </p>
+        <a href="/handwerk" class="inline-flex mt-10 h-12 px-6 items-center rounded-full border border-black/30 dark:border-white/30">Zu handwerkweb</a>
+      </>
+    ) : (
+      <>
+        <h1 class="text-4xl md:text-5xl font-semibold tracking-tight">Danke für Ihre Bestellung!</h1>
+        <p class="mt-6 text-lg text-black/70 dark:text-white/70">
+          Damit wir Ihre Website bauen können, brauchen wir ein paar Angaben. Das dauert etwa 10 Minuten.
+          Felder mit * sind Pflicht. Logo und Fotos schicken Sie bitte als Antwort auf unsere Bestätigungsmail.
+        </p>
+
+        {fehler && (
+          <div role="alert" class="mt-8 rounded-xl border border-red-500/40 bg-red-500/10 p-5">
+            <p class="font-semibold">Bitte prüfen Sie Ihre Angaben:</p>
+            <p class="mt-2 text-sm">{fehler}</p>
+          </div>
+        )}
+
+        <form method="POST" action="/api/handwerk-onboarding" class="mt-12 space-y-12">
+          <input type="hidden" name="session_id" value={sessionId} />
+          <input type="text" name="website" tabindex="-1" autocomplete="off" class="hidden" aria-hidden="true" />
+
+          <fieldset class="space-y-4">
+            <legend class={legend}>Betrieb</legend>
+            <label class="block"><span class={label}>Name des Betriebs *</span><input required name="betrieb_name" maxlength="200" class={input} placeholder="Muster Haustechnik GmbH" /></label>
+            <div>
+              <span class={label}>Gewerke *</span>
+              <div class="mt-2 flex flex-wrap gap-6">
+                <label class="flex items-center gap-2"><input type="radio" name="gewerke" value="shk" required /> Sanitär, Heizung, Klima</label>
+                <label class="flex items-center gap-2"><input type="radio" name="gewerke" value="elektro" required /> Elektro</label>
+                <label class="flex items-center gap-2"><input type="radio" name="gewerke" value="shk,elektro" required /> Beides</label>
+              </div>
+            </div>
+            <label class="flex items-center gap-2"><input type="checkbox" name="meisterbetrieb" value="ja" /> Meisterbetrieb</label>
+            <label class="block"><span class={label}>Telefon *</span><input required name="telefon" type="tel" maxlength="40" class={input} /></label>
+            <label class="block"><span class={label}>E-Mail (hier kommen Anfragen und Bewerbungen an) *</span><input required name="email" type="email" maxlength="120" class={input} /></label>
+            <label class="block"><span class={label}>Notdienst (falls angeboten: Zeiten und Nummer)</span><input name="notdienst" maxlength="300" class={input} placeholder="24/7 unter 0171 …" /></label>
+            <label class="block"><span class={label}>Wunschfarbe</span><input name="wunschfarbe" type="color" value="#c2410c" class="mt-1 h-12 w-24 rounded-xl" /></label>
+            <label class="block"><span class={label}>Wunschdomain</span><input name="wunschdomain" maxlength="120" class={input} placeholder="muster-haustechnik.de" /></label>
+          </fieldset>
+
+          <fieldset class="space-y-4">
+            <legend class={legend}>Standort und Einsatzgebiet</legend>
+            <label class="block"><span class={label}>Straße und Hausnummer *</span><input required name="strasse" maxlength="200" class={input} /></label>
+            <div class="grid grid-cols-3 gap-4">
+              <label class="block"><span class={label}>PLZ *</span><input required name="plz" inputmode="numeric" pattern="\d{5}" maxlength="5" class={input} /></label>
+              <label class="block col-span-2"><span class={label}>Ort *</span><input required name="ort" maxlength="200" class={input} /></label>
+            </div>
+            <label class="block"><span class={label}>Bürozeiten *</span><textarea required name="oeffnungszeiten" rows="3" maxlength="2000" class={area} placeholder="Mo–Do 7–16 Uhr, Fr 7–13 Uhr"></textarea></label>
+            <label class="block"><span class={label}>Einsatzgebiet: Orte, Landkreise oder Umkreis *</span><textarea required name="einsatzgebiet" rows="3" maxlength="2000" class={area} placeholder="Rastatt, Baden-Baden, Gaggenau, Bühl – ca. 30 km um Rastatt"></textarea></label>
+          </fieldset>
+
+          <fieldset class="space-y-4">
+            <legend class={legend}>Leistungen, Referenzen, Team</legend>
+            <label class="block"><span class={label}>Leistungen (eine pro Zeile, gern mit Stichpunkten) *</span><textarea required name="leistungen" rows="6" maxlength="5000" class={area} placeholder="Heizungstausch – Gas, Öl, Wärmepumpe&#10;Badsanierung – komplett aus einer Hand"></textarea></label>
+            <label class="block"><span class={label}>Referenzprojekte (Was, Wo, Wann – Fotos per Mail)</span><textarea name="referenzen" rows="5" maxlength="5000" class={area} placeholder="Wärmepumpe im EFH, Gaggenau, 2025"></textarea></label>
+            <label class="block"><span class={label}>Offene Stellen</span><textarea name="stellen" rows="4" maxlength="3000" class={area} placeholder="Anlagenmechaniker SHK (m/w/d), Vollzeit&#10;Azubi Elektroniker (m/w/d) ab 09/2027"></textarea></label>
+            <label class="block"><span class={label}>Team (optional)</span><textarea name="team" rows="3" maxlength="3000" class={area}></textarea></label>
+          </fieldset>
+
+          <fieldset class="space-y-4">
+            <legend class={legend}>Angaben fürs Impressum</legend>
+            <label class="block"><span class={label}>Inhaber / Geschäftsführung *</span><input required name="inhaber" maxlength="200" class={input} /></label>
+            <label class="block"><span class={label}>Rechtsform</span><input name="rechtsform" maxlength="100" class={input} placeholder="GmbH, e. K., Einzelunternehmen …" /></label>
+            <label class="block"><span class={label}>Zuständige Handwerkskammer *</span><input required name="handwerkskammer" maxlength="200" class={input} placeholder="Handwerkskammer Karlsruhe" /></label>
+            <label class="block"><span class={label}>Handelsregister (Gericht und Nummer)</span><input name="register" maxlength="200" class={input} /></label>
+            <label class="block"><span class={label}>USt-IdNr.</span><input name="ust_id" maxlength="40" class={input} /></label>
+            <label class="block"><span class={label}>Betriebshaftpflicht (Versicherer, Geltungsbereich)</span><input name="haftpflicht" maxlength="300" class={input} /></label>
+          </fieldset>
+
+          <fieldset class="space-y-4">
+            <legend class={legend}>Sonstiges</legend>
+            <label class="block"><span class={label}>Hinweise und Wünsche</span><textarea name="hinweise" rows="4" maxlength="3000" class={area}></textarea></label>
+          </fieldset>
+
+          <button type="submit" class="inline-flex h-12 px-8 items-center rounded-full bg-black text-white dark:bg-white dark:text-black font-medium">Angaben absenden</button>
+        </form>
+      </>
+    )}
+  </section>
+</Base>

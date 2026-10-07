@@ -1,4 +1,5 @@
 import { defineMiddleware } from "astro:middleware";
+import { isBlockedCrossSitePost } from "./lib/csrf";
 import { exactRedirects } from "./lib/redirects";
 
 const SKIP_PREFIXES = [
@@ -44,6 +45,18 @@ function externalOrigin(request: Request, fallback: URL): string {
 export const onRequest = defineMiddleware(async (ctx, next) => {
   const path = ctx.url.pathname;
   const origin = externalOrigin(ctx.request, ctx.url);
+  if (
+    !ctx.isPrerendered &&
+    isBlockedCrossSitePost({
+      method: ctx.request.method,
+      contentType: ctx.request.headers.get("content-type"),
+      origin: ctx.request.headers.get("origin"),
+      selfOrigin: origin,
+      path,
+    })
+  ) {
+    return new Response("Cross-site form submissions are forbidden", { status: 403 });
+  }
   const target = exactRedirects[path] ?? exactRedirects[path.replace(/\/$/, "")];
   if (target) return Response.redirect(`${origin}${target}`, 301);
   const res = await next();

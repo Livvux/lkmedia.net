@@ -1,0 +1,20 @@
+---
+import Base from '../../layouts/Base.astro';
+const seo = {
+  title: 'Angaben erhalten',
+  description: 'Ihre handwerkweb-Angaben sind angekommen.',
+  canonical: '/handwerk/danke',
+  lang: 'de' as const,
+  noindex: true,
+};
+---
+<Base seo={seo}>
+  <section class="py-40 px-6 text-center max-w-2xl mx-auto">
+    <h1 class="text-5xl md:text-7xl font-semibold tracking-tight">Angekommen.</h1>
+    <p class="mt-6 text-xl text-black/70 dark:text-white/70">
+      Sie erhalten gleich eine Bestätigung per Mail. Schicken Sie uns als Antwort darauf Ihr Logo und Fotos
+      Ihrer Projekte – eine Vorschau Ihrer Website folgt in der Regel innerhalb von 7 Werktagen.
+    </p>
+    <a href="/" class="inline-flex mt-10 h-12 px-6 items-center rounded-full border border-black/30 dark:border-white/30">Zur Startseite</a>
+  </section>
+</Base>
