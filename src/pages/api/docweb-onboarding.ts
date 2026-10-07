@@ -1,6 +1,6 @@
 import type { APIRoute } from "astro";
 import { Resend } from "resend";
-import { checkSession, parseOnboarding, toKundeYaml } from "../../lib/docweb";
+import { checkSession, DOCWEB, parseOnboarding, toKundeYaml } from "../../lib/docweb";
 
 export const prerender = false;
 
@@ -38,6 +38,14 @@ export const POST: APIRoute = async ({ request }) => {
       { status: 503 },
     );
   }
+  const resendKey = env("RESEND_API_KEY");
+  if (!resendKey) {
+    console.error("[docweb] RESEND_API_KEY unset – rejecting onboarding");
+    return new Response(
+      "Onboarding derzeit nicht verfügbar. Bitte schreiben Sie an lucas@lkmedia.net.",
+      { status: 503 },
+    );
+  }
   const session = await checkSession(parsed.data.sessionId, stripeKey);
   if (!session.paid)
     return new Response("Bestellung nicht gefunden oder nicht bezahlt.", { status: 403 });
@@ -50,11 +58,9 @@ export const POST: APIRoute = async ({ request }) => {
 
   const d = parsed.data;
   const yaml = toKundeYaml(d, new Date().toISOString().slice(0, 10));
-  const resendKey = env("RESEND_API_KEY");
-  if (!resendKey) {
-    console.warn("[docweb] RESEND_API_KEY unset – onboarding not mailed:\n", yaml);
-  } else {
-    const resend = new Resend(resendKey);
+  let resend: Resend;
+  try {
+    resend = new Resend(resendKey);
     const sent = await resend.emails.send({
       from: FROM,
       to: TO,
@@ -64,24 +70,35 @@ export const POST: APIRoute = async ({ request }) => {
       attachments: [{ filename: "kunde.yaml", content: Buffer.from(yaml, "utf8") }],
     });
     if (sent.error) {
-      // Daten nicht verlieren: Payload loggen, Kunde bekommt trotzdem eine Fehlermeldung mit Kontakt.
-      console.error("[docweb] Resend failed", sent.error, "\n", yaml);
+      console.error("[docweb] onboarding mail rejected by provider");
       return new Response("Senden fehlgeschlagen. Bitte schreiben Sie an lucas@lkmedia.net.", {
         status: 502,
       });
     }
-    processed.add(d.sessionId);
-    // Bestätigung nur an die bei Stripe hinterlegte Käufer-Adresse, nie an Formulareingaben.
-    if (session.email)
-      await resend.emails
-        .send({
-          from: FROM,
-          to: session.email,
-          replyTo: TO,
-          subject: "Ihre docweb-Website: Angaben erhalten",
-          text: `Guten Tag,\n\nvielen Dank – wir haben Ihre Angaben für ${d.praxis.name} erhalten.\n\nBitte antworten Sie auf diese Mail mit Ihrem Logo (SVG oder PNG) und, falls vorhanden, Fotos von Team und Praxisräumen.\n\nSie erhalten in der Regel innerhalb von 7 Werktagen einen Vorschau-Link.\n\nViele Grüße\nLucas Kleipödszus\nlkmedia`,
-        })
-        .catch((error: unknown) => console.error("[docweb] confirmation mail failed", error));
+  } catch {
+    console.error("[docweb] onboarding mail request failed");
+    return new Response("Senden fehlgeschlagen. Bitte schreiben Sie an lucas@lkmedia.net.", {
+      status: 502,
+    });
+  }
+
+  processed.add(d.sessionId);
+  // Bestätigung ist sekundär und geht nur an die bei Stripe hinterlegte Käufer-Adresse.
+  if (session.email) {
+    try {
+      const confirmation = await resend.emails.send({
+        from: FROM,
+        to: session.email,
+        replyTo: TO,
+        subject: "Ihre docweb-Website: Angaben erhalten",
+        text: `Guten Tag,\n\nvielen Dank – wir haben Ihre Angaben für ${d.praxis.name} erhalten.\n\nBitte antworten Sie auf diese Mail mit Ihrem Logo (SVG oder PNG) und, falls vorhanden, Fotos von Team und Praxisräumen.\n\n${DOCWEB.deliveryPromise}\n\nViele Grüße\nLucas Kleipödszus\nlkmedia`,
+      });
+      if (confirmation.error) {
+        console.error("[docweb] confirmation mail rejected by provider");
+      }
+    } catch {
+      console.error("[docweb] confirmation mail request failed");
+    }
   }
 
   return Response.redirect(`${origin}/docweb/danke`, 303);

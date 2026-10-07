@@ -9,8 +9,13 @@ interface Props {
   deviceImage?: string
   deviceAlt?: string
   deviceHref?: string
+  metrics?: { value: string; label: string }[]
 }
-const { headline, sub, ctaHref, ctaLabel, secondaryHref, secondaryLabel, deviceImage, deviceAlt, deviceHref } = Astro.props;
+const { headline, sub, ctaHref, ctaLabel, secondaryHref, secondaryLabel, deviceImage, deviceAlt, deviceHref, metrics = [
+  { value: 'Sofort', label: 'Blitzschnell' },
+  { value: 'Top', label: 'Google-optimiert' },
+  { value: 'Premium', label: 'Exklusives Design' },
+] } = Astro.props;
 ---
 <section class="relative min-h-[92vh] flex items-center overflow-hidden px-6">
   <div class="max-w-7xl mx-auto w-full grid md:grid-cols-2 gap-12 items-center">
@@ -25,31 +30,25 @@ const { headline, sub, ctaHref, ctaLabel, secondaryHref, secondaryLabel, deviceI
         {headline}
       </h1>
 
-      <p class="mt-5 text-base md:text-lg text-black/50 dark:text-white/50 text-left">{sub}</p>
+      <p class="mt-5 text-base md:text-lg text-black/70 dark:text-white/70 text-left">{sub}</p>
 
       <!-- Metrics -->
-      <div class="mt-6 flex gap-6">
-        <div>
-          <div class="text-xl font-semibold text-black/90 dark:text-white/90">Sofort</div>
-          <div class="text-[0.6rem] uppercase tracking-widest text-black/30 dark:text-white/30 mt-0.5">Blitzschnell</div>
-        </div>
-        <div>
-          <div class="text-xl font-semibold text-black/90 dark:text-white/90">Top</div>
-          <div class="text-[0.6rem] uppercase tracking-widest text-black/30 dark:text-white/30 mt-0.5">Google-optimiert</div>
-        </div>
-        <div>
-          <div class="text-xl font-semibold text-black/90 dark:text-white/90">Premium</div>
-          <div class="text-[0.6rem] uppercase tracking-widest text-black/30 dark:text-white/30 mt-0.5">Exklusives Design</div>
-        </div>
+      <div class="mt-6 flex flex-wrap gap-6">
+        {metrics.map((metric) => (
+          <div>
+            <div class="text-xl font-semibold text-black/90 dark:text-white/90">{metric.value}</div>
+            <div class="text-xs text-black/70 dark:text-white/70 mt-0.5">{metric.label}</div>
+          </div>
+        ))}
       </div>
 
       <!-- CTAs -->
-      <div class="mt-8 flex items-center gap-5">
+      <div class="mt-8 flex flex-wrap items-center gap-5">
         <a href={ctaHref} class="inline-flex h-11 px-6 items-center rounded-full bg-black text-white dark:bg-white dark:text-black text-sm font-medium hover:bg-black/90 dark:hover:bg-white/90 transition">
           {ctaLabel} →
         </a>
         {secondaryHref && secondaryLabel && (
-          <a href={secondaryHref} class="text-sm text-black/40 dark:text-white/40 hover:text-black/70 dark:hover:text-white/70 transition">
+          <a href={secondaryHref} class="inline-flex min-h-11 items-center text-sm text-black/70 dark:text-white/70 underline underline-offset-4 hover:text-black dark:hover:text-white transition">
             {secondaryLabel}
           </a>
         )}
@@ -59,7 +58,7 @@ const { headline, sub, ctaHref, ctaLabel, secondaryHref, secondaryLabel, deviceI
           href={deviceHref}
           target="_blank"
           rel="noopener noreferrer"
-          class="md:hidden mt-4 text-sm text-black/40 dark:text-white/40 hover:text-black/70 dark:hover:text-white/70 transition"
+          class="md:hidden mt-4 inline-flex min-h-11 items-center text-sm text-black/70 dark:text-white/70 underline underline-offset-4 hover:text-black dark:hover:text-white transition"
         >
           Website ansehen →
         </a>
@@ -86,7 +85,7 @@ const { headline, sub, ctaHref, ctaLabel, secondaryHref, secondaryLabel, deviceI
               href={deviceHref}
               target="_blank"
               rel="noopener noreferrer"
-              class="absolute inset-0 rounded-t-2xl flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+              class="absolute inset-0 rounded-t-2xl flex items-center justify-center opacity-0 group-hover:opacity-100 focus-visible:opacity-100 transition-opacity duration-200"
             >
               <span class="flex items-center gap-2 rounded-full bg-white text-black text-sm font-medium px-5 py-2.5 shadow-lg">
                 Website ansehen <span aria-hidden="true">→</span>

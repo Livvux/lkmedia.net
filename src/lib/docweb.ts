@@ -1,8 +1,19 @@
 // docweb – Website-Paket für Arztpraxen (Produktseite /docweb, Onboarding nach Stripe-Checkout).
 
+const setupAmount = 1490;
+const monthlyAmount = 49;
+const minimumTermMonths = 12;
+const price = (amount: number) => `${new Intl.NumberFormat("de-DE").format(amount)} €`;
+
 export const DOCWEB = {
-  setupPrice: "1.490 €",
-  monthlyPrice: "49 €",
+  setupPrice: price(setupAmount),
+  monthlyPrice: price(monthlyAmount),
+  initialPrice: price(setupAmount + monthlyAmount),
+  minimumTotalPrice: price(setupAmount + monthlyAmount * minimumTermMonths),
+  initialAmount: setupAmount + monthlyAmount,
+  minimumTermMonths,
+  deliveryPromise:
+    "Sobald Ihre Angaben und die benötigten Bilder vollständig vorliegen, erhalten Sie in der Regel innerhalb von 7 Werktagen eine Vorschau. Wir veröffentlichen Ihre Website nach Ihrer Freigabe.",
   demoUrl: "https://docweb.lkmedia.net",
   // Stripe Payment Link (öffentlich, kein Secret). Success-URL → /docweb/onboarding?session_id=…
   paymentLink: "https://buy.stripe.com/cNi3cw7zU3LL2OMgaGeAg0o",

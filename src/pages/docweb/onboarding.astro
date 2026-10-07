@@ -1,6 +1,6 @@
 ---
 import Base from '../../layouts/Base.astro';
-import { checkSession } from '../../lib/docweb';
+import { DOCWEB, checkSession } from '../../lib/docweb';
 
 export const prerender = false;
 
@@ -39,9 +39,11 @@ const legend = 'text-xl font-semibold mb-4';
         <h1 class="text-4xl md:text-5xl font-semibold tracking-tight">Danke für Ihre Bestellung!</h1>
         <p class="mt-6 text-lg text-black/70 dark:text-white/70">
           Damit wir Ihre Website bauen können, brauchen wir ein paar Angaben. Das dauert etwa 10 Minuten.
-          Felder mit * sind Pflicht. Logo und Fotos schicken Sie bitte als Antwort auf unsere Bestätigungsmail.
+          Felder mit * sind Pflicht. Logo und Fotos schicken Sie bitte per E-Mail an lucas@lkmedia.net oder als Antwort auf unsere Bestätigungsmail.
         </p>
-        <p class="mt-4 text-sm text-black/50 dark:text-white/50">Bitte tragen Sie hier keine Patientendaten ein.</p>
+        <p class="mt-4 text-black/70 dark:text-white/70">{DOCWEB.deliveryPromise}</p>
+        <a href="/docweb#vorbereitung" class="mt-4 inline-flex min-h-11 items-center underline underline-offset-4">Checkliste zur Vorbereitung ansehen</a>
+        <p class="mt-4 text-sm text-black/70 dark:text-white/70">Bitte tragen Sie hier keine Patientendaten ein.</p>
 
         {fehler && (
           <div role="alert" class="mt-8 rounded-xl border border-red-500/40 bg-red-500/10 p-5">

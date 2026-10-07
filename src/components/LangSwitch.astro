@@ -4,16 +4,20 @@ interface Props { lang: Lang }
 const { lang } = Astro.props;
 const other: Lang = lang === 'de' ? 'en' : 'de';
 const currentPath = Astro.url.pathname;
+// Docweb and its onboarding/legal pages are currently available only in German.
+const showLanguageSwitch = currentPath !== '/docweb' && !currentPath.startsWith('/docweb/');
 const targetPath = lang === 'de'
   ? `/en${currentPath === '/' ? '' : currentPath}`
   : currentPath.replace(/^\/en/, '') || '/';
 const label = other === 'en' ? 'Switch to English' : 'Auf Deutsch wechseln';
 ---
-<a
-  href={targetPath}
-  hreflang={other}
-  aria-label={label}
-  class="font-mono text-xs uppercase tracking-wider text-[var(--fg-dim)] transition-colors hover:text-[var(--fg)]"
->
-  {other}
-</a>
+{showLanguageSwitch && (
+  <a
+    href={targetPath}
+    hreflang={other}
+    aria-label={label}
+    class="font-mono text-xs uppercase tracking-wider text-[var(--fg-dim)] transition-colors hover:text-[var(--fg)]"
+  >
+    {other}
+  </a>
+)}
