@@ -46,27 +46,28 @@ export async function handleSubmission(i: SubmitInput, deps: SubmitDeps): Promis
   // Redirect-Ziel ist der geprüfte Origin, nie ein Formularfeld.
   const go = (path: string): SubmitResult => ({ status: 303, location: `${i.origin}${path}` });
 
-  if (!(i.contentLength > 0) || i.contentLength > MAX_BODY) return go("/fehler?grund=dateien");
-  if (!deps.allow(`${i.siteId}:${i.ip}`)) return go("/fehler?grund=limit");
+  if (!(i.contentLength > 0) || i.contentLength > MAX_BODY)
+    return go(`/fehler?grund=dateien&f=${i.form}`);
+  if (!deps.allow(`${i.siteId}:${i.ip}`)) return go(`/fehler?grund=limit&f=${i.form}`);
 
   let form: FormData;
   try {
     form = await i.formData();
   } catch {
-    return go("/fehler?grund=pflichtfelder");
+    return go(`/fehler?grund=pflichtfelder&f=${i.form}`);
   }
   if (isBot(form)) return go(`/danke?f=${i.form}`);
 
   const parsed =
     i.form === "anfrage" ? await parseAnfrage(form, site.plzPraefixe) : await parseBewerbung(form);
-  if (!parsed.ok) return go(`/fehler?grund=${parsed.grund}`);
+  if (!parsed.ok) return go(`/fehler?grund=${parsed.grund}&f=${i.form}`);
 
   try {
     await deps.send({ ...parsed.mail, to: site.email });
   } catch (error) {
     // Nur Metadaten loggen (keine personenbezogenen Daten); Absender sieht /fehler mit Telefonnummer.
     console.error("[handwerk] Versand fehlgeschlagen", i.siteId, i.form, error);
-    return go("/fehler?grund=versand");
+    return go(`/fehler?grund=versand&f=${i.form}`);
   }
   return go(`/danke?f=${i.form}`);
 }

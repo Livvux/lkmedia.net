@@ -41,12 +41,12 @@ describe('handleSubmission', () => {
   });
   it('Rate-Limit → /fehler?grund=limit', async () =>
     expect(await handleSubmission(input(), deps({ allow: () => false }))).toEqual({
-      status: 303, location: `${ORIGIN}/fehler?grund=limit`,
+      status: 303, location: `${ORIGIN}/fehler?grund=limit&f=anfrage`,
     }));
   it('zu großer Body → /fehler?grund=dateien, ohne zu parsen', async () => {
     const formData = vi.fn(async () => valid());
     const r = await handleSubmission(input({ contentLength: 50 * 1024 * 1024, formData }), deps());
-    expect(r).toEqual({ status: 303, location: `${ORIGIN}/fehler?grund=dateien` });
+    expect(r).toEqual({ status: 303, location: `${ORIGIN}/fehler?grund=dateien&f=anfrage` });
     expect(formData).not.toHaveBeenCalled();
   });
   it('Bot → /danke ohne Versand', async () => {
@@ -62,13 +62,13 @@ describe('handleSubmission', () => {
     const f = valid();
     f.set('plz', 'abc');
     expect(await handleSubmission(input({ formData: async () => f }), deps())).toEqual({
-      status: 303, location: `${ORIGIN}/fehler?grund=plz`,
+      status: 303, location: `${ORIGIN}/fehler?grund=plz&f=anfrage`,
     });
   });
   it('SMTP-Fehler → /fehler?grund=versand', async () => {
     const spy = vi.spyOn(console, 'error').mockImplementation(() => {});
     const r = await handleSubmission(input(), deps({ send: async () => { throw new Error('smtp down'); } }));
-    expect(r).toEqual({ status: 303, location: `${ORIGIN}/fehler?grund=versand` });
+    expect(r).toEqual({ status: 303, location: `${ORIGIN}/fehler?grund=versand&f=anfrage` });
     expect(spy).toHaveBeenCalled();
     expect(JSON.stringify(spy.mock.calls)).not.toContain('Max Kunde');
   });
