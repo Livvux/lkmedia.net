@@ -81,23 +81,28 @@ const legend = 'text-xl font-semibold mb-4';
               <label class="block"><span class={label}>E-Mail der Praxis *</span><input required type="email" name="email" maxlength="120" class={input} /></label>
             </div>
             <div class="grid md:grid-cols-2 gap-4">
-              <label class="block"><span class={label}>Wunschdomain</span><input name="wunschdomain" maxlength="120" class={input} placeholder="praxis-muster.de" /></label>
+              <label class="block"><span class={label}>Wunsch-Internetadresse (Domain)</span><input name="wunschdomain" maxlength="120" class={input} placeholder="praxis-muster.de" /></label>
               <label class="block"><span class={label}>Wunschfarbe</span><input type="color" name="wunschfarbe" value="#0f766e" class={`${input} p-1`} /></label>
             </div>
           </fieldset>
 
           <fieldset class="space-y-4">
-            <legend class={legend}>Terminbuchung</legend>
+            <legend class={legend}>Terminkalender</legend>
+            <p class="text-sm text-black/60 dark:text-white/60">
+              Der Knopf „Termin buchen“ auf Ihrer Website öffnet den Kalender Ihrer Praxis bei Ihrem Kalender-Dienst. Wir verbinden ihn und prüfen vor dem Start, dass er freie Termine zeigt.
+              Die Gebühren des Kalender-Dienstes zahlen Sie direkt dort.
+            </p>
             <label class="block"><span class={label}>Wie buchen Patienten Termine? *</span>
               <select required name="booking_type" class={input}>
                 <option value="doctolib">Doctolib</option>
                 <option value="samedi">samedi</option>
-                <option value="link">Anderer Online-Link</option>
-                <option value="phone">Nur telefonisch</option>
-                <option value="email">Per E-Mail</option>
+                <option value="link">Anderer Online-Kalender (Link)</option>
+                <option value="phone">Ich habe keinen Online-Kalender – nur Telefon</option>
+                <option value="email">Ich habe keinen Online-Kalender – nur E-Mail</option>
               </select>
             </label>
-            <label class="block"><span class={label}>Link zur Online-Buchung (falls vorhanden)</span><input type="url" name="booking_url" maxlength="500" pattern="https://.*" class={input} placeholder="https://www.doctolib.de/…" /></label>
+            <label class="block"><span class={label}>Link zu Ihrem Kalender (bei Doctolib, samedi und anderen Online-Kalendern)</span><input type="url" name="booking_url" maxlength="500" pattern="https://.*" class={input} placeholder="https://www.doctolib.de/praxis/ihr-ort/ihre-praxis" /></label>
+            <p class="text-sm text-black/50 dark:text-white/50">Bitte den Link zu Ihrer eigenen Praxis eintragen, nicht die Startseite von Doctolib oder samedi. Öffnen Sie den Link vorher kurz selbst und prüfen Sie, dass freie Termine erscheinen.</p>
           </fieldset>
 
           <fieldset class="space-y-4">
@@ -108,7 +113,9 @@ const legend = 'text-xl font-semibold mb-4';
               <label class="block"><span class={label}>Ort *</span><input required name="ort" maxlength="200" class={input} /></label>
             </div>
             <label class="block"><span class={label}>Öffnungs- und Sprechzeiten *</span><textarea required name="oeffnungszeiten" rows="4" maxlength="2000" class={area} placeholder={'Mo, Di, Do 8–12 und 15–18 Uhr\nMi, Fr 8–12 Uhr'}></textarea></label>
-            <label class="block"><span class={label}>Barrierefreiheit / Anfahrt</span><textarea name="barrierefreiheit" rows="2" maxlength="500" class={area} placeholder="Aufzug, ebenerdiger Zugang, Parkplätze, ÖPNV …"></textarea></label>
+            <label class="block"><span class={label}>Urlaub und Betriebsferien (nächste 12 Monate, jeweils von – bis)</span><textarea name="urlaub" rows="3" maxlength="1000" class={area} placeholder={'24.12.2026 bis 01.01.2027 Weihnachtsurlaub'}></textarea></label>
+            <p class="text-sm text-black/50 dark:text-white/50">Gesetzliche Feiertage tragen wir automatisch ein. Spätere Urlaubszeiten schicken Sie uns bitte mindestens 5 Werktage vorher per E-Mail.</p>
+            <label class="block"><span class={label}>Zugang und Anfahrt</span><textarea name="barrierefreiheit" rows="2" maxlength="500" class={area} placeholder="Aufzug, ebenerdiger Zugang, Parkplätze, Bus und Bahn …"></textarea></label>
             <p class="text-sm text-black/50 dark:text-white/50">Mehrere Standorte? Bitte unten unter „Hinweise“ angeben.</p>
           </fieldset>
 

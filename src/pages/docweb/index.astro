@@ -6,19 +6,19 @@ import { DOCWEB } from '../../lib/docweb';
 
 const seo = {
   title: 'docweb — Website für Arztpraxen zum Festpreis',
-  description: `Praxis-Website für Ärzte, Psychotherapeuten und Zahnärzte: ohne Tracking, EU-Hosting. ${DOCWEB.setupPrice} Einrichtung + ${DOCWEB.monthlyPrice}/Monat inkl. USt.`,
+  description: `Website für Arztpraxen, Psychotherapie und Zahnärzte: ohne Datensammeln, Server in der EU, mit Terminkalender. ${DOCWEB.setupPrice} Einrichtung + ${DOCWEB.monthlyPrice}/Monat inkl. USt.`,
   canonical: '/docweb',
   lang: 'de' as const,
   alternateUrls: { de: 'https://lkmedia.net/docweb' },
 };
 
 const features = [
-  { title: 'Online-Termine', body: 'Doctolib, samedi oder eigener Buchungslink – prominent auf jeder Seite. Ohne Online-Buchung: Telefon oder E-Mail als Termin-Button.' },
-  { title: 'Barrierefreiheit im Aufbau berücksichtigt', body: 'Die Gestaltung orientiert sich an WCAG 2.2 AA: mit lesbaren Kontrasten, klarer Struktur und zugänglicher Bedienung. Eine vollständige Konformitätsaussage erfordert die Prüfung der fertigen Praxiswebsite.' },
-  { title: 'Ihre Praxiswebsite ohne Tracking', body: 'Keine eingebetteten Analyse- oder Kartendienste, lokal eingebundene Schriften und standardmäßig kein Kontaktformular. Die Terminbuchung führt bei Bedarf zu Ihrem externen Terminportal.' },
-  { title: 'Grundlagen für lokale Sichtbarkeit', body: 'Praxisdaten, Arztprofile, Leistungen und Öffnungszeiten werden klar aufbereitet. Strukturierte Daten helfen Suchmaschinen, diese Angaben einzuordnen.' },
-  { title: 'Alles, was Patienten suchen', body: 'Leistungen, Team, Öffnungszeiten mit „jetzt geöffnet“, Anfahrt, Notfallnummern, FAQ und Ratgeber.' },
-  { title: 'Rechtstexte für Heilberufe', body: 'Impressum mit berufsrechtlichen Angaben, Datenschutzerklärung und Barrierefreiheitserklärung werden als Entwürfe vorbereitet. Sie prüfen die Angaben und geben sie vor der Veröffentlichung frei.' },
+  { title: 'Terminkalender Ihrer Praxis', body: 'Der Knopf „Termin buchen“ steht auf jeder Seite und öffnet den Kalender Ihrer Praxis bei Ihrem Kalender-Dienst, zum Beispiel Doctolib oder samedi. Dort wählen Patienten einen freien Termin. Wir verbinden den Kalender und prüfen vor dem Start, dass er sich öffnet und freie Termine zeigt. Telefon und E-Mail bleiben immer sichtbar.' },
+  { title: 'Für alle verständlich', body: 'Kurze Sätze und Alltagswörter; Fachbegriffe erklären wir direkt im Text. Die Gestaltung richtet sich nach dem Standard für barrierefreie Websites (WCAG 2.2 AA): gut lesbare Schrift, starke Kontraste, Bedienung auch ohne Maus. Ob die fertige Seite den Standard ganz erfüllt, lässt sich erst an der fertigen Praxiswebsite prüfen.' },
+  { title: 'Keine Datensammler', body: 'Keine eingebetteten Statistik- oder Kartendienste, Schriften liegen auf unserem Server und es gibt standardmäßig kein Kontaktformular. Der Terminkalender öffnet sich bei Ihrem Kalender-Dienst, sobald Patienten auf „Termin buchen“ klicken.' },
+  { title: 'Immer aktuell', body: 'Die Anzeige „Jetzt geöffnet“ kennt die Feiertage Ihres Bundeslands und Ihren eingetragenen Urlaub und zeigt dann „Heute geschlossen“. Alle 3 Monate prüfen wir Ihre Seite von uns aus auf veraltete Angaben und schicken Ihnen eine kurze Nachricht.' },
+  { title: 'Gut gefunden werden', body: 'Praxisdaten, Arztprofile, Leistungen und Öffnungszeiten stellen wir klar dar. Zusätzlich hinterlegen wir sie so, dass Suchmaschinen sie leichter einordnen können.' },
+  { title: 'Rechtstexte für Heilberufe', body: 'Impressum mit den Angaben zu Beruf und Kammer, Datenschutzerklärung und Erklärung zur Barrierefreiheit bereiten wir als Entwurf vor. Sie prüfen die Angaben und geben sie vor der Veröffentlichung frei.' },
 ];
 
 const audiences = [
@@ -28,40 +28,45 @@ const audiences = [
 ];
 
 const steps = [
-  { n: '01', title: 'Online buchen', body: `Bei der Bestellung zahlen Sie ${DOCWEB.initialPrice} für die Einrichtung und den ersten Monat. Die Mindestlaufzeit beginnt mit der Bestellung.` },
-  { n: '02', title: 'Onboarding ausfüllen', body: 'Praxisdaten, Team, Leistungen, Öffnungszeiten. Logo und Fotos schicken Sie per Mail.' },
-  { n: '03', title: 'Vorschau prüfen', body: `${DOCWEB.deliveryPromise} Eine Korrekturschleife ist enthalten.` },
-  { n: '04', title: 'Live gehen', body: 'Wir schalten Ihre Domain auf. Hosting, Updates und kleine Änderungen übernehmen wir.' },
+  { n: '01', title: 'Paket bestellen', body: `Bei der Bestellung zahlen Sie ${DOCWEB.initialPrice} für die Einrichtung und den ersten Monat. Die Mindestlaufzeit beginnt mit der Bestellung.` },
+  { n: '02', title: 'Praxisdaten eintragen', body: 'Praxis, Team, Leistungen, Öffnungszeiten, Urlaub und Link zu Ihrem Terminkalender. Logo und Fotos schicken Sie per E-Mail.' },
+  { n: '03', title: 'Vorschau ansehen', body: `${DOCWEB.deliveryPromise} Eine Korrekturschleife ist enthalten.` },
+  { n: '04', title: 'Website geht online', body: 'Wir prüfen, dass Ihr Terminkalender freie Termine zeigt, und schalten Ihre Internetadresse (Domain) auf. Betrieb, Updates und kleine Änderungen übernehmen wir.' },
 ];
 
 const included = [
-  'Praxis-Website auf Basis von docweb mit Ihren Inhalten, Ihrem Logo und Ihrer Farbe',
-  'Seiten: Start, Leistungen, Team, Praxis, Kontakt, FAQ, Ratgeber',
-  'Impressum, Datenschutz und Barrierefreiheitserklärung (Entwurf)',
+  'Website mit Ihren Inhalten, Ihrem Logo und Ihrer Farbe',
+  'Seiten: Start, Leistungen, Team, Praxis, Kontakt, Häufige Fragen, Ratgeber',
+  'Terminknopf mit Anbindung an den Kalender Ihrer Praxis – von uns eingerichtet und getestet',
+  'Öffnungszeiten mit Feiertagen und Urlaub, Prüfung auf veraltete Angaben alle 3 Monate',
+  'Impressum, Datenschutz und Erklärung zur Barrierefreiheit (als Entwurf zur Freigabe)',
   'Eine Korrekturschleife nach der Vorschau',
-  'Hosting in der EU, SSL, Backups und technische Updates',
-  'Bis zu 30 Minuten Inhaltsänderungen pro Monat, nicht übertragbar',
-  'Support per E-Mail an Werktagen',
-  'Einrichtung auf Ihrer Domain; Domainkosten separat',
+  'Betrieb auf Servern in der EU, verschlüsselte Verbindung, Sicherungen und technische Updates',
+  'Bis zu 30 Minuten kleine Änderungen pro Monat, nicht übertragbar',
+  'Hilfe per E-Mail an Werktagen',
+  'Einrichtung auf Ihrer Internetadresse (Domain); Domainkosten extra',
 ];
 
 const preparation = [
-  { title: 'Praxis und Kontakt', body: 'Praxisname, Fachrichtung, Anschrift, Telefon, E-Mail, Öffnungs- und Sprechzeiten sowie Ihr vorhandener Terminlink. Dazu Hinweise zur Anfahrt und Zugänglichkeit.' },
+  { title: 'Praxis und Kontakt', body: 'Praxisname, Fachrichtung, Anschrift, Telefon, E-Mail, Öffnungs- und Sprechzeiten und geplanter Urlaub. Dazu der Link zum Kalender Ihrer Praxis bei Ihrem Kalender-Dienst (nicht dessen Startseite) und Hinweise zur Anfahrt.' },
   { title: 'Team und Leistungen', body: 'Namen, Titel und Schwerpunkte Ihres Teams, eine Liste Ihrer Leistungen mit kurzen Erklärungen und häufige Patientenfragen. Wir bereiten Ihre Angaben für die Website auf.' },
-  { title: 'Logo, Fotos und Domain', body: 'Ihr Logo sowie vorhandene Fotos von Team und Praxis, für die Sie die Nutzungsrechte besitzen. Dazu Ihre Wunschdomain oder die bestehende Domain und den bisherigen Anbieter. Bilder senden Sie nach dem Kauf per E-Mail.' },
-  { title: 'Berufsrechtliche Angaben', body: 'Zuständige Kammer, gegebenenfalls Kassenärztliche oder Kassenzahnärztliche Vereinigung, Berufsbezeichnung mit Verleihungsstaat und Angaben zur Berufshaftpflicht.' },
+  { title: 'Logo, Fotos und Domain', body: 'Ihr Logo sowie vorhandene Fotos von Team und Praxis, für die Sie die Nutzungsrechte besitzen. Dazu Ihre Wunsch-Internetadresse (Domain) oder die bestehende und den bisherigen Anbieter. Bilder senden Sie nach dem Kauf per E-Mail.' },
+  { title: 'Berufsrechtliche Angaben', body: 'Zuständige Kammer, gegebenenfalls Kassenärztliche oder Kassenzahnärztliche Vereinigung, Berufsbezeichnung mit dem Staat, der sie verliehen hat, und Angaben zur Berufshaftpflicht.' },
 ];
 
 const faqs = [
-  { q: 'Was kostet docweb?', a: `${DOCWEB.setupPrice} für die Einrichtung und ${DOCWEB.monthlyPrice} pro Monat. Bei Bestellung werden ${DOCWEB.initialPrice} fällig, danach ${DOCWEB.monthlyPrice} monatlich im Voraus. Die Mindestlaufzeit beginnt mit der Bestellung und beträgt ${DOCWEB.minimumTermMonths} Monate. Einrichtung und ${DOCWEB.minimumTermMonths} Monatsbeiträge kosten zusammen ${DOCWEB.minimumTotalPrice}, jeweils inklusive Umsatzsteuer und zuzüglich Domainkosten.` },
+  { q: 'Was kostet docweb?', a: `${DOCWEB.setupPrice} für die Einrichtung und ${DOCWEB.monthlyPrice} pro Monat. Bei Bestellung werden ${DOCWEB.initialPrice} fällig, danach ${DOCWEB.monthlyPrice} monatlich im Voraus. Der Vertrag läuft ab der Bestellung mindestens ${DOCWEB.minimumTermMonths} Monate. Einrichtung und ${DOCWEB.minimumTermMonths} Monatsbeiträge kosten zusammen ${DOCWEB.minimumTotalPrice}, jeweils inklusive Umsatzsteuer und zuzüglich Domainkosten.` },
   { q: 'Wie schnell ist meine Website online?', a: DOCWEB.deliveryPromise },
-  { q: 'Wie werden Datenschutz und Terminbuchung umgesetzt?', a: 'Ihre Praxiswebsite nutzt lokal eingebundene Schriften und keine eingebetteten Analyse- oder Kartendienste. Ein externer Buchungsanbieter wird verlinkt; dessen Datenschutzbedingungen gelten beim Besuch des Terminportals. Das Hosting erfolgt in der EU. Den erforderlichen Vertrag zur Auftragsverarbeitung für das Hosting stellen wir bereit.' },
-  { q: 'Gibt es ein Kontaktformular?', a: 'Ein Kontaktformular ist im Paket nicht enthalten. Patienten erreichen Sie telefonisch, per E-Mail oder über Ihren Terminlink. Sensible Gesundheitsdaten sollten nicht per unverschlüsselter E-Mail versendet werden.' },
-  { q: 'Kann ich Inhalte später ändern lassen?', a: 'Ja. Für kleine Änderungen an Öffnungszeiten, Urlaubshinweisen, Team oder Texten sind bis zu 30 Minuten pro Monat enthalten. Ungenutzte Zeit wird nicht übertragen. Schreiben Sie uns per E-Mail; zusätzlichen Aufwand stimmen wir vor der Umsetzung mit Ihnen ab.' },
-  { q: 'Was ist zusätzlich zu bezahlen?', a: 'Domainkosten und Gebühren externer Terminportale sind nicht enthalten. Fotografie, neue Texte über die Aufbereitung Ihrer Angaben hinaus und Rechtsberatung gehören ebenfalls nicht zum Paket. Mehrere Standorte, zusätzliche Detailseiten, weitere Sprachen oder weitere Funktionen besprechen wir vor der Bestellung und vereinbaren den Umfang sowie mögliche Zusatzkosten.' },
-  { q: 'Kann meine bestehende Website umziehen?', a: 'Die Einrichtung auf Ihrer Domain ist enthalten. Wenn bestehende Inhalte oder Seitenadressen übernommen werden sollen, klären wir den Umzugsumfang vor der Bestellung. Dazu gehören die Domain, vorhandene E-Mail-Postfächer und benötigte Weiterleitungen. Bitte sprechen Sie uns dazu vor dem Kauf an.' },
-  { q: 'Sind die Rechtstexte rechtssicher?', a: 'Wir bereiten Impressum und Datenschutzerklärung mit den berufsrechtlichen Pflichtangaben vor. Eine Rechtsberatung ersetzt das nicht – bitte prüfen Sie die Texte vor dem Go-live bzw. lassen Sie sie prüfen.' },
-  { q: `Was passiert nach ${DOCWEB.minimumTermMonths} Monaten?`, a: 'Der Vertrag verlängert sich jeweils um einen Monat. Danach ist eine Kündigung mit einem Monat Frist zum Monatsende per E-Mail möglich. Nach der Mindestlaufzeit und vollständiger Zahlung erhalten Sie auf Wunsch den Quellcode, um die Website bei einem anderen Anbieter weiterzubetreiben.' },
+  { q: 'Wie funktioniert die Terminbuchung?', a: 'Auf jeder Seite steht der Knopf „Termin buchen“. Er führt zum Kalender Ihrer Praxis bei Ihrem Kalender-Dienst, zum Beispiel Doctolib oder samedi. Dort wählen Patienten einen freien Termin und schließen die Buchung ab. Wir richten den Link ein und prüfen vor dem Start, dass er zu Ihrem Kalender führt und freie Termine zeigt. Telefon und E-Mail bleiben zusätzlich sichtbar. Die Demo führt nur zur Startseite von Doctolib, weil sie keine echte Praxis ist.' },
+  { q: 'Was kostet der Terminkalender?', a: 'Den Kalender buchen Sie direkt bei Ihrem Kalender-Dienst. Dessen Preise legt der Dienst fest, sie hängen vom Tarif ab und sind nicht im docweb-Preis enthalten. Wir verbinden Ihre Website mit dem Kalender, schließen aber keinen Vertrag für Sie ab. Haben Sie noch keinen Kalender, beraten wir Sie kurz bei der Auswahl. Ohne Online-Kalender nehmen wir Telefon oder E-Mail als Weg zum Termin.' },
+  { q: 'Wie steht es um den Datenschutz (DSGVO)?', a: 'Ihre Website nutzt Schriften von unserem eigenen Server und keine eingebetteten Statistik- oder Kartendienste. Das Hosting erfolgt in der EU. Wenn Patienten auf „Termin buchen“ klicken, gelten die Datenschutzbedingungen Ihres Kalender-Dienstes. Den nötigen Vertrag zur Auftragsverarbeitung für das Hosting stellen wir bereit.' },
+  { q: 'Gibt es ein Kontaktformular?', a: 'Ein Kontaktformular ist im Paket nicht enthalten. Patienten erreichen Sie telefonisch, per E-Mail oder über Ihren Terminlink. Gesundheitsdaten sollten Patienten nicht per einfacher E-Mail schicken, weil diese unterwegs mitgelesen werden kann.' },
+  { q: 'Bleibt meine Website aktuell?', a: 'Ja, dafür gibt es zwei Dinge. Erstens kennt die Anzeige „Jetzt geöffnet“ die gesetzlichen Feiertage Ihres Bundeslands und Ihren eingetragenen Urlaub. Zweitens prüfen wir alle 3 Monate von uns aus Terminlink, Öffnungszeiten, Telefon, E-Mail, Team und Leistungen und schicken Ihnen danach eine kurze Nachricht. Urlaub und geänderte Sprechzeiten müssen Sie uns mitteilen – wir können sie nicht erraten.' },
+  { q: 'Kann ich Inhalte später ändern lassen?', a: 'Ja. Für kleine Änderungen an Öffnungszeiten, Urlaub, Team oder Texten sind bis zu 30 Minuten pro Monat enthalten. Ungenutzte Zeit wird nicht übertragen. Schreiben Sie uns per E-Mail; zusätzlichen Aufwand stimmen wir vor der Umsetzung mit Ihnen ab. Die Prüfung alle 3 Monate kommt zusätzlich dazu.' },
+  { q: 'Was ist zusätzlich zu bezahlen?', a: 'Domainkosten und die Gebühren Ihres Kalender-Dienstes (zum Beispiel Doctolib oder samedi) sind nicht enthalten. Diese zahlen Sie direkt an den Dienst. Fotografie, neue Texte über die Aufbereitung Ihrer Angaben hinaus und Rechtsberatung gehören ebenfalls nicht zum Paket. Mehrere Standorte, zusätzliche Detailseiten, weitere Sprachen oder weitere Funktionen besprechen wir vor der Bestellung und vereinbaren den Umfang sowie mögliche Zusatzkosten.' },
+  { q: 'Kann meine bestehende Website umziehen?', a: 'Die Einrichtung auf Ihrer Domain ist enthalten. Wenn bestehende Inhalte oder Seitenadressen übernommen werden sollen, klären wir den Umzugsumfang vor der Bestellung. Dazu gehören die Internetadresse (Domain), vorhandene E-Mail-Postfächer und Weiterleitungen von alten Adressen. Bitte sprechen Sie uns dazu vor dem Kauf an.' },
+  { q: 'Sind die Rechtstexte rechtssicher?', a: 'Wir bereiten Impressum und Datenschutzerklärung mit den berufsrechtlichen Pflichtangaben vor. Eine Rechtsberatung ersetzt das nicht – bitte prüfen Sie die Texte, bevor Ihre Website online geht, oder lassen Sie sie prüfen.' },
+  { q: `Was passiert nach ${DOCWEB.minimumTermMonths} Monaten?`, a: 'Der Vertrag verlängert sich jeweils um einen Monat. Sie können dann mit einem Monat Frist zum Monatsende per E-Mail kündigen. Nach der Mindestlaufzeit und vollständiger Zahlung erhalten Sie auf Wunsch den Quellcode (den Programmtext Ihrer Website), um sie bei einem anderen Anbieter weiterzubetreiben.' },
 ];
 
 const productSchema = {
@@ -85,7 +90,7 @@ const productSchema = {
 <Base seo={seo} jsonLd={[productSchema]}>
   <Hero
     headline="Die Website für Ihre Praxis. Zum Festpreis."
-    sub={`Für Arztpraxen, Psychotherapie und Zahnärzte – ohne Tracking, in der EU gehostet. ${DOCWEB.deliveryPromise}`}
+    sub={`Für Arztpraxen, Psychotherapie und Zahnärzte – verständlich, mit Terminkalender, ohne Datensammeln. ${DOCWEB.deliveryPromise}`}
     metrics={[
       { value: DOCWEB.setupPrice, label: 'Einrichtung inkl. USt.' },
       { value: DOCWEB.monthlyPrice, label: 'pro Monat inkl. USt.' },
@@ -93,7 +98,7 @@ const productSchema = {
     ]}
     ctaHref="#preis" ctaLabel="Paket ansehen"
     secondaryHref={DOCWEB.demoUrl} secondaryLabel="Demo ansehen"
-    deviceImage="/images/docweb-demo.webp" deviceAlt="Startseite der docweb-Demo: Hausarztpraxis mit Öffnungszeiten und Online-Terminbuchung"
+    deviceImage="/images/docweb-demo.webp" deviceAlt="Startseite der docweb-Demo: Hausarztpraxis mit Öffnungszeiten und Terminbuchung"
     deviceHref={DOCWEB.demoUrl} />
 
   <section class="py-24 px-6 max-w-6xl mx-auto">
@@ -121,6 +126,7 @@ const productSchema = {
     <a href={DOCWEB.demoUrl} target="_blank" rel="noopener" class="mt-12 inline-flex h-11 px-6 items-center rounded-full border border-black/30 dark:border-white/30 text-sm font-medium">
       Live-Demo öffnen →
     </a>
+    <p class="mt-4 text-sm text-black/70 dark:text-white/70">Die Demo zeigt eine erfundene Praxis. Ihr Terminknopf führt dort nur zur Startseite von Doctolib – bei Ihnen direkt zu Ihrem eigenen Kalender.</p>
   </section>
 
   <section class="py-24 px-6 max-w-6xl mx-auto border-t border-black/10 dark:border-white/10">
@@ -139,7 +145,7 @@ const productSchema = {
   <section id="vorbereitung" aria-labelledby="vorbereitung-title" class="py-24 px-6 max-w-6xl mx-auto border-t border-black/10 dark:border-white/10 scroll-mt-20">
     <h2 id="vorbereitung-title" class="text-3xl md:text-5xl font-semibold tracking-tight">Das benötigen wir von Ihnen.</h2>
     <p class="mt-5 max-w-3xl text-lg text-black/70 dark:text-white/70 leading-relaxed">
-      Diese Checkliste können Sie schon vor der Bestellung durchgehen. Nach dem Kauf tragen Sie Ihre Angaben im Onboarding ein.
+      Diese Checkliste können Sie schon vor der Bestellung durchgehen. Nach dem Kauf tragen Sie Ihre Angaben in einem kurzen Formular ein.
       Der Zeitraum bis zur Vorschau beginnt, sobald alle benötigten Inhalte vorliegen.
     </p>
     <div class="mt-10 grid md:grid-cols-2 gap-8">
@@ -161,10 +167,10 @@ const productSchema = {
       <div>
         <h2 class="text-3xl md:text-5xl font-semibold tracking-tight">Ein Paket. Ein Preis.</h2>
         <p class="mt-5 text-lg text-black/70 dark:text-white/70 leading-relaxed">
-          Sie buchen das Praxis-Paket online. Wir bereiten Ihre Inhalte auf, erstellen die Website und übernehmen den laufenden Betrieb.
+          Sie bestellen das Praxis-Paket online. Wir bereiten Ihre Inhalte auf, erstellen die Website und übernehmen den laufenden Betrieb.
         </p>
         <p class="mt-5 text-black/70 dark:text-white/70 leading-relaxed">
-          Nicht enthalten: Domainkosten, Gebühren externer Terminportale, Fotografie, weitergehende Texterstellung und Rechtsberatung.
+          Nicht enthalten: Domainkosten, Gebühren Ihres Kalender-Dienstes (zum Beispiel Doctolib oder samedi), Fotografie, weitergehende Texterstellung und Rechtsberatung.
           Erweiterungen und zusätzlichen Aufwand vereinbaren wir vorab.
         </p>
         <a href="#vorbereitung" class="mt-6 inline-flex min-h-11 items-center underline underline-offset-4">Checkliste für Ihre Bestellung ansehen →</a>
