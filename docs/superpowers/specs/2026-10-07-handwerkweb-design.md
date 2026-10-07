@@ -24,6 +24,7 @@ Erfolg (v1):
 | Preis | 1.990 € einmalig + 69 €/Monat inkl. USt., 12 Monate Mindestlaufzeit, danach monatlich kündbar |
 | Formulare | Zentraler Endpoint auf lkmedia.net; Kunden-Sites bleiben rein statisch |
 | Karriere | Stellenanzeigen (Markdown, JobPosting-Schema) + Kurzbewerbung, Lebenslauf optional |
+| Mailversand | SMTP über AWS SES Mail Manager (nodemailer), Zugangsdaten nur als Env |
 | Architektur | docweb-Template kopieren und anpassen (kein gemeinsames Core-Paket, YAGNI) |
 
 ## Teil 1: Template `Livvux/handwerkweb` (neues Repo, `~/handwerkweb`)
@@ -115,10 +116,11 @@ Ablauf:
    Fehler → 303 auf `<origin>/fehler?grund=…`.
 6. Dateien: nur `image/jpeg|png|webp|heic` und (Bewerbung) `application/pdf`; max. 5 Dateien,
    max. 15 MB gesamt; Leere File-Felder ignorieren. Verstoß → `/fehler`.
-7. Versand per Resend an `email` des Betriebs, `replyTo` = Absender-E-Mail (falls gültig),
+7. Versand per SMTP (AWS SES Mail Manager, `nodemailer`; Env `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`,
+   `SMTP_PASS`, optional `SMTP_FROM`, Default `lkmedia.net <no-reply@lkmedia.net>`) an `email` des Betriebs, `replyTo` = Absender-E-Mail (falls gültig),
    Betreff z. B. `Anfrage: Heizungstausch · 76437 Rastatt · Max Muster` bzw. `Bewerbung: Anlagenmechaniker SHK · Max Muster`,
    Text als strukturierte Liste, Dateien als Anhänge.
-8. Erfolg → 303 auf `<origin>/danke?f=anfrage|bewerbung`. Resend-Fehler → Payload ohne Anhänge loggen,
+8. Erfolg → 303 auf `<origin>/danke?f=anfrage|bewerbung`. SMTP-Fehler → Payload ohne Anhänge loggen,
    303 auf `/fehler?grund=versand`.
 
 Keine Speicherung. lkmedia ist Auftragsverarbeiter des Betriebs (AVV-Abschnitt in den AGB).
@@ -132,7 +134,8 @@ Nach dem Muster docweb:
   `parseOnboarding`, `toKundeYaml`. `checkSession` wird aus `docweb.ts` so verallgemeinert, dass
   die erwartete Payment-Link-ID ein Parameter ist; docweb ruft sie mit seiner ID auf.
 - Seiten: `src/pages/handwerk/index.astro` (Produktseite), `onboarding.astro`, `danke.astro`, `agb.astro`.
-- `src/pages/api/handwerk-onboarding.ts` analog `docweb-onboarding.ts`.
+- `src/pages/api/handwerk-onboarding.ts` analog `docweb-onboarding.ts`, Versand über denselben
+  SMTP-Mailer wie der Formular-Endpoint (`src/lib/mailer.ts`). docweb/Kontakt bleiben auf Resend.
 - Integration: `routes.craftsmen` in `i18n.ts`, Footer-Spalte „Branchen“, `llms.txt`, Datenschutz-
   Abschnitt (Bestellung + Formular-Endpoint als Auftragsverarbeitung), Sitemap automatisch.
 - Nur Deutsch (wie docweb).
