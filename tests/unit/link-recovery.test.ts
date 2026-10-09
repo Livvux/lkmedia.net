@@ -19,6 +19,7 @@ function setup(find: LinkRecoveryDeps["find"]) {
     registry: { bySession: async (s) => (s === "cs_test_a" ? ({ name: "Fahrschule Test" } as never) : undefined) },
     send: async (m) => void sent.push(m),
     allow: createRateLimiter(3, 3_600_000),
+    allowMail: createRateLimiter(3, 3_600_000),
   };
   return { deps, sent };
 }
@@ -62,7 +63,7 @@ describe("handleLinkRecovery", () => {
     });
     expect(await handleLinkRecovery(fd(MAIL), "1.1.1.1", deps)).toEqual({ status: 200, email: MAIL });
     expect(sent).toHaveLength(0);
-    expect(console.error).toHaveBeenCalledWith("[link-recovery] stripe failed: Error");
+    expect(console.error).toHaveBeenCalledWith("[link-recovery] failed: Error");
   });
 
   it("rejects an invalid address with the value kept", async () => {
@@ -73,16 +74,48 @@ describe("handleLinkRecovery", () => {
   });
 });
 
+describe("per-address limit", () => {
+  it("sends at most 3 mails per address across IPs with identical responses", async () => {
+    const { deps, sent } = setup(async () => [{ id: "cs_test_a", produkt: "fahrschulweb" }]);
+    const rs = [];
+    for (const ip of ["1.1.1.1", "2.2.2.2", "3.3.3.3", "4.4.4.4"])
+      rs.push(await handleLinkRecovery(fd("Kunde@Example.test"), ip, deps));
+    expect(sent).toHaveLength(3);
+    expect(rs.map((r) => ({ status: r.status, fehler: r.fehler }))).toEqual(
+      Array(4).fill({ status: 200, fehler: undefined }),
+    );
+  });
+});
+
 describe("findSessionsByEmail", () => {
+  const sess = (email: string, id = "cs_test_1") => ({
+    id,
+    payment_status: "paid",
+    payment_link: PAYMENT_LINKS.fahrschulweb,
+    customer_details: { email },
+  });
+  const stripe = (data: object[]) =>
+    vi.fn(async () => new Response(JSON.stringify({ data }))) as unknown as typeof fetch;
+
+  it("drops sessions whose buyer email differs", async () => {
+    expect(await findSessionsByEmail(MAIL, "sk", stripe([sess("anderer@example.test")]))).toEqual([]);
+  });
+
+  it("matches the buyer email case-insensitively", async () => {
+    expect(await findSessionsByEmail(" kunde@example.test ", "sk", stripe([sess("Kunde@Example.test")]))).toEqual([
+      { id: "cs_test_1", produkt: "fahrschulweb" },
+    ]);
+  });
+
   it("queries by customer_details[email] and keeps only paid sessions of our payment links", async () => {
     const f = vi.fn(
       async () =>
         new Response(
           JSON.stringify({
             data: [
-              { id: "cs_test_1", payment_status: "paid", payment_link: PAYMENT_LINKS.fahrschulweb },
-              { id: "cs_test_2", payment_status: "unpaid", payment_link: PAYMENT_LINKS.fahrschulweb },
-              { id: "cs_test_3", payment_status: "paid", payment_link: "plink_fremd" },
+              { id: "cs_test_1", payment_status: "paid", payment_link: PAYMENT_LINKS.fahrschulweb, customer_details: { email: MAIL } },
+              { id: "cs_test_2", payment_status: "unpaid", payment_link: PAYMENT_LINKS.fahrschulweb, customer_details: { email: MAIL } },
+              { id: "cs_test_3", payment_status: "paid", payment_link: "plink_fremd", customer_details: { email: MAIL } },
             ],
           }),
         ),

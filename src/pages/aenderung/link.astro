@@ -12,6 +12,7 @@ export const prerender = false;
 
 // ponytail: In-Memory, pro Prozess (3 Anfragen/Stunde/IP); bei mehreren Instanzen Redis o. Ä.
 const allow = createRateLimiter(3, 3_600_000);
+const allowMail = createRateLimiter(3, 3_600_000);
 
 let status = 200;
 let fehler: string | undefined;
@@ -27,6 +28,7 @@ if (Astro.request.method === 'POST') {
       registry,
       send: sendMail,
       allow,
+      allowMail,
     });
     status = r.status;
     fehler = r.fehler;

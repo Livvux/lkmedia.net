@@ -27,6 +27,8 @@ export type LinkRecoveryDeps = {
   registry: Pick<Registry, "bySession">;
   send: (m: OutgoingMail) => Promise<void>;
   allow: (key: string) => boolean;
+  /** Limit je Zieladresse (3/Stunde), damit IP-Wechsel keine Mail-Flut auslösen. */
+  allowMail: (key: string) => boolean;
 };
 
 const errName = (e: unknown) => (e instanceof Error ? e.name : "unknown");
@@ -40,6 +42,8 @@ export async function handleLinkRecovery(
   const email = typeof raw === "string" ? raw.trim() : "";
   if (!EMAIL.test(email) || email.length > 254) return { status: 400, fehler: EMAIL_FEHLER, email };
   if (!deps.allow(`link:${ip}`)) return { status: 400, fehler: LIMIT_FEHLER, email };
+  // Limit je Adresse erreicht: still überspringen, Antwort bleibt gleich.
+  if (!deps.allowMail(`link-mail:${email.toLowerCase()}`)) return { status: 200, email };
   try {
     if (!deps.stripeKey) throw new Error("STRIPE_SECRET_KEY fehlt");
     const treffer = await deps.find(email, deps.stripeKey);
@@ -54,7 +58,7 @@ export async function handleLinkRecovery(
       await deps.send({ to: email, ...linkMail({ links }), attachments: [] });
     }
   } catch (e) {
-    console.error(`[link-recovery] stripe failed: ${errName(e)}`);
+    console.error(`[link-recovery] failed: ${errName(e)}`);
   }
   return { status: 200, email };
 }

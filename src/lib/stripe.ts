@@ -95,9 +95,17 @@ export async function findSessionsByEmail(
   });
   if (!r.ok) throw new Error(`Stripe ${r.status}`);
   const { data = [] } = (await r.json()) as {
-    data?: { id: string; payment_status?: string; payment_link?: string | null }[];
+    data?: {
+      id: string;
+      payment_status?: string;
+      payment_link?: string | null;
+      customer_details?: { email?: string | null } | null;
+    }[];
   };
+  const gesucht = email.trim().toLowerCase();
   return data.flatMap((s) => {
+    // Links sind Zugangsdaten: nicht allein auf Stripes Filter verlassen, Käuferadresse selbst prüfen.
+    if (s.customer_details?.email?.trim().toLowerCase() !== gesucht) return [];
     const produkt = PRODUKTE.find((p) => PAYMENT_LINKS[p] && PAYMENT_LINKS[p] === s.payment_link);
     return produkt && s.payment_status === "paid" ? [{ id: s.id, produkt }] : [];
   });
