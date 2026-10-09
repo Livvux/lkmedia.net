@@ -2,7 +2,7 @@ import type { APIRoute } from "astro";
 import { createGitHub } from "../../lib/github";
 import { checkSession, HANDWERKWEB, parseOnboarding, toKundeYaml } from "../../lib/handwerkweb";
 import { sendMail } from "../../lib/mailer";
-import { handleOnboarding, toResponse } from "../../lib/onboarding-submit";
+import { handleOnboarding, readOnboardingForm, toResponse } from "../../lib/onboarding-submit";
 import { createRateLimiter } from "../../lib/site-submit";
 
 export const prerender = false;
@@ -12,12 +12,8 @@ const env = (k: string): string | undefined => process.env[k] ?? import.meta.env
 const allow = createRateLimiter(1, 60_000);
 
 export const POST: APIRoute = async ({ request }) => {
-  let form: FormData;
-  try {
-    form = await request.formData();
-  } catch {
-    return new Response("Ungültige Anfrage.", { status: 400 });
-  }
+  const form = await readOnboardingForm(request);
+  if (form instanceof Response) return form;
   const token = env("GITHUB_KUNDEN_TOKEN");
   const r = await handleOnboarding(
     { produkt: "handwerkweb", form },

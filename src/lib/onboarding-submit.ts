@@ -205,6 +205,24 @@ export async function hatOnboarding(gh: GitHub | null, sessionId: string): Promi
   }
 }
 
+/**
+ * Liest den Formular-Body erst, wenn Content-Length vorhanden und klein genug ist
+ * (Bilder-Gesamtlimit plus 1 MB für Felder) – sonst 413, ungültiger Body 400.
+ */
+export async function readOnboardingForm(request: Request): Promise<FormData | Response> {
+  const len = request.headers.get("content-length") ?? "";
+  if (!/^\d+$/.test(len) || Number(len) > UPLOAD_LIMITS.gesamtBytes + 1024 * 1024) {
+    return new Response("Die Dateien sind zu groß. Bitte weniger oder kleinere Bilder auswählen.", {
+      status: 413,
+    });
+  }
+  try {
+    return await request.formData();
+  } catch {
+    return new Response("Ungültige Anfrage.", { status: 400 });
+  }
+}
+
 /** Übersetzt das Ergebnis in eine HTTP-Antwort. */
 export const toResponse = (r: OnboardingResult): Response =>
   "location" in r

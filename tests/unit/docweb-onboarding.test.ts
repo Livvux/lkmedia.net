@@ -5,6 +5,7 @@ import { DOCWEB } from '../../src/lib/docweb';
 import { KUNDEN_REPO, sessionHash } from '../../src/lib/pipeline';
 import { aenderungUrl } from '../../src/lib/stripe';
 import { createGitHubFake } from './helpers/github-fake';
+import { formRequest } from './helpers/form-request';
 
 const { sendMail, gh } = vi.hoisted(() => ({
   sendMail: vi.fn(),
@@ -53,10 +54,7 @@ function form(): FormData {
 
 async function submit(): Promise<Response> {
   const { POST } = await import('../../src/pages/api/docweb-onboarding');
-  const request = new Request('https://lkmedia.net/api/docweb-onboarding', {
-    method: 'POST',
-    body: form(),
-  });
+  const request = await formRequest('https://lkmedia.net/api/docweb-onboarding', form());
   return POST({ request } as Parameters<APIRoute>[0]);
 }
 

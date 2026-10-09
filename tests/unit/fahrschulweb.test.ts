@@ -3,6 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { parse } from 'yaml';
 import { FAHRSCHULWEB, parseOnboarding, toKundeYaml } from '../../src/lib/fahrschulweb';
 import { aenderungUrl } from '../../src/lib/stripe';
+import { formRequest } from './helpers/form-request';
 
 const { sendMail, checkPaidSession } = vi.hoisted(() => ({ sendMail: vi.fn(), checkPaidSession: vi.fn() }));
 vi.mock('../../src/lib/mailer', () => ({ sendMail }));
@@ -75,7 +76,7 @@ describe('toKundeYaml', () => {
 describe('POST /api/fahrschule-onboarding', () => {
   const submit = async (fd = form()) => {
     const { POST } = await import('../../src/pages/api/fahrschule-onboarding');
-    const request = new Request('https://lkmedia.net/api/fahrschule-onboarding', { method: 'POST', body: fd });
+    const request = await formRequest('https://lkmedia.net/api/fahrschule-onboarding', fd);
     return POST({ request } as Parameters<APIRoute>[0]);
   };
 

@@ -1,7 +1,11 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { parse } from "yaml";
 import type { OutgoingMail } from "../../src/lib/mailer";
-import { handleOnboarding, hatOnboarding } from "../../src/lib/onboarding-submit";
+import {
+  handleOnboarding,
+  hatOnboarding,
+  readOnboardingForm,
+} from "../../src/lib/onboarding-submit";
 import { KUNDEN_REPO, sessionHash } from "../../src/lib/pipeline";
 import { createRateLimiter } from "../../src/lib/site-submit";
 import { aenderungUrl } from "../../src/lib/stripe";
@@ -321,5 +325,46 @@ describe("hatOnboarding", () => {
     };
     expect(await hatOnboarding(fake.gh, SID)).toBe(false);
     expect(console.error).toHaveBeenCalledWith("[onboarding] findOnboarding failed: TypeError");
+  });
+});
+
+describe("readOnboardingForm", () => {
+  const LIMIT = uploads.UPLOAD_LIMITS.gesamtBytes + 1024 * 1024;
+  const ZU_GROSS = "Die Dateien sind zu groß. Bitte weniger oder kleinere Bilder auswählen.";
+  // Node setzt Content-Length bei Request nicht selbst – der Test steuert ihn explizit.
+  const req = (len?: string) =>
+    new Request("http://x/api", {
+      method: "POST",
+      body: new URLSearchParams({ session_id: SID }),
+      headers: len === undefined ? {} : { "content-length": len },
+    });
+
+  it.each([["fehlt", undefined], ["keine Zahl", "abc"], ["zu groß", String(LIMIT + 1)]])(
+    "Content-Length %s → 413 ohne Parsen",
+    async (_, len) => {
+      const r = req(len);
+      const spy = vi.spyOn(r, "formData");
+      const res = await readOnboardingForm(r);
+      expect(res).toBeInstanceOf(Response);
+      expect((res as Response).status).toBe(413);
+      expect(await (res as Response).text()).toBe(ZU_GROSS);
+      expect(spy).not.toHaveBeenCalled();
+    },
+  );
+
+  it("Content-Length an der Grenze → FormData", async () => {
+    const res = await readOnboardingForm(req(String(LIMIT)));
+    expect(res).toBeInstanceOf(FormData);
+    expect((res as FormData).get("session_id")).toBe(SID);
+  });
+
+  it("kaputter Body → 400", async () => {
+    const r = new Request("http://x/api", {
+      method: "POST",
+      body: "x",
+      headers: { "content-type": "multipart/form-data; boundary=zzz", "content-length": "1" },
+    });
+    const res = await readOnboardingForm(r);
+    expect((res as Response).status).toBe(400);
   });
 });
