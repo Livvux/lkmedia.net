@@ -207,10 +207,14 @@ describe("handleAenderung", () => {
     const fake = createGitHubFake();
     const mails: OutgoingMail[] = [];
     const allow = createRateLimiter(10, 86_400_000);
+    const uhr = { t: Date.UTC(2026, 9, 9, 8, 0, 0) };
     return {
       fake,
       mails,
+      uhr,
       deps: {
+        recent: new Map(),
+        now: () => uhr.t,
         gh: fake.gh,
         send: async (m: OutgoingMail) => {
           mails.push(m);
@@ -265,10 +269,11 @@ describe("handleAenderung", () => {
 
   it("11th order of the day → form error", async () => {
     const { deps } = setup();
+    const auftrag = (i: number) => form({ ...gueltig, text: `${gueltig.text} (${i})` });
     for (let i = 0; i < 10; i++) {
-      expect(await handleAenderung(zugang(), form(gueltig), deps)).toMatchObject({ ok: true });
+      expect(await handleAenderung(zugang(), auftrag(i), deps)).toMatchObject({ ok: true });
     }
-    const r = await handleAenderung(zugang(), form(gueltig), deps);
+    const r = await handleAenderung(zugang(), auftrag(10), deps);
     expect(r).toMatchObject({
       ok: false,
       fehler: {
@@ -287,7 +292,7 @@ describe("handleAenderung", () => {
     expect(r).toEqual({
       ok: false,
       fehler: {
-        form: "Das hat gerade nicht geklappt. Ihre Eingaben sind noch da – bitte in ein paar Minuten noch einmal absenden.",
+        form: "Das hat gerade nicht geklappt. Ihr Text ist noch da – bitte in ein paar Minuten noch einmal absenden.",
       },
       werte,
     });
@@ -323,7 +328,60 @@ describe("handleAenderung", () => {
     deps.send = async () => {
       throw new Error("smtp");
     };
-    expect(await handleAenderung(zugang(), form(gueltig), deps)).toMatchObject({ ok: true });
+    const anderer = form({ ...gueltig, text: "Bitte die Öffnungszeiten ändern." });
+    expect(await handleAenderung(zugang(), anderer, deps)).toMatchObject({ ok: true });
+  });
+
+  const BILDER_HINWEIS =
+    "Bitte wählen Sie die Bilder noch einmal aus – aus Sicherheitsgründen kann der Browser sie nicht behalten.";
+  const bild = () => new File([PNG], "foto.png", { type: "image/png" });
+
+  it("error with attached images → asks to pick the images again", async () => {
+    const { deps, fake } = setup();
+    const kurz = await handleAenderung(zugang(), form({ ...gueltig, text: "kurz" }, [bild()]), deps);
+    expect(kurz).toMatchObject({
+      ok: false,
+      fehler: { text: expect.any(String), bilder: BILDER_HINWEIS },
+    });
+    fake.gh.createIssue = async () => {
+      throw new Error("down");
+    };
+    const gh = await handleAenderung(zugang(), form(gueltig, [bild()]), deps);
+    expect(gh).toMatchObject({ ok: false, fehler: { form: expect.any(String), bilder: BILDER_HINWEIS } });
+  });
+
+  it("error without images → no image hint", async () => {
+    const { deps } = setup();
+    const r = await handleAenderung(zugang(), form({ ...gueltig, text: "kurz" }), deps);
+    expect(r).toMatchObject({ ok: false });
+    expect(r.ok ? null : r.fehler.bilder).toBeUndefined();
+  });
+
+  it("identical double submit within 60 s → one issue, same result", async () => {
+    const { deps, fake, mails, uhr } = setup();
+    const [a, b] = await Promise.all([
+      handleAenderung(zugang(), form(gueltig), deps),
+      handleAenderung(zugang(), form(gueltig), deps),
+    ]);
+    expect(a).toEqual({ ok: true, vorgang: 1, ziel: "kunde" });
+    expect(b).toEqual(a);
+    uhr.t += 30_000;
+    expect(await handleAenderung(zugang(), form(gueltig), deps)).toEqual(a);
+    expect(fake.issues.get("Livvux/fahrschule-test")).toHaveLength(1);
+    expect(mails).toHaveLength(1);
+    uhr.t += 31_000;
+    expect(await handleAenderung(zugang(), form(gueltig), deps)).toMatchObject({ vorgang: 2 });
+  });
+
+  it("failed submit is not remembered as sent", async () => {
+    const { deps, fake } = setup();
+    const create = fake.gh.createIssue;
+    fake.gh.createIssue = async () => {
+      throw new Error("down");
+    };
+    expect(await handleAenderung(zugang(), form(gueltig), deps)).toMatchObject({ ok: false });
+    fake.gh.createIssue = create;
+    expect(await handleAenderung(zugang(), form(gueltig), deps)).toMatchObject({ ok: true, vorgang: 1 });
   });
 });
 

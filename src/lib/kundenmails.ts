@@ -43,9 +43,12 @@ export function onboardingBestaetigung(o: {
       ]);
 }
 
+/** Übliche Bearbeitungszeit für Änderungsaufträge (Mail und Seite /aenderung). */
+export const AENDERUNG_ZEITRAHMEN = "in der Regel innerhalb von 2 Werktagen";
+
 export function aenderungBestaetigung(o: { name: string; vorgang: number; sessionId: string }) {
   return mail(`Ihr Änderungsauftrag Nr. ${o.vorgang} ist angekommen`, [
-    `vielen Dank – wir haben Ihren Änderungsauftrag für ${o.name} erhalten (Vorgang Nr. ${o.vorgang}). Wir melden uns, sobald die Änderung online ist oder wir eine Rückfrage haben.`,
+    `vielen Dank – wir haben Ihren Änderungsauftrag für ${o.name} erhalten (Vorgang Nr. ${o.vorgang}). Wir kümmern uns ${AENDERUNG_ZEITRAHMEN} darum und melden uns, sobald die Änderung online ist oder wir eine Rückfrage haben.`,
     `Den Stand sehen Sie jederzeit über Ihren persönlichen Link:\n${aenderungUrl(o.sessionId)}`,
   ]);
 }

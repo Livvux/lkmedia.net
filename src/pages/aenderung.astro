@@ -5,12 +5,14 @@ import Base from '../layouts/Base.astro';
 import UploadField from '../components/onboarding/UploadField.astro';
 import {
   aenderungDeps,
+  type Recent,
   handleAenderung,
   handleAntwort,
   MAX_TEXT,
   resolveZugang,
 } from '../lib/aenderung-submit';
 import { createRateLimiter } from '../lib/handwerk-submit';
+import { AENDERUNG_ZEITRAHMEN } from '../lib/kundenmails';
 import { type Auftrag, type AuftragStatus, kategorienFuer, listAuftraege } from '../lib/pipeline';
 import { STRIPE_PORTAL_URL } from '../lib/stripe';
 import { UPLOAD_LIMITS } from '../lib/uploads';
@@ -19,6 +21,7 @@ export const prerender = false;
 
 // ponytail: In-Memory, pro Prozess (10 Aufträge/Session/Tag); bei mehreren Instanzen Redis o. Ä.
 const allow = createRateLimiter(10, 86_400_000);
+const recent: Recent = new Map();
 
 const sessionId = Astro.url.searchParams.get('session_id') ?? '';
 const selbst = `/aenderung?session_id=${encodeURIComponent(sessionId)}`;
@@ -58,6 +61,7 @@ if (!zugang.ok) {
       send: deps.send,
       allow,
       release: allow.release,
+      recent,
     });
     if (r.ok) {
       const nr = r.vorgang ? `=${r.vorgang}` : '';
@@ -147,7 +151,7 @@ const err = 'text-sm font-medium text-red-700 dark:text-red-300';
 const button =
   'inline-flex min-h-12 px-8 items-center rounded-full bg-black text-white dark:bg-white dark:text-black font-medium';
 ---
-<Base seo={seo}>
+<Base seo={seo} analytics={false}>
   <section class="py-24 px-6 max-w-3xl mx-auto">
     {!zugang.ok ? (
       <>
@@ -178,17 +182,17 @@ const button =
               </p>
             ) : gesendetNr ? (
               <p>
-                Danke! Ihr Auftrag Nr. {gesendetNr} ist angekommen. Wir melden uns per E-Mail, sobald
-                die Änderung online ist oder wir eine Frage haben.
+                Danke! Ihr Auftrag Nr. {gesendetNr} ist angekommen. Wir kümmern uns {AENDERUNG_ZEITRAHMEN}{' '}
+                darum und melden uns per E-Mail.
               </p>
             ) : (
-              <p>Danke! Ihr Auftrag ist angekommen. Wir melden uns per E-Mail.</p>
+              <p>Danke! Ihr Auftrag ist angekommen. Wir kümmern uns {AENDERUNG_ZEITRAHMEN} darum und melden uns per E-Mail.</p>
             )}
           </div>
         )}
         {beantwortet && (
           <div role="status" class="mt-8 rounded-xl border border-emerald-600/40 bg-emerald-500/10 p-5">
-            <p>Danke für Ihre Antwort! Wir arbeiten damit an Ihrem Auftrag weiter.</p>
+            <p>Danke für Ihre Antwort! Wir arbeiten damit an Ihrem Auftrag weiter und melden uns {AENDERUNG_ZEITRAHMEN} per E-Mail.</p>
           </div>
         )}
 

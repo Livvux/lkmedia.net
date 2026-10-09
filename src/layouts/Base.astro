@@ -6,8 +6,11 @@ import Footer from '../components/Footer.astro';
 import { organization } from '../lib/schema';
 import type { SeoProps } from '../lib/seo';
 
-interface Props { seo: SeoProps; jsonLd?: unknown[]; }
-const { seo, jsonLd = [] } = Astro.props as Props;
+// analytics={false} auf Seiten mit session_id in der URL (Zugangsschlüssel): kein Plausible,
+// Referrer nur same-origin – sonst landet der Link bei Dritten. Nicht no-referrer: dann schickt der
+// Browser bei Formular-POSTs „Origin: null“ und die CSRF-Prüfung (src/lib/csrf.ts) blockt.
+interface Props { seo: SeoProps; jsonLd?: unknown[]; analytics?: boolean; }
+const { seo, jsonLd = [], analytics = true } = Astro.props as Props;
 const allLd = [organization(), ...jsonLd];
 ---
 <!doctype html>
@@ -20,7 +23,11 @@ const allLd = [organization(), ...jsonLd];
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <Seo {...seo} />
     <script type="application/ld+json" set:html={JSON.stringify(allLd)} />
-    <script defer data-domain="lkmedia.net" src="https://vx-m.vertexmods.com/js/script.js"></script>
+    {analytics ? (
+      <script defer data-domain="lkmedia.net" src="https://vx-m.vertexmods.com/js/script.js"></script>
+    ) : (
+      <meta name="referrer" content="same-origin" />
+    )}
   </head>
   <body class="min-h-screen flex flex-col">
     <Nav lang={seo.lang} />

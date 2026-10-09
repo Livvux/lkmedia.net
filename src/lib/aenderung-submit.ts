@@ -16,7 +16,10 @@ const NICHT_BEZAHLT =
 const KEIN_ONBOARDING =
   "Zu diesem Link gibt es noch keine Angaben. Bitte füllen Sie zuerst das Onboarding aus.";
 const GITHUB_FEHLER =
-  "Das hat gerade nicht geklappt. Ihre Eingaben sind noch da – bitte in ein paar Minuten noch einmal absenden.";
+  "Das hat gerade nicht geklappt. Ihr Text ist noch da – bitte in ein paar Minuten noch einmal absenden.";
+const BILDER_NOCHMAL =
+  "Bitte wählen Sie die Bilder noch einmal aus – aus Sicherheitsgründen kann der Browser sie nicht behalten.";
+const DOPPELT_MS = 60_000;
 const LIMIT =
   "Sie haben heute schon 10 Aufträge geschickt. Bitte melden Sie sich morgen wieder oder schreiben Sie an lucas@lkmedia.net.";
 const ABGESCHLOSSEN = "Diese Rückfrage ist bereits beantwortet oder abgeschlossen.";
@@ -115,17 +118,55 @@ export type AenderungResult =
   | { ok: true; vorgang: number; ziel?: "kunde" | "inbox" | "vertrag" }
   | { ok: false; fehler: Record<string, string>; werte: { kategorie: string; text: string } };
 
+/** Zuletzt gesendete Aufträge je Session + Text (Doppelklick-Schutz, 60 s). */
+export type Recent = Map<string, { t: number; r: Promise<AenderungResult> }>;
+
+type AenderungSubmitDeps = {
+  gh: GitHub;
+  send: (m: OutgoingMail) => Promise<void>;
+  allow: (key: string) => boolean;
+  release: (key: string) => void;
+  recent: Recent;
+  now?: () => number;
+};
+
 export async function handleAenderung(
   z: Offen,
   form: FormData,
-  deps: {
-    gh: GitHub;
-    send: (m: OutgoingMail) => Promise<void>;
-    allow: (key: string) => boolean;
-    release: (key: string) => void;
-  },
+  deps: AenderungSubmitDeps,
 ): Promise<AenderungResult> {
   if (form.get("website")) return { ok: true, vorgang: 0 }; // Honeypot
+  // Gleicher Text derselben Session innerhalb von 60 s (Doppelklick, zweiter Tab): dasselbe
+  // Ergebnis zurück statt eines zweiten Issues. Auch parallel – der zweite wartet auf den ersten.
+  const now = deps.now ?? Date.now;
+  for (const [k, v] of deps.recent) if (now() - v.t > DOPPELT_MS) deps.recent.delete(k);
+  const key = `${z.sessionId}\n${feld(form, "text").trim()}`;
+  const vorher = deps.recent.get(key);
+  if (vorher) return vorher.r;
+  const r = einreichen(z, form, deps);
+  deps.recent.set(key, { t: now(), r });
+  const ergebnis = await r;
+  if (!ergebnis.ok) deps.recent.delete(key); // Fehler nicht merken, sonst kein neuer Versuch
+  return ergebnis;
+}
+
+async function einreichen(
+  z: Offen,
+  form: FormData,
+  deps: AenderungSubmitDeps,
+): Promise<AenderungResult> {
+  const r = await pruefenUndSenden(z, form, deps);
+  // Dateien überstehen das Neurendern nicht – darauf hinweisen, statt „alles noch da“ zu sagen.
+  const hatBilder = form.getAll("bilder").some((v) => typeof v !== "string" && v.size > 0);
+  if (r.ok || !hatBilder || r.fehler.bilder) return r;
+  return { ...r, fehler: { ...r.fehler, bilder: BILDER_NOCHMAL } };
+}
+
+async function pruefenUndSenden(
+  z: Offen,
+  form: FormData,
+  deps: AenderungSubmitDeps,
+): Promise<AenderungResult> {
   const werte = { kategorie: feld(form, "kategorie"), text: feld(form, "text") };
   const fehler: Record<string, string> = {};
   if (!kategorienFuer(z.produkt).some((k) => k.id === werte.kategorie)) {

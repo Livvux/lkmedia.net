@@ -150,6 +150,7 @@ async function shrink(f: File): Promise<File> {
 }
 
 const BUSY_TEXT = "Bilder werden vorbereitet …";
+const SEND_TEXT = "Wird gesendet …";
 
 /**
  * Verkleinert nacheinander (alle Fotos gleichzeitig dekodiert sprengt den Speicher in iOS Safari)
@@ -222,6 +223,19 @@ for (const form of document.querySelectorAll<HTMLFormElement>(
     if (bad) {
       e.preventDefault();
       bad.focus();
+      return;
+    }
+    // Gegen Doppelklick: nach gültigem Absenden sperren (der Server erkennt Doppelte zusätzlich).
+    if (button) {
+      button.disabled = true;
+      button.textContent = SEND_TEXT;
+    }
+  });
+  // Zurück-Taste (bfcache): Knopf wieder freigeben.
+  window.addEventListener("pageshow", (e) => {
+    if (e.persisted && button && !busy) {
+      button.disabled = false;
+      button.textContent = label;
     }
   });
 }

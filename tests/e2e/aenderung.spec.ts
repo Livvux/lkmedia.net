@@ -66,6 +66,15 @@ test('valid submit → success box with number, order appears as Eingegangen', a
   await expect(item).toContainText('Eingegangen');
 });
 
+test('double click sends only once', async ({ page }) => {
+  await page.getByRole('radio', { name: 'Preise' }).check();
+  await page.locator('#text').fill('Bitte Klasse B auf 70 € ändern.');
+  await submit(page).dblclick();
+  await expect(page.getByRole('status')).toContainText('Ihr Auftrag Nr. 2 ist angekommen.');
+  await expect(page.getByRole('status')).toContainText('in der Regel innerhalb von 2 Werktagen');
+  await expect(page.getByRole('listitem').filter({ hasText: 'Nr. 3' })).toHaveCount(0);
+});
+
 test('answering the question removes the Rückfrage', async ({ page }) => {
   await page.getByLabel('Ihre Antwort').fill('Für alle Klassen, bitte.');
   await page.getByRole('button', { name: 'Antwort senden' }).click();
