@@ -56,6 +56,11 @@ describe("isSafeSvg", () => {
     '<svg><a href="java\tscript:alert(1)"/></svg>',
     '<svg><a href="java\rscript:alert(1)"/></svg>',
     '<svg><a href="data:text/html,x"/></svg>',
+    '<svg><image href="data:image/svg+xml;base64,AAAA"/></svg>',
+    '<svg><image href="da\nta:application/x-foo,1"/></svg>',
+    '<?xml version="1.0"?><?xml-stylesheet type="text/xsl" href="#s"?><svg xmlns="http://www.w3.org/2000/svg"><xsl:stylesheet id="s" version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"><xsl:template match="/"><xsl:element name="script">alert(1)</xsl:element></xsl:template></xsl:stylesheet></svg>',
+    '<svg xmlns:x="http://www.w3.org/1999/XSL/Transform"/>',
+    "<svg><xsl:template/></svg>",
     '<svg><a href="&#106;avascript:x()"/></svg>',
     '<svg><a href="&#x6A;avascript:x()"/></svg>',
     '<svg><a href="java&#x09;script:x()"/></svg>',
@@ -67,6 +72,8 @@ describe("isSafeSvg", () => {
     expect(isSafeSvg('<svg><use href="#a"/></svg>')).toBe(true));
   it("lehnt <script auch in Kommentaren ab (bewusst, Text wird roh geprüft)", () =>
     expect(isSafeSvg("<svg><!-- <script> --></svg>")).toBe(false));
+  it("erlaubt eingebettete Raster-Bilder", () =>
+    expect(isSafeSvg('<svg><image href="data:image/png;base64,iVBORw0KGgo="/></svg>')).toBe(true));
   it("erlaubt use mit Leerzeichen um =", () =>
     expect(isSafeSvg('<svg><use href = "#a"/></svg>')).toBe(true));
   it("erlaubt Inkscape-SVG und Standard-Entities", () =>

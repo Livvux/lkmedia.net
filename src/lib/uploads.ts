@@ -31,11 +31,14 @@ const UNSAFE_SVG = [
   /[\s"'/]on\w+\s*=/i,
   /href\s*=\s*["']?\s*(?:https?:|\/\/)/i,
   /<!ENTITY/i,
+  /<\?xml-stylesheet/i,
+  /www\.w3\.org\/1999\/XSL\/Transform/i,
+  /<xsl:/i,
   /<!DOCTYPE[^>]*\[/i,
   /&(?!(?:amp|lt|gt|quot|apos);)/,
 ];
-// Schemata auch mit eingestreutem Whitespace (java\nscript:) erkennen.
-const UNSAFE_SCHEME = /javascript:|vbscript:|data:text\/html/i;
+// Schemata auch mit eingestreutem Whitespace (java\nscript:) erkennen; data: nur für Raster-Bilder.
+const UNSAFE_SCHEME = /javascript:|vbscript:|(?<![\w-])data:(?!image\/(?:png|jpeg|gif|webp)[;,])/i;
 
 export function isSafeSvg(text: string): boolean {
   return !UNSAFE_SVG.some((re) => re.test(text)) && !UNSAFE_SCHEME.test(text.replace(/\s+/g, ""));
