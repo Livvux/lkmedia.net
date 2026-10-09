@@ -1,0 +1,117 @@
+---
+import Base from '../../layouts/Base.astro';
+import { FAHRSCHULWEB } from '../../lib/fahrschulweb';
+
+// ENTWURF – vor Veröffentlichung rechtlich prüfen lassen.
+const seo = {
+  title: 'AGB Fahrschul-Website',
+  description: 'Allgemeine Geschäftsbedingungen für das Website-Paket für Fahrschulen von lkmedia.',
+  canonical: '/fahrschule-webdesign/agb',
+  lang: 'de' as const,
+};
+---
+<Base seo={seo}>
+  <section class="pt-32 pb-24 px-6 max-w-3xl mx-auto prose dark:prose-invert">
+    <h1 class="text-5xl md:text-6xl font-semibold tracking-tight mb-10">AGB für das Fahrschul-Paket</h1>
+    <p>Stand: Oktober 2026</p>
+
+    <h2>1. Geltungsbereich</h2>
+    <p>
+      Diese Bedingungen gelten für das Website-Paket für Fahrschulen („fahrschulweb“) von lkmedia, Lucas Kleipödszus,
+      Felchenstraße 21, 76437 Rastatt („Anbieter“). Das Angebot richtet sich ausschließlich an Unternehmer im Sinne von
+      § 14 BGB, insbesondere Fahrschulen („Kunde“). Abweichende Bedingungen des Kunden gelten nicht.
+    </p>
+
+    <h2>2. Vertragsschluss</h2>
+    <p>
+      Der Vertrag kommt zustande, wenn der Kunde die Bestellung über den Bezahlvorgang (Stripe) abschließt.
+      Mit der Bestellung bestätigt der Kunde, als Unternehmer zu handeln.
+    </p>
+
+    <h2>3. Leistungsumfang</h2>
+    <p><strong>Einrichtung (einmalig):</strong></p>
+    <ul>
+      <li>Erstellung einer Fahrschul-Website mit Startseite, Seiten zu den Führerscheinklassen, Preisen, Theorie und Kursen, Team und Fahrzeugen, Kontakt sowie Impressum und Datenschutzerklärung;</li>
+      <li>eine eigene Standortseite für bis zu {FAHRSCHULWEB.includedLocations} Standorte;</li>
+      <li>Online-Anmeldung: Formular mit Versand per E-Mail an den Kunden oder Verlinkung der Anmeldung der Fahrschulsoftware des Kunden;</li>
+      <li>Übernahme der vom Kunden im Onboarding gelieferten Inhalte, Anpassung an Farbe und Logo des Kunden;</li>
+      <li>Einrichtung bzw. Optimierung der Google-Unternehmensprofile der Standorte, soweit der Kunde Zugriff gewährt;</li>
+      <li>eine Korrekturschleife nach Bereitstellung der Vorschau;</li>
+      <li>Einrichtung auf der Domain des Kunden.</li>
+    </ul>
+    <p><strong>Betrieb (monatlich):</strong></p>
+    <ul>
+      <li>Hosting in einem Rechenzentrum in der EU inkl. SSL-Zertifikat und Backups;</li>
+      <li>technische Updates und Sicherheitsaktualisierungen;</li>
+      <li>
+        Einpflegen von Änderungen, die der Kunde über seinen Änderungs-Link oder per E-Mail mitteilt (z. B. Theoriezeiten,
+        Kurstermine, Preise, Team, Fahrzeuge, Kontaktdaten), im Umfang von bis zu 30 Minuten pro Monat (nicht übertragbar);
+      </li>
+      <li>Support per E-Mail an Werktagen.</li>
+    </ul>
+    <p>
+      Nicht enthalten sind insbesondere Texterstellung über die Aufbereitung der Kundenangaben hinaus, Fotografie,
+      Domainkosten, weitere Standorte oder Sprachen, Kosten und Pflege der Fahrschulsoftware des Kunden sowie Rechtsberatung.
+    </p>
+
+    <h2>4. Mitwirkung des Kunden</h2>
+    <p>
+      Der Kunde liefert die Inhalte (Onboarding-Formular, Logo, Fotos) vollständig und frei von Rechten Dritter und ist für
+      deren Richtigkeit verantwortlich, insbesondere für Preisangaben nach der Preisangabenverordnung und die Angaben nach
+      dem Fahrlehrergesetz. Änderungen teilt der Kunde in Textform mit; der Änderungs-Link aus der Bestätigungsmail gilt als Textform.
+      Die vom Anbieter vorbereiteten Rechtstexte sind Entwürfe; sie ersetzen keine Rechtsberatung und werden erst nach Freigabe
+      durch den Kunden veröffentlicht.
+    </p>
+
+    <h2>5. Preise und Zahlung</h2>
+    <p>
+      Die Einrichtung kostet {FAHRSCHULWEB.setupPrice}, der Betrieb {FAHRSCHULWEB.monthlyPrice} pro Monat, jeweils inklusive der
+      gesetzlichen Umsatzsteuer. Die Zahlung erfolgt über Stripe; die Einrichtungsgebühr und der erste Monatsbeitrag
+      werden bei Bestellung fällig, weitere Monatsbeiträge jeweils monatlich im Voraus.
+    </p>
+    <p>
+      Die erste Zahlung beträgt damit {FAHRSCHULWEB.initialPrice}. Einrichtung und {FAHRSCHULWEB.minimumTermMonths} Monatsbeiträge
+      ergeben zusammen {FAHRSCHULWEB.minimumTotalPrice} inklusive Umsatzsteuer, zuzüglich Domainkosten.
+    </p>
+
+    <h2>6. Laufzeit und Kündigung</h2>
+    <p>
+      Die Mindestlaufzeit des Betriebs beträgt {FAHRSCHULWEB.minimumTermMonths} Monate ab Bestellung. Danach verlängert sich der Vertrag jeweils
+      um einen Monat und kann mit einer Frist von einem Monat zum Monatsende gekündigt werden. Die Kündigung bedarf
+      der Textform (E-Mail genügt). Das Recht zur außerordentlichen Kündigung bleibt unberührt.
+    </p>
+
+    <h2>7. Nutzungsrechte und Herausgabe</h2>
+    <p>
+      Der Kunde erhält für die Vertragsdauer ein einfaches Nutzungsrecht an der Website. Nach Ablauf der
+      Mindestlaufzeit und Zahlung aller fälligen Beträge überlässt der Anbieter dem Kunden auf Wunsch den
+      Quellcode seiner Website mit einem einfachen, zeitlich unbegrenzten Nutzungsrecht zum Betrieb dieser Website.
+    </p>
+
+    <h2>8. Verfügbarkeit</h2>
+    <p>
+      Der Anbieter bemüht sich um eine Verfügbarkeit von 99 % im Jahresmittel. Ausgenommen sind angekündigte
+      Wartungsfenster und Störungen, die nicht im Einflussbereich des Anbieters liegen. Rankings in Suchmaschinen
+      werden nicht garantiert.
+    </p>
+
+    <h2>9. Haftung</h2>
+    <p>
+      Der Anbieter haftet unbeschränkt bei Vorsatz, grober Fahrlässigkeit sowie für Schäden aus der Verletzung von
+      Leben, Körper oder Gesundheit. Bei einfacher Fahrlässigkeit haftet der Anbieter nur bei Verletzung wesentlicher
+      Vertragspflichten und begrenzt auf den vertragstypischen, vorhersehbaren Schaden.
+    </p>
+
+    <h2>10. Datenschutz und Auftragsverarbeitung</h2>
+    <p>
+      Soweit der Anbieter beim Hosting oder beim Versand der Online-Anmeldungen personenbezogene Daten im Auftrag des Kunden
+      verarbeitet, schließen die Parteien einen Vertrag zur Auftragsverarbeitung nach Art. 28 DSGVO, den der Anbieter bereitstellt.
+    </p>
+
+    <h2>11. Schlussbestimmungen</h2>
+    <p>
+      Es gilt deutsches Recht. Gerichtsstand ist, soweit zulässig, Rastatt. Sollten einzelne Bestimmungen unwirksam
+      sein, bleibt die Wirksamkeit der übrigen unberührt.
+    </p>
+  </section>
+</Base>
