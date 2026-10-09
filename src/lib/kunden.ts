@@ -34,7 +34,11 @@ export const DEMO_KUNDEN: Kunde[] = [
 ];
 
 /** Template-Dev-Server (astro dev / preview). */
-export const DEV_ORIGINS = ["http://localhost:4321", "http://localhost:4322"];
+export const DEV_ORIGINS = [
+  "http://localhost:4321",
+  "http://localhost:4322",
+  "http://localhost:4323",
+];
 
 export function allowedOrigins(k: Kunde, dev: boolean): string[] {
   const origins = k.formulare?.origins ?? [];

@@ -175,4 +175,8 @@ describe("allowedOrigins", () => {
     expect(allowedOrigins(k, true)).toEqual([...(k.formulare?.origins ?? []), ...DEV_ORIGINS]);
     expect(allowedOrigins(k, false)).toEqual(k.formulare?.origins);
   });
+
+  it("dev erlaubt den fahrschulweb-Template-Port 4323", () => {
+    expect(allowedOrigins(DEMO_KUNDEN[0], true)).toContain("http://localhost:4323");
+  });
 });
