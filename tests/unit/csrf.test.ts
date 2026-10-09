@@ -21,4 +21,6 @@ describe('isBlockedCrossSitePost', () => {
     expect(isBlockedCrossSitePost({ ...base, contentType: 'application/json' })).toBe(false));
   it('lässt /api/handwerk/ durch (prüft Origins selbst)', () =>
     expect(isBlockedCrossSitePost({ ...base, path: '/api/handwerk/demo/anfrage' })).toBe(false));
+  it('lässt /api/fahrschule/ durch', () =>
+    expect(isBlockedCrossSitePost({ ...base, path: '/api/fahrschule/x/anmeldung' })).toBe(false));
 });

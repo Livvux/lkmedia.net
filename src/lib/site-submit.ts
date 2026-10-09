@@ -1,14 +1,28 @@
-// handwerkweb – Entscheidet über eine Formular-Einsendung. Reine Logik, Versand/Limit injiziert.
+// Kunden-Sites – Entscheidet über eine Formular-Einsendung. Reine Logik, Versand/Limit/Register injiziert.
+// Empfänger und Origins kommen nur aus dem Register, nie aus dem Formular (sonst offenes Mail-Relay).
+import { parseAnmeldung } from "./fahrschule-forms";
 import { isBot, MAX_TOTAL_BYTES, parseAnfrage, parseBewerbung } from "./handwerk-forms";
-import { allowedOrigins, findSite } from "./handwerk-sites";
+import { allowedOrigins, type Kunde, type Produkt, type Registry } from "./kunden";
+import type { FormResult } from "./mail-types";
 import type { OutgoingMail } from "./mailer";
 
-const FORMS = ["anfrage", "bewerbung"] as const;
+export const SITE_FORMS: Record<
+  Produkt,
+  Record<string, (f: FormData, k: Kunde) => Promise<FormResult>>
+> = {
+  handwerkweb: {
+    anfrage: (f, k) => parseAnfrage(f, k.formulare?.plzPraefixe ?? []),
+    bewerbung: (f) => parseBewerbung(f),
+  },
+  fahrschulweb: { anmeldung: (f) => parseAnmeldung(f) },
+  docweb: {},
+};
 /** Dateien + Textfelder + Multipart-Overhead. */
 const MAX_BODY = MAX_TOTAL_BYTES + 1024 * 1024;
 
 export interface SubmitInput {
   siteId: string;
+  produkt: Produkt;
   form: string;
   origin: string | null;
   ip: string;
@@ -19,8 +33,11 @@ export interface SubmitDeps {
   send: (m: OutgoingMail) => Promise<void>;
   allow: (key: string) => boolean;
   dev: boolean;
+  registry: Registry;
 }
-export type SubmitResult = { status: 303; location: string } | { status: 403 | 404; body: string };
+export type SubmitResult =
+  | { status: 303; location: string }
+  | { status: 403 | 404 | 503; body: string };
 
 // ponytail: In-Memory, pro Prozess, Neustart leert. Bei mehreren Instanzen Redis o. Ä.
 export function createRateLimiter(max: number, windowMs: number, now: () => number = Date.now) {
@@ -42,11 +59,17 @@ export function createRateLimiter(max: number, windowMs: number, now: () => numb
 }
 
 export async function handleSubmission(i: SubmitInput, deps: SubmitDeps): Promise<SubmitResult> {
-  const site = findSite(i.siteId);
-  if (!site || !(FORMS as readonly string[]).includes(i.form)) {
+  if ((await deps.registry.all()) === null) {
+    return { status: 503, body: "Formular gerade nicht verfügbar. Bitte rufen Sie uns an." };
+  }
+  const kunde = await deps.registry.bySiteId(i.siteId);
+  const parse = Object.hasOwn(SITE_FORMS[i.produkt], i.form)
+    ? SITE_FORMS[i.produkt][i.form]
+    : undefined;
+  if (!kunde?.formulare || kunde.status === "gekuendigt" || kunde.produkt !== i.produkt || !parse) {
     return { status: 404, body: "Nicht gefunden." };
   }
-  if (!i.origin || !allowedOrigins(site, deps.dev).includes(i.origin)) {
+  if (!i.origin || !allowedOrigins(kunde, deps.dev).includes(i.origin)) {
     return { status: 403, body: "Herkunft nicht erlaubt." };
   }
   // Redirect-Ziel ist der geprüfte Origin, nie ein Formularfeld.
@@ -64,15 +87,14 @@ export async function handleSubmission(i: SubmitInput, deps: SubmitDeps): Promis
   }
   if (isBot(form)) return go(`/danke?f=${i.form}`);
 
-  const parsed =
-    i.form === "anfrage" ? await parseAnfrage(form, site.plzPraefixe) : await parseBewerbung(form);
+  const parsed = await parse(form, kunde);
   if (!parsed.ok) return go(`/fehler?grund=${parsed.grund}&f=${i.form}`);
 
   try {
-    await deps.send({ ...parsed.mail, to: site.email });
+    await deps.send({ ...parsed.mail, to: kunde.formulare.email });
   } catch (error) {
     // Nur Metadaten loggen (keine personenbezogenen Daten); Absender sieht /fehler mit Telefonnummer.
-    console.error("[handwerk] Versand fehlgeschlagen", i.siteId, i.form, error);
+    console.error("[site-submit] Versand fehlgeschlagen", i.siteId, i.form, error);
     return go(`/fehler?grund=versand&f=${i.form}`);
   }
   return go(`/danke?f=${i.form}`);

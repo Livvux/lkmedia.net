@@ -3,7 +3,7 @@ import { parse } from "yaml";
 import type { OutgoingMail } from "../../src/lib/mailer";
 import { handleOnboarding, hatOnboarding } from "../../src/lib/onboarding-submit";
 import { KUNDEN_REPO, sessionHash } from "../../src/lib/pipeline";
-import { createRateLimiter } from "../../src/lib/handwerk-submit";
+import { createRateLimiter } from "../../src/lib/site-submit";
 import { aenderungUrl } from "../../src/lib/stripe";
 import { createGitHubFake } from "./helpers/github-fake";
 

@@ -12,7 +12,7 @@ export const POST: APIRoute = async ({ params, request, clientAddress }) => {
   const r = await handleSubmission(
     {
       siteId: params.siteId ?? "",
-      produkt: "handwerkweb",
+      produkt: "fahrschulweb",
       form: params.form ?? "",
       origin: request.headers.get("origin"),
       ip: clientIp(request, clientAddress),

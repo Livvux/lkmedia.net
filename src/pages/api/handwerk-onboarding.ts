@@ -1,9 +1,9 @@
 import type { APIRoute } from "astro";
 import { createGitHub } from "../../lib/github";
-import { createRateLimiter } from "../../lib/handwerk-submit";
 import { checkSession, HANDWERKWEB, parseOnboarding, toKundeYaml } from "../../lib/handwerkweb";
 import { sendMail } from "../../lib/mailer";
 import { handleOnboarding, toResponse } from "../../lib/onboarding-submit";
+import { createRateLimiter } from "../../lib/site-submit";
 
 export const prerender = false;
 

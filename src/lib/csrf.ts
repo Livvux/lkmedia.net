@@ -2,7 +2,7 @@
 // Proxy-bewusstem Origin und Ausnahme für den Handwerker-Endpoint, der Origins selbst prüft.
 const SAFE_METHODS = ["GET", "HEAD", "OPTIONS"];
 const FORM_TYPES = ["application/x-www-form-urlencoded", "multipart/form-data", "text/plain"];
-const OWN_ORIGIN_CHECK = ["/api/handwerk/"];
+const OWN_ORIGIN_CHECK = ["/api/handwerk/", "/api/fahrschule/"];
 
 export function isBlockedCrossSitePost(i: {
   method: string;

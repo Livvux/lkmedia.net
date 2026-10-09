@@ -1,9 +1,9 @@
 // Gemeinsamer Onboarding-Ablauf nach Stripe-Checkout (docweb, handwerkweb, fahrschulweb).
 // GitHub ist der Hauptweg, die Mail an Lucas das Backup: Scheitert GitHub, zählt die Mail.
 import type { GitHub } from "./github";
-import type { Attachment } from "./handwerk-forms";
 import type { Produkt } from "./kunden-schema";
 import { onboardingBestaetigung } from "./kundenmails";
+import type { Attachment } from "./mail-types";
 import type { OutgoingMail } from "./mailer";
 import { findOnboarding, KUNDEN_REPO, sessionHash, submitOnboarding } from "./pipeline";
 import { readUploads, UPLOAD_LIMITS, type Upload } from "./uploads";

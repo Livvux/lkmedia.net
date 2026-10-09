@@ -5,7 +5,7 @@ import {
   resolveZugang,
   type Zugang,
 } from "../../src/lib/aenderung-submit";
-import { createRateLimiter } from "../../src/lib/handwerk-submit";
+import { createRateLimiter } from "../../src/lib/site-submit";
 import type { Kunde } from "../../src/lib/kunden";
 import type { OutgoingMail } from "../../src/lib/mailer";
 import { KUNDEN_REPO, sessionHash } from "../../src/lib/pipeline";

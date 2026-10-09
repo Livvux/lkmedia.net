@@ -2,7 +2,7 @@
 // Verlorenen persönlichen Link per E-Mail neu anfordern. Antwort ist immer gleich (kein Adress-Abgleich).
 import Base from '../../layouts/Base.astro';
 import { clientIp } from '../../lib/client-ip';
-import { createRateLimiter } from '../../lib/handwerk-submit';
+import { createRateLimiter } from '../../lib/site-submit';
 import { registry } from '../../lib/kunden';
 import { handleLinkRecovery, LINK_GESENDET } from '../../lib/link-recovery';
 import { sendMail } from '../../lib/mailer';

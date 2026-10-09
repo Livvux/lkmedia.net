@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { createRateLimiter } from "../../src/lib/handwerk-submit";
+import { createRateLimiter } from "../../src/lib/site-submit";
 import { handleLinkRecovery, type LinkRecoveryDeps } from "../../src/lib/link-recovery";
 import type { OutgoingMail } from "../../src/lib/mailer";
 import { findSessionsByEmail, PAYMENT_LINKS } from "../../src/lib/stripe";
