@@ -65,7 +65,13 @@ export async function handleOnboarding<D extends { sessionId: string }>(
     return { status: 503, body: NICHT_VERFUEGBAR };
   }
   const d = parsed.data;
-  const session = await deps.checkSession(d.sessionId, deps.stripeKey);
+  let session: { paid: boolean; email?: string };
+  try {
+    session = await deps.checkSession(d.sessionId, deps.stripeKey);
+  } catch (e) {
+    console.error(`[onboarding] ${produkt} stripe check failed: ${errName(e)}`);
+    return { status: 503, body: NICHT_VERFUEGBAR };
+  }
   if (!session.paid) return { status: 403, body: "Bestellung nicht gefunden oder nicht bezahlt." };
 
   // Bilder erst nach dem Bezahlt-Check lesen: Unbezahlte erreichen den SVG-Parser nie.
@@ -192,6 +198,25 @@ async function einreichen<D extends { sessionId: string }>(
   }
   // Vorgangsnummer nur, wenn das Issue wirklich existiert.
   return { status: 303, location: ergebnis ? `${deps.danke}?nr=${ergebnis.issue}` : deps.danke };
+}
+
+/**
+ * Zahlungsstatus für die Onboarding-Seiten. Ohne Key nur im Dev-Server bezahlt; Stripe-Ausfall
+ * ergibt `stoerung` statt eines Absturzes oder einer falschen „nicht bezahlt“-Seite.
+ */
+export async function zahlungFuerSeite(
+  sessionId: string,
+  stripeKey: string | undefined,
+  checkSession: OnboardingDeps<unknown>["checkSession"],
+  dev: boolean,
+): Promise<{ paid: boolean; stoerung: boolean }> {
+  if (!stripeKey) return { paid: dev, stoerung: false };
+  try {
+    return { paid: (await checkSession(sessionId, stripeKey)).paid, stoerung: false };
+  } catch (e) {
+    console.error(`[onboarding] stripe check failed: ${errName(e)}`);
+    return { paid: false, stoerung: true };
+  }
 }
 
 /** Hat diese Session schon ein Onboarding-Issue? GitHub-Fehler zählen als „nein“. */

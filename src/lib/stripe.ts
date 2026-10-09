@@ -6,7 +6,10 @@ import { PRODUKTE, type Produkt } from "./kunden-schema";
 
 export const SESSION_ID = /^cs_(test|live)_[A-Za-z0-9]{1,200}$/;
 
-/** Prüft per Stripe-API, ob die Checkout-Session über genau diesen Payment Link bezahlt ist. */
+/**
+ * Prüft per Stripe-API, ob die Checkout-Session über genau diesen Payment Link bezahlt ist.
+ * Unbekannte Session (400/404) → `paid: false`; Stripe-Ausfall (Netz, 5xx, falscher Key) → wirft.
+ */
 export async function checkPaidSession(
   id: string,
   secretKey: string,
@@ -14,23 +17,20 @@ export async function checkPaidSession(
   fetchFn: typeof fetch = fetch,
 ): Promise<{ paid: boolean; email?: string }> {
   if (!paymentLinkId || !SESSION_ID.test(id)) return { paid: false };
-  try {
-    const r = await fetchFn(`https://api.stripe.com/v1/checkout/sessions/${id}`, {
-      headers: { Authorization: `Bearer ${secretKey}` },
-    });
-    if (!r.ok) return { paid: false };
-    const s = (await r.json()) as {
-      payment_status?: string;
-      payment_link?: string | null;
-      customer_details?: { email?: string };
-    };
-    // Nur Käufe über diesen Link zählen, nicht andere Produkte im selben Stripe-Konto.
-    const paid = s.payment_status === "paid" && s.payment_link === paymentLinkId;
-    return { paid, email: s.customer_details?.email };
-  } catch (error) {
-    console.error("[stripe] session check failed", error);
-    return { paid: false };
-  }
+  const r = await fetchFn(`https://api.stripe.com/v1/checkout/sessions/${id}`, {
+    headers: { Authorization: `Bearer ${secretKey}` },
+    signal: AbortSignal.timeout(10_000),
+  });
+  if (r.status === 400 || r.status === 404) return { paid: false };
+  if (!r.ok) throw new Error(`Stripe ${r.status}`);
+  const s = (await r.json()) as {
+    payment_status?: string;
+    payment_link?: string | null;
+    customer_details?: { email?: string };
+  };
+  // Nur Käufe über diesen Link zählen, nicht andere Produkte im selben Stripe-Konto.
+  const paid = s.payment_status === "paid" && s.payment_link === paymentLinkId;
+  return { paid, email: s.customer_details?.email };
 }
 
 /**

@@ -3,7 +3,7 @@ import Base from '../../layouts/Base.astro';
 import Progress from '../../components/onboarding/Progress.astro';
 import UploadField from '../../components/onboarding/UploadField.astro';
 import { createGitHub } from '../../lib/github';
-import { hatOnboarding } from '../../lib/onboarding-submit';
+import { hatOnboarding, zahlungFuerSeite } from '../../lib/onboarding-submit';
 import { aenderungUrl } from '../../lib/stripe';
 import { checkSession } from '../../lib/handwerkweb';
 
@@ -13,7 +13,8 @@ const sessionId = Astro.url.searchParams.get('session_id') ?? '';
 const fehler = Astro.url.searchParams.get('fehler');
 const stripeKey = process.env.STRIPE_SECRET_KEY ?? import.meta.env.STRIPE_SECRET_KEY;
 // Ohne Key nur im Dev-Server Formular zeigen; in Produktion nur nach bezahlter Bestellung.
-const { paid } = stripeKey ? await checkSession(sessionId, stripeKey) : { paid: import.meta.env.DEV };
+const { paid, stoerung } = await zahlungFuerSeite(sessionId, stripeKey, checkSession, import.meta.env.DEV);
+if (stoerung) Astro.response.status = 503;
 const ghToken = process.env.GITHUB_KUNDEN_TOKEN ?? import.meta.env.GITHUB_KUNDEN_TOKEN;
 // Schon eingereicht? Dann auf den Änderungs-Link hinweisen; das Formular bleibt nutzbar.
 const eingegangen =
@@ -42,7 +43,14 @@ const legend = 'text-xl font-semibold mb-4';
 ---
 <Base seo={seo} analytics={false}>
   <section class="py-24 px-6 max-w-3xl mx-auto">
-    {!paid ? (
+    {stoerung ? (
+      <>
+        <h1 class="text-4xl md:text-5xl font-semibold tracking-tight">Kurz nicht erreichbar.</h1>
+        <p role="alert" class="mt-6 text-lg text-black/70 dark:text-white/70">
+          Unser Zahlungsdienst ist gerade nicht erreichbar. Bitte laden Sie die Seite in ein paar Minuten neu.
+        </p>
+      </>
+    ) : !paid ? (
       <>
         <h1 class="text-4xl md:text-5xl font-semibold tracking-tight">Bestellung nicht gefunden.</h1>
         <p class="mt-6 text-lg text-black/70 dark:text-white/70">

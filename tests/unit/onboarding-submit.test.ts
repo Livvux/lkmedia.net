@@ -5,6 +5,7 @@ import {
   handleOnboarding,
   hatOnboarding,
   readOnboardingForm,
+  zahlungFuerSeite,
 } from "../../src/lib/onboarding-submit";
 import { KUNDEN_REPO, sessionHash } from "../../src/lib/pipeline";
 import { createRateLimiter } from "../../src/lib/site-submit";
@@ -247,6 +248,19 @@ describe("handleOnboarding", () => {
     expect(uploads.isSafeSvg).not.toHaveBeenCalled();
   });
 
+  it("Stripe nicht erreichbar → 503 mit Kontaktadresse, nichts gelesen, Session nicht gesperrt", async () => {
+    const s = setup();
+    vi.mocked(uploads.readUploads).mockClear();
+    s.deps.checkSession.mockRejectedValueOnce(new Error("Stripe 500"));
+    expect(await s.run()).toEqual({
+      status: 503,
+      body: "Onboarding derzeit nicht verfügbar. Bitte schreiben Sie an lucas@lkmedia.net.",
+    });
+    expect(uploads.readUploads).not.toHaveBeenCalled();
+    expect(s.mails).toHaveLength(0);
+    expect((await s.run()).status).toBe(303);
+  });
+
   it("kein Stripe-Key → 503", async () => {
     const s = setup({ stripeKey: undefined });
     const r = await s.run();
@@ -366,5 +380,38 @@ describe("readOnboardingForm", () => {
     });
     const res = await readOnboardingForm(r);
     expect((res as Response).status).toBe(400);
+  });
+});
+
+describe("zahlungFuerSeite", () => {
+  const check = (r: { paid: boolean } | Error) =>
+    vi.fn(async () => {
+      if (r instanceof Error) throw r;
+      return r;
+    });
+
+  it("fragt Stripe und meldet bezahlt / nicht bezahlt", async () => {
+    expect(await zahlungFuerSeite(SID, "sk", check({ paid: true }), false)).toEqual({
+      paid: true,
+      stoerung: false,
+    });
+    expect(await zahlungFuerSeite(SID, "sk", check({ paid: false }), false)).toEqual({
+      paid: false,
+      stoerung: false,
+    });
+  });
+
+  it("Stripe-Ausfall → Störung statt Absturz", async () => {
+    expect(await zahlungFuerSeite(SID, "sk", check(new Error("Stripe 503")), false)).toEqual({
+      paid: false,
+      stoerung: true,
+    });
+  });
+
+  it("ohne Key: nur im Dev-Server bezahlt, ohne Stripe-Aufruf", async () => {
+    const c = check({ paid: true });
+    expect(await zahlungFuerSeite(SID, undefined, c, true)).toEqual({ paid: true, stoerung: false });
+    expect(await zahlungFuerSeite(SID, "", c, false)).toEqual({ paid: false, stoerung: false });
+    expect(c).not.toHaveBeenCalled();
   });
 });

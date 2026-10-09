@@ -86,6 +86,22 @@ describe('checkPaidSession', () => {
     expect((await checkPaidSession('cs_test_abc', 'sk', '', f)).paid).toBe(false);
     expect(f).not.toHaveBeenCalled();
   });
+  it('unbekannte Session (400/404) → nicht bezahlt', async () => {
+    for (const status of [400, 404]) {
+      const f = vi.fn(async () => new Response('{}', { status }));
+      expect(await checkPaidSession('cs_test_abc', 'sk', 'plink_x', f)).toEqual({ paid: false });
+    }
+  });
+  it('Stripe-Ausfall (5xx, 401, Netz) → wirft statt „nicht bezahlt“', async () => {
+    for (const status of [500, 503, 401]) {
+      const f = vi.fn(async () => new Response('{}', { status }));
+      await expect(checkPaidSession('cs_test_abc', 'sk', 'plink_x', f)).rejects.toThrow(`Stripe ${status}`);
+    }
+    const netz = vi.fn(async () => {
+      throw new TypeError('fetch failed');
+    });
+    await expect(checkPaidSession('cs_test_abc', 'sk', 'plink_x', netz)).rejects.toThrow('fetch failed');
+  });
 });
 
 describe('toKundeYaml ohne Session-ID', () => {
