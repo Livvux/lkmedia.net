@@ -4,7 +4,13 @@ import type { Kunde, Produkt, Registry } from "./kunden";
 import { registry } from "./kunden";
 import { aenderungBestaetigung } from "./kundenmails";
 import { type OutgoingMail, sendMail } from "./mailer";
-import { antworten, findOnboarding, kategorienFuer, submitAenderung } from "./pipeline";
+import {
+  antworten,
+  findOnboarding,
+  type Kategorie,
+  kategorienFuer,
+  submitAenderung,
+} from "./pipeline";
 import { checkAnySession } from "./stripe";
 import { readUploads } from "./uploads";
 
@@ -22,6 +28,7 @@ const BILDER_NOCHMAL =
 const DOPPELT_MS = 60_000;
 const LIMIT =
   "Sie haben heute schon 10 Aufträge geschickt. Bitte melden Sie sich morgen wieder oder schreiben Sie an lucas@lkmedia.net.";
+const GEKUENDIGT = "Ihr Vertrag ist beendet. Für Fragen wählen Sie bitte „Vertrag oder Kündigung“.";
 const ABGESCHLOSSEN = "Diese Rückfrage ist bereits beantwortet oder abgeschlossen.";
 export const MAX_TEXT = 5000;
 const MIN_TEXT = 10;
@@ -109,6 +116,12 @@ export async function resolveZugang(sessionId: string, deps: ZugangDeps): Promis
   }
 }
 
+/** Angebotene Kategorien: nach der Kündigung nur noch Vertragsanfragen. */
+export function kategorienFuerZugang(z: Offen): Kategorie[] {
+  const alle = kategorienFuer(z.produkt);
+  return z.kunde?.status === "gekuendigt" ? alle.filter((k) => k.id === "vertrag") : alle;
+}
+
 const feld = (form: FormData, k: string) => {
   const v = form.get(k);
   return typeof v === "string" ? v : "";
@@ -171,6 +184,8 @@ async function pruefenUndSenden(
   const fehler: Record<string, string> = {};
   if (!kategorienFuer(z.produkt).some((k) => k.id === werte.kategorie)) {
     fehler.kategorie = "Bitte wählen Sie aus, worum es geht.";
+  } else if (!kategorienFuerZugang(z).some((k) => k.id === werte.kategorie)) {
+    fehler.kategorie = GEKUENDIGT;
   }
   const text = werte.text.trim();
   if (text.length < MIN_TEXT) {

@@ -2,13 +2,14 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
   handleAenderung,
   handleAntwort,
+  kategorienFuerZugang,
   resolveZugang,
   type Zugang,
 } from "../../src/lib/aenderung-submit";
 import { createRateLimiter } from "../../src/lib/site-submit";
 import type { Kunde } from "../../src/lib/kunden";
 import type { OutgoingMail } from "../../src/lib/mailer";
-import { KUNDEN_REPO, sessionHash } from "../../src/lib/pipeline";
+import { KUNDEN_REPO, kategorienFuer, sessionHash } from "../../src/lib/pipeline";
 import { checkAnySession, PAYMENT_LINKS } from "../../src/lib/stripe";
 import { createGitHubFake } from "./helpers/github-fake";
 
@@ -234,6 +235,43 @@ describe("handleAenderung", () => {
       deps,
     );
     expect(r).toMatchObject({ ok: false, fehler: { kategorie: expect.any(String) } });
+  });
+
+  it("after cancellation only the category vertrag is offered", () => {
+    const gekuendigt = { ...KUNDE, status: "gekuendigt" as const };
+    expect(kategorienFuerZugang(zugang({ kunde: gekuendigt })).map((k) => k.id)).toEqual([
+      "vertrag",
+    ]);
+    expect(kategorienFuerZugang(zugang())).toEqual(kategorienFuer("fahrschulweb"));
+    expect(kategorienFuerZugang(zugang({ kunde: null }))).toEqual(kategorienFuer("fahrschulweb"));
+  });
+
+  it("after cancellation other categories → field error, no issue", async () => {
+    const { deps, fake } = setup();
+    const r = await handleAenderung(
+      zugang({ kunde: { ...KUNDE, status: "gekuendigt" } }),
+      form(gueltig),
+      deps,
+    );
+    expect(r).toMatchObject({
+      ok: false,
+      fehler: {
+        kategorie:
+          "Ihr Vertrag ist beendet. Für Fragen wählen Sie bitte „Vertrag oder Kündigung“.",
+      },
+      werte: gueltig,
+    });
+    expect(fake.issues.size).toBe(0);
+  });
+
+  it("after cancellation the category vertrag still works", async () => {
+    const { deps } = setup();
+    const r = await handleAenderung(
+      zugang({ kunde: { ...KUNDE, status: "gekuendigt" } }),
+      form({ ...gueltig, kategorie: "vertrag" }),
+      deps,
+    );
+    expect(r).toMatchObject({ ok: true, ziel: "vertrag" });
   });
 
   it("text of 5 characters → field error, values come back", async () => {

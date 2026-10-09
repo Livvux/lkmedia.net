@@ -8,12 +8,13 @@ import {
   type Recent,
   handleAenderung,
   handleAntwort,
+  kategorienFuerZugang,
   MAX_TEXT,
   resolveZugang,
 } from '../lib/aenderung-submit';
 import { createRateLimiter } from '../lib/site-submit';
 import { AENDERUNG_ZEITRAHMEN } from '../lib/kundenmails';
-import { type Auftrag, type AuftragStatus, kategorienFuer, listAuftraege } from '../lib/pipeline';
+import { type Auftrag, type AuftragStatus, listAuftraege } from '../lib/pipeline';
 import { STRIPE_PORTAL_URL } from '../lib/stripe';
 import { UPLOAD_LIMITS } from '../lib/uploads';
 
@@ -94,7 +95,7 @@ const gesendet = Astro.request.method === 'GET' && q.has('gesendet');
 const inbox = q.get('ziel') === 'inbox';
 const beantwortet = Astro.request.method === 'GET' && q.get('beantwortet') === '1';
 
-const kategorien = zugang.ok ? kategorienFuer(zugang.produkt) : [];
+const kategorien = zugang.ok ? kategorienFuerZugang(zugang) : [];
 const istAntwortFehler = (a: Auftrag) =>
   antwortFehler?.repo === a.repo && antwortFehler.nr === String(a.nr);
 // Fehler zu einer Rückfrage, die nicht mehr offen ist → allgemeiner Hinweis über der Liste.
