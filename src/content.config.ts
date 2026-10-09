@@ -19,7 +19,16 @@ const postSchema = z.object({
 const caseSchema = z.object({
   title: z.string(),
   client: z.string(),
-  niche: z.enum(["anwaelte", "luxus-immobilien", "privatkliniken", "fintech", "other", "tierschutz", "gaming", "creator"]),
+  niche: z.enum([
+    "anwaelte",
+    "luxus-immobilien",
+    "privatkliniken",
+    "fintech",
+    "other",
+    "tierschutz",
+    "gaming",
+    "creator",
+  ]),
   summary: z.string(),
   titleEn: z.string().optional(),
   summaryEn: z.string().optional(),
