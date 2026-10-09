@@ -93,7 +93,7 @@ const legend = 'text-xl font-semibold mb-4';
             <legend class={legend}>Hauptstandort</legend>
             <label class="block"><span class={label}>Straße und Hausnummer *</span><input required name="strasse" maxlength="200" class={input} /></label>
             <div class="grid md:grid-cols-[10rem_1fr] gap-4">
-              <label class="block"><span class={label}>PLZ *</span><input required name="plz" inputmode="numeric" pattern="\d{5}" maxlength="5" class={input} /></label>
+              <label class="block"><span class={label}>PLZ *</span><input required name="plz" inputmode="numeric" pattern="[0-9]{5}" maxlength="5" class={input} /></label>
               <label class="block"><span class={label}>Ort *</span><input required name="ort" maxlength="200" class={input} /></label>
             </div>
             <label class="block"><span class={label}>Bürozeiten *</span><textarea required name="buerozeiten" rows="3" maxlength="2000" class={area} placeholder="Mo und Mi 17–19 Uhr"></textarea></label>
