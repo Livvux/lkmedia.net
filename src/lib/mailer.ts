@@ -1,4 +1,4 @@
-// SMTP-Versand (AWS SES Mail Manager) für handwerkweb. Zugangsdaten nur aus der Umgebung.
+// SMTP-Versand (AWS SES Mail Manager) für Kunden-Formulare, Onboarding und Kundenmails. Zugangsdaten nur aus der Umgebung.
 import nodemailer, { type Transporter } from "nodemailer";
 import type { MailContent } from "./mail-types";
 

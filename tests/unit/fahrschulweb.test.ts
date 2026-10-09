@@ -1,7 +1,7 @@
 import type { APIRoute } from 'astro';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { parse } from 'yaml';
-import { parseOnboarding, toKundeYaml } from '../../src/lib/fahrschulweb';
+import { FAHRSCHULWEB, parseOnboarding, toKundeYaml } from '../../src/lib/fahrschulweb';
 import { aenderungUrl } from '../../src/lib/stripe';
 
 const { sendMail, checkPaidSession } = vi.hoisted(() => ({ sendMail: vi.fn(), checkPaidSession: vi.fn() }));
@@ -146,5 +146,11 @@ describe('toKundeYaml ohne Session-ID', () => {
     const yaml = toKundeYaml(r.data, { datum: '2026-10-09', sessionHash: 'abc123def456' });
     expect(yaml).not.toContain(SESSION);
     expect(yaml).toContain('stripe_session_hash: "abc123def456"');
+  });
+});
+
+describe('FAHRSCHULWEB', () => {
+  it('verweist auf die Demo-Seite', () => {
+    expect(FAHRSCHULWEB.demoUrl).toBe('https://fahrschule.lkmedia.net');
   });
 });

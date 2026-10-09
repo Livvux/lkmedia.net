@@ -18,6 +18,7 @@ export const FAHRSCHULWEB = {
     "Sobald Ihre Angaben und die benötigten Bilder vollständig vorliegen, erhalten Sie in der Regel innerhalb von 7 Werktagen eine Vorschau. Wir veröffentlichen Ihre Website nach Ihrer Freigabe.",
   // Stripe Payment Link (öffentlich, kein Secret). Success-URL → /fahrschule-webdesign/onboarding?session_id=…
   paymentLink: "https://buy.stripe.com/7sYdRa2fA9650GEf6CeAg0p",
+  demoUrl: "https://fahrschule.lkmedia.net",
   paymentLinkId: "plink_1UOZu2J3L2AI7fPZeudIUpjv",
 } as const;
 
