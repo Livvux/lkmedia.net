@@ -86,11 +86,11 @@ describe('toKundeYaml', () => {
       }),
     );
     if (!r.ok) throw new Error(r.errors.join());
-    const parsed = parse(toKundeYaml(r.data, '2026-10-06'));
+    const parsed = parse(toKundeYaml(r.data, { datum: '2026-10-06', sessionHash: 'abc123def456' }));
     expect(parsed.praxis.name).toBe('Praxis: "Dr. #1" – Köln');
     expect(parsed.leistungen).toBe('a: b\n- c\n# d\n{e}');
     expect(parsed.hinweise).toBe("'quote' & @at");
-    expect(parsed.bestellung.stripe_session).toBe('cs_live_a1B2c3');
+    expect(parsed.bestellung.stripe_session_hash).toBe('abc123def456');
     expect(parsed.standorte[0].plz).toBe('76437');
     expect(parsed.standorte[0].urlaub).toBe('');
   });
@@ -100,7 +100,7 @@ describe('Urlaub', () => {
   it('wird übernommen und ins kunde.yaml geschrieben', () => {
     const r = parseOnboarding(form({ urlaub: '24.12.2026 bis 01.01.2027 Weihnachtsurlaub' }));
     if (!r.ok) throw new Error(r.errors.join());
-    expect(parse(toKundeYaml(r.data, '2026-10-06')).standorte[0].urlaub).toBe('24.12.2026 bis 01.01.2027 Weihnachtsurlaub');
+    expect(parse(toKundeYaml(r.data, { datum: '2026-10-06', sessionHash: 'abc123def456' })).standorte[0].urlaub).toBe('24.12.2026 bis 01.01.2027 Weihnachtsurlaub');
   });
 });
 
@@ -131,5 +131,15 @@ describe('checkSession', () => {
   it('Stripe-Fehler → nicht paid', async () => {
     const f = vi.fn(async () => new Response('{}', { status: 404 }));
     expect((await checkSession('cs_live_abc', 'sk', f)).paid).toBe(false);
+  });
+});
+
+describe('toKundeYaml ohne Session-ID', () => {
+  it('YAML enthält die Session-ID nicht, nur den Hash', () => {
+    const r = parseOnboarding(form());
+    if (!r.ok) throw new Error(r.errors.join());
+    const yaml = toKundeYaml(r.data, { datum: '2026-10-09', sessionHash: 'abc123def456' });
+    expect(yaml).not.toContain('cs_live_a1B2c3');
+    expect(yaml).toContain('stripe_session_hash: "abc123def456"');
   });
 });

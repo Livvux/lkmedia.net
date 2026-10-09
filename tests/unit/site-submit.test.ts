@@ -1,5 +1,22 @@
 import { describe, expect, it, vi } from 'vitest';
-import { createRateLimiter, handleSubmission, type SubmitDeps, type SubmitInput } from '../../src/lib/handwerk-submit';
+import { DEMO_KUNDEN, type Kunde, type Registry } from '../../src/lib/kunden';
+import { createRateLimiter, handleSubmission, type SubmitDeps, type SubmitInput } from '../../src/lib/site-submit';
+
+const fakeRegistry = (kunden: Kunde[] | null): Registry => ({
+  all: async () => kunden,
+  bySiteId: async (id) => kunden?.find((k) => k.id === id),
+  bySession: async () => undefined,
+});
+const FS_ORIGIN = 'https://fahrschule.lkmedia.net';
+function anmeldung(): FormData {
+  const f = new FormData();
+  const v = {
+    vorname: 'Anna', nachname: 'Muster', geburtsdatum: '2000-05-01', klasse: 'B',
+    standort: 'Rastatt', email: 'anna@kunde.de', einwilligung: 'ja', dauer: '20000',
+  };
+  for (const [k, x] of Object.entries(v)) f.append(k, x);
+  return f;
+}
 
 const ORIGIN = 'https://handwerk.lkmedia.net';
 function valid(): FormData {
@@ -12,11 +29,11 @@ function valid(): FormData {
   return f;
 }
 const input = (o: Partial<SubmitInput> = {}): SubmitInput => ({
-  siteId: 'demo', form: 'anfrage', origin: ORIGIN, ip: '1.2.3.4', contentLength: 1000,
+  siteId: 'demo', produkt: 'handwerkweb', form: 'anfrage', origin: ORIGIN, ip: '1.2.3.4', contentLength: 1000,
   formData: async () => valid(), ...o,
 });
 const deps = (o: Partial<SubmitDeps> = {}): SubmitDeps => ({
-  send: vi.fn(async () => {}), allow: () => true, dev: false, ...o,
+  send: vi.fn(async () => {}), allow: () => true, dev: false, registry: fakeRegistry(DEMO_KUNDEN), ...o,
 });
 
 describe('handleSubmission', () => {
@@ -72,6 +89,34 @@ describe('handleSubmission', () => {
     expect(spy).toHaveBeenCalled();
     expect(JSON.stringify(spy.mock.calls)).not.toContain('Max Kunde');
   });
+});
+
+describe('handleSubmission – Register', () => {
+  it('Fahrschul-Anmeldung → 303 /danke?f=anmeldung, Mail an Register-Adresse', async () => {
+    const d = deps();
+    const r = await handleSubmission(
+      input({ siteId: 'fahrschule-demo', produkt: 'fahrschulweb', form: 'anmeldung', origin: FS_ORIGIN, formData: async () => anmeldung() }), d);
+    expect(r).toEqual({ status: 303, location: `${FS_ORIGIN}/danke?f=anmeldung` });
+    expect(d.send).toHaveBeenCalledWith(expect.objectContaining({ to: 'lucas@lkmedia.net' }));
+  });
+  it('Handwerk-siteId über Fahrschul-Endpoint → 404', async () =>
+    expect((await handleSubmission(input({ produkt: 'fahrschulweb', form: 'anmeldung' }), deps())).status).toBe(404));
+  it('Formular eines anderen Produkts → 404', async () =>
+    expect((await handleSubmission(input({ form: 'anmeldung' }), deps())).status).toBe(404));
+  it('gekündigter Kunde → 404', async () => {
+    const k = DEMO_KUNDEN.map((x) => (x.id === 'demo' ? { ...x, status: 'gekuendigt' as const } : x));
+    expect((await handleSubmission(input(), deps({ registry: fakeRegistry(k) }))).status).toBe(404);
+  });
+  it('Kunde ohne formulare → 404', async () => {
+    const k = DEMO_KUNDEN.map((x) => (x.id === 'demo' ? { ...x, formulare: undefined } : x));
+    expect((await handleSubmission(input(), deps({ registry: fakeRegistry(k) }))).status).toBe(404);
+  });
+  it('Register nicht erreichbar → 503', async () =>
+    expect(await handleSubmission(input(), deps({ registry: fakeRegistry(null) }))).toEqual({
+      status: 503, body: 'Formular gerade nicht verfügbar. Bitte rufen Sie uns an.',
+    }));
+  it('Prototyp-Schlüssel als Formular → 404', async () =>
+    expect((await handleSubmission(input({ form: 'constructor' }), deps())).status).toBe(404));
 });
 
 describe('createRateLimiter', () => {

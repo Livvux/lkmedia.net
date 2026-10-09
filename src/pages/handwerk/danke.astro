@@ -1,5 +1,12 @@
 ---
 import Base from '../../layouts/Base.astro';
+import { STRIPE_PORTAL_URL } from '../../lib/stripe';
+
+export const prerender = false;
+
+const nr = Astro.url.searchParams.get('nr') ?? '';
+const vorgang = /^\d{1,7}$/.test(nr) ? nr : null;
+
 const seo = {
   title: 'Angaben erhalten',
   description: 'Ihre handwerkweb-Angaben sind angekommen.',
@@ -7,13 +14,38 @@ const seo = {
   lang: 'de' as const,
   noindex: true,
 };
+const schritte = [
+  'Wir prüfen Ihre Angaben und Bilder.',
+  'Sie bekommen eine Vorschau Ihrer Website – in der Regel innerhalb von 7 Werktagen.',
+  'Sie geben die Vorschau frei, und wir starten Ihre Website.',
+];
 ---
-<Base seo={seo}>
-  <section class="py-40 px-6 text-center max-w-2xl mx-auto">
+<Base seo={seo} analytics={false}>
+  <section class="py-32 px-6 max-w-2xl mx-auto">
     <h1 class="text-5xl md:text-7xl font-semibold tracking-tight">Angekommen.</h1>
-    <p class="mt-6 text-xl text-black/70 dark:text-white/70">
-      Sie erhalten gleich eine Bestätigung per Mail. Schicken Sie uns als Antwort darauf Ihr Logo und Fotos
-      Ihrer Projekte – eine Vorschau Ihrer Website folgt in der Regel innerhalb von 7 Werktagen.
+    <p class="mt-6 text-xl text-black/70 dark:text-white/70">Danke! Ihre Angaben sind bei uns eingegangen. So geht es weiter:</p>
+    {vorgang && (
+      <p class="mt-4 text-lg font-medium">Ihre Vorgangsnummer: Nr. {vorgang}</p>
+    )}
+    <ol class="mt-10 space-y-6">
+      {schritte.map((s, i) => (
+        <li class="flex gap-4 text-lg">
+          <span class="inline-flex size-9 shrink-0 items-center justify-center rounded-full border border-black/30 dark:border-white/30 font-medium" aria-hidden="true">{i + 1}</span>
+          <span class="pt-1">{s}</span>
+        </li>
+      ))}
+    </ol>
+    <p class="mt-10 text-lg text-black/70 dark:text-white/70">
+      Sie bekommen gleich eine Bestätigung per E-Mail. Darin steht Ihr persönlicher Änderungs-Link:
+      Darüber schicken Sie Änderungen und weitere Bilder und sehen jederzeit den Stand.
+    </p>
+    {STRIPE_PORTAL_URL && (
+      <p class="mt-6 text-lg text-black/70 dark:text-white/70">
+        Rechnungen und Zahlungsdaten finden Sie im <a href={STRIPE_PORTAL_URL} class="underline underline-offset-4">Kundenportal</a>.
+      </p>
+    )}
+    <p class="mt-6 text-black/70 dark:text-white/70">
+      Fragen? Schreiben Sie an <a href="mailto:lucas@lkmedia.net" class="underline underline-offset-4">lucas@lkmedia.net</a>.
     </p>
     <a href="/" class="inline-flex mt-10 h-12 px-6 items-center rounded-full border border-black/30 dark:border-white/30">Zur Startseite</a>
   </section>

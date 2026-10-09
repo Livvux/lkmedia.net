@@ -1,6 +1,8 @@
 // handwerkweb – Projektanfrage und Kurzbewerbung von Kunden-Websites (Endpoint /api/handwerk/…).
 // Feldnamen und Auswahlwerte sind der Vertrag mit dem Template (handwerkweb/src/pages/anfrage.astro).
 
+import type { Attachment, FormResult, Grund } from "./mail-types";
+
 export const ANLIEGEN = [
   "Heizungstausch",
   "Wärmepumpe",
@@ -32,32 +34,18 @@ const IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp", "image/heic", "ima
 /** Manche Browser (v. a. iOS/Windows) liefern bei HEIC keinen MIME-Type. */
 const HEIC_BY_EXT: Record<string, string> = { heic: "image/heic", heif: "image/heif" };
 const CV_TYPES = [...IMAGE_TYPES, "application/pdf"];
-const EMAIL = /^[^\s@,;<>"']+@[^\s@,;<>"']+\.[^\s@,;<>"']+$/;
+export const EMAIL = /^[^\s@,;<>"']+@[^\s@,;<>"']+\.[^\s@,;<>"']+$/;
 /** Schneller ausgefüllt = Bot. `dauer` setzt ein Inline-Script; ohne JS fehlt es → kein Urteil. */
 const MIN_FILL_MS = 3000;
 
-export interface Attachment {
-  filename: string;
-  contentType: string;
-  content: Buffer;
-}
-export interface MailContent {
-  subject: string;
-  text: string;
-  replyTo?: string;
-  attachments: Attachment[];
-}
-export type Grund = "pflichtfelder" | "plz" | "email" | "auswahl" | "dateien";
-export type FormResult = { ok: true; mail: MailContent } | { ok: false; grund: Grund };
-
-const str = (f: FormData, k: string, max = 200) => {
+export const str = (f: FormData, k: string, max = 200) => {
   const v = f.get(k);
   return typeof v === "string" ? v.trim().slice(0, max) : "";
 };
-const oneLine = (s: string) => s.replace(/\s+/g, " ").trim();
+export const oneLine = (s: string) => s.replace(/\s+/g, " ").trim();
 const oneOf = (v: string, list: readonly string[]) => !v || list.includes(v);
-const fail = (grund: Grund): FormResult => ({ ok: false, grund });
-const rows = (r: [string, string][]) =>
+export const fail = (grund: Grund): FormResult => ({ ok: false, grund });
+export const rows = (r: [string, string][]) =>
   r
     .filter(([, v]) => v)
     .map(([k, v]) => `${k}: ${v}`)

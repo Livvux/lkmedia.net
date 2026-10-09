@@ -29,9 +29,9 @@ const audiences = [
 
 const steps = [
   { n: '01', title: 'Paket bestellen', body: `Bei der Bestellung zahlen Sie ${DOCWEB.initialPrice} für die Einrichtung und den ersten Monat. Die Mindestlaufzeit beginnt mit der Bestellung.` },
-  { n: '02', title: 'Praxisdaten eintragen', body: 'Praxis, Team, Leistungen, Öffnungszeiten, Urlaub und Link zu Ihrem Terminkalender. Logo und Fotos schicken Sie per E-Mail.' },
+  { n: '02', title: 'Praxisdaten eintragen', body: 'Praxis, Team, Leistungen, Öffnungszeiten, Urlaub und Link zu Ihrem Terminkalender. Logo und Fotos laden Sie direkt im Formular hoch.' },
   { n: '03', title: 'Vorschau ansehen', body: `${DOCWEB.deliveryPromise} Eine Korrekturschleife ist enthalten.` },
-  { n: '04', title: 'Website geht online', body: 'Wir prüfen, dass Ihr Terminkalender freie Termine zeigt, und schalten Ihre Internetadresse (Domain) auf. Betrieb, Updates und kleine Änderungen übernehmen wir.' },
+  { n: '04', title: 'Website geht online', body: 'Wir prüfen, dass Ihr Terminkalender freie Termine zeigt, und schalten Ihre Internetadresse (Domain) auf. Betrieb und Updates übernehmen wir, kleine Änderungen stellen Sie über Ihren Änderungs-Link ein.' },
 ];
 
 const included = [
@@ -50,7 +50,7 @@ const included = [
 const preparation = [
   { title: 'Praxis und Kontakt', body: 'Praxisname, Fachrichtung, Anschrift, Telefon, E-Mail, Öffnungs- und Sprechzeiten und geplanter Urlaub. Dazu der Link zum Kalender Ihrer Praxis bei Ihrem Kalender-Dienst (nicht dessen Startseite) und Hinweise zur Anfahrt.' },
   { title: 'Team und Leistungen', body: 'Namen, Titel und Schwerpunkte Ihres Teams, eine Liste Ihrer Leistungen mit kurzen Erklärungen und häufige Patientenfragen. Wir bereiten Ihre Angaben für die Website auf.' },
-  { title: 'Logo, Fotos und Domain', body: 'Ihr Logo sowie vorhandene Fotos von Team und Praxis, für die Sie die Nutzungsrechte besitzen. Dazu Ihre Wunsch-Internetadresse (Domain) oder die bestehende und den bisherigen Anbieter. Bilder senden Sie nach dem Kauf per E-Mail.' },
+  { title: 'Logo, Fotos und Domain', body: 'Ihr Logo sowie vorhandene Fotos von Team und Praxis, für die Sie die Nutzungsrechte besitzen. Dazu Ihre Wunsch-Internetadresse (Domain) oder die bestehende und den bisherigen Anbieter. Bilder laden Sie nach dem Kauf direkt im Formular hoch.' },
   { title: 'Berufsrechtliche Angaben', body: 'Zuständige Kammer, gegebenenfalls Kassenärztliche oder Kassenzahnärztliche Vereinigung, Berufsbezeichnung mit dem Staat, der sie verliehen hat, und Angaben zur Berufshaftpflicht.' },
 ];
 
@@ -62,7 +62,7 @@ const faqs = [
   { q: 'Wie steht es um den Datenschutz (DSGVO)?', a: 'Ihre Website nutzt Schriften von unserem eigenen Server und keine eingebetteten Statistik- oder Kartendienste. Das Hosting erfolgt in der EU. Wenn Patienten auf „Termin buchen“ klicken, gelten die Datenschutzbedingungen Ihres Kalender-Dienstes. Den nötigen Vertrag zur Auftragsverarbeitung für das Hosting stellen wir bereit.' },
   { q: 'Gibt es ein Kontaktformular?', a: 'Ein Kontaktformular ist im Paket nicht enthalten. Patienten erreichen Sie telefonisch, per E-Mail oder über Ihren Terminlink. Gesundheitsdaten sollten Patienten nicht per einfacher E-Mail schicken, weil diese unterwegs mitgelesen werden kann.' },
   { q: 'Bleibt meine Website aktuell?', a: 'Ja, dafür gibt es zwei Dinge. Erstens kennt die Anzeige „Jetzt geöffnet“ die gesetzlichen Feiertage Ihres Bundeslands und Ihren eingetragenen Urlaub. Zweitens prüfen wir alle 3 Monate von uns aus Terminlink, Öffnungszeiten, Telefon, E-Mail, Team und Leistungen und schicken Ihnen danach eine kurze Nachricht. Urlaub und geänderte Sprechzeiten müssen Sie uns mitteilen – wir können sie nicht erraten.' },
-  { q: 'Kann ich Inhalte später ändern lassen?', a: 'Ja. Für kleine Änderungen an Öffnungszeiten, Urlaub, Team oder Texten sind bis zu 30 Minuten pro Monat enthalten. Ungenutzte Zeit wird nicht übertragen. Schreiben Sie uns per E-Mail; zusätzlichen Aufwand stimmen wir vor der Umsetzung mit Ihnen ab. Die Prüfung alle 3 Monate kommt zusätzlich dazu.' },
+  { q: 'Kann ich Inhalte später ändern lassen?', a: 'Ja. Für kleine Änderungen an Öffnungszeiten, Urlaub, Team oder Texten sind bis zu 30 Minuten pro Monat enthalten. Ungenutzte Zeit wird nicht übertragen. Dafür erhalten Sie nach dem Kauf einen persönlichen Änderungs-Link: Dort sehen Sie den Status Ihrer Aufträge, laden Bilder hoch und beantworten Rückfragen – ohne Passwort. Wir melden uns in der Regel innerhalb von 2 Werktagen. Link verloren? Unter lkmedia.net/aenderung/link lassen Sie ihn sich per E-Mail erneut zusenden. Zusätzlichen Aufwand stimmen wir vor der Umsetzung mit Ihnen ab. Die Prüfung alle 3 Monate kommt zusätzlich dazu.' },
   { q: 'Was ist zusätzlich zu bezahlen?', a: 'Domainkosten und die Gebühren Ihres Kalender-Dienstes (zum Beispiel Doctolib oder samedi) sind nicht enthalten. Diese zahlen Sie direkt an den Dienst. Fotografie, neue Texte über die Aufbereitung Ihrer Angaben hinaus und Rechtsberatung gehören ebenfalls nicht zum Paket. Mehrere Standorte, zusätzliche Detailseiten, weitere Sprachen oder weitere Funktionen besprechen wir vor der Bestellung und vereinbaren den Umfang sowie mögliche Zusatzkosten.' },
   { q: 'Kann meine bestehende Website umziehen?', a: 'Die Einrichtung auf Ihrer Domain ist enthalten. Wenn bestehende Inhalte oder Seitenadressen übernommen werden sollen, klären wir den Umzugsumfang vor der Bestellung. Dazu gehören die Internetadresse (Domain), vorhandene E-Mail-Postfächer und Weiterleitungen von alten Adressen. Bitte sprechen Sie uns dazu vor dem Kauf an.' },
   { q: 'Sind die Rechtstexte rechtssicher?', a: 'Wir bereiten Impressum und Datenschutzerklärung mit den berufsrechtlichen Pflichtangaben vor. Eine Rechtsberatung ersetzt das nicht – bitte prüfen Sie die Texte, bevor Ihre Website online geht, oder lassen Sie sie prüfen.' },

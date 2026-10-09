@@ -21,7 +21,11 @@ export default defineConfig({
       },
     }),
   ],
-  vite: { plugins: [tailwindcss()] },
+  vite: {
+    plugins: [tailwindcss()],
+    // Sonst entdeckt Vite die Toolbar erst beim ersten Seitenaufruf, optimiert neu und lädt die Seite neu.
+    optimizeDeps: { include: ['astro/runtime/client/dev-toolbar/entrypoint.js'] },
+  },
   i18n: {
     defaultLocale: 'de',
     locales: ['de', 'en'],

@@ -13,7 +13,7 @@ Package manager: **pnpm**. Node: **>=22.12.0**.
 - `pnpm lint` — Biome check on `src/`
 - `pnpm format` — Biome format write
 - `pnpm test` — Vitest unit tests (`tests/unit`)
-- `pnpm test:e2e` — Playwright E2E (`tests/e2e`, config `playwright.config.ts`)
+- `pnpm test:e2e` — Playwright E2E (`tests/e2e`, config `playwright.config.ts`); Projekte `prod` (Build auf :4321) und `dev` (Dev-Server :4325 mit `PIPELINE_FAKE=1`, für Onboarding/Änderung)
 - Single unit test: `pnpm vitest run tests/unit/<file>.test.ts`
 - Single e2e: `pnpm playwright test tests/e2e/<file>.spec.ts`
 
@@ -53,7 +53,9 @@ Dynamic routes: `src/pages/[slug].astro` (root-level posts), `src/pages/blog/`, 
 
 `src/pages/api/docweb-onboarding.ts` / `handwerk-onboarding.ts` — Onboarding nach Stripe-Checkout (Payment-Link-Check in `src/lib/stripe.ts`).
 
-`src/pages/api/handwerk/[siteId]/[form].ts` — Formular-Endpoint für handwerkweb-Kunden-Websites (Projektanfrage, Bewerbung). Empfänger/Origins nur aus `src/lib/handwerk-sites.ts`; Versand per SMTP (`src/lib/mailer.ts`, Env `SMTP_*`). Astros `security.checkOrigin` ist aus; CSRF prüft `src/lib/csrf.ts` in der Middleware.
+`src/pages/api/handwerk/[siteId]/[form].ts` / `api/fahrschule/[siteId]/[form].ts` — Formular-Endpoints für Kunden-Websites (handwerkweb: Projektanfrage, Bewerbung; fahrschulweb: Anmeldung). Empfänger/Origins nur aus dem Kunden-Register `src/lib/kunden.ts` (lädt `kunden.yaml` aus dem privaten Repo `Livvux/kunden` via `GITHUB_KUNDEN_TOKEN`, 5 Min. Cache). Versand per SMTP (`src/lib/mailer.ts`, Env `SMTP_*`). Astros `security.checkOrigin` ist aus; CSRF prüft `src/lib/csrf.ts` in der Middleware.
+
+Kundenpipeline: `src/lib/site-submit.ts` (Formular-Verarbeitung), `src/lib/pipeline.ts` (Onboarding/Änderung → GitHub-Issue, Backup-Mail bei Fehler), `src/lib/github.ts` (GitHub-API), `src/lib/uploads.ts` (Bild-Uploads, Typ per Magic Bytes). Seiten `/aenderung?session_id=…` (Status aller Aufträge, Rückfragen beantworten, Bilder hochladen, ohne Passwort) und `/aenderung/link` (verlorenen Link per E-Mail anfordern). Env: `GITHUB_KUNDEN_TOKEN` (fine-grained, Contents+Issues RW auf `Livvux/*`), `STRIPE_SECRET_KEY`, `SMTP_*`.
 
 ### Scripts
 

@@ -1,7 +1,8 @@
 import type { APIRoute } from "astro";
 import { clientIp } from "../../../../lib/client-ip";
-import { createRateLimiter, handleSubmission } from "../../../../lib/handwerk-submit";
+import { registry } from "../../../../lib/kunden";
 import { sendMail } from "../../../../lib/mailer";
+import { createRateLimiter, handleSubmission } from "../../../../lib/site-submit";
 
 export const prerender = false;
 
@@ -11,13 +12,14 @@ export const POST: APIRoute = async ({ params, request, clientAddress }) => {
   const r = await handleSubmission(
     {
       siteId: params.siteId ?? "",
+      produkt: "handwerkweb",
       form: params.form ?? "",
       origin: request.headers.get("origin"),
       ip: clientIp(request, clientAddress),
       contentLength: Number(request.headers.get("content-length") ?? 0),
       formData: () => request.formData(),
     },
-    { send: sendMail, allow, dev: import.meta.env.DEV },
+    { send: sendMail, allow, dev: import.meta.env.DEV, registry },
   );
   if (r.status === 303)
     return new Response(null, { status: 303, headers: { Location: r.location } });

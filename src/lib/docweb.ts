@@ -162,12 +162,12 @@ export function parseOnboarding(f: FormData): ParseResult {
 const q = (v: string) => JSON.stringify(v);
 
 /** Erzeugt kunde.yaml im Format von docweb/onboarding/kunde.example.yaml. */
-export function toKundeYaml(d: Onboarding, datum: string): string {
+export function toKundeYaml(d: Onboarding, o: { datum: string; sessionHash: string }): string {
   const p = d.praxis;
   return `# docweb Onboarding – an den Agent übergeben (siehe docweb/AGENTS.md)
 bestellung:
-  stripe_session: ${q(d.sessionId)}
-  datum: ${q(datum)}
+  stripe_session_hash: ${q(o.sessionHash)}
+  datum: ${q(o.datum)}
   wunschdomain: ${q(d.wunschdomain)}
 
 praxis:

@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 import { parse } from 'yaml';
-import { parseOnboarding, toKundeYaml } from '../../src/lib/handwerkweb';
+import { HANDWERKWEB, parseOnboarding, toKundeYaml } from '../../src/lib/handwerkweb';
 import { checkPaidSession } from '../../src/lib/stripe';
 
 function form(o: Record<string, string | string[]> = {}): FormData {
@@ -62,7 +62,7 @@ describe('toKundeYaml', () => {
   it('erzeugt gültiges YAML auch mit Sonderzeichen', () => {
     const r = parseOnboarding(form({ hinweise: 'Achtung: "#1"\nzweite Zeile' }));
     if (!r.ok) throw new Error(r.errors.join());
-    const y = parse(toKundeYaml(r.data, '2026-10-07'));
+    const y = parse(toKundeYaml(r.data, { datum: '2026-10-07', sessionHash: 'abc123def456' }));
     expect(y.betrieb.name).toBe('Muster Haustechnik GmbH');
     expect(y.betrieb.gewerke).toEqual(['shk']);
     expect(y.betrieb.meisterbetrieb).toBe(true);
@@ -85,5 +85,38 @@ describe('checkPaidSession', () => {
     const f = ok({ payment_status: 'paid', payment_link: '' });
     expect((await checkPaidSession('cs_test_abc', 'sk', '', f)).paid).toBe(false);
     expect(f).not.toHaveBeenCalled();
+  });
+  it('unbekannte Session (400/404) → nicht bezahlt', async () => {
+    for (const status of [400, 404]) {
+      const f = vi.fn(async () => new Response('{}', { status }));
+      expect(await checkPaidSession('cs_test_abc', 'sk', 'plink_x', f)).toEqual({ paid: false });
+    }
+  });
+  it('Stripe-Ausfall (5xx, 401, Netz) → wirft statt „nicht bezahlt“', async () => {
+    for (const status of [500, 503, 401]) {
+      const f = vi.fn(async () => new Response('{}', { status }));
+      await expect(checkPaidSession('cs_test_abc', 'sk', 'plink_x', f)).rejects.toThrow(`Stripe ${status}`);
+    }
+    const netz = vi.fn(async () => {
+      throw new TypeError('fetch failed');
+    });
+    await expect(checkPaidSession('cs_test_abc', 'sk', 'plink_x', netz)).rejects.toThrow('fetch failed');
+  });
+});
+
+describe('toKundeYaml ohne Session-ID', () => {
+  it('YAML enthält die Session-ID nicht, nur den Hash', () => {
+    const r = parseOnboarding(form());
+    if (!r.ok) throw new Error(r.errors.join());
+    const yaml = toKundeYaml(r.data, { datum: '2026-10-09', sessionHash: 'abc123def456' });
+    expect(yaml).not.toContain('cs_live_a1B2c3');
+    expect(yaml).toContain('stripe_session_hash: "abc123def456"');
+  });
+});
+
+describe('HANDWERKWEB Payment Link', () => {
+  it('ist eingetragen', () => {
+    expect(HANDWERKWEB.paymentLinkId).toMatch(/^plink_/);
+    expect(HANDWERKWEB.paymentLink.startsWith('https://buy.stripe.com/')).toBe(true);
   });
 });

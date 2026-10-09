@@ -1,5 +1,10 @@
 ---
 import Base from '../../layouts/Base.astro';
+import Progress from '../../components/onboarding/Progress.astro';
+import UploadField from '../../components/onboarding/UploadField.astro';
+import { createGitHub } from '../../lib/github';
+import { hatOnboarding, zahlungFuerSeite } from '../../lib/onboarding-submit';
+import { aenderungUrl } from '../../lib/stripe';
 import { DOCWEB, checkSession } from '../../lib/docweb';
 
 export const prerender = false;
@@ -8,7 +13,12 @@ const sessionId = Astro.url.searchParams.get('session_id') ?? '';
 const fehler = Astro.url.searchParams.get('fehler');
 const stripeKey = process.env.STRIPE_SECRET_KEY ?? import.meta.env.STRIPE_SECRET_KEY;
 // Ohne Key nur im Dev-Server Formular zeigen; in Produktion nur nach bezahlter Bestellung.
-const { paid } = stripeKey ? await checkSession(sessionId, stripeKey) : { paid: import.meta.env.DEV };
+const { paid, stoerung } = await zahlungFuerSeite(sessionId, stripeKey, checkSession, import.meta.env.DEV);
+if (stoerung) Astro.response.status = 503;
+const ghToken = process.env.GITHUB_KUNDEN_TOKEN ?? import.meta.env.GITHUB_KUNDEN_TOKEN;
+// Schon eingereicht? Dann auf den Änderungs-Link hinweisen; das Formular bleibt nutzbar.
+const eingegangen =
+  paid && sessionId ? await hatOnboarding(ghToken ? createGitHub({ token: ghToken }) : null, sessionId) : false;
 
 const seo = {
   title: 'docweb Onboarding',
@@ -18,14 +28,30 @@ const seo = {
   noindex: true,
 };
 
+const sections = [
+  { id: 'praxis', label: 'Praxis' },
+  { id: 'termine', label: 'Terminkalender' },
+  { id: 'standort', label: 'Standort' },
+  { id: 'team', label: 'Team & Leistungen' },
+  { id: 'impressum', label: 'Angaben für das Impressum' },
+  { id: 'bilder', label: 'Logo und Fotos' },
+  { id: 'hinweise', label: 'Hinweise' },
+];
 const input = 'mt-1 w-full h-12 px-4 rounded-xl bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 focus:border-black dark:focus:border-white focus:outline-none';
 const area = 'mt-1 w-full p-4 rounded-xl bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 focus:border-black dark:focus:border-white focus:outline-none';
 const label = 'text-sm text-black/60 dark:text-white/60';
 const legend = 'text-xl font-semibold mb-4';
 ---
-<Base seo={seo}>
+<Base seo={seo} analytics={false}>
   <section class="py-24 px-6 max-w-3xl mx-auto">
-    {!paid ? (
+    {stoerung ? (
+      <>
+        <h1 class="text-4xl md:text-5xl font-semibold tracking-tight">Kurz nicht erreichbar.</h1>
+        <p role="alert" class="mt-6 text-lg text-black/70 dark:text-white/70">
+          Unser Zahlungsdienst ist gerade nicht erreichbar. Bitte laden Sie die Seite in ein paar Minuten neu.
+        </p>
+      </>
+    ) : !paid ? (
       <>
         <h1 class="text-4xl md:text-5xl font-semibold tracking-tight">Bestellung nicht gefunden.</h1>
         <p class="mt-6 text-lg text-black/70 dark:text-white/70">
@@ -38,25 +64,33 @@ const legend = 'text-xl font-semibold mb-4';
       <>
         <h1 class="text-4xl md:text-5xl font-semibold tracking-tight">Danke für Ihre Bestellung!</h1>
         <p class="mt-6 text-lg text-black/70 dark:text-white/70">
-          Damit wir Ihre Website bauen können, brauchen wir ein paar Angaben. Das dauert etwa 10 Minuten.
-          Felder mit * sind Pflicht. Logo und Fotos schicken Sie bitte per E-Mail an lucas@lkmedia.net oder als Antwort auf unsere Bestätigungsmail.
+          Damit wir Ihre Website bauen können, brauchen wir ein paar Angaben. Das dauert etwa 15 Minuten.
+          Felder mit * sind Pflicht. Logo und Fotos laden Sie direkt im Formular hoch. Danach prüfen wir alles und schicken Ihnen eine Vorschau.
         </p>
         <p class="mt-4 text-black/70 dark:text-white/70">{DOCWEB.deliveryPromise}</p>
         <a href="/docweb#vorbereitung" class="mt-4 inline-flex min-h-11 items-center underline underline-offset-4">Checkliste zur Vorbereitung ansehen</a>
         <p class="mt-4 text-sm text-black/70 dark:text-white/70">Bitte tragen Sie hier keine Patientendaten ein.</p>
 
+        {eingegangen && (
+          <div class="mt-8 rounded-xl border border-emerald-500/40 bg-emerald-500/10 p-5">
+            <p>Ihre Angaben sind bei uns angekommen. Änderungen oder weitere Bilder schicken Sie bequem über Ihren Änderungs-Link.</p>
+            <a href={aenderungUrl(sessionId)} class="inline-flex mt-4 h-12 px-6 items-center rounded-full bg-black text-white dark:bg-white dark:text-black font-medium">Änderungs-Link öffnen</a>
+          </div>
+        )}
+
         {fehler && (
-          <div role="alert" class="mt-8 rounded-xl border border-red-500/40 bg-red-500/10 p-5">
+          <div role="alert" tabindex="-1" data-onboarding-fehler class="mt-8 rounded-xl border border-red-500/40 bg-red-500/10 p-5">
             <p class="font-semibold">Bitte prüfen Sie Ihre Angaben:</p>
             <p class="mt-2 text-sm">{fehler}</p>
           </div>
         )}
 
-        <form method="POST" action="/api/docweb-onboarding" class="mt-12 space-y-12">
+        <form id="onboarding" data-onboarding="docweb" data-session={sessionId} method="POST" action="/api/docweb-onboarding" enctype="multipart/form-data" class="mt-12 space-y-12">
           <input type="hidden" name="session_id" value={sessionId} />
           <input type="text" name="website" tabindex="-1" autocomplete="off" class="hidden" aria-hidden="true" />
+          <Progress sections={sections} />
 
-          <fieldset class="space-y-4">
+          <fieldset id="praxis" class="space-y-4">
             <legend class={legend}>Praxis</legend>
             <label class="block"><span class={label}>Name der Praxis *</span><input required name="praxis_name" maxlength="200" class={input} placeholder="Hausarztpraxis Dr. Muster" /></label>
             <label class="block"><span class={label}>Fachrichtung *</span><input required name="fachrichtung" maxlength="200" class={input} placeholder="Allgemeinmedizin" /></label>
@@ -86,7 +120,7 @@ const legend = 'text-xl font-semibold mb-4';
             </div>
           </fieldset>
 
-          <fieldset class="space-y-4">
+          <fieldset id="termine" class="space-y-4">
             <legend class={legend}>Terminkalender</legend>
             <p class="text-sm text-black/60 dark:text-white/60">
               Der Knopf „Termin buchen“ auf Ihrer Website öffnet den Kalender Ihrer Praxis bei Ihrem Kalender-Dienst. Wir verbinden ihn und prüfen vor dem Start, dass er freie Termine zeigt.
@@ -105,7 +139,7 @@ const legend = 'text-xl font-semibold mb-4';
             <p class="text-sm text-black/50 dark:text-white/50">Bitte den Link zu Ihrer eigenen Praxis eintragen, nicht die Startseite von Doctolib oder samedi. Öffnen Sie den Link vorher kurz selbst und prüfen Sie, dass freie Termine erscheinen.</p>
           </fieldset>
 
-          <fieldset class="space-y-4">
+          <fieldset id="standort" class="space-y-4">
             <legend class={legend}>Standort</legend>
             <label class="block"><span class={label}>Straße und Hausnummer *</span><input required name="strasse" maxlength="200" class={input} /></label>
             <div class="grid md:grid-cols-[10rem_1fr] gap-4">
@@ -114,19 +148,19 @@ const legend = 'text-xl font-semibold mb-4';
             </div>
             <label class="block"><span class={label}>Öffnungs- und Sprechzeiten *</span><textarea required name="oeffnungszeiten" rows="4" maxlength="2000" class={area} placeholder={'Mo, Di, Do 8–12 und 15–18 Uhr\nMi, Fr 8–12 Uhr'}></textarea></label>
             <label class="block"><span class={label}>Urlaub und Betriebsferien (nächste 12 Monate, jeweils von – bis)</span><textarea name="urlaub" rows="3" maxlength="1000" class={area} placeholder={'24.12.2026 bis 01.01.2027 Weihnachtsurlaub'}></textarea></label>
-            <p class="text-sm text-black/50 dark:text-white/50">Gesetzliche Feiertage tragen wir automatisch ein. Spätere Urlaubszeiten schicken Sie uns bitte mindestens 5 Werktage vorher per E-Mail.</p>
+            <p class="text-sm text-black/50 dark:text-white/50">Gesetzliche Feiertage tragen wir automatisch ein. Spätere Urlaubszeiten stellen Sie bitte mindestens 5 Werktage vorher über Ihren Änderungs-Link ein.</p>
             <label class="block"><span class={label}>Zugang und Anfahrt</span><textarea name="barrierefreiheit" rows="2" maxlength="500" class={area} placeholder="Aufzug, ebenerdiger Zugang, Parkplätze, Bus und Bahn …"></textarea></label>
             <p class="text-sm text-black/50 dark:text-white/50">Mehrere Standorte? Bitte unten unter „Hinweise“ angeben.</p>
           </fieldset>
 
-          <fieldset class="space-y-4">
+          <fieldset id="team" class="space-y-4">
             <legend class={legend}>Team & Leistungen</legend>
             <label class="block"><span class={label}>Ärztinnen, Ärzte, Therapeuten * (eine Person pro Zeile: Name, Titel, Schwerpunkte)</span><textarea required name="team" rows="4" maxlength="5000" class={area} placeholder="Dr. med. Anna Muster, Fachärztin für Allgemeinmedizin, Diabetologie"></textarea></label>
             <label class="block"><span class={label}>Leistungen * (eine pro Zeile, gern mit kurzer Erklärung)</span><textarea required name="leistungen" rows="6" maxlength="5000" class={area}></textarea></label>
             <label class="block"><span class={label}>Häufige Fragen Ihrer Patienten</span><textarea name="faq_wuensche" rows="3" maxlength="3000" class={area}></textarea></label>
           </fieldset>
 
-          <fieldset class="space-y-4">
+          <fieldset id="impressum" class="space-y-4">
             <legend class={legend}>Angaben für das Impressum</legend>
             <label class="block"><span class={label}>Zuständige Kammer *</span><input required name="kammer" maxlength="200" class={input} placeholder="Ärztekammer Nordrhein" /></label>
             <label class="block"><span class={label}>Kassenärztliche / -zahnärztliche Vereinigung</span><input name="kv" maxlength="200" class={input} /></label>
@@ -134,7 +168,13 @@ const legend = 'text-xl font-semibold mb-4';
             <label class="block"><span class={label}>Berufshaftpflichtversicherung (Name, Anschrift)</span><input name="haftpflicht" maxlength="300" class={input} /></label>
           </fieldset>
 
-          <fieldset class="space-y-4">
+          <fieldset id="bilder" class="space-y-6">
+            <legend class={legend}>Logo und Fotos</legend>
+            <UploadField name="logo" label="Logo (eine Datei)" hint="JPG, PNG, WebP oder SVG, bis 8 MB. Am besten SVG oder PNG mit durchsichtigem Hintergrund." max={1} />
+            <UploadField name="fotos" label="Fotos (Praxis, Team, Räume), bis zu 10" hint="JPG, PNG, WebP oder SVG, je Datei bis 8 MB, zusammen bis 40 MB. Große Fotos verkleinern wir beim Hochladen automatisch." max={10} />
+          </fieldset>
+
+          <fieldset id="hinweise" class="space-y-4">
             <legend class={legend}>Hinweise</legend>
             <label class="block"><span class={label}>Alles, was wir sonst wissen sollten</span><textarea name="hinweise" rows="4" maxlength="3000" class={area}></textarea></label>
           </fieldset>
@@ -145,3 +185,7 @@ const legend = 'text-xl font-semibold mb-4';
     )}
   </section>
 </Base>
+
+<script>
+  import '../../scripts/onboarding-form.ts';
+</script>

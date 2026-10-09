@@ -28,7 +28,8 @@
     "astro": "^6.1.7",
     "nodemailer": "^10.0.15",
     "resend": "^6.12.0",
-    "tailwindcss": "^4.2.2"
+    "tailwindcss": "^4.2.2",
+    "yaml": "^2.9.1"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.8",
@@ -40,7 +41,6 @@
     "playwright": "^1.59.1",
     "sharp": "^0.34.5",
     "typescript": "^6.0.3",
-    "vitest": "^4.1.4",
-    "yaml": "^2.9.1"
+    "vitest": "^4.1.4"
   }
 }

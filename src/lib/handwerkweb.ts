@@ -4,11 +4,13 @@ import { checkPaidSession, SESSION_ID } from "./stripe";
 export const HANDWERKWEB = {
   setupPrice: "1.990 €",
   monthlyPrice: "69 €",
+  deliveryPromise:
+    "Sobald Ihre Angaben und die benötigten Bilder vollständig vorliegen, erhalten Sie in der Regel innerhalb von 7 Werktagen eine Vorschau. Wir veröffentlichen Ihre Website nach Ihrer Freigabe.",
   demoUrl: "https://handwerk.lkmedia.net",
   // Stripe Payment Link (öffentlich, kein Secret). Leer = noch nicht eingerichtet → CTA führt zum Gespräch.
   // Success-URL beim Anlegen: https://lkmedia.net/handwerk/onboarding?session_id={CHECKOUT_SESSION_ID}
-  paymentLink: "",
-  paymentLinkId: "",
+  paymentLink: "https://buy.stripe.com/7sY6oIg6qfutcpme2yeAg0q",
+  paymentLinkId: "plink_1UOdXSJ3L2AI7fPZmGbIbumt",
 } as const;
 
 const GEWERKE = ["shk", "elektro"] as const;
@@ -119,12 +121,12 @@ export function parseOnboarding(f: FormData): ParseResult {
 const q = (v: string) => JSON.stringify(v);
 
 /** Erzeugt kunde.yaml im Format von handwerkweb/onboarding/kunde.example.yaml. */
-export function toKundeYaml(d: Onboarding, datum: string): string {
+export function toKundeYaml(d: Onboarding, o: { datum: string; sessionHash: string }): string {
   const b = d.betrieb;
   return `# handwerkweb Onboarding – an den Agent übergeben (siehe handwerkweb/AGENTS.md)
 bestellung:
-  stripe_session: ${q(d.sessionId)}
-  datum: ${q(datum)}
+  stripe_session_hash: ${q(o.sessionHash)}
+  datum: ${q(o.datum)}
   wunschdomain: ${q(d.wunschdomain)}
 
 betrieb:

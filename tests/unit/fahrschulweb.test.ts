@@ -1,7 +1,9 @@
 import type { APIRoute } from 'astro';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { parse } from 'yaml';
-import { parseOnboarding, toKundeYaml } from '../../src/lib/fahrschulweb';
+import { FAHRSCHULWEB, parseOnboarding, toKundeYaml } from '../../src/lib/fahrschulweb';
+import { aenderungUrl } from '../../src/lib/stripe';
+import { formRequest } from './helpers/form-request';
 
 const { sendMail, checkPaidSession } = vi.hoisted(() => ({ sendMail: vi.fn(), checkPaidSession: vi.fn() }));
 vi.mock('../../src/lib/mailer', () => ({ sendMail }));
@@ -60,21 +62,21 @@ describe('parseOnboarding', () => {
 });
 
 describe('toKundeYaml', () => {
-  it('erzeugt valides YAML auch bei Sonderzeichen und markiert Änderungen', () => {
+  it('erzeugt valides YAML auch bei Sonderzeichen', () => {
     const r = parseOnboarding(form({ fahrschule_name: 'Fahrschule: "#1"', preise: 'B: 450 €\n- A: 500 €' }));
     if (!r.ok) throw new Error(r.errors.join());
-    const y = parse(toKundeYaml(r.data, '2026-10-09', true));
+    const y = parse(toKundeYaml(r.data, { datum: '2026-10-09', sessionHash: 'abc123def456' }));
     expect(y.fahrschule.name).toBe('Fahrschule: "#1"');
     expect(y.preise).toBe('B: 450 €\n- A: 500 €');
     expect(y.klassen).toEqual(['B', 'BE']);
-    expect(y.bestellung).toMatchObject({ stripe_session: SESSION, aenderung: true });
+    expect(y.bestellung).toEqual({ stripe_session_hash: 'abc123def456', datum: '2026-10-09', wunschdomain: '' });
   });
 });
 
 describe('POST /api/fahrschule-onboarding', () => {
   const submit = async (fd = form()) => {
     const { POST } = await import('../../src/pages/api/fahrschule-onboarding');
-    const request = new Request('https://lkmedia.net/api/fahrschule-onboarding', { method: 'POST', body: fd });
+    const request = await formRequest('https://lkmedia.net/api/fahrschule-onboarding', fd);
     return POST({ request } as Parameters<APIRoute>[0]);
   };
 
@@ -83,6 +85,7 @@ describe('POST /api/fahrschule-onboarding', () => {
     vi.useFakeTimers();
     sendMail.mockReset().mockResolvedValue(undefined);
     vi.stubEnv('STRIPE_SECRET_KEY', 'sk_test_mock');
+    vi.stubEnv('GITHUB_KUNDEN_TOKEN', '');
     checkPaidSession.mockReset().mockResolvedValue({ paid: true, email: 'kaeufer@example.test' });
     vi.spyOn(console, 'error').mockImplementation(() => {});
   });
@@ -93,15 +96,19 @@ describe('POST /api/fahrschule-onboarding', () => {
     vi.restoreAllMocks();
   });
 
-  it('nimmt Angaben an und erlaubt spätere Änderungen mit Änderungs-Link', async () => {
+  it('nimmt Angaben an, bremst Doppelklicks und schickt den Änderungs-Link', async () => {
     const first = await submit();
     expect(first.status).toBe(303);
     expect(first.headers.get('location')).toBe('/fahrschule-webdesign/danke');
     expect(sendMail).toHaveBeenCalledTimes(2);
-    expect(sendMail.mock.calls[0][0]).toMatchObject({ to: 'lucas@lkmedia.net', subject: 'fahrschulweb Onboarding: Fahrschule Muster' });
+    // Ohne GITHUB_KUNDEN_TOKEN geht alles per Backup-Mail an Lucas.
+    expect(sendMail.mock.calls[0][0]).toMatchObject({
+      to: 'lucas@lkmedia.net',
+      subject: '[GitHub fehlgeschlagen] fahrschulweb Onboarding: Fahrschule Muster',
+    });
     const confirmation = sendMail.mock.calls[1][0];
     expect(confirmation.to).toBe('kaeufer@example.test');
-    expect(confirmation.text).toContain(`https://lkmedia.net/fahrschule-webdesign/onboarding?session_id=${SESSION}`);
+    expect(confirmation.text).toContain(aenderungUrl(SESSION));
 
     // Doppelklick → gebremst, keine weitere Mail.
     expect((await submit()).status).toBe(429);
@@ -109,12 +116,9 @@ describe('POST /api/fahrschule-onboarding', () => {
 
     vi.advanceTimersByTime(61_000);
     expect((await submit(form({ theorie: 'Mo 18 Uhr' }))).status).toBe(303);
-    const change = sendMail.mock.calls[2][0];
-    expect(change.subject).toBe('fahrschulweb Änderung: Fahrschule Muster');
-    expect(parse(change.attachments[0].content.toString('utf8'))).toMatchObject({
-      theorie: 'Mo 18 Uhr',
-      bestellung: { aenderung: true },
-    });
+    const yaml = sendMail.mock.calls[2][0].attachments[0].content.toString('utf8');
+    expect(yaml).not.toContain(SESSION);
+    expect(parse(yaml)).toMatchObject({ theorie: 'Mo 18 Uhr', bestellung: { stripe_session_hash: expect.stringMatching(/^[0-9a-f]{12}$/) } });
   });
 
   it('verschickt nichts zu einer unbezahlten Bestellung', async () => {
@@ -129,9 +133,25 @@ describe('POST /api/fahrschule-onboarding', () => {
     expect(r.headers.get('location')).toMatch(/^\/fahrschule-webdesign\/onboarding\?session_id=cs_test_fahrschule123&fehler=/);
   });
 
-  it('meldet 502, wenn die Betreiber-Mail scheitert, und lässt erneutes Senden zu', async () => {
+  it('meldet 502, wenn GitHub fehlt und die Betreiber-Mail scheitert, und lässt erneutes Senden zu', async () => {
     sendMail.mockRejectedValueOnce(new Error('smtp down'));
     expect((await submit()).status).toBe(502);
     expect((await submit()).status).toBe(303);
+  });
+});
+
+describe('toKundeYaml ohne Session-ID', () => {
+  it('YAML enthält die Session-ID nicht, nur den Hash', () => {
+    const r = parseOnboarding(form());
+    if (!r.ok) throw new Error(r.errors.join());
+    const yaml = toKundeYaml(r.data, { datum: '2026-10-09', sessionHash: 'abc123def456' });
+    expect(yaml).not.toContain(SESSION);
+    expect(yaml).toContain('stripe_session_hash: "abc123def456"');
+  });
+});
+
+describe('FAHRSCHULWEB', () => {
+  it('verweist auf die Demo-Seite', () => {
+    expect(FAHRSCHULWEB.demoUrl).toBe('https://fahrschule.lkmedia.net');
   });
 });
