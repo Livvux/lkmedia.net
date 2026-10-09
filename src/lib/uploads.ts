@@ -23,19 +23,22 @@ export function detectType(b: Uint8Array): Upload["ext"] | null {
 // Rohtext, case-insensitiv, KEIN Kommentar-Strippen (CDATA/Kommentar-Tricks); <script in
 // Kommentaren ist ein bewusster False Positive. Jede &-Referenz außer den 5 Standard-Entities
 // (inkl. &#...) wird abgelehnt, damit href/javascript: nicht kodiert versteckt werden kann.
+const PFX = "(?:[^\\s<>/:!?]+:)?"; // beliebiger XML-Präfix (auch mit . oder Nicht-ASCII)
+const ATTRS = `(?:"[^"]*"|'[^']*'|[^>"'])*?`; // Attribute, '>' in Werten beachten
 const UNSAFE_SVG = [
-  /<(?:[\w-]+:)?(?:script|foreignObject|iframe|embed|object|handler|listener)\b/i,
-  /<(?:[\w-]+:)?use\b[^>]*?href\s*=(?!\s*["']?\s*#)/i,
+  new RegExp(`<${PFX}(?:script|foreignObject|iframe|embed|object|handler|listener)\\b`, "i"),
+  new RegExp(`<${PFX}use\\b${ATTRS}href\\s*=(?!\\s*["']?\\s*#)`, "i"),
   /[\s"'/]on\w+\s*=/i,
-  /javascript:/i,
   /href\s*=\s*["']?\s*(?:https?:|\/\/)/i,
   /<!ENTITY/i,
   /<!DOCTYPE[^>]*\[/i,
   /&(?!(?:amp|lt|gt|quot|apos);)/,
 ];
+// Schemata auch mit eingestreutem Whitespace (java\nscript:) erkennen.
+const UNSAFE_SCHEME = /javascript:|vbscript:|data:text\/html/i;
 
 export function isSafeSvg(text: string): boolean {
-  return !UNSAFE_SVG.some((re) => re.test(text));
+  return !UNSAFE_SVG.some((re) => re.test(text)) && !UNSAFE_SCHEME.test(text.replace(/\s+/g, ""));
 }
 
 export function slugName(original: string, ext: Upload["ext"]): string {
