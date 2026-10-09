@@ -13,14 +13,16 @@ export default defineConfig({
   ],
   webServer: [
     {
-      command: 'pnpm build && node ./dist/server/entry.mjs',
+      // Binaries direkt statt über pnpm: pnpm startet Skripte in einer eigenen Prozessgruppe, die
+      // Playwrights Kill (-pgid) nicht erreicht → Server überlebt, stdout bleibt offen, Lauf endet nie.
+      command: './node_modules/.bin/astro build && node ./dist/server/entry.mjs',
       url: 'http://localhost:4321',
       env: { HOST: '0.0.0.0', PORT: '4321' },
       reuseExistingServer: !process.env.CI,
       timeout: 180_000,
     },
     {
-      command: 'pnpm astro dev --port 4325',
+      command: './node_modules/.bin/astro dev --port 4325',
       url: 'http://localhost:4325',
       // Leere Werte überdecken eine evtl. vorhandene .env – kein echter Stripe-/GitHub-Zugriff.
       env: { PIPELINE_FAKE: '1', STRIPE_SECRET_KEY: '', GITHUB_KUNDEN_TOKEN: '' },
