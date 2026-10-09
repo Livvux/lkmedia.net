@@ -3,6 +3,7 @@ import { type Kunde, parseKunden } from "./kunden-schema";
 
 export { type Kunde, kundeSchema, PRODUKTE, type Produkt, parseKunden } from "./kunden-schema";
 
+const RETRY_MS = 60_000;
 const URL = "https://api.github.com/repos/Livvux/kunden/contents/kunden.yaml";
 
 export const DEMO_KUNDEN: Kunde[] = [
@@ -55,6 +56,8 @@ export function createRegistry(o: {
   const { token, fetchFn = fetch, now = Date.now, ttlMs = 300_000 } = o;
   let stand: Kunde[] | null = null;
   let geladen = 0;
+  let nextTry = 0;
+  let laufend: Promise<void> | null = null;
 
   async function laden(): Promise<void> {
     try {
@@ -67,18 +70,25 @@ export function createRegistry(o: {
         signal: AbortSignal.timeout(10_000),
       });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      const { kunden, fehler } = parseKunden(await res.text());
+      const { kunden, fehler, defekt } = parseKunden(await res.text());
       for (const f of fehler) console.error(`[kunden] ${f}`);
+      if (defekt) throw new Error("Datei unlesbar");
       stand = kunden;
       geladen = now();
     } catch (e) {
+      nextTry = now() + RETRY_MS;
       console.error("[kunden] Abruf fehlgeschlagen:", e instanceof Error ? e.message : e);
     }
   }
 
   async function all(): Promise<Kunde[] | null> {
     if (!token) return DEMO_KUNDEN;
-    if (!stand || now() - geladen > ttlMs) await laden();
+    if ((!stand || now() - geladen > ttlMs) && now() >= nextTry) {
+      laufend ??= laden().finally(() => {
+        laufend = null;
+      });
+    }
+    if (laufend) await laufend;
     return stand ? [...stand, ...DEMO_KUNDEN] : null;
   }
 

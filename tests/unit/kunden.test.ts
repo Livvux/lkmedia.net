@@ -98,6 +98,48 @@ describe("createRegistry", () => {
   });
 });
 
+describe("createRegistry Ausfälle", () => {
+  const alt = (all: Array<{ id: string }> | null) => all?.some((k) => k.id === "patricks-fahrschule");
+
+  it.each(["a: 1", "a: ["])("kaputte Datei (%s) behält alten Stand", async (kaputt) => {
+    const f = mkFetch(GUT, kaputt);
+    let t = 0;
+    const r = createRegistry({ token: "t", fetchFn: f as never, now: () => t });
+    await r.all();
+    t += 300_001;
+    expect(alt(await r.all())).toBe(true);
+    expect(f).toHaveBeenCalledTimes(2);
+  });
+  it("Backoff 60 s nach Fehlschlag", async () => {
+    const f = mkFetch(GUT, 500, GUT);
+    let t = 0;
+    const r = createRegistry({ token: "t", fetchFn: f as never, now: () => t });
+    await r.all();
+    t += 300_001;
+    await r.all();
+    t += 59_000;
+    await r.all();
+    expect(f).toHaveBeenCalledTimes(2);
+    t += 1_001;
+    await r.all();
+    expect(f).toHaveBeenCalledTimes(3);
+  });
+  it("Netzwerkfehler (reject) fällt auf alten Stand zurück", async () => {
+    const f = vi.fn().mockResolvedValueOnce(new Response(GUT)).mockRejectedValue(new Error("net"));
+    let t = 0;
+    const r = createRegistry({ token: "t", fetchFn: f as never, now: () => t });
+    await r.all();
+    t += 300_001;
+    expect(alt(await r.all())).toBe(true);
+  });
+  it("parallele all() → ein fetch", async () => {
+    const f = mkFetch(GUT);
+    const r = createRegistry({ token: "t", fetchFn: f as never });
+    await Promise.all([r.all(), r.all(), r.bySiteId("demo")]);
+    expect(f).toHaveBeenCalledTimes(1);
+  });
+});
+
 describe("allowedOrigins", () => {
   it("dev hängt DEV_ORIGINS an", () => {
     const k = DEMO_KUNDEN[0];

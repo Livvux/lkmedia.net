@@ -28,16 +28,17 @@ export const kundeSchema = z.object({
 });
 export type Kunde = z.infer<typeof kundeSchema>;
 
-/** Ungültige Einträge landen in `fehler` (ohne Personendaten), gültige bleiben. */
-export function parseKunden(text: string): { kunden: Kunde[]; fehler: string[] } {
+/** `defekt`: ganze Datei unlesbar (kein YAML / keine Liste). Ungültige Einträge landen in `fehler` (ohne Personendaten), gültige bleiben. */
+export function parseKunden(text: string): { kunden: Kunde[]; fehler: string[]; defekt?: true } {
   let doc: unknown;
   try {
     doc = parse(text);
   } catch {
-    return { kunden: [], fehler: ["kunden.yaml ist kein gültiges YAML"] };
+    return { kunden: [], fehler: ["kunden.yaml ist kein gültiges YAML"], defekt: true };
   }
   if (doc == null) return { kunden: [], fehler: [] };
-  if (!Array.isArray(doc)) return { kunden: [], fehler: ["kunden.yaml ist keine Liste"] };
+  if (!Array.isArray(doc))
+    return { kunden: [], fehler: ["kunden.yaml ist keine Liste"], defekt: true };
   const kunden: Kunde[] = [];
   const fehler: string[] = [];
   doc.forEach((eintrag, i) => {
