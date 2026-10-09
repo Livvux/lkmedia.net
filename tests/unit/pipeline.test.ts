@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import type { Kunde } from "../../src/lib/kunden-schema";
 import {
   KUNDEN_REPO,
@@ -234,6 +234,7 @@ describe("submitAenderung", () => {
       kategorie: "vertrag",
       text: "Kündigung",
       bilder: [img("brief.png")],
+      now,
     });
     expect(r.ziel).toBe("vertrag");
     expect(r.repo).toBe(KUNDEN_REPO);
@@ -244,7 +245,31 @@ describe("submitAenderung", () => {
     expect(i.labels).toEqual(["vertrag", "kat:vertrag"]);
     expect(i.body.split("\n")).toContain(`session:${h}`);
     expect(f.commits.map((c) => c.repo)).toEqual([KUNDEN_REPO]);
-    expect(f.commits[0].paths).toEqual([`inbox/fahrschulweb-${h}/vertrag/brief.png`]);
+    expect(f.commits[0].paths).toEqual([
+      `inbox/fahrschulweb-${h}/vertrag/20261009-080706/brief.png`,
+    ]);
+    expect(i.body).toContain(`vertrag/20261009-080706/brief.png`);
+  });
+
+  it("Vertrag zweimal mit gleichem Dateinamen: zwei verschiedene Pfade", async () => {
+    const f = createGitHubFake();
+    const zeiten = [new Date("2026-10-09T08:00:00Z"), new Date("2026-10-09T09:30:15Z")];
+    for (const t of zeiten) {
+      await submitAenderung(f.gh, {
+        kunde: kunde(),
+        produkt: "fahrschulweb",
+        name: "P",
+        sessionId: SID,
+        kategorie: "vertrag",
+        text: "x",
+        bilder: [img("brief.png")],
+        now: () => t,
+      });
+    }
+    const pfade = f.commits.flatMap((c) => c.paths);
+    expect(pfade).toHaveLength(2);
+    expect(new Set(pfade).size).toBe(2);
+    expect(pfade[1]).toMatch(/vertrag\/20261009-093015\/brief\.png$/);
   });
 
   it("unbekannte oder fremde Kategorie: wirft", async () => {
@@ -334,6 +359,37 @@ describe("listAuftraege", () => {
     ]);
   });
 
+  it("Onboarding-Phase: Neukunden-Issue erscheint als Einrichtung, mit Frage", async () => {
+    const f = createGitHubFake();
+    const h = await sessionHash(SID);
+    f.addIssue(KUNDEN_REPO, {
+      number: 5,
+      body: `session:${h}`,
+      labels: ["neukunde", "fahrschulweb", "rueckfrage"],
+      createdAt: "2026-10-05T00:00:00Z",
+    });
+    f.addIssue(KUNDEN_REPO, {
+      number: 6,
+      body: `session:${await sessionHash("fremd")}`,
+      labels: ["neukunde", "fahrschulweb"],
+    });
+    f.addComment(KUNDEN_REPO, 5, "@kunde: Haben Sie ein Logo als SVG?");
+    const r = await listAuftraege(f.gh, {
+      kunde: kunde({ repo: undefined, status: "onboarding" }),
+      sessionId: SID,
+    });
+    expect(r).toEqual([
+      {
+        repo: KUNDEN_REPO,
+        nr: 5,
+        datum: "2026-10-05T00:00:00Z",
+        kategorie: "Einrichtung Ihrer Website",
+        status: "rueckfrage",
+        frage: "Haben Sie ein Logo als SVG?",
+      },
+    ]);
+  });
+
   it("ohne Kunde nur Vertrags-Issues; max. 20", async () => {
     const f = createGitHubFake();
     const h = await sessionHash(SID);
@@ -350,8 +406,8 @@ describe("antworten", () => {
   it("fremder Hash → wirft, nichts geändert", async () => {
     const f = createGitHubFake();
     const repo = "Livvux/kunde-patrick";
-    f.addIssue(repo, { number: 1, body: `session:${await sessionHash("x")}`, labels: ["rueckfrage"] });
-    await expect(antworten(f.gh, { repo, nr: 1, sessionId: SID, text: "hi" })).rejects.toThrow(
+    f.addIssue(repo, { number: 1, body: `session:${await sessionHash("x")}`, labels: ["aenderung", "rueckfrage"] });
+    await expect(antworten(f.gh, { kunde: kunde(), repo, nr: 1, sessionId: SID, text: "hi" })).rejects.toThrow(
       "fremder Auftrag",
     );
     expect(f.commentsOf(repo, 1)).toHaveLength(0);
@@ -366,12 +422,56 @@ describe("antworten", () => {
       body: `session:${await sessionHash(SID)}`,
       labels: ["aenderung", "rueckfrage", "rueckfrage-gemailt"],
     });
-    await antworten(f.gh, { repo, nr: 1, sessionId: SID, text: "Der Text\nauf der Startseite" });
+    await antworten(f.gh, {
+      kunde: kunde(),
+      repo,
+      nr: 1,
+      sessionId: SID,
+      text: "Der Text\nauf der Startseite",
+    });
     const c = f.commentsOf(repo, 1);
     expect(c).toHaveLength(1);
     expect(c[0].body.startsWith("Antwort Kundschaft:\n\n> ")).toBe(true);
     expect(c[0].body).toContain("> Der Text\n> auf der Startseite");
     expect(f.removedLabels.map((l) => l.label)).toEqual(["rueckfrage", "rueckfrage-gemailt"]);
     expect((f.issues.get(repo) ?? [])[0].labels).toEqual(["aenderung"]);
+  });
+
+  it("fremdes Repo → wirft vor jedem API-Aufruf", async () => {
+    const f = createGitHubFake();
+    const spy = vi.spyOn(f.gh, "listIssues");
+    for (const repo of ["Livvux/anderer-kunde", "Livvux/kunde-patrick"]) {
+      const k = repo === "Livvux/kunde-patrick" ? null : kunde();
+      await expect(
+        antworten(f.gh, { kunde: k, repo, nr: 1, sessionId: SID, text: "x" }),
+      ).rejects.toThrow("fremder Auftrag");
+    }
+    expect(spy).not.toHaveBeenCalled();
+  });
+
+  it("ohne rueckfrage oder falscher Issue-Typ → wirft, kein Kommentar", async () => {
+    const f = createGitHubFake();
+    const h = await sessionHash(SID);
+    const repo = "Livvux/kunde-patrick";
+    f.addIssue(repo, { number: 1, body: `session:${h}`, labels: ["aenderung"] });
+    f.addIssue(repo, { number: 2, body: `session:${h}`, labels: ["bug", "rueckfrage"] });
+    for (const nr of [1, 2]) {
+      await expect(
+        antworten(f.gh, { kunde: kunde(), repo, nr, sessionId: SID, text: "x" }),
+      ).rejects.toThrow("fremder Auftrag");
+      expect(f.commentsOf(repo, nr)).toHaveLength(0);
+    }
+    expect(f.removedLabels).toHaveLength(0);
+  });
+
+  it("eigenes Neukunden-Issue mit rueckfrage → Antwort erlaubt", async () => {
+    const f = createGitHubFake();
+    f.addIssue(KUNDEN_REPO, {
+      number: 3,
+      body: `session:${await sessionHash(SID)}`,
+      labels: ["neukunde", "docweb", "rueckfrage"],
+    });
+    await antworten(f.gh, { kunde: null, repo: KUNDEN_REPO, nr: 3, sessionId: SID, text: "Ja" });
+    expect(f.commentsOf(KUNDEN_REPO, 3)).toHaveLength(1);
   });
 });

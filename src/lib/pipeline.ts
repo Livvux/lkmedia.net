@@ -154,9 +154,10 @@ export async function submitAenderung(
   const hash = await sessionHash(i.sessionId);
   const auftrag = `## ${HEADING}\n\n${zitat(i.text)}`;
   const labels = (haupt: string) => [haupt, `kat:${kat.id}`];
+  const now = i.now ?? (() => new Date());
 
   if (kat.id === "vertrag") {
-    const dir = `${inboxDir(i.produkt, hash)}/vertrag`;
+    const dir = `${inboxDir(i.produkt, hash)}/vertrag/${zeitstempel(now())}`;
     if (i.bilder.length) {
       await gh.commitFiles(KUNDEN_REPO, {
         branch: "main",
@@ -207,7 +208,6 @@ export async function submitAenderung(
 
   const onb = await findOnboarding(gh, i.sessionId);
   if (!onb) throw new Error("kein Onboarding");
-  const now = i.now ?? (() => new Date());
   const dir = `${inboxDir(onb.produkt, hash)}/aenderungen/${zeitstempel(now())}`;
   if (i.bilder.length) {
     await gh.commitFiles(KUNDEN_REPO, {
@@ -258,6 +258,7 @@ export type Auftrag = {
 };
 
 const FRAGE = "@kunde:";
+const EINRICHTUNG = "Einrichtung Ihrer Website";
 const MAX_AUFTRAEGE = 20;
 
 export async function listAuftraege(
@@ -265,13 +266,17 @@ export async function listAuftraege(
   i: { kunde: Kunde | null; sessionId: string },
 ): Promise<Auftrag[]> {
   const hash = await sessionHash(i.sessionId);
-  const quellen: [string, string][] = [[KUNDEN_REPO, LABELS.vertrag]];
+  // [repo, label, feste Kategorie] – Neukunden-Issue zeigt den Fortschritt der Einrichtung.
+  const quellen: [string, string, string?][] = [
+    [KUNDEN_REPO, LABELS.vertrag],
+    [KUNDEN_REPO, LABELS.neukunde, EINRICHTUNG],
+  ];
   if (i.kunde?.repo) quellen.unshift([i.kunde.repo, LABELS.aenderung]);
   const gefunden = await Promise.all(
-    quellen.map(async ([repo, label]) =>
+    quellen.map(async ([repo, label, fest]) =>
       (await gh.listIssues(repo, { labels: [label], state: "all" }))
         .filter((x) => hatHash(x.body, hash))
-        .map((x) => ({ repo, x })),
+        .map((x) => ({ repo, x, fest })),
     ),
   );
   const top = gefunden
@@ -279,13 +284,13 @@ export async function listAuftraege(
     .sort((a, b) => b.x.createdAt.localeCompare(a.x.createdAt))
     .slice(0, MAX_AUFTRAEGE);
   return Promise.all(
-    top.map(async ({ repo, x }): Promise<Auftrag> => {
+    top.map(async ({ repo, x, fest }): Promise<Auftrag> => {
       const katId = x.labels.find((l) => l.startsWith("kat:"))?.slice(4);
       const a: Auftrag = {
         repo,
         nr: x.number,
         datum: x.createdAt,
-        kategorie: KATEGORIEN.find((k) => k.id === katId)?.label ?? "Sonstiges",
+        kategorie: fest ?? KATEGORIEN.find((k) => k.id === katId)?.label ?? "Sonstiges",
         status: statusOf(x.labels, x.state),
       };
       if (a.status !== "rueckfrage") return a;
@@ -299,12 +304,28 @@ export async function listAuftraege(
 
 export async function antworten(
   gh: GitHub,
-  i: { repo: string; nr: number; sessionId: string; text: string },
+  i: { kunde: Kunde | null; repo: string; nr: number; sessionId: string; text: string },
 ): Promise<void> {
+  // Erlaubt: Änderung im eigenen Kunden-Repo; Vertrag/Neukunde in KUNDEN_REPO – je mit eigenem
+  // Hash und offener Rückfrage.
+  const typen: string[] =
+    i.repo === KUNDEN_REPO
+      ? [LABELS.vertrag, LABELS.neukunde]
+      : i.repo === i.kunde?.repo
+        ? [LABELS.aenderung]
+        : [];
+  if (!typen.length) throw new Error("fremder Auftrag");
   const hash = await sessionHash(i.sessionId);
-  // ponytail: kein getIssue im Client – Suche über alle Issues des Repos (max. 1000)
-  const issue = (await gh.listIssues(i.repo, { state: "all" })).find((x) => x.number === i.nr);
-  if (!issue || !hatHash(issue.body, hash)) throw new Error("fremder Auftrag");
+  // ponytail: kein getIssue im Client – Suche über offene Rückfragen des Repos (max. 1000)
+  const issue = (await gh.listIssues(i.repo, { labels: [LABELS.rueckfrage] })).find(
+    (x) => x.number === i.nr,
+  );
+  const ok =
+    issue &&
+    hatHash(issue.body, hash) &&
+    issue.labels.includes(LABELS.rueckfrage) &&
+    issue.labels.some((l) => typen.includes(l));
+  if (!ok) throw new Error("fremder Auftrag");
   await gh.comment(i.repo, i.nr, `Antwort Kundschaft:\n\n${zitat(i.text)}`);
   await gh.removeLabel(i.repo, i.nr, LABELS.rueckfrage);
   await gh.removeLabel(i.repo, i.nr, LABELS.rueckfrageGemailt);
