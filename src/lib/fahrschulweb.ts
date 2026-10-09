@@ -149,14 +149,13 @@ export function parseOnboarding(f: FormData): ParseResult {
 // JSON ist gültiges YAML – JSON.stringify quotet jeden Wert sicher (":", "#", Zeilenumbrüche …).
 const q = (v: string) => JSON.stringify(v);
 
-/** Erzeugt kunde.yaml für den Website-Build. `aenderung` markiert spätere Korrekturen. */
-export function toKundeYaml(d: Onboarding, datum: string, aenderung = false): string {
+/** Erzeugt kunde.yaml für den Website-Build. Session nur als Hash – die ID darf nie ins Repo. */
+export function toKundeYaml(d: Onboarding, o: { datum: string; sessionHash: string }): string {
   const s = d.fahrschule;
-  return `# fahrschulweb ${aenderung ? "Änderung – ersetzt frühere Angaben" : "Onboarding"}
+  return `# fahrschulweb Onboarding – enthält immer den vollständigen aktuellen Stand
 bestellung:
-  stripe_session: ${q(d.sessionId)}
-  datum: ${q(datum)}
-  aenderung: ${aenderung}
+  stripe_session_hash: ${q(o.sessionHash)}
+  datum: ${q(o.datum)}
   wunschdomain: ${q(d.wunschdomain)}
 
 fahrschule:
@@ -195,9 +194,6 @@ recht:
 hinweise: ${q(d.hinweise)}
 `;
 }
-
-export const onboardingUrl = (origin: string, sessionId: string) =>
-  `${origin}/fahrschule-webdesign/onboarding?session_id=${encodeURIComponent(sessionId)}`;
 
 export const checkSession = (id: string, secretKey: string, fetchFn: typeof fetch = fetch) =>
   checkPaidSession(id, secretKey, FAHRSCHULWEB.paymentLinkId, fetchFn);

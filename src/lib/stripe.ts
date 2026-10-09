@@ -27,3 +27,10 @@ export async function checkPaidSession(
     return { paid: false };
   }
 }
+
+/** Stripe-Kundenportal (Rechnungen, Zahlungsart, Kündigung). Leer → Portal-Hinweise entfallen. */
+export const STRIPE_PORTAL_URL: string = "";
+
+/** Persönlicher Link der Kundschaft für Änderungen, Bilder und Status. */
+export const aenderungUrl = (sessionId: string) =>
+  `https://lkmedia.net/aenderung?session_id=${encodeURIComponent(sessionId)}`;

@@ -2,30 +2,30 @@ import type { APIRoute } from 'astro';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { parse } from 'yaml';
 import { DOCWEB } from '../../src/lib/docweb';
+import { KUNDEN_REPO, sessionHash } from '../../src/lib/pipeline';
+import { aenderungUrl } from '../../src/lib/stripe';
+import { createGitHubFake } from './helpers/github-fake';
 
-const { sendMail } = vi.hoisted(() => ({ sendMail: vi.fn() }));
-
-vi.mock('resend', () => ({
-  Resend: class {
-    emails = { send: sendMail };
-  },
+const { sendMail, gh } = vi.hoisted(() => ({
+  sendMail: vi.fn(),
+  gh: { current: null as ReturnType<typeof createGitHubFake> | null },
+}));
+vi.mock('../../src/lib/mailer', () => ({ sendMail }));
+vi.mock('../../src/lib/github', async (orig) => ({
+  ...(await orig<typeof import('../../src/lib/github')>()),
+  createGitHub: () => gh.current?.gh,
 }));
 
 const SESSION_ID = 'cs_test_onboarding123';
 const PRACTICE_NAME = 'Praxis Dr. Beispiel';
 const PRACTICE_EMAIL = 'praxis@example.test';
 const BUYER_EMAIL = 'buyer@example.test';
-const SENT = { data: { id: 'mail_test_123' }, error: null };
-const PROVIDER_ERROR = {
-  name: 'validation_error',
-  message: `Rejected ${PRACTICE_EMAIL} for ${SESSION_ID}`,
-};
 
-function stripeResponse(email: string | undefined = BUYER_EMAIL, paid = true): Response {
+function stripeResponse(email: string | null = BUYER_EMAIL, paid = true): Response {
   return new Response(JSON.stringify({
     payment_status: paid ? 'paid' : 'unpaid',
     payment_link: DOCWEB.paymentLinkId,
-    customer_details: { email },
+    customer_details: email ? { email } : {},
   }), { status: 200 });
 }
 
@@ -60,26 +60,19 @@ async function submit(): Promise<Response> {
   return POST({ request } as Parameters<APIRoute>[0]);
 }
 
-function failNextMail(mode: 'response' | 'throw'): void {
-  if (mode === 'response') {
-    sendMail.mockResolvedValueOnce({ data: null, error: PROVIDER_ERROR });
-  } else {
-    sendMail.mockRejectedValueOnce(new Error(PROVIDER_ERROR.message));
-  }
-}
-
 beforeEach(() => {
   vi.resetModules();
-  sendMail.mockReset().mockResolvedValue(SENT);
+  gh.current = createGitHubFake();
+  sendMail.mockReset().mockResolvedValue(undefined);
   vi.stubEnv('STRIPE_SECRET_KEY', 'sk_test_onboarding_mock');
-  vi.stubEnv('RESEND_API_KEY', 're_onboarding_mock');
+  vi.stubEnv('GITHUB_KUNDEN_TOKEN', 'ghp_test');
   vi.stubGlobal('fetch', vi.fn(async () => stripeResponse()));
   vi.spyOn(console, 'error').mockImplementation(() => {});
   vi.spyOn(console, 'warn').mockImplementation(() => {});
 });
 
 afterEach(() => {
-  // Provider errors may contain submitted data; neither errors nor payloads belong in logs.
+  // Fehler können Formulardaten enthalten; weder Fehler noch Inhalte gehören ins Log.
   const logs = JSON.stringify([
     ...vi.mocked(console.error).mock.calls,
     ...vi.mocked(console.warn).mock.calls,
@@ -96,90 +89,51 @@ afterEach(() => {
 });
 
 describe('POST /api/docweb-onboarding', () => {
-  it('lehnt fehlende Mailkonfiguration mit 503 ab und erlaubt einen späteren Versuch', async () => {
-    vi.stubEnv('RESEND_API_KEY', undefined);
-
-    const failed = await submit();
-
-    expect(failed.status).toBe(503);
-    expect(failed.headers.get('location')).toBeNull();
-    expect(await failed.text()).toContain('lucas@lkmedia.net');
-    expect(sendMail).not.toHaveBeenCalled();
-
-    vi.stubEnv('RESEND_API_KEY', 're_onboarding_mock');
-    expect((await submit()).status).toBe(303);
-    expect(sendMail).toHaveBeenCalledTimes(2);
-  });
-
-  it.each(['response', 'throw'] as const)(
-    'antwortet bei Hauptmail-Fehler (%s) mit 502 und erlaubt erneutes Senden',
-    async (mode) => {
-      failNextMail(mode);
-
-      const failed = await submit();
-
-      expect(failed.status).toBe(502);
-      expect(failed.headers.get('location')).toBeNull();
-      expect(await failed.text()).toContain('lucas@lkmedia.net');
-      expect(sendMail).toHaveBeenCalledTimes(1);
-
-      expect((await submit()).status).toBe(303);
-      expect(sendMail).toHaveBeenCalledTimes(3);
-    },
-  );
-
-  it('sendet YAML und Bestätigung mit echten Zeilenumbrüchen und sperrt bereits erhaltene Angaben', async () => {
+  it('legt das Issue an, sendet YAML ohne Session-ID und bestätigt an die Käufer-Adresse', async () => {
     const result = await submit();
 
     expect(result.status).toBe(303);
-    expect(result.headers.get('location')).toBe('https://lkmedia.net/docweb/danke');
+    expect(result.headers.get('location')).toBe('/docweb/danke');
+    expect(gh.current?.issues.get(KUNDEN_REPO)?.[0]).toMatchObject({
+      title: `Neukunde docweb: ${PRACTICE_NAME}`,
+      labels: ['neukunde', 'docweb'],
+    });
     expect(sendMail).toHaveBeenCalledTimes(2);
-    const operator = sendMail.mock.calls[0][0];
-    const confirmation = sendMail.mock.calls[1][0];
+    const [operator] = sendMail.mock.calls[0];
+    const [confirmation] = sendMail.mock.calls[1];
     expect(operator).toMatchObject({
       to: 'lucas@lkmedia.net',
       replyTo: PRACTICE_EMAIL,
+      subject: `docweb Onboarding: ${PRACTICE_NAME}`,
       attachments: [{ filename: 'kunde.yaml' }],
     });
-    expect(parse(operator.attachments[0].content.toString('utf8'))).toMatchObject({
-      bestellung: { stripe_session: SESSION_ID },
+    const yaml = operator.attachments[0].content.toString('utf8');
+    expect(yaml).not.toContain(SESSION_ID);
+    expect(parse(yaml)).toMatchObject({
+      bestellung: { stripe_session_hash: await sessionHash(SESSION_ID) },
       praxis: { name: PRACTICE_NAME, email: PRACTICE_EMAIL },
       leistungen: expect.stringMatching(/^Vorsorge\r?\nImpfungen$/),
     });
-    expect(operator.text).toContain(`Praxis: ${PRACTICE_NAME}\nKäufer (Stripe): ${BUYER_EMAIL}`);
     expect(operator.text).not.toContain('\\n');
     expect(confirmation).toMatchObject({ to: BUYER_EMAIL, replyTo: 'lucas@lkmedia.net' });
     expect(confirmation.text).toContain('Guten Tag,\n\n');
-    expect(confirmation.text).toContain('Sobald Ihre Angaben und die benötigten Bilder vollständig vorliegen');
     expect(confirmation.text).toContain(DOCWEB.deliveryPromise);
-    expect(confirmation.text).not.toContain('\\n');
+    expect(confirmation.text).toContain(aenderungUrl(SESSION_ID));
 
-    expect((await submit()).status).toBe(409);
+    expect((await submit()).status).toBe(429);
     expect(sendMail).toHaveBeenCalledTimes(2);
   });
 
-  it.each(['response', 'throw'] as const)(
-    'behält bei Bestätigungsfehler (%s) den Erfolg der Betreiber-Mail und die Deduplizierung',
-    async (mode) => {
-      sendMail.mockResolvedValueOnce(SENT);
-      failNextMail(mode);
-
-      const result = await submit();
-
-      expect(result.status).toBe(303);
-      expect(result.headers.get('location')).toBe('https://lkmedia.net/docweb/danke');
-      expect(sendMail).toHaveBeenCalledTimes(2);
-      expect((await submit()).status).toBe(409);
-      expect(sendMail).toHaveBeenCalledTimes(2);
-    },
-  );
+  it('meldet ohne Stripe-Key 503 mit Kontaktadresse', async () => {
+    vi.stubEnv('STRIPE_SECRET_KEY', '');
+    const failed = await submit();
+    expect(failed.status).toBe(503);
+    expect(await failed.text()).toContain('lucas@lkmedia.net');
+    expect(sendMail).not.toHaveBeenCalled();
+  });
 
   it('sendet ohne Käufer-Adresse keine Bestätigung an die Formular-Adresse', async () => {
-    vi.mocked(fetch).mockResolvedValueOnce(new Response(JSON.stringify({
-      payment_status: 'paid',
-      payment_link: DOCWEB.paymentLinkId,
-      customer_details: {},
-    }), { status: 200 }));
+    vi.mocked(fetch).mockResolvedValueOnce(stripeResponse(null));
 
     expect((await submit()).status).toBe(303);
     expect(sendMail).toHaveBeenCalledTimes(1);
@@ -194,5 +148,6 @@ describe('POST /api/docweb-onboarding', () => {
     expect(result.status).toBe(403);
     expect(result.headers.get('location')).toBeNull();
     expect(sendMail).not.toHaveBeenCalled();
+    expect(gh.current?.commits).toHaveLength(0);
   });
 });

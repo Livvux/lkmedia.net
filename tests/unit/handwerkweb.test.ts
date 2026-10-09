@@ -62,7 +62,7 @@ describe('toKundeYaml', () => {
   it('erzeugt gültiges YAML auch mit Sonderzeichen', () => {
     const r = parseOnboarding(form({ hinweise: 'Achtung: "#1"\nzweite Zeile' }));
     if (!r.ok) throw new Error(r.errors.join());
-    const y = parse(toKundeYaml(r.data, '2026-10-07'));
+    const y = parse(toKundeYaml(r.data, { datum: '2026-10-07', sessionHash: 'abc123def456' }));
     expect(y.betrieb.name).toBe('Muster Haustechnik GmbH');
     expect(y.betrieb.gewerke).toEqual(['shk']);
     expect(y.betrieb.meisterbetrieb).toBe(true);
@@ -85,5 +85,15 @@ describe('checkPaidSession', () => {
     const f = ok({ payment_status: 'paid', payment_link: '' });
     expect((await checkPaidSession('cs_test_abc', 'sk', '', f)).paid).toBe(false);
     expect(f).not.toHaveBeenCalled();
+  });
+});
+
+describe('toKundeYaml ohne Session-ID', () => {
+  it('YAML enthält die Session-ID nicht, nur den Hash', () => {
+    const r = parseOnboarding(form());
+    if (!r.ok) throw new Error(r.errors.join());
+    const yaml = toKundeYaml(r.data, { datum: '2026-10-09', sessionHash: 'abc123def456' });
+    expect(yaml).not.toContain('cs_live_a1B2c3');
+    expect(yaml).toContain('stripe_session_hash: "abc123def456"');
   });
 });
