@@ -1,5 +1,10 @@
 ---
 import Base from '../../layouts/Base.astro';
+import Progress from '../../components/onboarding/Progress.astro';
+import UploadField from '../../components/onboarding/UploadField.astro';
+import { createGitHub } from '../../lib/github';
+import { hatOnboarding } from '../../lib/onboarding-submit';
+import { aenderungUrl } from '../../lib/stripe';
 import { FAHRSCHULWEB, KLASSEN, checkSession } from '../../lib/fahrschulweb';
 
 export const prerender = false;
@@ -9,6 +14,10 @@ const fehler = Astro.url.searchParams.get('fehler');
 const stripeKey = process.env.STRIPE_SECRET_KEY ?? import.meta.env.STRIPE_SECRET_KEY;
 // Ohne Key nur im Dev-Server Formular zeigen; in Produktion nur nach bezahlter Bestellung.
 const { paid } = stripeKey ? await checkSession(sessionId, stripeKey) : { paid: import.meta.env.DEV };
+const ghToken = process.env.GITHUB_KUNDEN_TOKEN ?? import.meta.env.GITHUB_KUNDEN_TOKEN;
+// Schon eingereicht? Dann auf den Änderungs-Link hinweisen; das Formular bleibt nutzbar.
+const eingegangen =
+  paid && sessionId ? await hatOnboarding(ghToken ? createGitHub({ token: ghToken }) : null, sessionId) : false;
 
 const seo = {
   title: 'Fahrschul-Website Onboarding',
@@ -19,6 +28,16 @@ const seo = {
 };
 
 const preselected = ['B', 'BE', 'B196', 'A1', 'A2', 'A', 'AM'];
+const sections = [
+  { id: 'fahrschule', label: 'Fahrschule' },
+  { id: 'klassen', label: 'Führerscheinklassen' },
+  { id: 'standort', label: 'Hauptstandort' },
+  { id: 'unterricht', label: 'Unterricht' },
+  { id: 'team', label: 'Team und Fahrzeuge' },
+  { id: 'impressum', label: 'Angaben für das Impressum' },
+  { id: 'bilder', label: 'Logo und Fotos' },
+  { id: 'hinweise', label: 'Hinweise' },
+];
 const input = 'mt-1 w-full h-12 px-4 rounded-xl bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 focus:border-black dark:focus:border-white focus:outline-none';
 const area = 'mt-1 w-full p-4 rounded-xl bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 focus:border-black dark:focus:border-white focus:outline-none';
 const label = 'text-sm text-black/60 dark:text-white/60';
@@ -41,7 +60,7 @@ const legend = 'text-xl font-semibold mb-4';
         <h1 class="text-4xl md:text-5xl font-semibold tracking-tight">Ihre Fahrschul-Website einrichten.</h1>
         <p class="mt-6 text-lg text-black/70 dark:text-white/70">
           Damit wir Ihre Website bauen können, brauchen wir ein paar Angaben. Das dauert etwa 15 Minuten.
-          Felder mit * sind Pflicht. Logo und Fotos schicken Sie bitte als Antwort auf unsere Bestätigungsmail.
+          Felder mit * sind Pflicht. Logo und Fotos laden Sie direkt im Formular hoch. Danach prüfen wir alles und schicken Ihnen eine Vorschau.
         </p>
         <p class="mt-4 text-black/70 dark:text-white/70">{FAHRSCHULWEB.deliveryPromise}</p>
         <div class="mt-6 rounded-xl border border-black/10 dark:border-white/15 p-5 text-sm leading-relaxed">
@@ -50,18 +69,26 @@ const legend = 'text-xl font-semibold mb-4';
           Wir pflegen die Änderung ein. Auf diesem Gerät sind Ihre zuletzt gesendeten Angaben bereits eingetragen.
         </div>
 
+        {eingegangen && (
+          <div class="mt-8 rounded-xl border border-emerald-500/40 bg-emerald-500/10 p-5">
+            <p>Ihre Angaben sind bei uns angekommen. Änderungen oder weitere Bilder schicken Sie bequem über Ihren Änderungs-Link.</p>
+            <a href={aenderungUrl(sessionId)} class="inline-flex mt-4 h-12 px-6 items-center rounded-full bg-black text-white dark:bg-white dark:text-black font-medium">Änderungs-Link öffnen</a>
+          </div>
+        )}
+
         {fehler && (
-          <div role="alert" class="mt-8 rounded-xl border border-red-500/40 bg-red-500/10 p-5">
+          <div role="alert" tabindex="-1" data-onboarding-fehler class="mt-8 rounded-xl border border-red-500/40 bg-red-500/10 p-5">
             <p class="font-semibold">Bitte prüfen Sie Ihre Angaben:</p>
             <p class="mt-2 text-sm">{fehler}</p>
           </div>
         )}
 
-        <form id="onboarding" data-session={sessionId} method="POST" action="/api/fahrschule-onboarding" class="mt-12 space-y-12">
+        <form id="onboarding" data-onboarding="fahrschulweb" data-session={sessionId} method="POST" action="/api/fahrschule-onboarding" enctype="multipart/form-data" class="mt-12 space-y-12">
           <input type="hidden" name="session_id" value={sessionId} />
           <input type="text" name="website" tabindex="-1" autocomplete="off" class="hidden" aria-hidden="true" />
+          <Progress sections={sections} />
 
-          <fieldset class="space-y-4">
+          <fieldset id="fahrschule" class="space-y-4">
             <legend class={legend}>Fahrschule</legend>
             <label class="block"><span class={label}>Name der Fahrschule *</span><input required name="fahrschule_name" maxlength="200" class={input} placeholder="Fahrschule Muster" /></label>
             <label class="block"><span class={label}>Kurzbeschreibung (2–3 Sätze: Was macht Sie aus?)</span><textarea name="beschreibung" rows="3" maxlength="1000" class={area}></textarea></label>
@@ -78,7 +105,7 @@ const legend = 'text-xl font-semibold mb-4';
             </div>
           </fieldset>
 
-          <fieldset class="space-y-4">
+          <fieldset id="klassen" class="space-y-4">
             <legend class={legend}>Führerscheinklassen *</legend>
             <div class="flex flex-wrap gap-x-6 gap-y-3">
               {KLASSEN.map((k) => (
@@ -89,7 +116,7 @@ const legend = 'text-xl font-semibold mb-4';
             <p class={hint}>Leer lassen, wenn Sie keine Preise zeigen möchten.</p>
           </fieldset>
 
-          <fieldset class="space-y-4">
+          <fieldset id="standort" class="space-y-4">
             <legend class={legend}>Hauptstandort</legend>
             <label class="block"><span class={label}>Straße und Hausnummer *</span><input required name="strasse" maxlength="200" class={input} /></label>
             <div class="grid md:grid-cols-[10rem_1fr] gap-4">
@@ -101,21 +128,21 @@ const legend = 'text-xl font-semibold mb-4';
             <p class={hint}>Bis zu {FAHRSCHULWEB.includedLocations} Standorte sind enthalten – jeder bekommt eine eigene Seite.</p>
           </fieldset>
 
-          <fieldset class="space-y-4">
+          <fieldset id="unterricht" class="space-y-4">
             <legend class={legend}>Unterricht</legend>
             <label class="block"><span class={label}>Theoriezeiten (je Standort) *</span><textarea required name="theorie" rows="3" maxlength="2000" class={area} placeholder="Rastatt: Di und Do 18:30–20:00 Uhr"></textarea></label>
             <label class="block"><span class={label}>Ferien- und Intensivkurse mit Terminen</span><textarea name="kurse" rows="3" maxlength="3000" class={area} placeholder="Ferienkurs Herbst: 26.–30.10.2026, täglich 9–12 Uhr"></textarea></label>
             <label class="block"><span class={label}>Unterrichtssprachen außer Deutsch</span><input name="sprachen" maxlength="300" class={input} placeholder="Englisch, Türkisch" /></label>
           </fieldset>
 
-          <fieldset class="space-y-4">
+          <fieldset id="team" class="space-y-4">
             <legend class={legend}>Team und Fahrzeuge</legend>
             <label class="block"><span class={label}>Fahrlehrerinnen und Fahrlehrer (eine Person pro Zeile: Name, Klassen, gern ein Satz)</span><textarea name="team" rows="4" maxlength="3000" class={area}></textarea></label>
             <label class="block"><span class={label}>Fahrzeuge (Modell, Schaltung/Automatik)</span><textarea name="fahrzeuge" rows="3" maxlength="2000" class={area} placeholder="VW Golf 8, Automatik&#10;Yamaha MT-07 (A2/A)"></textarea></label>
             <label class="block"><span class={label}>Links: Google-Unternehmensprofil, Instagram, Facebook …</span><textarea name="links" rows="3" maxlength="2000" class={area}></textarea></label>
           </fieldset>
 
-          <fieldset class="space-y-4">
+          <fieldset id="impressum" class="space-y-4">
             <legend class={legend}>Angaben für das Impressum</legend>
             <label class="block"><span class={label}>Inhaber / Geschäftsführung *</span><input required name="inhaber" maxlength="200" class={input} /></label>
             <label class="block"><span class={label}>Rechtsform</span><input name="rechtsform" maxlength="100" class={input} placeholder="Einzelunternehmen, GmbH …" /></label>
@@ -124,7 +151,13 @@ const legend = 'text-xl font-semibold mb-4';
             <label class="block"><span class={label}>USt-IdNr.</span><input name="ust_id" maxlength="40" class={input} /></label>
           </fieldset>
 
-          <fieldset class="space-y-4">
+          <fieldset id="bilder" class="space-y-6">
+            <legend class={legend}>Logo und Fotos</legend>
+            <UploadField name="logo" label="Logo (eine Datei)" hint="JPG, PNG, WebP oder SVG, bis 8 MB. Am besten SVG oder PNG mit durchsichtigem Hintergrund." max={1} />
+            <UploadField name="fotos" label="Fotos (Team, Fahrzeuge, Schulungsraum), bis zu 10" hint="JPG, PNG, WebP oder SVG, je Datei bis 8 MB, zusammen bis 40 MB. Große Fotos verkleinern wir beim Hochladen automatisch." max={10} />
+          </fieldset>
+
+          <fieldset id="hinweise" class="space-y-4">
             <legend class={legend}>Hinweise</legend>
             <label class="block"><span class={label}>Alles, was wir sonst wissen sollten – oder was sich geändert hat</span><textarea name="hinweise" rows="4" maxlength="3000" class={area}></textarea></label>
           </fieldset>
@@ -137,38 +170,5 @@ const legend = 'text-xl font-semibold mb-4';
 </Base>
 
 <script>
-  // Letzte Angaben im Browser merken: füllt das Formular bei Änderungen und nach Fehlermeldungen wieder aus.
-  // ponytail: nur dieses Gerät; serverseitig speichern, falls Kunden oft von anderen Geräten ändern.
-  const form = document.querySelector<HTMLFormElement>('#onboarding');
-  if (form) {
-    const key = `fahrschulweb:${form.dataset.session}`;
-    const skip = ['session_id', 'website'];
-    try {
-      const saved = JSON.parse(localStorage.getItem(key) ?? 'null') as Record<string, string[]> | null;
-      if (saved) {
-        for (const el of form.querySelectorAll<HTMLInputElement>('input[name], textarea[name]')) {
-          const values = saved[el.name];
-          if (!values || skip.includes(el.name)) continue;
-          if (el.type === 'checkbox') el.checked = values.includes(el.value);
-          else el.value = values[0] ?? '';
-        }
-      }
-    } catch {
-      localStorage.removeItem(key);
-    }
-    form.addEventListener('submit', () => {
-      const fd = new FormData(form);
-      const data: Record<string, string[]> = {};
-      for (const name of new Set(fd.keys())) {
-        if (!skip.includes(name)) data[name] = fd.getAll(name).map(String);
-      }
-      // Ohne angehakte Klassen fehlt der Schlüssel – leere Liste speichern, sonst kommen Vorauswahlen zurück.
-      data.klassen ??= [];
-      try {
-        localStorage.setItem(key, JSON.stringify(data));
-      } catch {
-        // Speicher voll oder gesperrt: Absenden geht trotzdem.
-      }
-    });
-  }
+  import '../../scripts/onboarding-form.ts';
 </script>

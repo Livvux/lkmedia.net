@@ -5,7 +5,7 @@ import type { Attachment } from "./handwerk-forms";
 import type { Produkt } from "./kunden-schema";
 import { onboardingBestaetigung } from "./kundenmails";
 import type { OutgoingMail } from "./mailer";
-import { KUNDEN_REPO, sessionHash, submitOnboarding } from "./pipeline";
+import { findOnboarding, KUNDEN_REPO, sessionHash, submitOnboarding } from "./pipeline";
 import { readUploads, UPLOAD_LIMITS, type Upload } from "./uploads";
 
 const TO = "lucas@lkmedia.net";
@@ -189,6 +189,17 @@ async function einreichen<D extends { sessionId: string }>(
       );
   }
   return { status: 303, location: deps.danke };
+}
+
+/** Hat diese Session schon ein Onboarding-Issue? GitHub-Fehler zählen als „nein“. */
+export async function hatOnboarding(gh: GitHub | null, sessionId: string): Promise<boolean> {
+  if (!gh) return false;
+  try {
+    return (await findOnboarding(gh, sessionId)) !== null;
+  } catch (e) {
+    console.error(`[onboarding] findOnboarding failed: ${errName(e)}`);
+    return false;
+  }
 }
 
 /** Übersetzt das Ergebnis in eine HTTP-Antwort. */

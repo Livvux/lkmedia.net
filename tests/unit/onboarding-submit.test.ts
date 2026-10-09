@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { parse } from "yaml";
 import type { OutgoingMail } from "../../src/lib/mailer";
-import { handleOnboarding } from "../../src/lib/onboarding-submit";
+import { handleOnboarding, hatOnboarding } from "../../src/lib/onboarding-submit";
 import { KUNDEN_REPO, sessionHash } from "../../src/lib/pipeline";
 import { createRateLimiter } from "../../src/lib/handwerk-submit";
 import { aenderungUrl } from "../../src/lib/stripe";
@@ -282,5 +282,27 @@ describe("handleOnboarding", () => {
     expect(loc.searchParams.get("fehler")).toBe(
       "Die Bilder sind zusammen größer als 40 MB. Bitte weniger oder kleinere Bilder auswählen.",
     );
+  });
+});
+
+describe("hatOnboarding", () => {
+  it("ohne GitHub false, mit Neukunden-Issue true", async () => {
+    const fake = createGitHubFake();
+    expect(await hatOnboarding(null, SID)).toBe(false);
+    expect(await hatOnboarding(fake.gh, SID)).toBe(false);
+    fake.addIssue(KUNDEN_REPO, {
+      labels: ["neukunde", "docweb"],
+      body: `session:${await sessionHash(SID)}`,
+    });
+    expect(await hatOnboarding(fake.gh, SID)).toBe(true);
+  });
+
+  it("GitHub-Fehler zählt als nicht gefunden und wird ohne Session-ID geloggt", async () => {
+    const fake = createGitHubFake();
+    fake.gh.listIssues = async () => {
+      throw new TypeError("boom");
+    };
+    expect(await hatOnboarding(fake.gh, SID)).toBe(false);
+    expect(console.error).toHaveBeenCalledWith("[onboarding] findOnboarding failed: TypeError");
   });
 });
