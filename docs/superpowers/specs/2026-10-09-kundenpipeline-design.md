@@ -165,8 +165,9 @@ behalten Parser und Stripe-Check. Neu, gemeinsam in `src/lib/pipeline.ts`:
 
 ### C. Änderungsaufträge
 
-Neue Seite `src/pages/aenderung.astro` (+ `en/`-Spiegel nicht nötig: Kundschaft deutschsprachig;
-`noindex`) und Endpoint `src/pages/api/aenderung.ts`:
+Neue Seite `src/pages/aenderung.astro` (SSR, `noindex`, kein `en/`-Spiegel: Kundschaft
+deutschsprachig). Die Seite verarbeitet ihren POST selbst, damit sie bei Fehlern mit den
+eingegebenen Werten neu rendert:
 - Zugang über `?session_id=…`; Stripe-Check gegen den Payment Link des Produkts aus dem Register
   (vor dem Registereintrag: Produkt aus Neukunden-Issue).
 - Felder: Kategorie (Kurse & Termine · Preise · Team · Fahrzeuge · Öffnungs-/Bürozeiten · Texte ·
@@ -184,6 +185,8 @@ Neue Seite `src/pages/aenderung.astro` (+ `en/`-Spiegel nicht nötig: Kundschaft
   Kategorie, Status. Status aus Labels: Eingegangen → In Arbeit (`in-arbeit`) → Zur Prüfung
   (`bereit-zur-pruefung`) → Erledigt (geschlossen) bzw. Rückfrage (`rueckfrage`, mit Text des
   letzten Kommentars, der mit `@kunde:` beginnt). Interne Kommentare sind nie sichtbar.
+  Bei `rueckfrage` gibt es direkt unter der Frage ein Antwortfeld: die Antwort wird als Kommentar
+  `Antwort Kundschaft:` ans Issue gehängt und entfernt `rueckfrage`.
 - `/aenderung/link`: E-Mail eingeben → Stripe-API listet Checkout-Sessions mit dieser
   Käufer-E-Mail und einem unserer Payment Links → Links gehen per Mail an genau diese Adresse.
   Antwort immer gleich („Wenn die Adresse bei uns bestellt hat, …“), Rate-Limit 3/Stunde/IP.
@@ -255,7 +258,10 @@ verallgemeinert; Formular-Parser je Produkt bleiben getrennt.
 - Mobil zuerst: Touch-Ziele ≥ 44 px, ein Eingabefeld pro Zeile, passende `inputmode`/
   `autocomplete`-Attribute.
 - Fehler stehen am Feld (`aria-describedby`), der Fokus springt zum ersten Fehler, eingegebene
-  Werte bleiben erhalten (serverseitig zurückgegeben, nicht nur `localStorage`).
+  Werte bleiben erhalten: `/aenderung` und `/aenderung/link` rendern serverseitig mit den Werten
+  neu; die drei Onboarding-Formulare sichern Textfelder im Browser (`localStorage`, wie heute bei
+  fahrschulweb) und prüfen Dateien vor dem Absenden im Browser, weil Dateien eine Weiterleitung
+  nicht überstehen.
 - Onboarding: Abschnitte mit Fortschrittsanzeige, Zwischenspeichern im Browser bleibt, Hinweis
   „ca. 15 Minuten“, Pflichtfelder klar markiert, Beispiele als Platzhalter.
 - Uploads: Vorschaubilder, Größe und Typ vorab geprüft mit verständlicher Meldung, große Fotos
