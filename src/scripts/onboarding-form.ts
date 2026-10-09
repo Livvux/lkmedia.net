@@ -177,10 +177,16 @@ async function onFiles(input: HTMLInputElement) {
   if (input.form) checkAll(input.form);
 }
 
-for (const form of document.querySelectorAll<HTMLFormElement>("form[data-onboarding]")) {
-  const key = `${form.dataset.onboarding}:${form.dataset.session}`;
-  restore(form, key);
-  form.addEventListener("change", () => save(form, key));
+// form[data-uploads] (/aenderung): nur Dateiprüfung und Verkleinerung, keine Sicherung im Browser –
+// die Seite rendert bei Fehlern serverseitig mit den Werten neu.
+for (const form of document.querySelectorAll<HTMLFormElement>(
+  "form[data-onboarding], form[data-uploads]",
+)) {
+  const key = form.dataset.onboarding ? `${form.dataset.onboarding}:${form.dataset.session}` : null;
+  if (key) {
+    restore(form, key);
+    form.addEventListener("change", () => save(form, key));
+  }
 
   const button = form.querySelector<HTMLButtonElement>("button[type=submit]");
   const label = button?.textContent ?? "";
@@ -205,7 +211,7 @@ for (const form of document.querySelectorAll<HTMLFormElement>("form[data-onboard
   }
 
   form.addEventListener("submit", (e) => {
-    save(form, key);
+    if (key) save(form, key);
     if (busy) {
       // Verkleinerung läuft noch (z. B. Enter im Textfeld): einmal danach erneut absenden.
       e.preventDefault();

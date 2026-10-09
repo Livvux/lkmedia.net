@@ -130,10 +130,10 @@ async function findeIssue(gh: GitHub, label: string, hash: string) {
 export async function findOnboarding(
   gh: GitHub,
   sessionId: string,
-): Promise<{ issue: number; produkt: Produkt } | null> {
+): Promise<{ issue: number; produkt: Produkt; titel: string } | null> {
   const i = await findeIssue(gh, LABELS.neukunde, await sessionHash(sessionId));
   const produkt = i?.labels.find((l): l is Produkt => (PRODUKTE as readonly string[]).includes(l));
-  return i && produkt ? { issue: i.number, produkt } : null;
+  return i && produkt ? { issue: i.number, produkt, titel: i.title } : null;
 }
 
 export async function submitAenderung(

@@ -128,7 +128,11 @@ describe("findOnboarding", () => {
     const f = createGitHubFake();
     expect(await findOnboarding(f.gh, SID)).toBeNull();
     const r = await onboard(f.gh);
-    expect(await findOnboarding(f.gh, SID)).toEqual({ issue: r.issue, produkt: "fahrschulweb" });
+    expect(await findOnboarding(f.gh, SID)).toEqual({
+      issue: r.issue,
+      produkt: "fahrschulweb",
+      titel: "Neukunde fahrschulweb: Patricks Fahrschule",
+    });
     expect(await findOnboarding(f.gh, "andere")).toBeNull();
   });
 });

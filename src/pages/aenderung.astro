@@ -1,0 +1,355 @@
+---
+// Persönliche Änderungsseite der Kundschaft: Aufträge mit Status, Antworten auf Rückfragen,
+// neuer Auftrag. Verarbeitet ihren POST selbst und rendert bei Fehlern mit den Werten neu.
+import Base from '../layouts/Base.astro';
+import UploadField from '../components/onboarding/UploadField.astro';
+import {
+  aenderungDeps,
+  handleAenderung,
+  handleAntwort,
+  MAX_TEXT,
+  resolveZugang,
+} from '../lib/aenderung-submit';
+import { createRateLimiter } from '../lib/handwerk-submit';
+import { type Auftrag, type AuftragStatus, kategorienFuer, listAuftraege } from '../lib/pipeline';
+import { STRIPE_PORTAL_URL } from '../lib/stripe';
+import { UPLOAD_LIMITS } from '../lib/uploads';
+
+export const prerender = false;
+
+// ponytail: In-Memory, pro Prozess (10 Aufträge/Session/Tag); bei mehreren Instanzen Redis o. Ä.
+const allow = createRateLimiter(10, 86_400_000);
+
+const sessionId = Astro.url.searchParams.get('session_id') ?? '';
+const selbst = `/aenderung?session_id=${encodeURIComponent(sessionId)}`;
+const deps = await aenderungDeps(sessionId);
+const zugang = await resolveZugang(sessionId, deps);
+const gh = deps.gh;
+
+let fehler: Record<string, string> = {};
+let werte = { kategorie: '', text: '' };
+let antwortFehler: { repo: string; nr: string; antwort: string; text: string } | null = null;
+let weiter: string | null = null; // Post/Redirect/Get nach Erfolg
+
+if (!zugang.ok) {
+  Astro.response.status = zugang.status;
+} else if (gh && Astro.request.method === 'POST') {
+  // Größenlimit vor dem Parsen: 5 Bilder à 8 MB plus Formularfelder.
+  const zuGross =
+    Number(Astro.request.headers.get('content-length') ?? 0) > UPLOAD_LIMITS.gesamtBytes + 1024 * 1024;
+  const form = zuGross ? null : await Astro.request.formData().catch(() => null);
+  if (!form) {
+    Astro.response.status = zuGross ? 413 : 400;
+    fehler = {
+      form: zuGross
+        ? 'Die Bilder sind zusammen zu groß. Bitte weniger oder kleinere Bilder auswählen.'
+        : 'Das Absenden hat nicht geklappt. Bitte versuchen Sie es noch einmal.',
+    };
+  } else if (form.get('action') === 'antwort') {
+    const r = await handleAntwort(zugang, form, { gh });
+    if (r.ok) weiter = `${selbst}&beantwortet=1`;
+    else {
+      Astro.response.status = 400;
+      antwortFehler = { ...r.werte, text: r.fehler.antwort };
+    }
+  } else {
+    const r = await handleAenderung(zugang, form, {
+      gh,
+      send: deps.send,
+      allow,
+      release: allow.release,
+    });
+    if (r.ok) {
+      const nr = r.vorgang ? `=${r.vorgang}` : '';
+      weiter = `${selbst}&gesendet${nr}${r.ziel === 'inbox' ? '&ziel=inbox' : ''}`;
+    } else {
+      Astro.response.status = 400;
+      fehler = r.fehler;
+      werte = r.werte;
+    }
+  }
+}
+if (weiter) return Astro.redirect(weiter, 303);
+
+let auftraege: Auftrag[] | null = [];
+if (zugang.ok && gh) {
+  try {
+    auftraege = await listAuftraege(gh, { kunde: zugang.kunde, sessionId });
+  } catch (e) {
+    console.error(`[aenderung] listAuftraege failed: ${e instanceof Error ? e.name : 'unknown'}`);
+    auftraege = null;
+  }
+}
+
+const q = Astro.url.searchParams;
+const gesendetNr = /^\d{1,7}$/.test(q.get('gesendet') ?? '') ? q.get('gesendet') : null;
+const gesendet = Astro.request.method === 'GET' && q.has('gesendet');
+const inbox = q.get('ziel') === 'inbox';
+const beantwortet = Astro.request.method === 'GET' && q.get('beantwortet') === '1';
+
+const kategorien = zugang.ok ? kategorienFuer(zugang.produkt) : [];
+const istAntwortFehler = (a: Auftrag) =>
+  antwortFehler?.repo === a.repo && antwortFehler.nr === String(a.nr);
+// Fehler zu einer Rückfrage, die nicht mehr offen ist → allgemeiner Hinweis über der Liste.
+const antwortHinweis =
+  antwortFehler && !auftraege?.some((a) => a.status === 'rueckfrage' && istAntwortFehler(a))
+    ? antwortFehler.text
+    : null;
+
+const datum = (iso: string) =>
+  new Intl.DateTimeFormat('de-DE', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+    timeZone: 'Europe/Berlin',
+  }).format(new Date(iso));
+
+const STATUS: Record<AuftragStatus, { text: string; icon: string; cls: string }> = {
+  eingegangen: {
+    text: 'Eingegangen',
+    icon: '○',
+    cls: 'bg-black/5 text-black/80 dark:bg-white/10 dark:text-white/85',
+  },
+  'in-arbeit': {
+    text: 'In Arbeit',
+    icon: '◐',
+    cls: 'bg-blue-100 text-blue-900 dark:bg-blue-950 dark:text-blue-100',
+  },
+  pruefung: {
+    text: 'Zur Prüfung',
+    icon: '◉',
+    cls: 'bg-violet-100 text-violet-900 dark:bg-violet-950 dark:text-violet-100',
+  },
+  rueckfrage: {
+    text: 'Rückfrage',
+    icon: '?',
+    cls: 'bg-amber-100 text-amber-900 dark:bg-amber-950 dark:text-amber-100',
+  },
+  erledigt: {
+    text: 'Erledigt',
+    icon: '✓',
+    cls: 'bg-emerald-100 text-emerald-900 dark:bg-emerald-950 dark:text-emerald-100',
+  },
+};
+
+const seo = {
+  title: 'Änderung beauftragen',
+  description: 'Änderungen für Ihre Website schicken und den Stand Ihrer Aufträge sehen.',
+  canonical: '/aenderung',
+  lang: 'de' as const,
+  noindex: true,
+};
+
+const area =
+  'mt-1 w-full p-4 rounded-xl bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 focus:border-black dark:focus:border-white focus:outline-none aria-[invalid=true]:border-red-600';
+const hint = 'text-sm text-black/60 dark:text-white/60';
+const err = 'text-sm font-medium text-red-700 dark:text-red-300';
+const button =
+  'inline-flex min-h-12 px-8 items-center rounded-full bg-black text-white dark:bg-white dark:text-black font-medium';
+---
+<Base seo={seo}>
+  <section class="py-24 px-6 max-w-3xl mx-auto">
+    {!zugang.ok ? (
+      <>
+        <h1 class="text-4xl md:text-5xl font-semibold tracking-tight">
+          {zugang.status === 403 ? 'Kein Zugang über diesen Link.' : 'Gerade nicht erreichbar.'}
+        </h1>
+        <p class="mt-6 text-lg text-black/70 dark:text-white/70">{zugang.text}</p>
+        {zugang.link && (
+          <a href={zugang.link.href} class={`${button} mt-10`}>{zugang.link.label}</a>
+        )}
+      </>
+    ) : (
+      <>
+        <h1 class="text-4xl md:text-5xl font-semibold tracking-tight break-words">
+          Änderung beauftragen – {zugang.name}
+        </h1>
+        <p class="mt-6 text-lg text-black/70 dark:text-white/70">
+          Hier schicken Sie uns Änderungen für Ihre Website und sehen, wie weit wir damit sind. Nach dem
+          Absenden bekommen Sie eine Bestätigung per E-Mail.
+        </p>
+
+        {gesendet && (
+          <div role="status" class="mt-8 rounded-xl border border-emerald-600/40 bg-emerald-500/10 p-5">
+            {inbox ? (
+              <p>
+                Danke! Ihre Änderung ist angekommen. Wir berücksichtigen sie beim Aufbau Ihrer Website.
+                {gesendetNr && <> Vorgangsnummer: Nr. {gesendetNr}.</>}
+              </p>
+            ) : gesendetNr ? (
+              <p>
+                Danke! Ihr Auftrag Nr. {gesendetNr} ist angekommen. Wir melden uns per E-Mail, sobald
+                die Änderung online ist oder wir eine Frage haben.
+              </p>
+            ) : (
+              <p>Danke! Ihr Auftrag ist angekommen. Wir melden uns per E-Mail.</p>
+            )}
+          </div>
+        )}
+        {beantwortet && (
+          <div role="status" class="mt-8 rounded-xl border border-emerald-600/40 bg-emerald-500/10 p-5">
+            <p>Danke für Ihre Antwort! Wir arbeiten damit an Ihrem Auftrag weiter.</p>
+          </div>
+        )}
+
+        <h2 class="mt-16 text-2xl font-semibold">Ihre Aufträge</h2>
+        {antwortHinweis && (
+          <div role="alert" tabindex="-1" data-fehler class="mt-4 rounded-xl border border-red-500/40 bg-red-500/10 p-5">
+            <p>{antwortHinweis}</p>
+          </div>
+        )}
+        {auftraege === null ? (
+          <p class="mt-4 text-black/70 dark:text-white/70">
+            Ihre Aufträge können wir gerade nicht anzeigen. Bitte schauen Sie später noch einmal vorbei.
+          </p>
+        ) : auftraege.length === 0 ? (
+          <p class="mt-4 text-black/70 dark:text-white/70">
+            Noch keine Aufträge. Hier sehen Sie später, was wir gerade für Sie erledigen.
+          </p>
+        ) : (
+          <ul class="mt-6 space-y-4">
+            {auftraege.map((a, i) => {
+              const s = STATUS[a.status];
+              const f = istAntwortFehler(a) ? antwortFehler : null;
+              const id = `antwort-${i}`;
+              return (
+                <li class="rounded-xl border border-black/10 dark:border-white/15 p-5">
+                  <div class="flex flex-wrap items-center justify-between gap-3">
+                    <p>
+                      <span class="font-semibold">Nr. {a.nr}</span>
+                      <span class="text-black/60 dark:text-white/60"> · {datum(a.datum)} · </span>
+                      {a.kategorie}
+                    </p>
+                    <span class={`inline-flex items-center gap-2 rounded-full px-3 py-1 text-sm font-medium ${s.cls}`}>
+                      <span aria-hidden="true">{s.icon}</span>
+                      <span><span class="sr-only">Status: </span>{s.text}</span>
+                    </span>
+                  </div>
+                  {a.status === 'rueckfrage' && (
+                    <div class="mt-4">
+                      {a.frage && (
+                        <>
+                          <p class="text-sm font-medium">Unsere Frage an Sie:</p>
+                          <blockquote class="mt-1 border-l-4 border-amber-500 pl-4 whitespace-pre-line">{a.frage}</blockquote>
+                        </>
+                      )}
+                      <form method="POST" action={selbst} class="mt-4 space-y-3">
+                        <input type="hidden" name="action" value="antwort" />
+                        <input type="hidden" name="repo" value={a.repo} />
+                        <input type="hidden" name="nr" value={String(a.nr)} />
+                        <label for={id} class="block text-sm text-black/60 dark:text-white/60">Ihre Antwort</label>
+                        <textarea
+                          id={id}
+                          name="antwort"
+                          rows="3"
+                          required
+                          maxlength={MAX_TEXT}
+                          aria-describedby={`${id}-fehler`}
+                          aria-invalid={f ? 'true' : undefined}
+                          data-fehler={f ? '' : undefined}
+                          class={area}
+                        >{f?.antwort ?? ''}</textarea>
+                        <p id={`${id}-fehler`} class={err}>{f?.text}</p>
+                        <button type="submit" class={button}>Antwort senden</button>
+                      </form>
+                    </div>
+                  )}
+                </li>
+              );
+            })}
+          </ul>
+        )}
+
+        <h2 class="mt-16 text-2xl font-semibold">Neuer Auftrag</h2>
+        <p class="mt-4 text-black/70 dark:text-white/70">
+          Bis zu 30 Minuten Änderungen pro Monat sind enthalten. Größere Wünsche besprechen wir vorher mit Ihnen.
+        </p>
+        {fehler.form && (
+          <div role="alert" tabindex="-1" data-fehler class="mt-6 rounded-xl border border-red-500/40 bg-red-500/10 p-5">
+            <p>{fehler.form}</p>
+          </div>
+        )}
+        <form data-uploads method="POST" action={selbst} enctype="multipart/form-data" class="mt-8 space-y-10">
+          <input type="text" name="website" tabindex="-1" autocomplete="off" class="hidden" aria-hidden="true" />
+
+          <fieldset aria-describedby="kategorie-fehler">
+            <legend class="text-lg font-semibold">Worum geht es? *</legend>
+            <div class="mt-3 grid sm:grid-cols-2 gap-x-6">
+              {kategorien.map((k, i) => (
+                <label class="flex min-h-11 items-center gap-3">
+                  <input
+                    type="radio"
+                    name="kategorie"
+                    value={k.id}
+                    required
+                    checked={werte.kategorie === k.id}
+                    data-fehler={fehler.kategorie && i === 0 ? '' : undefined}
+                    class="size-5"
+                  />
+                  {k.label}
+                </label>
+              ))}
+            </div>
+            <p id="kategorie-fehler" class={`mt-2 ${err}`}>{fehler.kategorie}</p>
+          </fieldset>
+
+          <div>
+            <label for="text" class="block text-lg font-semibold">Was sollen wir ändern? *</label>
+            <p id="text-hinweis" class={`mt-1 ${hint}`}>
+              Beschreiben Sie möglichst genau, was wo stehen soll – zum Beispiel neue Preise oder Zeiten.
+            </p>
+            <textarea
+              id="text"
+              name="text"
+              rows="6"
+              required
+              minlength="10"
+              maxlength={MAX_TEXT}
+              aria-describedby="text-hinweis text-zaehler text-fehler"
+              aria-invalid={fehler.text ? 'true' : undefined}
+              data-fehler={fehler.text ? '' : undefined}
+              class={area}
+            >{werte.text}</textarea>
+            <p id="text-zaehler" class={hint}>{werte.text.length} / {MAX_TEXT} Zeichen</p>
+            <p id="text-fehler" class={err}>{fehler.text}</p>
+          </div>
+
+          <UploadField
+            name="bilder"
+            max={5}
+            label="Bilder (freiwillig, bis zu 5)"
+            hint="JPG, PNG, WebP oder SVG, je höchstens 8 MB. Große Fotos verkleinern wir automatisch."
+            fehler={fehler.bilder}
+          />
+
+          <button type="submit" class={button}>Auftrag absenden</button>
+        </form>
+
+        {STRIPE_PORTAL_URL && (
+          <p class="mt-16 text-black/70 dark:text-white/70">
+            Rechnungen und Zahlungsdaten finden Sie im <a href={STRIPE_PORTAL_URL} class="underline underline-offset-4">Kundenportal</a>.
+          </p>
+        )}
+        <p class="mt-6 text-black/70 dark:text-white/70">
+          Fragen? Schreiben Sie an <a href="mailto:lucas@lkmedia.net" class="underline underline-offset-4">lucas@lkmedia.net</a>.
+        </p>
+      </>
+    )}
+  </section>
+</Base>
+
+<script>
+  import '../scripts/onboarding-form.ts';
+
+  // Zeichenzähler (progressive Verbesserung; ohne JS zeigt der Server den Stand beim Laden).
+  const text = document.querySelector<HTMLTextAreaElement>('#text');
+  const zaehler = document.getElementById('text-zaehler');
+  if (text && zaehler) {
+    const zeigen = () => {
+      zaehler.textContent = `${text.value.length} / ${text.maxLength} Zeichen`;
+    };
+    text.addEventListener('input', zeigen);
+  }
+  // Nach dem Neurendern mit Fehlern: Fokus auf die erste Meldung bzw. das erste fehlerhafte Feld.
+  document.querySelector<HTMLElement>('[data-fehler]')?.focus();
+</script>

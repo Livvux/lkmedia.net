@@ -1,14 +1,22 @@
 ---
-// Bild-Upload fürs Onboarding. Prüfung, Vorschau und Verkleinerung: src/scripts/onboarding-form.ts.
+// Bild-Upload (Onboarding, /aenderung). Prüfung, Vorschau und Verkleinerung: src/scripts/onboarding-form.ts.
 interface Props {
-  name: 'logo' | 'fotos';
+  name: 'logo' | 'fotos' | 'bilder';
   label: string;
   hint: string;
   max: number;
   accept?: string;
+  /** Fehlermeldung vom Server (Neurendern nach dem Absenden). */
+  fehler?: string;
 }
-const { name, label, hint, max, accept = 'image/jpeg,image/png,image/webp,image/svg+xml' } =
-  Astro.props;
+const {
+  name,
+  label,
+  hint,
+  max,
+  accept = 'image/jpeg,image/png,image/webp,image/svg+xml',
+  fehler,
+} = Astro.props;
 ---
 <div class="space-y-2">
   <label for={name} class="block text-sm text-black/60 dark:text-white/60">{label}</label>
@@ -20,10 +28,12 @@ const { name, label, hint, max, accept = 'image/jpeg,image/png,image/webp,image/
     multiple={max > 1 || undefined}
     data-max={max}
     aria-describedby={`${name}-hinweis ${name}-fehler`}
+    aria-invalid={fehler ? 'true' : undefined}
+    data-fehler={fehler ? '' : undefined}
     class="block w-full text-sm file:mr-4 file:h-12 file:px-5 file:rounded-full file:border file:border-black/30 dark:file:border-white/30 file:bg-transparent file:text-current file:font-medium file:cursor-pointer"
   />
   <p id={`${name}-hinweis`} class="text-sm text-black/60 dark:text-white/60">{hint}</p>
-  <p id={`${name}-fehler`} role="alert" class="text-sm font-medium text-red-700 dark:text-red-300"></p>
+  <p id={`${name}-fehler`} role="alert" class="text-sm font-medium text-red-700 dark:text-red-300">{fehler}</p>
   <p id={`${name}-status`} aria-live="polite" class="text-sm text-black/60 dark:text-white/60"></p>
   <ul id={`${name}-vorschau`} class="flex flex-wrap gap-3 empty:hidden" aria-label={`Vorschau ${label}`}></ul>
 </div>
