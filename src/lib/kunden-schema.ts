@@ -4,6 +4,20 @@ import { parse } from "yaml";
 export const PRODUKTE = ["docweb", "handwerkweb", "fahrschulweb"] as const;
 export type Produkt = (typeof PRODUKTE)[number];
 
+/** https-Origin ohne Pfad/Slash (http nur für localhost). */
+const origin = z.string().refine(
+  (o) => {
+    try {
+      const u = new URL(o);
+      const ok = u.protocol === "https:" || (u.protocol === "http:" && u.hostname === "localhost");
+      return ok && u.origin === o;
+    } catch {
+      return false;
+    }
+  },
+  { message: "Origin ohne Pfad/Slash, z. B. https://beispiel.de" },
+);
+
 export const kundeSchema = z.object({
   id: z.string().regex(/^[a-z0-9-]+$/),
   produkt: z.enum(PRODUKTE),
@@ -12,16 +26,19 @@ export const kundeSchema = z.object({
   stripe: z.object({
     session: z.string(),
     kunde: z.string().optional(),
-    email: z.string(),
+    email: z.email(),
   }),
-  repo: z.string().optional(),
+  repo: z
+    .string()
+    .regex(/^[\w.-]+\/[\w.-]+$/)
+    .optional(),
   vorschau: z.string().optional(),
   domain: z.string().optional(),
   formulare: z
     .object({
-      email: z.string(),
-      origins: z.array(z.string()),
-      plzPraefixe: z.array(z.string()),
+      email: z.email(),
+      origins: z.array(origin),
+      plzPraefixe: z.array(z.string().regex(/^\d{1,5}$/)),
     })
     .optional(),
   geprueft: z.string().optional(),

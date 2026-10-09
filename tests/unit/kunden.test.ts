@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 import { createRegistry, DEMO_KUNDEN, DEV_ORIGINS, allowedOrigins } from "../../src/lib/kunden";
-import { parseKunden } from "../../src/lib/kunden-schema";
+import { kundeSchema, parseKunden } from "../../src/lib/kunden-schema";
 
 const GUT = `- id: patricks-fahrschule
   produkt: fahrschulweb
@@ -43,6 +43,35 @@ describe("parseKunden", () => {
   it("Nicht-Liste → ein Fehler", () => {
     expect(parseKunden("a: 1").fehler).toHaveLength(1);
     expect(parseKunden("a: [").fehler).toHaveLength(1);
+  });
+});
+
+describe("parseKunden Strenge", () => {
+  const mit = (alt: string, neu: string) => parseKunden(GUT.replace(alt, neu));
+  it("Origin mit Slash → verworfen mit Meldung", () => {
+    const r = mit("https://example.de]", "https://x.de/]");
+    expect(r.kunden).toHaveLength(0);
+    expect(r.fehler[0]).toContain("Origin ohne Pfad/Slash, z. B. https://beispiel.de");
+  });
+  it("javascript:x und http (nicht localhost) → verworfen", () => {
+    expect(mit("https://example.de]", "javascript:x]").kunden).toHaveLength(0);
+    expect(mit("https://example.de]", "http://example.de]").kunden).toHaveLength(0);
+  });
+  it("http://localhost:4321 ist erlaubt", () =>
+    expect(mit("https://example.de]", "http://localhost:4321]").kunden).toHaveLength(1));
+  it("E-Mail info@ → verworfen (formulare und stripe)", () => {
+    expect(mit("info@example.de", "info@").kunden).toHaveLength(0);
+    expect(mit("p@example.de", "p@").kunden).toHaveLength(0);
+  });
+  it("plzPraefixe, id, repo streng", () => {
+    expect(mit("plzPraefixe: []", "plzPraefixe: [abc]").kunden).toHaveLength(0);
+    expect(mit("plzPraefixe: []", "plzPraefixe: ['762']").kunden).toHaveLength(1);
+    expect(mit("id: patricks-fahrschule", "id: Patrick_X").kunden).toHaveLength(0);
+    expect(mit("  geprueft", "  repo: Livvux/a b\n  geprueft").kunden).toHaveLength(0);
+    expect(mit("  geprueft", "  repo: Livvux/site\n  geprueft").kunden).toHaveLength(1);
+  });
+  it("DEMO_KUNDEN bleiben gültig", () => {
+    for (const k of DEMO_KUNDEN) expect(kundeSchema.safeParse(k).success).toBe(true);
   });
 });
 
