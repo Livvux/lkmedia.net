@@ -33,7 +33,8 @@ const b64 = (c: Uint8Array | string) => Buffer.from(c).toString("base64");
 
 export function createGitHub({ token, fetchFn = fetch }: Opts) {
   const raw = async (repo: string, method: string, path: string, body?: unknown) => {
-    if (!REPO_RE.test(repo)) throw new Error("Ungültiger Repo-Name");
+    if (!REPO_RE.test(repo) || repo.split("/").some((p) => /^\.+$/.test(p)))
+      throw new Error("Ungültiger Repo-Name");
     const res = await fetchFn(`${API}/repos/${repo}/${path}`, {
       method,
       headers: {

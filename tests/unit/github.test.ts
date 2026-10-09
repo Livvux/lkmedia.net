@@ -81,11 +81,12 @@ describe("commitFiles", () => {
     expect(last.body).toEqual({ ref: "refs/heads/aenderung/7", sha: "commit2" });
   });
 
-  it("lehnt ungültigen repo-Namen ab", async () => {
-    const { gh } = mk({});
+  it.each(["../x", "x/..", "x/.", "x", "a/b/c"])("lehnt Repo-Namen %s ab", async (repo) => {
+    const { gh, fn } = mk({});
     await expect(
-      gh.commitFiles("../x", { branch: "main", message: "m", files: [] }),
-    ).rejects.toThrow();
+      gh.commitFiles(repo, { branch: "main", message: "m", files: [] }),
+    ).rejects.toThrow("Ungültiger Repo-Name");
+    expect(fn).not.toHaveBeenCalled();
   });
 });
 
