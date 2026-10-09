@@ -1,0 +1,91 @@
+---
+// Verlorenen persönlichen Link per E-Mail neu anfordern. Antwort ist immer gleich (kein Adress-Abgleich).
+import Base from '../../layouts/Base.astro';
+import { clientIp } from '../../lib/client-ip';
+import { createRateLimiter } from '../../lib/handwerk-submit';
+import { registry } from '../../lib/kunden';
+import { handleLinkRecovery, LINK_GESENDET } from '../../lib/link-recovery';
+import { sendMail } from '../../lib/mailer';
+import { findSessionsByEmail } from '../../lib/stripe';
+
+export const prerender = false;
+
+// ponytail: In-Memory, pro Prozess (3 Anfragen/Stunde/IP); bei mehreren Instanzen Redis o. Ä.
+const allow = createRateLimiter(3, 3_600_000);
+
+let status = 200;
+let fehler: string | undefined;
+let email = '';
+let gesendet = false;
+
+if (Astro.request.method === 'POST') {
+  const form = await Astro.request.formData().catch(() => null);
+  if (form) {
+    const r = await handleLinkRecovery(form, clientIp(Astro.request, Astro.clientAddress), {
+      stripeKey: process.env.STRIPE_SECRET_KEY ?? import.meta.env.STRIPE_SECRET_KEY,
+      find: findSessionsByEmail,
+      registry,
+      send: sendMail,
+      allow,
+    });
+    status = r.status;
+    fehler = r.fehler;
+    email = r.email;
+    gesendet = r.status === 200;
+  } else {
+    status = 400;
+    fehler = 'Das Absenden hat nicht geklappt. Bitte versuchen Sie es noch einmal.';
+  }
+  Astro.response.status = status;
+}
+
+const seo = {
+  title: 'Link verloren?',
+  description: 'Persönlichen Änderungs-Link per E-Mail erneut anfordern.',
+  canonical: '/aenderung/link',
+  lang: 'de' as const,
+  noindex: true,
+};
+const input =
+  'mt-1 w-full p-4 rounded-xl bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 focus:border-black dark:focus:border-white focus:outline-none aria-[invalid=true]:border-red-600';
+const button =
+  'inline-flex min-h-12 px-8 items-center rounded-full bg-black text-white dark:bg-white dark:text-black font-medium';
+---
+<Base seo={seo} analytics={false}>
+  <section class="py-24 px-6 max-w-3xl mx-auto">
+    <h1 class="text-4xl md:text-5xl font-semibold tracking-tight">Link verloren?</h1>
+    <p class="mt-6 text-lg text-black/70 dark:text-white/70">
+      Geben Sie die E-Mail-Adresse ein, mit der Sie bestellt haben. Wir schicken Ihnen Ihren persönlichen Link noch einmal.
+    </p>
+
+    {gesendet ? (
+      <div role="status" class="mt-8 rounded-xl border border-emerald-600/40 bg-emerald-500/10 p-5">
+        <p>{LINK_GESENDET}</p>
+      </div>
+    ) : (
+      <form method="POST" action="/aenderung/link" class="mt-8 space-y-6" novalidate>
+        <div>
+          <label for="email" class="block text-lg font-semibold">E-Mail-Adresse *</label>
+          <input
+            id="email"
+            name="email"
+            type="email"
+            autocomplete="email"
+            inputmode="email"
+            required
+            value={email}
+            aria-describedby="email-fehler"
+            aria-invalid={fehler ? 'true' : undefined}
+            class={input}
+          />
+          <p id="email-fehler" role={fehler ? 'alert' : undefined} class="text-sm font-medium text-red-700 dark:text-red-300">{fehler}</p>
+        </div>
+        <button type="submit" class={button}>Link zusenden</button>
+      </form>
+    )}
+  </section>
+</Base>
+
+<script>
+  document.querySelector<HTMLElement>('[aria-invalid="true"]')?.focus();
+</script>

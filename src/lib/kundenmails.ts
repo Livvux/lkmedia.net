@@ -11,6 +11,8 @@ const WEBSITE: Record<Produkt, string> = {
 };
 
 const ANREDE = "Guten Tag,";
+const LINK_VERLOREN =
+  "Link verloren? Hier können Sie ihn neu anfordern: https://lkmedia.net/aenderung/link";
 const GRUSS = "Viele Grüße\nLucas Kleipödszus\nlkmedia";
 const portal = () =>
   STRIPE_PORTAL_URL
@@ -36,10 +38,12 @@ export function onboardingBestaetigung(o: {
         `vielen Dank – wir haben Ihre Angaben für ${o.name} erhalten.`,
         o.deliveryPromise,
         link,
+        LINK_VERLOREN,
       ])
     : mail(`Ihre ${WEBSITE[o.produkt]}: neuer Stand erhalten`, [
         `vielen Dank – wir haben den neuen Stand Ihrer Angaben für ${o.name} erhalten und arbeiten damit weiter.`,
         link,
+        LINK_VERLOREN,
       ]);
 }
 
@@ -50,6 +54,7 @@ export function aenderungBestaetigung(o: { name: string; vorgang: number; sessio
   return mail(`Ihr Änderungsauftrag Nr. ${o.vorgang} ist angekommen`, [
     `vielen Dank – wir haben Ihren Änderungsauftrag für ${o.name} erhalten (Vorgang Nr. ${o.vorgang}). Wir kümmern uns ${AENDERUNG_ZEITRAHMEN} darum und melden uns, sobald die Änderung online ist oder wir eine Rückfrage haben.`,
     `Den Stand sehen Sie jederzeit über Ihren persönlichen Link:\n${aenderungUrl(o.sessionId)}`,
+    LINK_VERLOREN,
   ]);
 }
 

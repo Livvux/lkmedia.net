@@ -75,6 +75,34 @@ export async function checkAnySession(
   return { paid: true, produkt, email: s.customer_details?.email };
 }
 
+/**
+ * Bezahlte Sessions unserer Payment Links zu einer E-Mail-Adresse (Stripe-Filter `customer_details[email]`
+ * von GET /v1/checkout/sessions; deckt auch Sessions ohne Customer-Objekt ab). Stripe-Ausfall → wirft.
+ */
+export async function findSessionsByEmail(
+  email: string,
+  secretKey: string,
+  fetchFn: typeof fetch = fetch,
+): Promise<{ id: string; produkt: Produkt }[]> {
+  const q = new URLSearchParams({
+    "customer_details[email]": email,
+    status: "complete",
+    limit: "100",
+  });
+  const r = await fetchFn(`https://api.stripe.com/v1/checkout/sessions?${q}`, {
+    headers: { Authorization: `Bearer ${secretKey}` },
+    signal: AbortSignal.timeout(10_000),
+  });
+  if (!r.ok) throw new Error(`Stripe ${r.status}`);
+  const { data = [] } = (await r.json()) as {
+    data?: { id: string; payment_status?: string; payment_link?: string | null }[];
+  };
+  return data.flatMap((s) => {
+    const produkt = PRODUKTE.find((p) => PAYMENT_LINKS[p] && PAYMENT_LINKS[p] === s.payment_link);
+    return produkt && s.payment_status === "paid" ? [{ id: s.id, produkt }] : [];
+  });
+}
+
 /** Stripe-Kundenportal (Rechnungen, Zahlungsart, Kündigung). Leer → Portal-Hinweise entfallen. */
 export const STRIPE_PORTAL_URL: string = "";
 
