@@ -5,6 +5,8 @@ export interface Shot {
   client: string;
   domain: string;
   result: string;
+  scope: string;
+  image?: string;
 }
 
 export interface HomeContent {
@@ -62,32 +64,72 @@ const shotsDe: Shot[] = [
     client: "Klavierbau Hans Milde",
     domain: "klavierbau-milde.de",
     result: "Position 1–2 für Klavierstimmer in Karlsruhe.",
+    scope: "Webdesign & Local SEO",
   },
   {
     slug: "patricks-fahrschule",
     client: "Patricks Fahrschule",
     domain: "patricks-fahrschule.de",
     result: "Platz 1 für fast jeden lokalen Suchbegriff – in zwei Sprachen.",
+    scope: "Local SEO & Mehrsprachigkeit",
   },
   {
     slug: "lorenz-logistik",
     client: "Lorenz Logistik",
     domain: "lorenz-logistik.de",
     result: "Neugründung, die vom ersten Tag an Anfragen erzeugt.",
+    scope: "Landingpage & Conversion",
   },
   {
     slug: "cleo-coaching",
     client: "CLEO Coaching",
     domain: "cleo-coaching.de",
     result: "SEO-Feintuning plus Workshop-Landingpage, die bucht.",
+    scope: "SEO & Workshop-Landingpage",
+  },
+  {
+    slug: "pfotenweb",
+    client: "Pfotenweb",
+    domain: "pfotenweb.de",
+    result: "Vereinswebsite, Tierprofile und Verwaltung an einem Ort.",
+    scope: "Tierschutz-Plattform & Produktentwicklung",
+    image: "https://pfotenweb.de/images/demo/website.webp",
+  },
+  {
+    slug: "five-rp",
+    client: "FiveRP",
+    domain: "five-rp.de",
+    result: "Serverliste, GTA-RP-Guides und Ressourcen für Betreiber.",
+    scope: "Gaming-Portal & Content-Architektur",
+    image: "https://five-rp.de/wp-content/uploads/2026/07/fiverp-open-graph.jpg",
+  },
+  {
+    slug: "eichhoernchenberger",
+    client: "Eichhörnchen Berger",
+    domain: "eichhoernchenberger.de",
+    result: "Notfallhilfe und Einblicke in eine ehrenamtliche Auffangstation.",
+    scope: "Website & klare Notfall-Kommunikation",
+    image: "https://eichhoernchenberger.de/_astro/jungtier-schlafend.DKAZgyRW_Z1KWXhE.jpg",
+  },
+  {
+    slug: "streamerloft",
+    client: "StreamerLoft",
+    domain: "streamerloft.com",
+    result: "Ein WordPress-Website-Kit für Streamer und ihre Community.",
+    scope: "Creator-Produkt & WordPress-Entwicklung",
+    image: "https://streamerloft.com/og/streamerloft.png",
   },
 ];
 
 const shotsEn: Shot[] = [
-  { ...shotsDe[0], result: "Ranked #1–2 for piano tuners in Karlsruhe." },
-  { ...shotsDe[1], result: "#1 for almost every local search term – in two languages." },
-  { ...shotsDe[2], result: "A brand-new business generating leads from day one." },
-  { ...shotsDe[3], result: "SEO fine-tuning plus a workshop landing page that books." },
+  { ...shotsDe[0], result: "Ranked #1–2 for piano tuners in Karlsruhe.", scope: "Web design & local SEO" },
+  { ...shotsDe[1], result: "#1 for almost every local search term – in two languages.", scope: "Local SEO & multilingual content" },
+  { ...shotsDe[2], result: "A brand-new business generating leads from day one.", scope: "Landing page & conversion" },
+  { ...shotsDe[3], result: "SEO fine-tuning plus a workshop landing page that books.", scope: "SEO & workshop landing page" },
+  { ...shotsDe[4], result: "Rescue websites, animal profiles and management in one place.", scope: "Animal rescue platform & product development" },
+  { ...shotsDe[5], result: "FiveM server directory, GTA RP guides and owner resources.", scope: "Gaming portal & content architecture" },
+  { ...shotsDe[6], result: "Emergency guidance for a volunteer squirrel rescue centre.", scope: "Rescue website & emergency communication" },
+  { ...shotsDe[7], result: "A WordPress website kit for streamers and their communities.", scope: "Creator product & WordPress development" },
 ];
 
 const de: HomeContent = {
@@ -99,9 +141,9 @@ const de: HomeContent = {
     note: "Direkt mit Lucas Kleipoedszus. Rastatt & remote.",
   },
   proof: {
-    title: "Live bei Kunden,",
-    highlight: "die gefunden werden wollen.",
-    sub: "Ein paar davon stehen inzwischen ganz oben bei Google.",
+    title: "Ausgewählte Projekte,",
+    highlight: "die online etwas bewegen.",
+    sub: "Websites und digitale Produkte – von lokalem SEO bis zu Plattformen für Vereine und Creator.",
     shots: shotsDe,
     caseLabel: "Case ansehen",
   },
@@ -219,9 +261,9 @@ const en: HomeContent = {
     note: "Work directly with Lucas Kleipoedszus. Rastatt & remote.",
   },
   proof: {
-    title: "Live for clients",
-    highlight: "who want to be found.",
-    sub: "A few of them now sit right at the top of Google.",
+    title: "Selected work",
+    highlight: "with a clear purpose.",
+    sub: "Websites and digital products – from local SEO to tools for rescue teams and creators.",
     shots: shotsEn,
     caseLabel: "View case",
   },

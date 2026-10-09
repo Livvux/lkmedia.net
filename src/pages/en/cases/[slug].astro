@@ -9,9 +9,21 @@ export async function getStaticPaths() {
 }
 const { entry } = Astro.props;
 const { Content } = await render(entry);
+const localizedTitle = entry.data.titleEn ?? entry.data.title;
+const localizedSummary = entry.data.summaryEn ?? entry.data.summary;
+const nicheLabel: Record<string, string> = {
+  anwaelte: 'Law firm',
+  'luxus-immobilien': 'Luxury property',
+  privatkliniken: 'Private clinic',
+  fintech: 'Fintech',
+  other: 'Premium',
+  tierschutz: 'Animal rescue',
+  gaming: 'Gaming',
+  creator: 'Creator',
+};
 const seo = {
-  title: entry.data.title,
-  description: entry.data.summary,
+  title: localizedTitle,
+  description: localizedSummary,
   canonical: `/en/cases/${entry.id}`,
   lang: 'en' as const,
   ogImage: entry.data.heroImage,
@@ -23,18 +35,29 @@ const seo = {
 const bc = breadcrumbs([
   { name: 'Home', url: 'https://lkmedia.net/en/' },
   { name: 'Cases', url: 'https://lkmedia.net/en/cases' },
-  { name: entry.data.title, url: `https://lkmedia.net/en/cases/${entry.id}` },
+  { name: localizedTitle, url: `https://lkmedia.net/en/cases/${entry.id}` },
 ]);
 ---
 <Base seo={seo} jsonLd={[bc]}>
   <article class="max-w-3xl mx-auto px-6 py-32">
     <nav class="text-sm text-black/50 dark:text-white/50 mb-8"><a href="/en/cases">← Cases</a></nav>
-    <div class="text-sm uppercase tracking-wider text-black/50 dark:text-white/50">{entry.data.niche} · {entry.data.client}</div>
-    <h1 class="text-4xl md:text-6xl font-semibold tracking-tight mt-3">{entry.data.title}</h1>
-    <p class="text-xl text-black/70 dark:text-white/70 mt-6">{entry.data.summary}</p>
-    <img src={entry.data.heroImage} alt={entry.data.title} class="mt-10 w-full aspect-[16/9] object-cover rounded-2xl bg-black/5 dark:bg-white/5" />
+    <div class="text-sm uppercase tracking-wider text-black/50 dark:text-white/50">{nicheLabel[entry.data.niche] ?? entry.data.niche} · {entry.data.client}</div>
+    <h1 class="text-4xl md:text-6xl font-semibold tracking-tight mt-3">{localizedTitle}</h1>
+    <p class="text-xl text-black/70 dark:text-white/70 mt-6">{localizedSummary}</p>
+    {entry.data.website && (
+      <a href={entry.data.website} target="_blank" rel="noopener noreferrer" class="inline-flex mt-6 text-sm font-medium underline underline-offset-4">Visit project website (new tab) ↗</a>
+    )}
+    <img src={entry.data.heroImage} alt={localizedTitle} class="mt-10 w-full aspect-[16/9] object-cover rounded-2xl bg-black/5 dark:bg-white/5" />
     <div class="mt-12 prose dark:prose-invert max-w-none">
-      <Content />
+      {entry.data.sectionsEn
+        ? entry.data.sectionsEn.map((section) => (
+            <section>
+              <h2>{section.heading}</h2>
+              <p>{section.body}</p>
+            </section>
+          ))
+        : <Content />}
+
     </div>
   </article>
 </Base>

@@ -3,9 +3,19 @@ import Base from '../../../layouts/Base.astro';
 import { getCollection } from 'astro:content';
 const all = await getCollection('cases');
 const cases = all.sort((a, b) => +b.data.pubDate - +a.data.pubDate);
+const nicheLabel: Record<string, string> = {
+  anwaelte: 'Law firm',
+  'luxus-immobilien': 'Luxury property',
+  privatkliniken: 'Private clinic',
+  fintech: 'Fintech',
+  other: 'Premium',
+  tierschutz: 'Animal rescue',
+  gaming: 'Gaming',
+  creator: 'Creator',
+};
 const seo = {
   title: 'Cases',
-  description: 'Selected projects: law firms, luxury real estate, premium brands.',
+  description: 'Selected websites, SEO projects and digital platforms for businesses, rescue organisations and creators.',
   canonical: '/en/cases',
   lang: 'en' as const,
   alternateUrls: { de: 'https://lkmedia.net/cases', en: 'https://lkmedia.net/en/cases' },
@@ -20,9 +30,9 @@ const seo = {
           <div class="aspect-[16/9] rounded-2xl overflow-hidden bg-black/5 dark:bg-white/5">
             <img src={c.data.heroImage} alt={c.data.title} class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" loading="lazy" />
           </div>
-          <div class="mt-4 text-sm uppercase tracking-wider text-black/50 dark:text-white/50">{c.data.niche}</div>
-          <div class="text-2xl font-medium mt-1">{c.data.title}</div>
-          <div class="text-black/60 dark:text-white/60 mt-1">{c.data.summary}</div>
+          <div class="mt-4 text-sm uppercase tracking-wider text-black/50 dark:text-white/50">{nicheLabel[c.data.niche] ?? c.data.niche}</div>
+          <div class="text-2xl font-medium mt-1">{c.data.titleEn ?? c.data.title}</div>
+          <div class="text-black/60 dark:text-white/60 mt-1">{c.data.summaryEn ?? c.data.summary}</div>
         </a>
       ))}
     </div>

@@ -19,9 +19,13 @@ const postSchema = z.object({
 const caseSchema = z.object({
   title: z.string(),
   client: z.string(),
-  niche: z.enum(["anwaelte", "luxus-immobilien", "privatkliniken", "fintech", "other"]),
+  niche: z.enum(["anwaelte", "luxus-immobilien", "privatkliniken", "fintech", "other", "tierschutz", "gaming", "creator"]),
   summary: z.string(),
+  titleEn: z.string().optional(),
+  summaryEn: z.string().optional(),
+  sectionsEn: z.array(z.object({ heading: z.string(), body: z.string() })).optional(),
   heroImage: z.string(),
+  website: z.string().url().optional(),
   pubDate: z.coerce.date(),
   featured: z.boolean().default(false),
 });
