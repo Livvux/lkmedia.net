@@ -205,8 +205,9 @@ verallgemeinert; Formular-Parser je Produkt bleiben getrennt.
 
 ### F. Lokaler Runner (`Livvux/kunden/runner/`)
 
-- `runner/AGENTS.md` (Anweisungen), `runner/run.sh` (ruft Claude Code headless im Repo-Kontext),
-  Hilfsskripte in TypeScript (`notify.ts`, `aufwand.ts`, `bericht.ts`, `stripe-abgleich.ts`).
+- `AGENTS.md` (Anweisungen für den Agent-Lauf, den der T3-Zeitplan direkt startet – kein eigenes
+  Startskript), Hilfsskripte in TypeScript unter `runner/` (`vorlauf.ts`, `notify.ts`, `aufwand.ts`,
+  `bericht.ts`, `stripe.ts`, …).
 - Zeitplan als T3-Scheduled-Task: werktags 9, 13, 17 Uhr; Montag 8 Uhr zusätzlich Wochenbericht.
 - Ablauf je Lauf:
   1. Hängende Arbeit: `in-arbeit` ohne Aktivität > 2 h → Label entfernen.
@@ -235,9 +236,9 @@ verallgemeinert; Formular-Parser je Produkt bleiben getrennt.
   älter als 90 Tage ein Issue `quartals-check` im Kunden-Repo an (höchstens eins offen). Inhalt nach
   Produkt-Runbook; Fahrschule zusätzlich Bewertungs-Snapshot per Places API
   (`GOOGLE_PLACES_API_KEY` lokal). Zählt nicht gegen das Budget.
-- **Aufwand:** `aufwand.ts` summiert `min-<n>` geschlossener `aenderung`-Issues pro Kunde und
+- **Aufwand:** `runner/aufwand.ts` summiert `min-<n>` geschlossener `aenderung`-Issues pro Kunde und
   Kalendermonat. Budget 30 Minuten (alle Produkte); Lucas korrigiert das Label beim Prüfen.
-- **Stripe-Abgleich:** `stripe-abgleich.ts` mit lokalem Restricted Key (nur lesen: Customers,
+- **Stripe-Abgleich:** `runner/stripe.ts` mit lokalem Restricted Key (nur lesen: Customers,
   Subscriptions, Checkout Sessions). Meldet: Abo gekündigt/beendet, Register-Status ≠ `gekuendigt`;
   Zahlung überfällig (`past_due`/`unpaid`); Abo über unsere Payment Links ohne Register-Eintrag.
 - **Wochenbericht:** Issue in `Livvux/kunden` „Wochenbericht KW <n>“, ein Abschnitt je Thema:
@@ -302,7 +303,7 @@ SVG, Größen, Dateinamen); `pipeline.ts` mit gemockter GitHub-API (Neukunde, er
 Änderung mit Repo, Änderung in Onboarding-Phase, Vertrag); Status-Mapping aus Labels;
 Link-Wiederherstellung (gleiche Antwort, Rate-Limit); `site-submit.ts` für handwerk + fahrschule.
 Playwright: `/aenderung` (Formular, Fehler am Feld, Status), Onboarding-Upload, `/aenderung/link`.
-`Livvux/kunden`: Vitest für `aufwand.ts`, `bericht.ts`, `stripe-abgleich.ts` mit Fixtures.
+`Livvux/kunden`: Vitest für `aufwand.ts`, `bericht.ts`, `stripe.ts` mit Fixtures.
 
 ## Menschliche Freigaben und einmalige Schritte (nur Lucas)
 
