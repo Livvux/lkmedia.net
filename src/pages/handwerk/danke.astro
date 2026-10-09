@@ -2,6 +2,11 @@
 import Base from '../../layouts/Base.astro';
 import { STRIPE_PORTAL_URL } from '../../lib/stripe';
 
+export const prerender = false;
+
+const nr = Astro.url.searchParams.get('nr') ?? '';
+const vorgang = /^\d{1,7}$/.test(nr) ? nr : null;
+
 const seo = {
   title: 'Angaben erhalten',
   description: 'Ihre handwerkweb-Angaben sind angekommen.',
@@ -19,6 +24,9 @@ const schritte = [
   <section class="py-32 px-6 max-w-2xl mx-auto">
     <h1 class="text-5xl md:text-7xl font-semibold tracking-tight">Angekommen.</h1>
     <p class="mt-6 text-xl text-black/70 dark:text-white/70">Danke! Ihre Angaben sind bei uns eingegangen. So geht es weiter:</p>
+    {vorgang && (
+      <p class="mt-4 text-lg font-medium">Ihre Vorgangsnummer: Nr. {vorgang}</p>
+    )}
     <ol class="mt-10 space-y-6">
       {schritte.map((s, i) => (
         <li class="flex gap-4 text-lg">

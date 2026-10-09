@@ -1,5 +1,5 @@
 import { createRequire } from 'node:module';
-import { expect, test } from '@playwright/test';
+import { expect, type Page, test } from '@playwright/test';
 
 // Läuft im Projekt `dev` (astro dev ohne Stripe-Key): dort gilt jede Session als bezahlt.
 // axe-core kommt transitiv über @lhci/cli → lighthouse; keine eigene Dependency.
@@ -9,6 +9,10 @@ const AXE = req.resolve('axe-core/axe.min.js');
 
 const SID = 'cs_test_abc';
 const MB = 1024 * 1024;
+const PNG_1PX = Buffer.from(
+  'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=',
+  'base64',
+);
 
 test.use({ contextOptions: { reducedMotion: 'reduce' } });
 
@@ -64,13 +68,9 @@ for (const path of ['/fahrschule-webdesign/onboarding', '/docweb/onboarding', '/
     });
 
     test('shows a thumbnail with the file name as alt text', async ({ page }) => {
-      const png = Buffer.from(
-        'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=',
-        'base64',
-      );
       await page
         .locator('input[type=file][name=logo]')
-        .setInputFiles({ name: 'logo.png', mimeType: 'image/png', buffer: png });
+        .setInputFiles({ name: 'logo.png', mimeType: 'image/png', buffer: PNG_1PX });
       await expect(page.getByRole('img', { name: 'logo.png' })).toBeVisible();
       await expect(page.locator('#logo-fehler')).toBeEmpty();
     });
@@ -117,34 +117,137 @@ test('text fields survive a reload, file inputs are skipped', async ({ page }) =
   await expect(page.locator('[name=typ]')).toHaveValue('zahnarzt');
 });
 
-test('large photos are shrunk to 2560 px, transparent PNGs stay PNG', async ({ page }) => {
-  await page.goto(`/docweb/onboarding?session_id=${SID}`);
-  const result = await page.evaluate(async () => {
-    const make = async (type: string, alpha: boolean) => {
-      const c = new OffscreenCanvas(3000, 1500);
-      const ctx = c.getContext('2d') as OffscreenCanvasRenderingContext2D;
-      ctx.fillStyle = alpha ? 'rgba(255,0,0,0.5)' : '#f00';
-      ctx.fillRect(0, 0, 3000, 1500);
-      return new File([await c.convertToBlob({ type })], alpha ? 'logo.webp' : 'foto.png', { type });
-    };
-    const input = document.querySelector<HTMLInputElement>('input[name=fotos]') as HTMLInputElement;
+// Erzeugt im Browser Bilder und legt sie ins Fotos-Feld. `noise`: zufällige Pixel (groß als Datei).
+async function pickPhotos(
+  page: Page,
+  specs: {
+    name: string;
+    type: string;
+    w: number;
+    h: number;
+    noise: boolean;
+    alpha: boolean;
+    quality?: number;
+  }[],
+) {
+  await page.evaluate(async (specs) => {
     const dt = new DataTransfer();
-    dt.items.add(await make('image/png', false));
-    dt.items.add(await make('image/webp', true));
+    for (const s of specs) {
+      const c = new OffscreenCanvas(s.w, s.h);
+      const ctx = c.getContext('2d') as OffscreenCanvasRenderingContext2D;
+      if (s.noise) {
+        const img = ctx.createImageData(s.w, s.h);
+        for (let i = 0; i < img.data.length; i += 65536) {
+          crypto.getRandomValues(img.data.subarray(i, i + 65536));
+        }
+        if (!s.alpha) for (let i = 3; i < img.data.length; i += 4) img.data[i] = 255;
+        ctx.putImageData(img, 0, 0);
+      } else {
+        ctx.fillStyle = s.alpha ? 'rgba(255,0,0,0.5)' : '#f00';
+        ctx.fillRect(0, 0, s.w, s.h);
+      }
+      dt.items.add(new File([await c.convertToBlob({ type: s.type, quality: s.quality })], s.name, { type: s.type }));
+    }
+    const input = document.querySelector('input[name=fotos]') as HTMLInputElement;
     input.files = dt.files;
     input.dispatchEvent(new Event('change', { bubbles: true }));
-    for (let i = 0; i < 100 && input.files?.[0]?.name !== 'foto.jpg'; i++) {
-      await new Promise((r) => setTimeout(r, 100));
-    }
-    return Promise.all(
-      [...(input.files ?? [])].map(async (f) => {
-        const b = await createImageBitmap(f);
-        return { name: f.name, type: f.type, w: b.width, h: b.height };
-      }),
-    );
+  }, specs);
+}
+
+const fotoInfo = (page: Page) =>
+  page.evaluate(() =>
+    Promise.all(
+      [...((document.querySelector('input[name=fotos]') as HTMLInputElement).files ?? [])].map(
+        async (f) => {
+          const b = await createImageBitmap(f);
+          return { name: f.name, type: f.type, w: b.width, h: b.height };
+        },
+      ),
+    ),
+  );
+
+// Verlangsamt das Dekodieren, damit der Zwischenzustand prüfbar ist.
+const slowDecode = (page: Page) =>
+  page.addInitScript(() => {
+    const orig = window.createImageBitmap.bind(window);
+    // biome-ignore lint/suspicious/noExplicitAny: Test-Stub
+    (window as any).createImageBitmap = async (...a: any[]) => {
+      await new Promise((r) => setTimeout(r, 1500));
+      // biome-ignore lint/suspicious/noExplicitAny: Test-Stub
+      return (orig as any)(...a);
+    };
   });
-  expect(result).toEqual([
+
+const status = (page: Page) => page.locator('#fotos-status');
+const submit = (page: Page) => page.locator('form[data-onboarding] button[type=submit]');
+
+test('large photos are shrunk to 2560 px, transparent PNGs stay PNG', async ({ page }) => {
+  await page.goto(`/docweb/onboarding?session_id=${SID}`);
+  await pickPhotos(page, [
+    { name: 'foto.png', type: 'image/png', w: 3000, h: 1500, noise: true, alpha: false },
+    { name: 'logo.png', type: 'image/png', w: 3000, h: 1500, noise: true, alpha: true },
+  ]);
+  await expect(page.locator('#fotos-vorschau img')).toHaveCount(2);
+  await expect(submit(page)).toBeEnabled();
+  expect(await fotoInfo(page)).toEqual([
     { name: 'foto.jpg', type: 'image/jpeg', w: 2560, h: 1280 },
     { name: 'logo.png', type: 'image/png', w: 2560, h: 1280 },
   ]);
+});
+
+test('keeps the original when the shrunk file would be larger', async ({ page }) => {
+  await page.goto(`/docweb/onboarding?session_id=${SID}`);
+  await pickPhotos(page, [
+    // Stark komprimiertes JPEG: bei Qualität 0.85 neu kodiert würde es größer.
+    { name: 'klein.jpg', type: 'image/jpeg', w: 3000, h: 1500, noise: true, alpha: false, quality: 0.05 },
+  ]);
+  await expect(page.locator('#fotos-vorschau img')).toHaveCount(1);
+  await expect(submit(page)).toBeEnabled();
+  expect(await fotoInfo(page)).toEqual([{ name: 'klein.jpg', type: 'image/jpeg', w: 3000, h: 1500 }]);
+});
+
+test('while shrinking: status text and disabled submit button', async ({ page }) => {
+  await slowDecode(page);
+  await page.goto(`/docweb/onboarding?session_id=${SID}`);
+  await expect(status(page)).toHaveAttribute('aria-live', 'polite');
+  await pickPhotos(page, [
+    { name: 'a.png', type: 'image/png', w: 3000, h: 1500, noise: true, alpha: false },
+    { name: 'b.png', type: 'image/png', w: 3000, h: 1500, noise: true, alpha: false },
+  ]);
+  await expect(status(page)).toHaveText('Bilder werden vorbereitet …');
+  await expect(submit(page)).toBeDisabled();
+  await expect(submit(page)).toHaveText('Bilder werden vorbereitet …');
+  // Vorschau erscheint je Datei, sobald sie fertig ist.
+  await expect(page.locator('#fotos-vorschau img')).toHaveCount(1);
+  await expect(page.locator('#fotos-vorschau img')).toHaveCount(2);
+  await expect(submit(page)).toBeEnabled();
+  await expect(submit(page)).toHaveText('Angaben absenden');
+  await expect(status(page)).toBeEmpty();
+});
+
+test('a newer selection is not overwritten by a late shrink', async ({ page }) => {
+  await slowDecode(page);
+  await page.goto(`/docweb/onboarding?session_id=${SID}`);
+  await pickPhotos(page, [
+    { name: 'alt.png', type: 'image/png', w: 3000, h: 1500, noise: true, alpha: false },
+  ]);
+  await expect(submit(page)).toBeDisabled();
+  await page
+    .locator('input[name=fotos]')
+    .setInputFiles({ name: 'neu.png', mimeType: 'image/png', buffer: PNG_1PX });
+  await expect(submit(page)).toBeEnabled({ timeout: 10_000 });
+  await page.waitForTimeout(2000); // alter Lauf wäre jetzt fertig
+  expect(await page.locator('input[name=fotos]').evaluate((i: HTMLInputElement) =>
+    [...(i.files ?? [])].map((f) => f.name),
+  )).toEqual(['neu.png']);
+  await expect(page.getByRole('img', { name: 'neu.png' })).toBeVisible();
+  await expect(page.getByRole('img', { name: 'alt.png' })).toHaveCount(0);
+});
+
+test('danke page shows the Vorgangsnummer only for a plain number', async ({ page }) => {
+  await page.goto('/fahrschule-webdesign/danke?nr=12');
+  await expect(page.getByText('Ihre Vorgangsnummer: Nr. 12')).toBeVisible();
+  await page.goto('/fahrschule-webdesign/danke?nr=%3Cscript%3E');
+  await expect(page.getByText('Vorgangsnummer')).toHaveCount(0);
+  await expect(page.locator('main script')).toHaveCount(0);
 });

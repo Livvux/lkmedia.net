@@ -93,7 +93,7 @@ describe('POST /api/docweb-onboarding', () => {
     const result = await submit();
 
     expect(result.status).toBe(303);
-    expect(result.headers.get('location')).toBe('/docweb/danke');
+    expect(result.headers.get('location')).toBe('/docweb/danke?nr=1');
     expect(gh.current?.issues.get(KUNDEN_REPO)?.[0]).toMatchObject({
       title: `Neukunde docweb: ${PRACTICE_NAME}`,
       labels: ['neukunde', 'docweb'],

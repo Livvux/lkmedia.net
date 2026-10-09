@@ -24,5 +24,6 @@ const { name, label, hint, max, accept = 'image/jpeg,image/png,image/webp,image/
   />
   <p id={`${name}-hinweis`} class="text-sm text-black/60 dark:text-white/60">{hint}</p>
   <p id={`${name}-fehler`} role="alert" class="text-sm font-medium text-red-700 dark:text-red-300"></p>
+  <p id={`${name}-status`} aria-live="polite" class="text-sm text-black/60 dark:text-white/60"></p>
   <ul id={`${name}-vorschau`} class="flex flex-wrap gap-3 empty:hidden" aria-label={`Vorschau ${label}`}></ul>
 </div>

@@ -96,27 +96,24 @@ function checkAll(form: HTMLFormElement): HTMLInputElement | null {
 
 const urls = new WeakMap<HTMLInputElement, string[]>();
 
-function preview(input: HTMLInputElement) {
+function clearPreview(input: HTMLInputElement) {
   for (const u of urls.get(input) ?? []) URL.revokeObjectURL(u);
+  urls.set(input, []);
+  document.getElementById(`${input.id}-vorschau`)?.replaceChildren();
+}
+
+function addPreview(input: HTMLInputElement, f: File) {
   const list = document.getElementById(`${input.id}-vorschau`);
-  if (!list) return;
-  const neu: string[] = [];
-  const items = [...(input.files ?? [])]
-    .filter((f) => TYPEN.includes(f.type))
-    .map((f) => {
-      const url = URL.createObjectURL(f);
-      neu.push(url);
-      const li = document.createElement("li");
-      const img = document.createElement("img");
-      img.src = url;
-      img.alt = f.name;
-      img.className =
-        "h-20 w-20 rounded-lg object-cover border border-black/10 dark:border-white/15";
-      li.append(img);
-      return li;
-    });
-  urls.set(input, neu);
-  list.replaceChildren(...items);
+  if (!list || !TYPEN.includes(f.type)) return;
+  const url = URL.createObjectURL(f);
+  urls.get(input)?.push(url);
+  const li = document.createElement("li");
+  const img = document.createElement("img");
+  img.src = url;
+  img.alt = f.name;
+  img.className = "h-20 w-20 rounded-lg object-cover border border-black/10 dark:border-white/15";
+  li.append(img);
+  list.append(li);
 }
 
 function hasAlpha(ctx: OffscreenCanvasRenderingContext2D): boolean {
@@ -144,6 +141,7 @@ async function shrink(f: File): Promise<File> {
     // JPEG kennt keine Transparenz – transparente PNG/WebP werden als PNG verkleinert.
     const type = f.type !== "image/jpeg" && hasAlpha(ctx) ? "image/png" : "image/jpeg";
     const blob = await c.convertToBlob(type === "image/jpeg" ? { type, quality: 0.85 } : { type });
+    if (blob.size >= f.size) return f; // Verkleinern lohnt nicht
     const base = f.name.replace(/\.[^.]*$/, "") || "bild";
     return new File([blob], `${base}.${type === "image/png" ? "png" : "jpg"}`, { type });
   } catch {
@@ -151,16 +149,32 @@ async function shrink(f: File): Promise<File> {
   }
 }
 
+const BUSY_TEXT = "Bilder werden vorbereitet …";
+
+/**
+ * Verkleinert nacheinander (alle Fotos gleichzeitig dekodiert sprengt den Speicher in iOS Safari)
+ * und zeigt jede Vorschau, sobald sie fertig ist. Bricht ab, wenn inzwischen neu gewählt wurde.
+ */
 async function onFiles(input: HTMLInputElement) {
-  const files = await Promise.all([...(input.files ?? [])].map(shrink));
-  if (files.some((f, i) => f !== input.files?.[i])) {
+  const sel = input.files;
+  if (!sel) return;
+  const status = document.getElementById(`${input.id}-status`);
+  if (status) status.textContent = BUSY_TEXT;
+  clearPreview(input);
+  const files: File[] = [];
+  for (const f of sel) {
+    const out = await shrink(f);
+    if (input.files !== sel) return; // neuere Auswahl übernimmt Vorschau und Status
+    files.push(out);
+    addPreview(input, out);
+  }
+  if (files.some((f, i) => f !== sel[i])) {
     const dt = new DataTransfer();
     for (const f of files) dt.items.add(f);
     input.files = dt.files;
   }
-  preview(input);
-  const form = input.form;
-  if (form) checkAll(form);
+  if (status) status.textContent = "";
+  if (input.form) checkAll(input.form);
 }
 
 for (const form of document.querySelectorAll<HTMLFormElement>("form[data-onboarding]")) {
@@ -168,21 +182,34 @@ for (const form of document.querySelectorAll<HTMLFormElement>("form[data-onboard
   restore(form, key);
   form.addEventListener("change", () => save(form, key));
 
-  let pending: Promise<void> = Promise.resolve();
+  const button = form.querySelector<HTMLButtonElement>("button[type=submit]");
+  const label = button?.textContent ?? "";
   let busy = 0;
+  let resubmit = false;
+  const setBusy = (delta: number) => {
+    busy += delta;
+    if (button) {
+      button.disabled = busy > 0;
+      button.textContent = busy > 0 ? BUSY_TEXT : label;
+    }
+    if (!busy && resubmit) {
+      resubmit = false;
+      form.requestSubmit();
+    }
+  };
   for (const input of fileInputs(form)) {
     input.addEventListener("change", () => {
-      busy++;
-      pending = onFiles(input).finally(() => busy--);
+      setBusy(1);
+      void onFiles(input).finally(() => setBusy(-1));
     });
   }
 
   form.addEventListener("submit", (e) => {
     save(form, key);
     if (busy) {
-      // Verkleinerung läuft noch: danach erneut absenden.
+      // Verkleinerung läuft noch (z. B. Enter im Textfeld): einmal danach erneut absenden.
       e.preventDefault();
-      void pending.then(() => form.requestSubmit());
+      resubmit = true;
       return;
     }
     const bad = checkAll(form);

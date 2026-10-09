@@ -188,7 +188,8 @@ async function einreichen<D extends { sessionId: string }>(
         console.error(`[onboarding] ${produkt} confirmation mail failed: ${errName(e)}`),
       );
   }
-  return { status: 303, location: deps.danke };
+  // Vorgangsnummer nur, wenn das Issue wirklich existiert.
+  return { status: 303, location: ergebnis ? `${deps.danke}?nr=${ergebnis.issue}` : deps.danke };
 }
 
 /** Hat diese Session schon ein Onboarding-Issue? GitHub-Fehler zählen als „nein“. */

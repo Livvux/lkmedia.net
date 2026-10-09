@@ -81,7 +81,7 @@ describe("handleOnboarding", () => {
     const s = setup();
     const r = await s.run(form({ logo: [png("Logo.png")], fotos: [png("team.png")] }));
 
-    expect(r).toEqual({ status: 303, location: "/fahrschule-webdesign/danke" });
+    expect(r).toEqual({ status: 303, location: "/fahrschule-webdesign/danke?nr=1" });
     expect(s.fake.issues.get(KUNDEN_REPO)?.length).toBe(1);
     const hash = await sessionHash(SID);
     expect(s.fake.commits[0].paths).toEqual([
@@ -111,7 +111,7 @@ describe("handleOnboarding", () => {
     const s = setup();
     await s.run();
     s.tick(61_000);
-    expect(await s.run()).toEqual({ status: 303, location: "/fahrschule-webdesign/danke" });
+    expect(await s.run()).toEqual({ status: 303, location: "/fahrschule-webdesign/danke?nr=1" });
     expect(s.fake.issues.get(KUNDEN_REPO)?.length).toBe(1);
     expect(s.mails[2].subject).toBe("fahrschulweb Neuer Stand: Muster GmbH");
     expect(s.mails[3].subject).toContain("neuer Stand");
