@@ -122,14 +122,46 @@ const shotsDe: Shot[] = [
 ];
 
 const shotsEn: Shot[] = [
-  { ...shotsDe[0], result: "Ranked #1–2 for piano tuners in Karlsruhe.", scope: "Web design & local SEO" },
-  { ...shotsDe[1], result: "#1 for almost every local search term – in two languages.", scope: "Local SEO & multilingual content" },
-  { ...shotsDe[2], result: "A brand-new business generating leads from day one.", scope: "Landing page & conversion" },
-  { ...shotsDe[3], result: "SEO fine-tuning plus a workshop landing page that books.", scope: "SEO & workshop landing page" },
-  { ...shotsDe[4], result: "Rescue websites, animal profiles and management in one place.", scope: "Animal rescue platform & product development" },
-  { ...shotsDe[5], result: "FiveM server directory, GTA RP guides and owner resources.", scope: "Gaming portal & content architecture" },
-  { ...shotsDe[6], result: "Emergency guidance for a volunteer squirrel rescue centre.", scope: "Rescue website & emergency communication" },
-  { ...shotsDe[7], result: "A WordPress website kit for streamers and their communities.", scope: "Creator product & WordPress development" },
+  {
+    ...shotsDe[0],
+    result: "Ranked #1–2 for piano tuners in Karlsruhe.",
+    scope: "Web design & local SEO",
+  },
+  {
+    ...shotsDe[1],
+    result: "#1 for almost every local search term – in two languages.",
+    scope: "Local SEO & multilingual content",
+  },
+  {
+    ...shotsDe[2],
+    result: "A brand-new business generating leads from day one.",
+    scope: "Landing page & conversion",
+  },
+  {
+    ...shotsDe[3],
+    result: "SEO fine-tuning plus a workshop landing page that books.",
+    scope: "SEO & workshop landing page",
+  },
+  {
+    ...shotsDe[4],
+    result: "Rescue websites, animal profiles and management in one place.",
+    scope: "Animal rescue platform & product development",
+  },
+  {
+    ...shotsDe[5],
+    result: "FiveM server directory, GTA RP guides and owner resources.",
+    scope: "Gaming portal & content architecture",
+  },
+  {
+    ...shotsDe[6],
+    result: "Emergency guidance for a volunteer squirrel rescue centre.",
+    scope: "Rescue website & emergency communication",
+  },
+  {
+    ...shotsDe[7],
+    result: "A WordPress website kit for streamers and their communities.",
+    scope: "Creator product & WordPress development",
+  },
 ];
 
 const de: HomeContent = {
