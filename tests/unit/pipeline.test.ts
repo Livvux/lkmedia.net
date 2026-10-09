@@ -172,6 +172,67 @@ describe("submitAenderung", () => {
     expect(i.body).toContain(`https://github.com/${repo}/blob/aenderung/1/aenderungen/1/preis.jpg`);
   });
 
+  it.each(["commitFiles", "updateIssue"] as const)(
+    "%s scheitert nach createIssue → Issue geschlossen, Fehler weitergereicht",
+    async (fn) => {
+      const f = createGitHubFake();
+      const err = vi.spyOn(console, "error").mockImplementation(() => {});
+      // Nur der erste Aufruf scheitert (vorübergehender Fehler), das Schließen klappt.
+      const orig = f.gh[fn] as (...a: unknown[]) => Promise<unknown>;
+      let n = 0;
+      Object.assign(f.gh, {
+        [fn]: async (...a: unknown[]) => {
+          if (n++ === 0) throw new Error("502");
+          return orig(...a);
+        },
+      });
+      const run = () =>
+        submitAenderung(f.gh, {
+          kunde: kunde(),
+          produkt: "fahrschulweb",
+          name: "P",
+          sessionId: SID,
+          kategorie: "bilder",
+          text: "neues Foto",
+          bilder: [img("a.jpg")],
+        });
+      await expect(run()).rejects.toThrow("502");
+      const repo = "Livvux/kunde-patrick";
+      const i = (f.issues.get(repo) ?? [])[0];
+      expect(i.state).toBe("closed");
+      expect(f.commentsOf(repo, i.number).map((c) => c.body)).toEqual([
+        "Automatisch geschlossen: Bilder konnten nicht gespeichert werden, Kundschaft sendet erneut.",
+      ]);
+      // Taucht in der Auftragsliste der Kundschaft nicht als „Erledigt“ auf.
+      expect(await listAuftraege(f.gh, { kunde: kunde(), sessionId: SID })).toEqual([]);
+      err.mockRestore();
+    },
+  );
+
+  it("Schließen scheitert auch → Originalfehler, Close-Fehler nur geloggt", async () => {
+    const f = createGitHubFake();
+    const err = vi.spyOn(console, "error").mockImplementation(() => {});
+    f.gh.commitFiles = async () => {
+      throw new Error("commit kaputt");
+    };
+    f.gh.comment = async () => {
+      throw new TypeError("close kaputt");
+    };
+    await expect(
+      submitAenderung(f.gh, {
+        kunde: kunde(),
+        produkt: "fahrschulweb",
+        name: "P",
+        sessionId: SID,
+        kategorie: "bilder",
+        text: "neues Foto",
+        bilder: [img("a.jpg")],
+      }),
+    ).rejects.toThrow("commit kaputt");
+    expect(err).toHaveBeenCalledWith("[pipeline] Auftrag schließen fehlgeschlagen: TypeError");
+    err.mockRestore();
+  });
+
   it("ohne Bilder: kein Commit", async () => {
     const f = createGitHubFake();
     await submitAenderung(f.gh, {

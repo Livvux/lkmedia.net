@@ -192,16 +192,27 @@ export async function submitAenderung(
     if (i.bilder.length) {
       const branch = `aenderung/${r.number}`;
       const dir = `aenderungen/${r.number}`;
-      await gh.commitFiles(repo, {
-        branch,
-        base: "main",
-        message: `aenderung #${r.number}: Bilder`,
-        files: i.bilder.map((u) => ({ path: `${dir}/${u.name}`, content: u.bytes })),
-      });
-      const links = i.bilder.map(
-        (u) => `- https://github.com/${repo}/blob/${branch}/${dir}/${u.name}`,
-      );
-      await gh.updateIssue(repo, r.number, { body: [body, "", "Bilder:", ...links].join("\n") });
+      try {
+        await gh.commitFiles(repo, {
+          branch,
+          base: "main",
+          message: `aenderung #${r.number}: Bilder`,
+          files: i.bilder.map((u) => ({ path: `${dir}/${u.name}`, content: u.bytes })),
+        });
+        const links = i.bilder.map(
+          (u) => `- https://github.com/${repo}/blob/${branch}/${dir}/${u.name}`,
+        );
+        await gh.updateIssue(repo, r.number, { body: [body, "", "Bilder:", ...links].join("\n") });
+      } catch (e) {
+        // Kundschaft sendet erneut – der Auftrag ohne Bilder darf nicht beim Runner landen.
+        await schliessen(
+          gh,
+          repo,
+          r.number,
+          body.replace(sessionLine(hash), `verworfen-${sessionLine(hash)}`),
+        );
+        throw e;
+      }
     }
     return { vorgang: r.number, ziel: "kunde", repo };
   }
@@ -228,6 +239,22 @@ export async function submitAenderung(
     ].join("\n"),
   );
   return { vorgang: onb.issue, ziel: "inbox", repo: KUNDEN_REPO };
+}
+
+/** Verworfenen Auftrag schließen; `body` ohne gültige session:-Zeile, damit er aus /aenderung fällt. */
+async function schliessen(gh: GitHub, repo: string, nr: number, body: string): Promise<void> {
+  try {
+    await gh.comment(
+      repo,
+      nr,
+      "Automatisch geschlossen: Bilder konnten nicht gespeichert werden, Kundschaft sendet erneut.",
+    );
+    await gh.updateIssue(repo, nr, { state: "closed", body });
+  } catch (e) {
+    console.error(
+      `[pipeline] Auftrag schließen fehlgeschlagen: ${e instanceof Error ? e.name : "unknown"}`,
+    );
+  }
 }
 
 export type AuftragStatus = "eingegangen" | "in-arbeit" | "pruefung" | "rueckfrage" | "erledigt";
