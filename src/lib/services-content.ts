@@ -94,7 +94,7 @@ const de: ServicesContent = {
   ],
   proof: {
     title: "So sieht das in der Praxis aus.",
-    body: "Einblicke in unsere Arbeit für Klavierbau Hans Milde, Patricks Fahrschule und CLEO Coaching. Unterschiedliche Unternehmen, konkrete Aufgaben.",
+    body: "Ausgewählte Websites und digitale Plattformen für Unternehmen, Tierschutz und Creator. Unterschiedliche Aufgaben, konkrete Umsetzungen.",
     linkLabel: "Alle Projekte ansehen",
   },
   investment: {
@@ -189,7 +189,7 @@ const en: ServicesContent = {
   ],
   proof: {
     title: "See what that looks like in practice.",
-    body: "Our work for Klavierbau Hans Milde, Patricks Fahrschule and CLEO Coaching. Different businesses, specific challenges.",
+    body: "Selected websites and digital platforms for businesses, animal rescue and creators. Different needs, practical solutions.",
     linkLabel: "View all projects",
   },
   investment: {

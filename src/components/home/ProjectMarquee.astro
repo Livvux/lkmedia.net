@@ -29,7 +29,7 @@ const groups = [false, true];
               >
                 <div class="shot-img">
                   <img
-                    src={`/landing/shots/${s.slug}-1440.webp`}
+                    src={s.image ?? `/landing/shots/${s.slug}-1440.webp`}
                     width="1440"
                     height="900"
                     alt=""
@@ -69,7 +69,7 @@ const groups = [false, true];
   .track {
     display: flex;
     width: max-content;
-    animation: scroll 48s linear infinite;
+    animation: scroll 80s linear infinite;
   }
   .marquee:hover .track,
   .marquee:focus-within .track {
