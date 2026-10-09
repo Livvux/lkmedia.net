@@ -34,6 +34,7 @@ function setup(o: { paid?: boolean; stripeKey?: string | undefined } = {}) {
   const fake = createGitHubFake();
   const mails: OutgoingMail[] = [];
   let t = Date.UTC(2026, 9, 9, 8, 0, 0);
+  const limiter = createRateLimiter(1, 60_000, () => t);
   const deps = {
     stripeKey: "stripeKey" in o ? o.stripeKey : "sk_test_x",
     checkSession: vi.fn(async () => ({ paid: o.paid ?? true, email: STRIPE_EMAIL })),
@@ -55,7 +56,8 @@ function setup(o: { paid?: boolean; stripeKey?: string | undefined } = {}) {
     send: vi.fn(async (m: OutgoingMail) => {
       mails.push(m);
     }),
-    allow: createRateLimiter(1, 60_000, () => t),
+    allow: limiter,
+    release: limiter.release,
     now: () => new Date(t),
     deliveryPromise: "Vorschau in 7 Werktagen.",
     danke: "/fahrschule-webdesign/danke",
@@ -153,6 +155,48 @@ describe("handleOnboarding", () => {
     expect(r.status).toBe(502);
     expect("body" in r && r.body).toContain("lucas@lkmedia.net");
     expect(s.deps.send).toHaveBeenCalledTimes(1);
+  });
+
+  it("nach 502 sperrt der sofortige Wiederholungsversuch nicht", async () => {
+    const s = setup();
+    s.fake.gh.commitFiles = async () => {
+      throw new Error("500");
+    };
+    s.deps.send.mockRejectedValueOnce(new Error("smtp down"));
+    expect((await s.run()).status).toBe(502);
+    expect(await s.run()).toEqual({ status: 303, location: "/fahrschule-webdesign/danke" });
+  });
+
+  it("zwei gleichzeitige Absendungen → nur ein submitOnboarding, zweite 429", async () => {
+    const s = setup();
+    const spy = vi.spyOn(s.fake.gh, "commitFiles");
+    const [a, b] = await Promise.all([s.run(), s.run()]);
+    expect([a.status, b.status].sort()).toEqual([303, 429]);
+    expect(spy).toHaveBeenCalledTimes(1);
+  });
+
+  it("Backup-Mail mit Bildern zu groß → zweiter Versuch nur mit kunde.yaml", async () => {
+    const s = setup();
+    s.deps.gh = null;
+    s.deps.send.mockImplementation(async (m: OutgoingMail) => {
+      if (m.attachments.length > 1) throw new Error("552 message too large");
+      s.mails.push(m);
+    });
+    const r = await s.run(form({ logo: [png("logo.png")], fotos: [png("a.png")] }));
+    expect(r).toEqual({ status: 303, location: "/fahrschule-webdesign/danke" });
+    const lucas = s.mails[0];
+    expect(lucas.subject.startsWith("[GitHub fehlgeschlagen] ")).toBe(true);
+    expect(lucas.attachments.map((a) => a.filename)).toEqual(["kunde.yaml"]);
+    expect(lucas.text).toContain("Bilder zu groß für die Mail – bitte beim Kunden anfordern.");
+  });
+
+  it("Backup-Mail scheitert auch ohne Bilder und GitHub fehlt → 502", async () => {
+    const s = setup();
+    s.deps.gh = null;
+    s.deps.send.mockRejectedValue(new Error("smtp down"));
+    const r = await s.run(form({ logo: [png("logo.png")] }));
+    expect(r.status).toBe(502);
+    expect(s.deps.send).toHaveBeenCalledTimes(2);
   });
 
   it("GitHub ok, Lucas-Mail wirft → trotzdem Erfolg", async () => {

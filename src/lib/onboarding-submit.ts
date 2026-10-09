@@ -31,7 +31,9 @@ export type OnboardingDeps<D> = {
   replyTo: (d: D) => string;
   gh: GitHub | null;
   send: (m: OutgoingMail) => Promise<void>;
+  /** Reserviert die Session (Doppelklick-Sperre); `release` gibt sie nach Fehlschlag frei. */
   allow: (key: string) => boolean;
+  release: (key: string) => void;
   now: () => Date;
   deliveryPromise: string;
   danke: string;
@@ -74,13 +76,31 @@ export async function handleOnboarding<D extends { sessionId: string }>(
   const session = await deps.checkSession(d.sessionId, deps.stripeKey);
   if (!session.paid) return { status: 403, body: "Bestellung nicht gefunden oder nicht bezahlt." };
   // Erst nach dem Bezahlt-Check zählen, damit unbezahlte Versuche niemanden aussperren.
-  if (!deps.allow(`onb:${d.sessionId}`)) {
+  // allow() reserviert synchron, also bekommt auch ein paralleler zweiter Klick 429.
+  const key = `onb:${d.sessionId}`;
+  if (!deps.allow(key)) {
     return {
       status: 429,
       body: "Ihre Angaben sind gerade erst angekommen. Bitte in einer Minute erneut.",
     };
   }
+  let r: OnboardingResult | undefined;
+  try {
+    r = await einreichen(produkt, d, session, logo.files, fotos.files, deps);
+    return r;
+  } finally {
+    if (r?.status !== 303) deps.release(key); // nur Erfolge sperren
+  }
+}
 
+async function einreichen<D extends { sessionId: string }>(
+  produkt: Produkt,
+  d: D,
+  session: { email?: string },
+  logo: Upload[],
+  fotos: Upload[],
+  deps: OnboardingDeps<D>,
+): Promise<OnboardingResult> {
   const name = deps.name(d);
   const hash = await sessionHash(d.sessionId);
   const yaml = deps.toYaml(d, { datum: deps.now().toISOString().slice(0, 10), sessionHash: hash });
@@ -93,8 +113,8 @@ export async function handleOnboarding<D extends { sessionId: string }>(
         sessionId: d.sessionId,
         stripeEmail: session.email,
         yaml,
-        logo: logo.files,
-        fotos: fotos.files,
+        logo,
+        fotos,
         now: deps.now,
       });
     } catch (e) {
@@ -110,7 +130,7 @@ export async function handleOnboarding<D extends { sessionId: string }>(
     { filename: "kunde.yaml", contentType: "text/yaml", content: Buffer.from(yaml, "utf8") },
     ...(githubOk
       ? []
-      : [...logo.files.map((u) => ({ ...u, name: `logo.${u.ext}` })), ...fotos.files].map((u) => ({
+      : [...logo.map((u) => ({ ...u, name: `logo.${u.ext}` })), ...fotos].map((u) => ({
           filename: u.name,
           contentType: MIME[u.ext],
           content: Buffer.from(u.bytes),
@@ -121,22 +141,36 @@ export async function handleOnboarding<D extends { sessionId: string }>(
   const issueZeile = githubOk
     ? `Issue: https://github.com/${KUNDEN_REPO}/issues/${ergebnis?.issue}`
     : `GitHub fehlgeschlagen – Issue bitte von Hand anlegen (Body-Zeile: session:${hash}). Bilder im Anhang.`;
-  try {
-    await deps.send({
-      to: TO,
-      replyTo: deps.replyTo(d),
-      subject: `${praefix}${produkt} ${art}: ${name}`.replace(/\s+/g, " "),
-      text: `${produkt} ${art}.\n\nName: ${name}\nKäufer (Stripe): ${session.email ?? "–"}\nSession: ${d.sessionId}\nSession-Hash: ${hash}\n${issueZeile}\n\nkunde.yaml im Anhang – enthält immer den vollständigen aktuellen Stand.`,
-      attachments: anhaenge,
+  const backup = {
+    to: TO,
+    replyTo: deps.replyTo(d),
+    subject: `${praefix}${produkt} ${art}: ${name}`.replace(/\s+/g, " "),
+    text: `${produkt} ${art}.\n\nName: ${name}\nKäufer (Stripe): ${session.email ?? "–"}\nSession: ${d.sessionId}\nSession-Hash: ${hash}\n${issueZeile}\n\nkunde.yaml im Anhang – enthält immer den vollständigen aktuellen Stand.`,
+  };
+  const versuche: OutgoingMail[] = [{ ...backup, attachments: anhaenge }];
+  // Bilder können das SMTP-Limit sprengen – dann wenigstens kunde.yaml retten.
+  if (anhaenge.length > 1) {
+    versuche.push({
+      ...backup,
+      text: `${backup.text}\n\nBilder zu groß für die Mail – bitte beim Kunden anfordern.`,
+      attachments: anhaenge.slice(0, 1),
     });
-  } catch (e) {
-    console.error(`[onboarding] ${produkt} backup mail failed: ${errName(e)}`);
-    if (!githubOk) {
-      return {
-        status: 502,
-        body: "Senden fehlgeschlagen. Bitte schreiben Sie an lucas@lkmedia.net.",
-      };
+  }
+  let backupOk = false;
+  for (const m of versuche) {
+    try {
+      await deps.send(m);
+      backupOk = true;
+      break;
+    } catch (e) {
+      console.error(`[onboarding] ${produkt} backup mail failed: ${errName(e)}`);
     }
+  }
+  if (!backupOk && !githubOk) {
+    return {
+      status: 502,
+      body: "Senden fehlgeschlagen. Bitte schreiben Sie an lucas@lkmedia.net.",
+    };
   }
 
   // Bestätigung nur an die bei Stripe hinterlegte Käufer-Adresse, nie an Formulareingaben.

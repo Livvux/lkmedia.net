@@ -31,6 +31,7 @@ export const POST: APIRoute = async ({ request }) => {
       gh: token ? createGitHub({ token }) : null,
       send: sendMail,
       allow,
+      release: allow.release,
       now: () => new Date(),
       deliveryPromise: HANDWERKWEB.deliveryPromise,
       danke: "/handwerk/danke",

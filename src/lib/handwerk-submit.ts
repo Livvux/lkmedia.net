@@ -25,7 +25,7 @@ export type SubmitResult = { status: 303; location: string } | { status: 403 | 4
 // ponytail: In-Memory, pro Prozess, Neustart leert. Bei mehreren Instanzen Redis o. Ä.
 export function createRateLimiter(max: number, windowMs: number, now: () => number = Date.now) {
   const hits = new Map<string, number[]>();
-  return (key: string): boolean => {
+  const allow = (key: string): boolean => {
     const t = now();
     if (hits.size > 10_000) hits.clear();
     const recent = (hits.get(key) ?? []).filter((x) => t - x < windowMs);
@@ -33,6 +33,12 @@ export function createRateLimiter(max: number, windowMs: number, now: () => numb
     hits.set(key, ok ? [...recent, t] : recent);
     return ok;
   };
+  /** Gibt den zuletzt gezählten Versuch wieder frei (z. B. wenn er gescheitert ist). */
+  const release = (key: string): void => {
+    const recent = hits.get(key);
+    if (recent?.length) hits.set(key, recent.slice(0, -1));
+  };
+  return Object.assign(allow, { release });
 }
 
 export async function handleSubmission(i: SubmitInput, deps: SubmitDeps): Promise<SubmitResult> {

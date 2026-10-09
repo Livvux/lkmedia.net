@@ -132,10 +132,9 @@ describe('POST /api/fahrschule-onboarding', () => {
     expect(r.headers.get('location')).toMatch(/^\/fahrschule-webdesign\/onboarding\?session_id=cs_test_fahrschule123&fehler=/);
   });
 
-  it('meldet 502, wenn GitHub fehlt und die Betreiber-Mail scheitert', async () => {
+  it('meldet 502, wenn GitHub fehlt und die Betreiber-Mail scheitert, und lässt erneutes Senden zu', async () => {
     sendMail.mockRejectedValueOnce(new Error('smtp down'));
     expect((await submit()).status).toBe(502);
-    vi.advanceTimersByTime(61_000);
     expect((await submit()).status).toBe(303);
   });
 });
