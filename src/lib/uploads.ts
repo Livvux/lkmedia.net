@@ -17,21 +17,25 @@ export function detectType(b: Uint8Array): Upload["ext"] | null {
   return SVG_HEAD.test(head) ? "svg" : null;
 }
 
-// Vertrag mit fahrschulweb validate (svg-check.ts): gleiche Regeln, bei Änderung beide anpassen.
-// Kommentare zuerst entfernen, dann alles case-insensitiv prüfen.
+// Vertrag mit fahrschulweb validate (svg-check.ts): dieselben Regeln, bei Änderung beide anpassen.
+// ponytail: Denylist über Text; Abwehr in der Tiefe: Templates liefern *.svg mit CSP sandbox aus.
+// Upgrade: XML-Parser + Allowlist.
+// Rohtext, case-insensitiv, KEIN Kommentar-Strippen (CDATA/Kommentar-Tricks); <script in
+// Kommentaren ist ein bewusster False Positive. Jede &-Referenz außer den 5 Standard-Entities
+// (inkl. &#...) wird abgelehnt, damit href/javascript: nicht kodiert versteckt werden kann.
 const UNSAFE_SVG = [
-  /<script/i,
+  /<(?:[\w-]+:)?(?:script|foreignObject|iframe|embed|object|handler|listener)\b/i,
+  /<(?:[\w-]+:)?use\b[^>]*?href\s*=(?!\s*["']?\s*#)/i,
   /[\s"'/]on\w+\s*=/i,
   /javascript:/i,
-  /<foreignObject/i,
   /href\s*=\s*["']?\s*(?:https?:|\/\/)/i,
   /<!ENTITY/i,
-  /<use\b[^>]*href\s*=\s*(?!["']?\s*#)/i,
+  /<!DOCTYPE[^>]*\[/i,
+  /&(?!(?:amp|lt|gt|quot|apos);)/,
 ];
 
 export function isSafeSvg(text: string): boolean {
-  const s = text.replace(/<!--[\s\S]*?-->/g, "");
-  return !UNSAFE_SVG.some((re) => re.test(s));
+  return !UNSAFE_SVG.some((re) => re.test(text));
 }
 
 export function slugName(original: string, ext: Upload["ext"]): string {

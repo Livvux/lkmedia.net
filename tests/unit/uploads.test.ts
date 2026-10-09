@@ -43,11 +43,31 @@ describe("isSafeSvg", () => {
     '<!DOCTYPE svg [<!ENTITY a "b">]><svg/>',
     '<svg><use href="other.svg#a"/></svg>',
     "<svg><!-- --><script/></svg>",
+    '<svg xmlns="http://www.w3.org/2000/svg"><style><![CDATA[ <!-- ]]></style><script>alert(1)</script><style><![CDATA[ --> ]]></style></svg>',
+    '<svg xmlns:s="http://www.w3.org/2000/svg"><s:script>x</s:script></svg>',
+    "<svg><s:foreignObject/></svg>",
+    '<svg><s:use href="other.svg#x"/></svg>',
+    '<svg><use href = "other.svg#x"/></svg>',
+    '<svg><iframe/></svg>',
+    '<svg><a href="&#106;avascript:x()"/></svg>',
+    '<svg><a href="&#x6A;avascript:x()"/></svg>',
+    '<svg><a href="java&#x09;script:x()"/></svg>',
+    '<svg><image href="&#104;ttps://evil/a.png"/></svg>',
+    '<svg><a href="&foo;"/></svg>',
+    '<!DOCTYPE svg [ <!ELEMENT a ANY> ]><svg/>',
   ])("lehnt ab: %s", (s) => expect(isSafeSvg(s)).toBe(false));
   it("erlaubt interne use-Referenz", () =>
     expect(isSafeSvg('<svg><use href="#a"/></svg>')).toBe(true));
-  it("ignoriert Kommentare nicht als Versteck", () =>
-    expect(isSafeSvg("<svg><!-- <script> --></svg>")).toBe(true));
+  it("lehnt <script auch in Kommentaren ab (bewusst, Text wird roh geprüft)", () =>
+    expect(isSafeSvg("<svg><!-- <script> --></svg>")).toBe(false));
+  it("erlaubt use mit Leerzeichen um =", () =>
+    expect(isSafeSvg('<svg><use href = "#a"/></svg>')).toBe(true));
+  it("erlaubt Inkscape-SVG und Standard-Entities", () =>
+    expect(
+      isSafeSvg(
+        '<svg xmlns="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"><sodipodi:namedview id="n"/><text>a &amp; b &lt;</text></svg>',
+      ),
+    ).toBe(true));
 });
 
 describe("slugName", () => {
