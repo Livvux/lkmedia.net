@@ -1,21 +1,24 @@
 ---
-import Base from '../layouts/Base.astro';
-import FeatureSplit from '../components/home/FeatureSplit.astro';
-import LighthousePanel from '../components/home/LighthousePanel.astro';
-import ProcessSteps from '../components/home/ProcessSteps.astro';
-import FinalCta from '../components/home/FinalCta.astro';
-import FaqBlock from '../components/FaqBlock.astro';
-import { breadcrumbs } from '../lib/schema';
-import { routeFor } from '../lib/i18n';
+import Base from '../../layouts/Base.astro';
+import FeatureSplit from '../../components/home/FeatureSplit.astro';
+import LighthousePanel from '../../components/home/LighthousePanel.astro';
+import ProcessSteps from '../../components/home/ProcessSteps.astro';
+import FinalCta from '../../components/home/FinalCta.astro';
+import FaqBlock from '../../components/FaqBlock.astro';
+import { breadcrumbs } from '../../lib/schema';
+import { routeFor } from '../../lib/i18n';
+import { FAHRSCHULWEB } from '../../lib/fahrschulweb';
 
 const url = 'https://lkmedia.net/fahrschule-webdesign';
 const contact = routeFor('contact', 'de');
 const caseStudy = '/case-study-patricks-fahrschule-local-seo';
+const checkoutHref = FAHRSCHULWEB.paymentLink || `${contact}#termin`;
+const checkoutLabel = FAHRSCHULWEB.paymentLink ? 'Jetzt starten' : 'Gespräch vereinbaren';
 
 const seo = {
   title: 'Fahrschule Webdesign – Websites, die Fahrschüler bringen',
   description:
-    'Webdesign für Fahrschulen: schnelle Websites mit Online-Anmeldung, Standortseiten und Local SEO. Unsere Fahrschul-Kunden ranken auf Platz 1 – in 5 Städten.',
+    `Website für Fahrschulen zum Festpreis: Online-Anmeldung, Standortseiten, Local SEO. ${FAHRSCHULWEB.setupPrice} + ${FAHRSCHULWEB.monthlyPrice}/Monat – direkt online bestellen.`,
   canonical: '/fahrschule-webdesign',
   lang: 'de' as const,
   alternateUrls: { de: url },
@@ -68,7 +71,7 @@ const features = [
   },
   {
     title: 'Theorie- & Ferienkurse',
-    body: 'Termine für Theorieunterricht, Intensiv- und Ferienkurse, die Sie selbst pflegen können. Kein Anruf beim Webdesigner für jede Änderung.',
+    body: 'Termine für Theorieunterricht, Intensiv- und Ferienkurse immer aktuell. Neue Termine schicken Sie über Ihren Änderungs-Link – wir pflegen sie ein.',
   },
   {
     title: 'Mehrsprachig',
@@ -102,20 +105,40 @@ const serp = [
 ];
 
 const process = {
-  title: 'In wenigen Wochen online.',
-  sub: 'Ein Ansprechpartner von Anfang bis Ende. Sie liefern Wissen über Ihre Fahrschule, wir den Rest.',
+  title: 'Online bestellen. In wenigen Tagen Vorschau.',
+  sub: 'Kein Angebots-Pingpong: Sie bestellen das Paket direkt, tragen Ihre Daten ein, wir bauen den Rest.',
   steps: [
-    { n: '01', title: 'Erstgespräch', body: 'Standorte, Klassen, Wettbewerb und Ziele – in 30 Minuten geklärt.' },
-    { n: '02', title: 'Konzept & Texte', body: 'Seitenstruktur, Keyword-Plan je Standort und Texte, die Fahrschüler ansprechen.' },
-    { n: '03', title: 'Design & Build', body: 'Handgebaut, mobil zuerst, mit Online-Anmeldung und strukturierten Daten.' },
-    { n: '04', title: 'Launch & Ranking', body: 'Search Console, Google-Profile, Monitoring – und Feinschliff, bis es rankt.' },
+    { n: '01', title: 'Paket bestellen', body: `Sichere Zahlung über Stripe: ${FAHRSCHULWEB.initialPrice} für Einrichtung und ersten Monat. Rechnung kommt automatisch.` },
+    { n: '02', title: 'Daten eintragen', body: 'Klassen, Preise, Standorte, Theoriezeiten, Team – in ca. 15 Minuten. Logo und Fotos per E-Mail.' },
+    { n: '03', title: 'Vorschau prüfen', body: `${FAHRSCHULWEB.deliveryPromise} Eine Korrekturschleife ist enthalten.` },
+    { n: '04', title: 'Online & aktuell', body: 'Wir schalten Ihre Domain auf und richten Google-Profile ein. Änderungen schicken Sie jederzeit über Ihren persönlichen Link.' },
   ],
 };
+
+const included = [
+  'Website mit Ihren Inhalten, Ihrem Logo und Ihrer Farbe',
+  'Seiten für Führerscheinklassen, Preise, Theorie & Kurse, Team & Fahrzeuge, Kontakt',
+  `Eigene Standortseite für bis zu ${FAHRSCHULWEB.includedLocations} Standorte`,
+  'Online-Anmeldung per E-Mail oder Link zu Ihrer Fahrschulsoftware',
+  'Google-Unternehmensprofil je Standort eingerichtet bzw. optimiert',
+  'Impressum und Datenschutzerklärung (als Entwurf zur Freigabe)',
+  'Eine Korrekturschleife nach der Vorschau',
+  'Hosting in der EU, SSL, Sicherungen und technische Updates',
+  'Persönlicher Änderungs-Link: bis zu 30 Minuten Änderungen pro Monat',
+  'Einrichtung auf Ihrer Domain; Domainkosten extra',
+];
+
+const preparation = [
+  { title: 'Fahrschule und Kontakt', body: 'Name, Telefon, E-Mail für Anmeldungen, Adressen und Bürozeiten aller Standorte. Falls vorhanden: Anmelde-Link Ihrer Fahrschulsoftware.' },
+  { title: 'Klassen, Preise, Kurse', body: 'Welche Führerscheinklassen Sie ausbilden, Ihre Preise je Klasse, Theoriezeiten sowie Ferien- und Intensivkurse mit Terminen.' },
+  { title: 'Team, Fahrzeuge, Fotos', body: 'Fahrlehrerinnen und Fahrlehrer, Ihre Fahrzeuge, Logo und Fotos, für die Sie die Nutzungsrechte besitzen. Bilder senden Sie nach dem Kauf per E-Mail.' },
+  { title: 'Impressum', body: 'Inhaber oder Geschäftsführung, Rechtsform, die Behörde, die Ihre Fahrschulerlaubnis erteilt hat, und gegebenenfalls Handelsregister und USt-IdNr.' },
+];
 
 const faqs = [
   {
     q: 'Was kostet eine Website für eine Fahrschule?',
-    a: 'Sie erhalten einen Fixpreis auf Basis des Umfangs: Anzahl der Standorte, Führerscheinklassen, Sprachen und Funktionen wie Online-Anmeldung oder Kurskalender. Keine Stundenabrechnung, keine versteckten Kosten. Das genaue Angebot bekommen Sie nach einem kostenlosen Erstgespräch.',
+    a: `${FAHRSCHULWEB.setupPrice} für die Einrichtung und ${FAHRSCHULWEB.monthlyPrice} pro Monat für Hosting, Updates und Änderungen. Bei Bestellung werden ${FAHRSCHULWEB.initialPrice} fällig. Mindestlaufzeit ${FAHRSCHULWEB.minimumTermMonths} Monate ab Bestellung; insgesamt ${FAHRSCHULWEB.minimumTotalPrice}, jeweils inkl. USt. und zuzüglich Domainkosten. Mehr als ${FAHRSCHULWEB.includedLocations} Standorte oder weitere Sprachen besprechen wir vor der Bestellung.`,
   },
   {
     q: 'Wie schnell rankt meine Fahrschule bei Google?',
@@ -126,8 +149,8 @@ const faqs = [
     a: 'Nein. Eine Website mit einer eigenständigen Unterseite pro Standort ist die stärkere Lösung: Die Domain bündelt die Autorität, und jede Standortseite rankt für ihren eigenen Ort. Dazu kommt ein eigenes Google-Unternehmensprofil pro Filiale.',
   },
   {
-    q: 'Kann ich Kurstermine und Preise selbst ändern?',
-    a: 'Ja. Theorie- und Ferienkurse, Preise und Neuigkeiten pflegen Sie selbst, ohne Programmierkenntnisse. Für alles Größere sind wir direkt erreichbar – ohne Ticketsystem.',
+    q: 'Kann ich Kurstermine, Preise und Angaben später ändern?',
+    a: 'Ja, alles. Nach der Bestellung erhalten Sie einen persönlichen Link zu Ihrem Onboarding-Formular. Der bleibt dauerhaft gültig: Öffnen, Theoriezeiten, Kurse, Preise, Team oder Kontaktdaten anpassen, absenden – wir pflegen die Änderung ein. Bis zu 30 Minuten Änderungen pro Monat sind enthalten; größeren Aufwand stimmen wir vorher mit Ihnen ab.',
   },
   {
     q: 'Funktioniert die Online-Anmeldung mit meiner Fahrschulsoftware?',
@@ -142,7 +165,7 @@ const faqs = [
 const cta = {
   lines: ['Mehr Fahrschüler.', 'Weniger Telefon-Pingpong.'] as [string, string],
   sub: 'Lassen Sie uns in 15 Minuten prüfen, wo Ihre Fahrschule bei Google steht – und was nötig ist, um nach oben zu kommen.',
-  primary: { label: 'Projekt starten', href: contact },
+  primary: { label: 'Paket ansehen', href: '#preis' },
   secondary: { label: '15-min-Call buchen', href: `${contact}#termin` },
 };
 
@@ -156,6 +179,15 @@ const serviceSchema = {
   areaServed: { '@type': 'Country', name: 'Deutschland' },
   audience: { '@type': 'BusinessAudience', audienceType: 'Fahrschulen' },
   url,
+  offers: {
+    '@type': 'Offer',
+    name: 'Einrichtung und erster Betriebsmonat',
+    description: `Erste Zahlung ${FAHRSCHULWEB.initialPrice}, danach ${FAHRSCHULWEB.monthlyPrice} pro Monat. ${FAHRSCHULWEB.minimumTermMonths} Monate Mindestlaufzeit; insgesamt ${FAHRSCHULWEB.minimumTotalPrice} inkl. USt., zuzüglich Domainkosten.`,
+    price: FAHRSCHULWEB.initialAmount.toFixed(2),
+    priceCurrency: 'EUR',
+    availability: 'https://schema.org/InStock',
+    url,
+  },
 };
 const crumbs = breadcrumbs([
   { name: 'Start', url: 'https://lkmedia.net/' },
@@ -179,10 +211,11 @@ const crumbs = breadcrumbs([
         Damit Ihre Fahrschule bei „Fahrschule + Ort“ ganz oben steht – und nicht die Konkurrenz.
       </p>
       <div class="hero-actions" data-rise style="--d:360ms">
-        <a href={contact} class="btn btn-primary btn-lg">
-          Kostenloses Erstgespräch
+        <a href="#preis" class="btn btn-primary btn-lg">
+          Paket ansehen · {FAHRSCHULWEB.setupPrice}
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </a>
+        <a href={`${contact}#termin`} class="mono-link">Erst sprechen? 15-min-Call</a>
         <a href={caseStudy} class="mono-link"><span class="dot" aria-hidden="true"></span>Case: #1 in 5 Städten</a>
       </div>
 
@@ -341,6 +374,68 @@ const crumbs = breadcrumbs([
   </section>
 
   <ProcessSteps process={process} />
+
+  <!-- Vorbereitung -->
+  <section id="vorbereitung" aria-labelledby="vorbereitung-title" class="block scroll-mt-20">
+    <div class="wrap">
+      <div class="max-w-2xl" data-reveal>
+        <div class="eyebrow">Checkliste</div>
+        <h2 id="vorbereitung-title" class="section-title mt-4">Das brauchen wir von Ihnen.</h2>
+        <p class="section-sub mt-5">Nach dem Kauf tragen Sie alles in ein kurzes Formular ein. Der Zeitraum bis zur Vorschau beginnt, sobald alle Inhalte vorliegen.</p>
+      </div>
+      <ul class="pain-grid prep-grid">
+        {preparation.map((p, i) => (
+          <li class="card pain" data-reveal style={`--d:${i * 70}ms`}>
+            <h3 class="card-title">{p.title}</h3>
+            <p class="card-body">{p.body}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- Preis -->
+  <section id="preis" aria-labelledby="preis-title" class="block scroll-mt-20">
+    <div class="wrap price-grid">
+      <div data-reveal>
+        <div class="eyebrow">Fahrschul-Paket</div>
+        <h2 id="preis-title" class="section-title mt-4">Ein Paket. Ein Preis. Direkt online bestellen.</h2>
+        <p class="section-sub mt-5">
+          Sie bestellen online, tragen Ihre Daten ein, wir bauen und betreiben Ihre Website. Ändern können Sie danach
+          alles – über Ihren persönlichen Änderungs-Link.
+        </p>
+        <p class="card-body mt-5">
+          Nicht enthalten: Domainkosten, Fotografie, Texterstellung über Ihre Angaben hinaus und Rechtsberatung.
+          Mehr als {FAHRSCHULWEB.includedLocations} Standorte, weitere Sprachen oder ein Umzug Ihrer bestehenden Website?
+          {' '}<a href={`${contact}#termin`} class="underline underline-offset-4">Klären wir vorab im Gespräch.</a>
+        </p>
+        <a href="#vorbereitung" class="mono-link mt-6">Checkliste für Ihre Bestellung →</a>
+      </div>
+      <div class="card price" data-reveal style="--d:80ms">
+        <div class="stat-label">FAHRSCHUL-KOMPLETTPAKET</div>
+        <div class="price-main"><span>{FAHRSCHULWEB.setupPrice}</span> <small>einmalig</small></div>
+        <div class="price-monthly"><strong>+ {FAHRSCHULWEB.monthlyPrice}</strong> <small>/ Monat</small></div>
+        <p class="card-body">inkl. USt. · {FAHRSCHULWEB.minimumTermMonths} Monate Mindestlaufzeit ab Bestellung</p>
+        <div class="price-terms">
+          <p><strong>Bei Bestellung: {FAHRSCHULWEB.initialPrice}</strong> für Einrichtung und ersten Monat.</p>
+          <p>Danach {FAHRSCHULWEB.monthlyPrice} monatlich im Voraus. Einrichtung + {FAHRSCHULWEB.minimumTermMonths} Monate: <strong>{FAHRSCHULWEB.minimumTotalPrice}</strong> inkl. USt., zzgl. Domain.</p>
+          <p>Danach monatlich kündbar, Frist ein Monat zum Monatsende.</p>
+        </div>
+        <ul class="price-list">
+          {included.map((i) => (
+            <li>
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <span>{i}</span>
+            </li>
+          ))}
+        </ul>
+        <a href={checkoutHref} class="btn btn-primary btn-lg price-cta">{checkoutLabel} →</a>
+        <p class="price-note">
+          Sichere Zahlung über Stripe · Es gelten die <a href="/fahrschule-webdesign/agb" class="underline underline-offset-4">AGB für das Fahrschul-Paket</a>
+        </p>
+      </div>
+    </div>
+  </section>
 
   <!-- FAQ -->
   <section class="block">
@@ -684,6 +779,86 @@ const crumbs = breadcrumbs([
     margin-top: 8px;
     font-family: var(--font-mono);
     font-size: 12px;
+    color: var(--fg-dim);
+  }
+
+  .prep-grid {
+    margin-top: 48px;
+  }
+  @media (min-width: 900px) {
+    .prep-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  .price-grid {
+    display: grid;
+    gap: 48px;
+    align-items: start;
+  }
+  @media (min-width: 1024px) {
+    .price-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  .price {
+    padding: clamp(28px, 4vw, 44px);
+  }
+  .price-main {
+    margin-top: 16px;
+    font-size: clamp(40px, 5vw, 56px);
+    font-weight: 600;
+    letter-spacing: -0.04em;
+    line-height: 1;
+  }
+  .price-main small,
+  .price-monthly small {
+    font-size: 15px;
+    font-weight: 400;
+    letter-spacing: 0;
+    color: var(--fg-dim);
+  }
+  .price-monthly {
+    margin-top: 8px;
+    font-size: 20px;
+  }
+  .price-terms {
+    display: grid;
+    gap: 8px;
+    margin-top: 24px;
+    padding: 20px 0;
+    border-block: 1px solid var(--border);
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--fg-muted);
+  }
+  .price-terms strong {
+    color: var(--fg);
+  }
+  .price-list {
+    display: grid;
+    gap: 12px;
+    margin-top: 28px;
+    font-size: 15px;
+  }
+  .price-list li {
+    display: flex;
+    gap: 12px;
+  }
+  .price-list svg {
+    flex-shrink: 0;
+    margin-top: 4px;
+    color: var(--ok);
+  }
+  .price-cta {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    margin-top: 36px;
+  }
+  .price-note {
+    margin-top: 12px;
+    text-align: center;
+    font-size: 13px;
     color: var(--fg-dim);
   }
 

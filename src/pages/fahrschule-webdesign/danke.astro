@@ -1,0 +1,26 @@
+---
+import Base from '../../layouts/Base.astro';
+import { FAHRSCHULWEB } from '../../lib/fahrschulweb';
+
+const seo = {
+  title: 'Angaben erhalten',
+  description: 'Ihre Angaben für die Fahrschul-Website sind angekommen.',
+  canonical: '/fahrschule-webdesign/danke',
+  lang: 'de' as const,
+  noindex: true,
+};
+---
+<Base seo={seo}>
+  <section class="py-40 px-6 text-center max-w-2xl mx-auto">
+    <h1 class="text-5xl md:text-7xl font-semibold tracking-tight">Angekommen.</h1>
+    <p class="mt-6 text-xl text-black/70 dark:text-white/70">
+      Ihre Angaben sind bei uns eingegangen. Senden Sie Ihr Logo und Fotos (Team, Fahrzeuge, Schulungsraum)
+      an <a href="mailto:lucas@lkmedia.net" class="underline underline-offset-4">lucas@lkmedia.net</a> oder antworten Sie auf unsere Bestätigungsmail.
+    </p>
+    <p class="mt-6 text-lg text-black/70 dark:text-white/70">{FAHRSCHULWEB.deliveryPromise}</p>
+    <p class="mt-6 text-lg text-black/70 dark:text-white/70">
+      Später etwas ändern? Nutzen Sie den Link aus Ihrer Bestätigungsmail – er bleibt dauerhaft gültig.
+    </p>
+    <a href="/" class="inline-flex mt-10 h-12 px-6 items-center rounded-full border border-black/30 dark:border-white/30">Zur Startseite</a>
+  </section>
+</Base>
