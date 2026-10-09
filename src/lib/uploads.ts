@@ -4,7 +4,9 @@ export type Upload = { name: string; ext: "jpg" | "png" | "webp" | "svg"; bytes:
 export const UPLOAD_LIMITS = { dateiBytes: 8 * 1024 * 1024, gesamtBytes: 40 * 1024 * 1024 };
 
 const startsWith = (b: Uint8Array, sig: number[], at = 0) => sig.every((v, i) => b[at + i] === v);
-const SVG_HEAD = /^(?:\s|<\?xml[\s\S]*?\?>|<!--[\s\S]*?-->|<!DOCTYPE[^>]*>)*<svg[\s>/]/i;
+// Prolog-Teile enden eindeutig am ersten ?> bzw. -->, sonst exponentielles Backtracking (ReDoS).
+const SVG_HEAD =
+  /^(?:\s|<\?xml(?:[^?]|\?(?!>))*\?>|<!--(?:[^-]|-(?!->))*-->|<!DOCTYPE[^>]*>)*<svg[\s>/]/i;
 
 export function detectType(b: Uint8Array): Upload["ext"] | null {
   if (startsWith(b, [0xff, 0xd8, 0xff])) return "jpg";
@@ -27,21 +29,37 @@ const PFX = "(?:[^\\s<>/:!?]+:)?"; // beliebiger XML-Präfix (auch mit . oder Ni
 const ATTRS = `(?:"[^"]*"|'[^']*'|[^>"'])*?`; // Attribute, '>' in Werten beachten
 const UNSAFE_SVG = [
   new RegExp(`<${PFX}(?:script|foreignObject|iframe|embed|object|handler|listener)\\b`, "i"),
-  new RegExp(`<${PFX}use\\b${ATTRS}href\\s*=(?!\\s*["']?\\s*#)`, "i"),
   /[\s"'/]on\w+\s*=/i,
-  /href\s*=\s*["']?\s*(?:https?:|\/\/)/i,
+  /href\s*=\s*(?:["']\s*)?(?:https?:|\/\/)/i,
   /<!ENTITY/i,
   /<\?xml-stylesheet/i,
   /www\.w3\.org\/1999\/XSL\/Transform/i,
   /<xsl:/i,
-  /<!DOCTYPE[^>]*\[/i,
   /&(?!(?:amp|lt|gt|quot|apos);)/,
+];
+// [Tag-Öffner, Muster ab dem Öffner]: Text am Öffner teilen, jedes Stück verankert prüfen.
+// Ein Muster über den ganzen Text wäre bei vielen Öffnern ohne ">" quadratisch (ReDoS).
+// ponytail: Ein Stück endet am nächsten Öffner – "<use" in einem Attributwert (kein gültiges
+// XML) trennt also mit; Upgrade: XML-Parser.
+const UNSAFE_TAGS: [RegExp, RegExp][] = [
+  [new RegExp(`<${PFX}use\\b`, "i"), new RegExp(`^${ATTRS}href\\s*=(?!\\s*(?:["']\\s*)?#)`, "i")],
+  [/<!DOCTYPE/i, /^[^>]*\[/],
 ];
 // Schemata auch mit eingestreutem Whitespace (java\nscript:) erkennen; data: nur für Raster-Bilder.
 const UNSAFE_SCHEME = /javascript:|vbscript:|(?<![\w-])data:(?!image\/(?:png|jpeg|gif|webp)[;,])/i;
 
+const tagUnsafe = (text: string, [tag, re]: [RegExp, RegExp]) =>
+  text
+    .split(tag)
+    .slice(1)
+    .some((p) => re.test(p));
+
 export function isSafeSvg(text: string): boolean {
-  return !UNSAFE_SVG.some((re) => re.test(text)) && !UNSAFE_SCHEME.test(text.replace(/\s+/g, ""));
+  return (
+    !UNSAFE_SVG.some((re) => re.test(text)) &&
+    !UNSAFE_TAGS.some((t) => tagUnsafe(text, t)) &&
+    !UNSAFE_SCHEME.test(text.replace(/\s+/g, ""))
+  );
 }
 
 export function slugName(original: string, ext: Upload["ext"]): string {

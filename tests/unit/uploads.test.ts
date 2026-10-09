@@ -67,6 +67,8 @@ describe("isSafeSvg", () => {
     '<svg><image href="&#104;ttps://evil/a.png"/></svg>',
     '<svg><a href="&foo;"/></svg>',
     '<!DOCTYPE svg [ <!ELEMENT a ANY> ]><svg/>',
+    '<svg><use <use href="other.svg#a"/></svg>',
+    '<!DOCTYPE a <!DOCTYPE b [ ]><svg/>',
   ])("lehnt ab: %s", (s) => expect(isSafeSvg(s)).toBe(false));
   it("erlaubt interne use-Referenz", () =>
     expect(isSafeSvg('<svg><use href="#a"/></svg>')).toBe(true));
@@ -82,6 +84,40 @@ describe("isSafeSvg", () => {
         '<svg xmlns="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"><sodipodi:namedview id="n"/><text>a &amp; b &lt;</text></svg>',
       ),
     ).toBe(true));
+});
+
+describe("SVG-Prüfung in linearer Zeit (ReDoS)", () => {
+  const N = 500_000;
+  const fill = (s: string) => s.repeat(Math.ceil(N / s.length)).slice(0, N);
+  const ms = (fn: () => unknown) => {
+    const t = performance.now();
+    fn();
+    return performance.now() - t;
+  };
+  it.each([
+    ["<use ", fill("<use ")],
+    ["<a:use ", fill("<a:use ")],
+    ['<use "', fill('<use "')],
+    ["<use href= + Leerzeichen", `<use href=${" ".repeat(N)}`],
+    ["<!DOCTYPE ", fill("<!DOCTYPE ")],
+    ["href= + Leerzeichen", `href=${" ".repeat(N)}`],
+    ["href= ", fill("href= ")],
+    [" onx ", fill(" onx ")],
+    [" on + Wortzeichen", ` on${"a".repeat(N)}`],
+    ["<Präfix ohne Doppelpunkt", fill("<aaaaaaaa")],
+    ["<script-Präfix", fill("<a:scrip")],
+    ["&", fill("&")],
+    ["Leerzeichen", " ".repeat(N)],
+    ["data:", fill("data:")],
+    ["java script", fill("java script")],
+  ])("isSafeSvg: %s", (_, s) => expect(ms(() => isSafeSvg(s))).toBeLessThan(200));
+  it.each([
+    "<?xml?>",
+    "<!---->",
+    "<!DOCTYPE ",
+    " ",
+  ])("detectType-Prolog: %s", (s) =>
+    expect(ms(() => detectType(enc(fill(s))))).toBeLessThan(200));
 });
 
 describe("slugName", () => {

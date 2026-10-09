@@ -5,7 +5,13 @@ import { handleOnboarding, hatOnboarding } from "../../src/lib/onboarding-submit
 import { KUNDEN_REPO, sessionHash } from "../../src/lib/pipeline";
 import { createRateLimiter } from "../../src/lib/site-submit";
 import { aenderungUrl } from "../../src/lib/stripe";
+import * as uploads from "../../src/lib/uploads";
 import { createGitHubFake } from "./helpers/github-fake";
+
+vi.mock("../../src/lib/uploads", async (orig) => {
+  const m = await orig<typeof import("../../src/lib/uploads")>();
+  return { ...m, readUploads: vi.fn(m.readUploads), isSafeSvg: vi.fn(m.isSafeSvg) };
+});
 
 const SID = "cs_test_onboarding987";
 const FORM_EMAIL = "betrieb@example.test";
@@ -227,6 +233,16 @@ describe("handleOnboarding", () => {
     expect((await s.run()).status).toBe(303);
   });
 
+  it("unbezahlt mit SVG-Upload → 403, Uploads werden gar nicht gelesen", async () => {
+    const s = setup({ paid: false });
+    vi.mocked(uploads.readUploads).mockClear();
+    vi.mocked(uploads.isSafeSvg).mockClear();
+    const svg = new File(["<svg>" + "<use ".repeat(1000)], "logo.svg", { type: "image/svg+xml" });
+    expect((await s.run(form({ logo: [svg] }))).status).toBe(403);
+    expect(uploads.readUploads).not.toHaveBeenCalled();
+    expect(uploads.isSafeSvg).not.toHaveBeenCalled();
+  });
+
   it("kein Stripe-Key → 503", async () => {
     const s = setup({ stripeKey: undefined });
     const r = await s.run();
@@ -261,7 +277,8 @@ describe("handleOnboarding", () => {
     expect(loc.searchParams.get("fehler")).toBe(
       "„logo.png“ ist kein unterstütztes Bild. Möglich sind JPG, PNG, WebP und SVG.",
     );
-    expect(s.deps.checkSession).not.toHaveBeenCalled();
+    expect(s.deps.checkSession).toHaveBeenCalledTimes(1); // Uploads erst nach Zahlungsprüfung
+    expect(s.fake.commits).toHaveLength(0);
   });
 
   it("mehr als ein Logo → Fehler", async () => {

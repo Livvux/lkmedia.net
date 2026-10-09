@@ -59,14 +59,6 @@ export async function handleOnboarding<D extends { sessionId: string }>(
   };
   const parsed = deps.parse(form);
   if (!parsed.ok) return zurueck(parsed.errors.join(" · "));
-  const logo = await readUploads(form, "logo", { max: 1 });
-  if (!logo.ok) return zurueck(logo.fehler);
-  const fotos = await readUploads(form, "fotos", { max: 10 });
-  if (!fotos.ok) return zurueck(fotos.fehler);
-  const bilder = [...logo.files, ...fotos.files];
-  if (bilder.reduce((n, u) => n + u.bytes.length, 0) > UPLOAD_LIMITS.gesamtBytes) {
-    return zurueck(ZU_GROSS);
-  }
 
   if (!deps.stripeKey) {
     console.error(`[onboarding] ${produkt} STRIPE_SECRET_KEY unset – rejecting`);
@@ -75,6 +67,16 @@ export async function handleOnboarding<D extends { sessionId: string }>(
   const d = parsed.data;
   const session = await deps.checkSession(d.sessionId, deps.stripeKey);
   if (!session.paid) return { status: 403, body: "Bestellung nicht gefunden oder nicht bezahlt." };
+
+  // Bilder erst nach dem Bezahlt-Check lesen: Unbezahlte erreichen den SVG-Parser nie.
+  const logo = await readUploads(form, "logo", { max: 1 });
+  if (!logo.ok) return zurueck(logo.fehler);
+  const fotos = await readUploads(form, "fotos", { max: 10 });
+  if (!fotos.ok) return zurueck(fotos.fehler);
+  const bilder = [...logo.files, ...fotos.files];
+  if (bilder.reduce((n, u) => n + u.bytes.length, 0) > UPLOAD_LIMITS.gesamtBytes) {
+    return zurueck(ZU_GROSS);
+  }
   // Erst nach dem Bezahlt-Check zählen, damit unbezahlte Versuche niemanden aussperren.
   // allow() reserviert synchron, also bekommt auch ein paralleler zweiter Klick 429.
   const key = `onb:${d.sessionId}`;
