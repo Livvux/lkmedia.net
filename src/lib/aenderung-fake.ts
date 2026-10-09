@@ -55,7 +55,10 @@ function memoryGitHub(): GitHub {
   };
 }
 
-const sessions = new Map<string, Promise<GitHub>>();
+// Auf globalThis, damit ein Modul-Reload von Vite die Fake-Daten nicht zurücksetzt.
+const g = globalThis as { __aenderungFake?: Map<string, Promise<GitHub>> };
+g.__aenderungFake ??= new Map();
+const sessions = g.__aenderungFake;
 
 async function seed(sessionId: string): Promise<GitHub> {
   const gh = memoryGitHub();

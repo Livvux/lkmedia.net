@@ -8,7 +8,8 @@ export default defineConfig({
   fullyParallel: true,
   projects: [
     { name: 'prod', testIgnore: DEV_SPECS, use: { baseURL: 'http://localhost:4321' } },
-    { name: 'dev', testMatch: DEV_SPECS, use: { baseURL: 'http://localhost:4325' } },
+    // Seriell: der kalte Dev-Server kompiliert beim ersten Aufruf und lädt Module neu.
+    { name: 'dev', testMatch: DEV_SPECS, workers: 1, use: { baseURL: 'http://localhost:4325' } },
   ],
   webServer: [
     {

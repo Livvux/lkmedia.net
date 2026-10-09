@@ -21,7 +21,10 @@ export const prerender = false;
 
 // ponytail: In-Memory, pro Prozess (10 Aufträge/Session/Tag); bei mehreren Instanzen Redis o. Ä.
 const allow = createRateLimiter(10, 86_400_000);
-const recent: Recent = new Map();
+// Auf globalThis, damit der Doppelklick-Schutz einen Modul-Reload im Dev-Server übersteht.
+const g = globalThis as { __aenderungRecent?: Recent };
+g.__aenderungRecent ??= new Map();
+const recent = g.__aenderungRecent;
 
 const sessionId = Astro.url.searchParams.get('session_id') ?? '';
 const selbst = `/aenderung?session_id=${encodeURIComponent(sessionId)}`;
