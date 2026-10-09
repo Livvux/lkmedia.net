@@ -9,8 +9,8 @@ export const HANDWERKWEB = {
   demoUrl: "https://handwerk.lkmedia.net",
   // Stripe Payment Link (öffentlich, kein Secret). Leer = noch nicht eingerichtet → CTA führt zum Gespräch.
   // Success-URL beim Anlegen: https://lkmedia.net/handwerk/onboarding?session_id={CHECKOUT_SESSION_ID}
-  paymentLink: "",
-  paymentLinkId: "",
+  paymentLink: "https://buy.stripe.com/7sY6oIg6qfutcpme2yeAg0q",
+  paymentLinkId: "plink_1UOdXSJ3L2AI7fPZmGbIbumt",
 } as const;
 
 const GEWERKE = ["shk", "elektro"] as const;

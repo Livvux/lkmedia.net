@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 import { parse } from 'yaml';
-import { parseOnboarding, toKundeYaml } from '../../src/lib/handwerkweb';
+import { HANDWERKWEB, parseOnboarding, toKundeYaml } from '../../src/lib/handwerkweb';
 import { checkPaidSession } from '../../src/lib/stripe';
 
 function form(o: Record<string, string | string[]> = {}): FormData {
@@ -95,5 +95,12 @@ describe('toKundeYaml ohne Session-ID', () => {
     const yaml = toKundeYaml(r.data, { datum: '2026-10-09', sessionHash: 'abc123def456' });
     expect(yaml).not.toContain('cs_live_a1B2c3');
     expect(yaml).toContain('stripe_session_hash: "abc123def456"');
+  });
+});
+
+describe('HANDWERKWEB Payment Link', () => {
+  it('ist eingetragen', () => {
+    expect(HANDWERKWEB.paymentLinkId).toMatch(/^plink_/);
+    expect(HANDWERKWEB.paymentLink.startsWith('https://buy.stripe.com/')).toBe(true);
   });
 });
