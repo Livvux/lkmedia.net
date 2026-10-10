@@ -5,7 +5,7 @@ import {
   linkMail,
   onboardingBestaetigung,
 } from "../../src/lib/kundenmails";
-import { aenderungUrl } from "../../src/lib/stripe";
+import { aenderungUrl, STRIPE_PORTAL_URL } from "../../src/lib/stripe";
 
 const SID = "cs_test_mail123";
 const GRUSS = "Viele Grüße\nLucas Kleipödszus\nlkmedia";
@@ -26,7 +26,7 @@ describe("kundenmails", () => {
     expect(m.text).toContain("Bilder");
     expect(m.text).not.toMatch(/antworten Sie auf diese Mail/i);
     expect(m.text.endsWith(GRUSS)).toBe(true);
-    expect(m.text).not.toContain("Kundenportal");
+    expect(m.text).toContain(STRIPE_PORTAL_URL);
   });
 
   it("Onboarding-Mail für neuen Stand", () => {
@@ -47,7 +47,7 @@ describe("kundenmails", () => {
     expect(m.text.startsWith("Guten Tag,\n\n")).toBe(true);
     expect(m.text).toContain(aenderungUrl(SID));
     expect(m.text.endsWith(GRUSS)).toBe(true);
-    expect(m.text).not.toContain("Kundenportal");
+    expect(m.text).toContain(STRIPE_PORTAL_URL);
     expect(AENDERUNG_ZEITRAHMEN).toBe("in der Regel innerhalb von 2 Werktagen");
     expect(m.text).toContain(`Wir kümmern uns ${AENDERUNG_ZEITRAHMEN} darum`);
   });

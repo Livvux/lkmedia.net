@@ -112,7 +112,7 @@ export async function findSessionsByEmail(
 }
 
 /** Stripe-Kundenportal (Rechnungen, Zahlungsart, Kündigung). Leer → Portal-Hinweise entfallen. */
-export const STRIPE_PORTAL_URL: string = "";
+export const STRIPE_PORTAL_URL: string = "https://billing.stripe.com/p/login/5kAeXIct123hdcQ9AA";
 
 /** Persönlicher Link der Kundschaft für Änderungen, Bilder und Status. */
 export const aenderungUrl = (sessionId: string) =>
