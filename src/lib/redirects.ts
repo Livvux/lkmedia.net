@@ -1,4 +1,6 @@
 export const exactRedirects: Record<string, string> = {
+  "/impressum": "/imprint",
+  "/impressum/": "/imprint",
   "/tools/sora-downloader": "/blog",
   "/tools/sora-downloader/": "/blog",
   "/webdesign-fahrschulen": "/",

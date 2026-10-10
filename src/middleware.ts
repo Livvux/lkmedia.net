@@ -44,24 +44,25 @@ function externalOrigin(request: Request, fallback: URL): string {
 
 export const onRequest = defineMiddleware(async (ctx, next) => {
   const path = ctx.url.pathname;
-  const origin = externalOrigin(ctx.request, ctx.url);
+  // Header nur lesen, wenn nötig: auf vorgerenderten Seiten löst Zugriff darauf eine Build-Warnung aus.
+  const origin = () => externalOrigin(ctx.request, ctx.url);
   if (
     !ctx.isPrerendered &&
     isBlockedCrossSitePost({
       method: ctx.request.method,
       contentType: ctx.request.headers.get("content-type"),
       origin: ctx.request.headers.get("origin"),
-      selfOrigin: origin,
+      selfOrigin: origin(),
       path,
     })
   ) {
     return new Response("Cross-site form submissions are forbidden", { status: 403 });
   }
   const target = exactRedirects[path] ?? exactRedirects[path.replace(/\/$/, "")];
-  if (target) return Response.redirect(`${origin}${target}`, 301);
+  if (target) return Response.redirect(`${origin()}${target}`, 301);
   const res = await next();
   if (res.status === 404 && !shouldBypass(path)) {
-    return Response.redirect(`${origin}/blog`, 301);
+    return Response.redirect(`${origin()}/blog`, 301);
   }
   return res;
 });

@@ -20,7 +20,8 @@ async function verifyTurnstile(token: string | null, ip: string | null): Promise
 }
 
 export const POST: APIRoute = async ({ request, clientAddress }) => {
-  const form = await request.formData();
+  const form = await request.formData().catch(() => null);
+  if (!form) return new Response("invalid body", { status: 400 });
   if (form.get("website")) return new Response("ok", { status: 200 }); // honeypot
   const token = form.get("cf-turnstile-response")?.toString() ?? null;
   if (!(await verifyTurnstile(token, clientAddress))) {
