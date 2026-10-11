@@ -12,11 +12,11 @@ lkmedia.net presents Lucas Kleipoedszus’s web design, development, SEO, conten
 
 ## Users
 
-The existing site addresses law firms, private clinics, luxury real estate and local businesses. German is the primary locale; English mirrors are maintained.
+The existing site addresses law firms, private clinics, luxury real estate and local businesses. The public website is German-only.
 
 ## Capabilities and Constraints
 
-The existing stack is Astro 6, TypeScript and Tailwind CSS v4, with static pages and a Node adapter for selected API routes. Contact and booking destinations are `/kontakt` and `/en/contact`, with the booking anchor `#termin` in both locales. Existing services, case studies and commercial terms remain the source of truth. Full projects are advertised from €25,000, with a fixed price based on scope. Do not invent customers, rankings, performance measurements or testimonials.
+The existing stack is Astro 6, TypeScript and Tailwind CSS v4, with static pages and a Node adapter for selected API routes. Contact and booking use `/kontakt` and the anchor `#termin`. Legacy `/en/` URLs permanently redirect to German equivalents. Existing services, case studies and commercial terms remain the source of truth. Full projects are advertised from €25,000, with a fixed price based on scope. Do not invent customers, rankings, performance measurements or testimonials.
 
 ## Brand Commitments
 

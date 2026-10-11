@@ -42,18 +42,6 @@ const caseSchema = z.object({
     "creator",
   ]),
   summary: z.string(),
-  titleEn: z.string().optional(),
-  summaryEn: z.string().optional(),
-  sectionsEn: z
-    .array(
-      z.object({
-        heading: z.string(),
-        body: z.string(),
-        media: caseMediaSchema.optional(),
-        links: z.array(z.object({ label: z.string(), href: z.string() })).optional(),
-      }),
-    )
-    .optional(),
   heroImage: z.string(),
   website: z.string().url().optional(),
   pubDate: z.coerce.date(),
