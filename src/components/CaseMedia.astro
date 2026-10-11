@@ -1,0 +1,40 @@
+---
+import type { CaseMedia } from '../content.config';
+
+type Props = CaseMedia;
+const { image, alt, caption, width, height, video } = Astro.props;
+---
+
+<figure class:list={['not-prose my-10', { 'max-w-sm mx-auto': height > width }]}>
+  {video ? (
+    <video
+      controls
+      muted
+      playsinline
+      preload="none"
+      poster={image}
+      width={width}
+      height={height}
+      aria-label={alt}
+      class="block w-full rounded-2xl border border-black/10 dark:border-white/10"
+    >
+      <source src={video} type="video/mp4" />
+      <a href={video}>{caption}</a>
+    </video>
+  ) : (
+    <a href={image} aria-label={alt}>
+      <img
+        src={image}
+        alt={alt}
+        width={width}
+        height={height}
+        loading="lazy"
+        decoding="async"
+        class="block w-full rounded-2xl border border-black/10 dark:border-white/10"
+      />
+    </a>
+  )}
+  <figcaption class="mt-3 text-sm leading-relaxed text-black/60 dark:text-white/60">
+    {caption}
+  </figcaption>
+</figure>

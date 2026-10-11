@@ -20,7 +20,7 @@ describe("Portfolio cases and proof", () => {
   it("provides MDX cases with website links, images and English sections", () => {
     for (const slug of newCases) {
       const entry = readFileSync(new URL(`../../src/content/cases/${slug}.mdx`, import.meta.url), "utf8");
-      expect(entry).toMatch(/heroImage: "https:\/\//);
+      expect(entry).toMatch(/heroImage: "(?:https:\/\/|\/cases\/)/);
       expect(entry).toMatch(/website: "https:\/\//);
       expect(entry).toContain("sectionsEn:");
       expect(entry).toContain("## Herausforderung");

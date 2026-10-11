@@ -24,7 +24,7 @@ const seo = {
   description: entry.data.summary,
   canonical: `/cases/${entry.id}`,
   lang: 'de' as const,
-  ogImage: entry.data.heroImage,
+  ogImage: new URL(entry.data.heroImage, Astro.site).href,
   alternateUrls: {
     de: `https://lkmedia.net/cases/${entry.id}`,
     en: `https://lkmedia.net/en/cases/${entry.id}`,
