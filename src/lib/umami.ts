@@ -1,5 +1,5 @@
-// Disabled until the existing Umami account supplies LK Media's own website ID.
-export const UMAMI_WEBSITE_ID = "";
+// LK Media's verified website entry in the existing self-hosted Umami account.
+export const UMAMI_WEBSITE_ID = "f88c7448-64e5-4ca8-a31b-afaf1a079e2c";
 export const UMAMI_SCRIPT_URL = "https://rpcrate.com/_sr/s.js";
 
 const PRODUCTION_HOSTS = new Set(["lkmedia.net", "www.lkmedia.net"]);
