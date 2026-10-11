@@ -1,0 +1,15 @@
+---
+import { UMAMI_WEBSITE_ID, validUmamiWebsiteId } from '../lib/umami';
+
+interface Props { path: string; }
+const { path } = Astro.props;
+---
+{validUmamiWebsiteId(UMAMI_WEBSITE_ID) && (
+  <script is:inline type="application/json" id="lkmedia-umami-config"
+    data-website-id={UMAMI_WEBSITE_ID} data-public-path={path}></script>
+)}
+<script>
+  import { startUmami } from '../lib/umami';
+  const config = document.getElementById('lkmedia-umami-config');
+  if (config) startUmami(config.dataset.websiteId ?? '', config.dataset.publicPath ?? '');
+</script>
