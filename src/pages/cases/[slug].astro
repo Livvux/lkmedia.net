@@ -25,10 +25,6 @@ const seo = {
   canonical: `/cases/${entry.id}`,
   lang: 'de' as const,
   ogImage: new URL(entry.data.heroImage, Astro.site).href,
-  alternateUrls: {
-    de: `https://lkmedia.net/cases/${entry.id}`,
-    en: `https://lkmedia.net/en/cases/${entry.id}`,
-  },
 };
 const bc = breadcrumbs([
   { name: 'Home', url: 'https://lkmedia.net/' },
