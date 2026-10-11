@@ -1,6 +1,5 @@
 ---
 import { routeFor, useTranslations, type Lang } from '../lib/i18n';
-import LangSwitch from './LangSwitch.astro';
 interface Props { lang: Lang }
 const { lang } = Astro.props;
 const t = useTranslations(lang);
@@ -11,8 +10,8 @@ const items = [
   { href: routeFor('about', lang), label: t('nav.about') },
 ];
 const contactHref = routeFor('contact', lang);
-const menuLabel = lang === 'de' ? 'Menü' : 'Menu';
-const closeLabel = lang === 'de' ? 'Menü schließen' : 'Close menu';
+const menuLabel = 'Menü';
+const closeLabel = 'Menü schließen';
 ---
 <header class="nav" data-site-header>
   <nav class="nav-inner wrap">
@@ -29,7 +28,6 @@ const closeLabel = lang === 'de' ? 'Menü schließen' : 'Close menu';
     </ul>
 
     <div class="nav-right">
-      <LangSwitch lang={lang} />
       <a href={contactHref} class="btn btn-primary nav-cta">{t('cta.start')}</a>
       <button
         type="button"
@@ -187,8 +185,8 @@ const closeLabel = lang === 'de' ? 'Menü schließen' : 'Close menu';
     const panel = document.querySelector<HTMLElement>('[data-menu-panel]');
     const barTop = header.querySelector<HTMLElement>('[data-bar="top"]');
     const barBottom = header.querySelector<HTMLElement>('[data-bar="bottom"]');
-    const openLabel = toggle?.dataset.openLabel ?? 'Menu';
-    const closeLabel = toggle?.dataset.closeLabel ?? 'Close menu';
+    const openLabel = toggle?.dataset.openLabel ?? 'Menü';
+    const closeLabel = toggle?.dataset.closeLabel ?? 'Menü schließen';
 
     const setOpen = (open: boolean) => {
       if (!toggle || !panel) return;

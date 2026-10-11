@@ -7,7 +7,7 @@ const postSchema = z.object({
   description: z.string().max(160),
   pubDate: z.coerce.date(),
   updatedDate: z.coerce.date().optional(),
-  lang: z.enum(["de", "en"]),
+  lang: z.literal("de"),
   author: z.string().default("Lucas Kleipoedszus"),
   tags: z.array(z.string()).default([]),
   ogImage: z.string().optional(),

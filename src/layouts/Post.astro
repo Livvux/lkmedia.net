@@ -3,13 +3,11 @@ import Base from './Base.astro';
 import { breadcrumbs, blogPosting } from '../lib/schema';
 import type { SeoProps } from '../lib/seo';
 
-interface Props { entry: any; lang: 'de' | 'en' }
+interface Props { entry: any; lang: 'de' }
 const { entry, lang } = Astro.props as Props;
 const slug = entry.id.replace(/^(de|en)\//, '');
-const url = entry.data.route === 'root'
-  ? (lang === 'de' ? `/${slug}/` : `/en/${slug}/`)
-  : (lang === 'de' ? `/blog/${slug}/` : `/en/blog/${slug}/`);
-const blogIndex = lang === 'de' ? '/blog' : '/en/blog';
+const url = entry.data.route === 'root' ? `/${slug}/` : `/blog/${slug}/`;
+const blogIndex = '/blog';
 const seo: SeoProps = {
   title: entry.data.title,
   description: entry.data.description,
@@ -44,7 +42,7 @@ const bp = blogPosting({
     </div>
     <div class="mt-10"><slot /></div>
     <footer class="mt-20 border-t border-black/10 dark:border-white/10 pt-8 text-sm text-black/50 dark:text-white/50 not-prose">
-      {lang === 'de' ? 'Geschrieben von' : 'Written by'} {entry.data.author}.
+      Geschrieben von {entry.data.author}.
     </footer>
   </article>
 </Base>

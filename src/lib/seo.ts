@@ -7,7 +7,6 @@ export interface SeoProps {
   ogImage?: string;
   noindex?: boolean;
   lang: Lang;
-  alternateUrls?: { de?: string; en?: string };
 }
 
 const SITE = "https://lkmedia.net";
@@ -21,6 +20,5 @@ export function buildSeo(p: SeoProps) {
     ogImage: p.ogImage ?? DEFAULT_OG,
     noindex: p.noindex ?? false,
     lang: p.lang,
-    alternateUrls: p.alternateUrls,
   };
 }
