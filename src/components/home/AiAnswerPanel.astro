@@ -1,13 +1,13 @@
 ---
-interface Props { question: string; answer: string; sources: string[]; lang: 'de' | 'en' }
-const { question, answer, sources, lang } = Astro.props;
-const sourcesLabel = lang === 'de' ? 'Quellen' : 'Sources';
+interface Props { question: string; answer: string; sources: string[]; lang: 'de' }
+const { question, answer, sources } = Astro.props;
+const sourcesLabel = 'Quellen';
 ---
 <div class="chat card" aria-hidden="true">
   <div class="chat-bar">
     <span class="chat-dot"></span>
     <span class="font-mono text-[11px] text-[var(--fg-dim)]">ai search</span>
-    <span class="ml-auto font-mono text-[11px] text-[var(--fg-faint)]">{lang === 'de' ? 'Beispiel' : 'Example'}</span>
+    <span class="ml-auto font-mono text-[11px] text-[var(--fg-faint)]">{'Beispiel'}</span>
   </div>
   <div class="chat-body">
     <div class="msg-user">{question}</div>
