@@ -1,34 +1,193 @@
 ---
-title: "Eichhörnchen Berger: Schnelle Hilfe für Tiere in Not"
-titleEn: "Eichhörnchen Berger: Fast Help for Squirrels in Need"
+title: "Eichhörnchen Berger: Webdesign, das im Notfall hilft"
+titleEn: "Eichhörnchen Berger: Web Design for Rescue Emergencies"
 client: "Eichhörnchen Auffangstation Berger"
 niche: "tierschutz"
-summary: "Eine mobilfreundliche Website für eine ehrenamtliche Auffangstation – mit Notfallanleitung, direktem Telefonkontakt und Einblicken in die Stationsarbeit."
-summaryEn: "A mobile-friendly website for a volunteer squirrel rescue centre, with emergency guidance, direct phone contact and stories from the station."
-heroImage: "https://eichhoernchenberger.de/_astro/jungtier-schlafend.DKAZgyRW_Z1KWXhE.jpg"
+summary: "Webdesign von LK Media für eine ehrenamtliche Auffangstation: direkter Notfallkontakt, Tiergeschichten und Wissen – umgesetzt mit Astro und Tailwind CSS."
+summaryEn: "Web design by LK Media for a volunteer squirrel rescue: emergency contacts, animal stories and advice, built with Astro and Tailwind CSS."
+heroImage: "/cases/eichhoernchenberger/desktop.webp"
 website: "https://eichhoernchenberger.de/"
 pubDate: 2026-10-09
 featured: true
 sectionsEn:
-  - heading: "The challenge"
+  - heading: "The challenge: useful help under pressure"
     body: >-
-      When someone finds an injured or orphaned squirrel, time matters. The website needs to explain the first steps immediately and make it easy to reach the volunteer rescue team.
-  - heading: "The approach"
+      Someone finding an injured or orphaned squirrel needs clear instructions and a way to reach experienced rescuers. Tanja and Marco Berger's volunteer rescue centre in the district of St. Wendel also needs to explain its work, share animal stories and make it easy to help. LK Media brought these different needs together in a website that puts emergency help first.
+  - heading: "The approach: emergency help comes first"
     body: >-
-      A prominent emergency contact leads into four practical first-aid steps. Clear telephone links, information about the rescue centre, news, animal stories and support options make essential information easy to find on mobile devices.
+      A prominent contact bar puts the rescue team's phone numbers at the top of every page. The homepage leads directly to the emergency guide and a tap-to-call button. A four-step overview offers initial orientation; the dedicated emergency page adds a detailed sequence, photographs and another contact panel. Telephone and WhatsApp links give visitors a direct route to the team, with a clear reminder to call rather than email in an emergency.
+    links:
+      - label: "Explore the emergency page"
+        href: "https://eichhoernchenberger.de/eichhoernchen-gefunden"
+    media:
+      image: "/cases/eichhoernchenberger/mobile-emergency.webp"
+      alt: "Mobile emergency page with the rescue team's phone numbers, introductory advice and call buttons"
+      caption: "Live website, captured on 11 October 2026 at 390 × 1,050 pixels. Emergency numbers remain easy to find on a narrow screen. Select the image to view it at full size."
+      width: 390
+      height: 1050
+  - heading: "A visual identity rooted in the rescue centre"
+    body: >-
+      Warm cream and earth tones, orange accents, rounded cards and real photographs from the station give the website a welcoming character. Montserrat headings and Nunito Sans body text establish a clear hierarchy. Generous spacing, large contact buttons, keyboard focus styles, a skip link and a mobile menu make the information easier to navigate. The design supports both a hurried finder and someone taking time to learn about the station.
+  - heading: "Animal stories, knowledge and ways to help"
+    body: >-
+      News, individual animal stories and advice articles each have their own collection and overview pages. Animal stories include care and release status, making the journey of a rescued squirrel understandable. Station information and photo galleries introduce the people and work behind the website. The support page groups PayPal donations, bank details, the Amazon wishlist, sponsorships, transport and practical help into clear options.
+    links:
+      - label: "Read the animal stories"
+        href: "https://eichhoernchenberger.de/tiergeschichten"
+    media:
+      image: "/cases/eichhoernchenberger/stories.webp"
+      alt: "Desktop animal-story cards with dates, care status and descriptions of rescued squirrels"
+      caption: "Live animal-story overview, captured on 11 October 2026. Each entry connects a squirrel's story with its current care status. Select the image to view it at full size."
+      width: 1280
+      height: 800
+  - heading: "Technology: Astro, TypeScript and Tailwind CSS"
+    body: >-
+      The site is built with Astro and TypeScript and styled with Tailwind CSS through the Vite plugin. Astro generates static HTML pages, deployed to Cloudflare Pages. Most of the website is delivered as HTML and CSS; small client-side scripts handle the mobile menu, image lightbox and optional Instagram embeds. Lucide Astro provides SVG icons. pnpm manages dependencies and build commands, and Git versions the project.
+  - heading: "Content, images and privacy-conscious embeds"
+    body: >-
+      Markdown content collections separate news, animal stories and advice from page layouts. Zod schemas validate required text, categories, dates, status and image descriptions at build time. Astro's image tools and Sharp generate optimised image variants; responsive image sizes avoid serving the same large photo to every screen. Font files are hosted locally. Instagram posts remain placeholders until the visitor explicitly loads one, and the image gallery uses a native dialog with keyboard navigation.
+  - heading: "Search and machine-readable information"
+    body: >-
+      A shared layout supplies page titles, descriptions, canonical URLs and social previews. The sitemap integration and robots.txt support discovery. JSON-LD describes the rescue centre as an AnimalShelter, alongside website, page, article and breadcrumb information. Published articles also have Markdown versions, linked from the HTML. llms.txt and llms-full.txt provide an additional route to the content for tools that consume these formats. A dedicated SEO check validates the generated site's metadata, internal links, images and sitemap. This keeps the published content consistently structured for people and automated tools.
+  - heading: "Watch a short tour"
+    body: >-
+      This silent recording shows the live desktop website: the homepage and its main contact buttons, the first-aid overview, the dedicated emergency page and the animal-story overview. These are the same pages documented in the screenshots above.
+    media:
+      image: "/cases/eichhoernchenberger/desktop.webp"
+      alt: "Silent tour of the homepage, first-aid overview, emergency page and animal stories"
+      caption: "Website tour recorded on 11 October 2026 · about 12 seconds · no audio. Start playback using the video controls."
+      width: 1280
+      height: 800
+      video: "/cases/eichhoernchenberger/walkthrough.mp4"
   - heading: "The result"
     body: >-
-      The live website gives people a direct route to the rescue team while showing the ongoing voluntary work of Tanja and Marco Berger. No rescue statistics or performance improvements are attributed to the website without supporting data.
+      The live website brings emergency contacts, advice, the station's work and support options together in one clear structure. The practical result is visible in the published pages: visitors can call directly, find the detailed emergency guide and explore the rescue centre's stories. Dedicated pages also give visitors time to explore the station's activities and find a suitable way to support its work.
+  - heading: "A website for your organisation — with LK Media"
+    body: >-
+      Does your organisation need a website that makes important information easy to find and feels true to your work? LK Media combines individual web design, technical implementation and search optimisation. For a rescue centre, charity or local business, we can plan the content structure, design and technology around the people who will actually use the site. Tell us about your project.
+    links:
+      - label: "Discuss a project with LK Media"
+        href: "/en/contact"
+      - label: "Explore our services"
+        href: "/en/leistungen"
+  - heading: "Pfotenweb: websites and administration for animal rescue organisations"
+    body: >-
+      If your team also needs to maintain animal profiles, handle adoption enquiries and prepare care or adoption contracts, explore pfotenweb.de. This separate LK Media platform combines a public organisation website with administration that can be used from a smartphone. The Berger project shows our individual website work; Pfotenweb offers a product for ongoing rescue workflows. Explore the demos and current features to see which approach fits your organisation.
+    links:
+      - label: "Discover Pfotenweb"
+        href: "https://pfotenweb.de/"
+      - label: "Read the Pfotenweb case"
+        href: "/en/cases/pfotenweb"
 ---
 
-## Herausforderung
+import CaseMedia from '../../components/CaseMedia.astro';
 
-Wer ein verletztes, krankes oder verwaistes Eichhörnchen findet, braucht **sofort eine verständliche Handlungsempfehlung** – nicht erst eine lange Suche nach Kontaktdaten. Zugleich soll die ehrenamtliche Arbeit der Auffangstation von Tanja und Marco Berger sichtbar werden.
+## Herausforderung: Hilfe finden, wenn es schnell gehen muss
 
-## Lösung
+Wer ein verletztes, krankes oder verwaistes Eichhörnchen findet, braucht **klare Orientierung und einen direkten Kontakt zu erfahrenen Helfern**. Die Website darf diese Informationen nicht zwischen langen Texten verstecken. Gleichzeitig soll sie zeigen, wer hinter der ehrenamtlichen Auffangstation von Tanja und Marco Berger im Landkreis St. Wendel steht – und wie Menschen die Arbeit unterstützen können.
 
-Die Website stellt den Notfallkontakt und die **Erste Hilfe in vier Schritten** nach vorn. Telefonlinks sind direkt nutzbar. Weitere Bereiche erklären die Stationsarbeit im Landkreis St. Wendel und zeigen Neuigkeiten, Tiergeschichten sowie Möglichkeiten, die Station zu unterstützen.
+LK Media hat diese Anforderungen in einer Website zusammengebracht: **Notfallhilfe zuerst, Stationsarbeit und Unterstützung mit klaren eigenen Bereichen.**
+
+## Lösung: Der Notfallkontakt ist der wichtigste Einstieg
+
+Die Kontaktleiste am oberen Seitenrand zeigt die Telefonnummern auf jeder Seite. Auf der Startseite führen zwei auffällige Schaltflächen zur Notfallanleitung und direkt zum Anruf. Die **Erste Hilfe in vier Schritten** gibt einen schnellen Überblick; die eigene Notfallseite ergänzt eine ausführliche Schrittfolge, Bilder und eine weitere Kontaktbox.
+
+Auf dem Smartphone sind Telefonnummern als `tel:`-Links antippbar. Ein WhatsApp-Link ermöglicht die Übermittlung von Fotos. Der Hinweis, Notfälle telefonisch und nicht per E-Mail zu melden, steht direkt beim Kontakt. So unterstützt die Gestaltung den tatsächlichen Ablauf der Station.
+
+[Die Notfallseite auf der Projektwebsite ansehen →](https://eichhoernchenberger.de/eichhoernchen-gefunden)
+
+<CaseMedia
+  image="/cases/eichhoernchenberger/mobile-emergency.webp"
+  alt="Mobile Notfallseite mit Telefonnummern, erster Orientierung und direkt antippbaren Anrufschaltflächen"
+  caption="Live-Website, aufgenommen am 11. Oktober 2026 mit 390 × 1.050 Pixeln. Auch auf einem schmalen Bildschirm bleiben Notfallnummern und Kontakt klar erkennbar. Ein Klick öffnet die Aufnahme in voller Größe."
+  width={390}
+  height={1050}
+/>
+
+## Gestaltung: Nah an den Tieren und den Menschen dahinter
+
+Warme Creme- und Erdtöne, orange Akzente, abgerundete Karten und echte Fotos aus der Station prägen den Auftritt. **Montserrat für Überschriften und Nunito Sans für Fließtext** schaffen eine deutliche Hierarchie. Die Bildsprache zeigt die Pfleglinge und die Stationsarbeit, statt mit austauschbaren Motiven zu arbeiten.
+
+Großzügige Abstände und große Kontaktflächen helfen beim schnellen Erfassen. Sichtbare Tastatur-Fokuszustände, ein Sprunglink zum Hauptinhalt und die mobile Navigation berücksichtigen unterschiedliche Arten der Bedienung. Die Website muss sowohl für einen aufgeregten Finder als auch für jemanden funktionieren, der sich in Ruhe informieren möchte.
+
+## Stationsarbeit, Tiergeschichten und Unterstützung
+
+Die Website bietet mehrere Zugänge zur Arbeit der Auffangstation:
+
+- **Neuigkeiten:** Aktionen, Aufrufe und Berichte aus dem Stationsalltag auf eigenen Übersichts- und Artikelseiten.
+- **Tiergeschichten:** Einzelne Pfleglinge mit Datum und Status wie „In Pflege“ oder „Ausgewildert“. So wird ihr Weg nachvollziehbar.
+- **Wissen und Notfallhilfe:** Thematisch gegliederte Artikel und bebilderte Anleitungen mit weiterführenden Links.
+- **Die Station:** Menschen, Hintergründe und Bildergalerien als Einblick in die ehrenamtliche Arbeit.
+- **Unterstützen:** PayPal, Bankverbindung, Amazon-Wunschliste, Patenschaften, Eichhörnchen-Taxi und praktische Hilfe mit passenden Kontaktwegen.
+
+[Die Tiergeschichten auf der Projektwebsite lesen →](https://eichhoernchenberger.de/tiergeschichten)
+
+<CaseMedia
+  image="/cases/eichhoernchenberger/stories.webp"
+  alt="Tiergeschichten am Desktop: Karten mit Datum, Pflegestatus und Beschreibungen einzelner Eichhörnchen"
+  caption="Die live veröffentlichte Übersicht der Tiergeschichten, aufgenommen am 11. Oktober 2026. Jede Geschichte verbindet einen Pflegling mit seinem Status. Ein Klick öffnet die Aufnahme in voller Größe."
+  width={1280}
+  height={800}
+/>
+
+## Verwendete Technik
+
+Die technische Basis ist bewusst auf eine inhaltsreiche, überwiegend statische Website abgestimmt. Die Seiten werden beim Build erzeugt und über **Cloudflare Pages** ausgeliefert.
+
+| Baustein | Einsatz im Projekt |
+| --- | --- |
+| **Astro** | Komponenten, Seitenlayouts und vorab erzeugte HTML-Seiten. |
+| **TypeScript** | Typisierte Komponenten, Daten und Hilfsfunktionen. |
+| **Tailwind CSS und Vite** | Responsive Gestaltung, gemeinsame Farben, Abstände und Schriftstile. |
+| **Markdown, Content Collections und Zod** | Getrennte Sammlungen für Neuigkeiten, Tiergeschichten und Wissen mit Inhaltsprüfung beim Build. |
+| **Astro-Bildverarbeitung und Sharp** | Optimierte Bildvarianten und responsive Bildgrößen. |
+| **Lucide Astro** | SVG-Symbole für Navigation, Kontakt und Hinweise. |
+| **Cloudflare Pages** | Hosting der statischen Build-Ausgabe. |
+| **pnpm und Git** | Paketverwaltung, Build-Befehle und nachvollziehbare Versionierung. |
+
+Der Großteil der Website kommt als HTML und CSS beim Besucher an. Kleine Skripte ergänzen das mobile Menü, die Bildergalerie und das gezielte Nachladen von Instagram-Beiträgen. Es braucht keine große JavaScript-Anwendung, um die Informationen zu lesen oder den Notfallkontakt zu finden.
+
+## Inhalte pflegen, Bilder ausliefern, Einbettungen bewusst laden
+
+Neuigkeiten, Tiergeschichten und Wissensartikel liegen als **Markdown-Inhalte getrennt vom Layout** vor. Die Content Collections prüfen unter anderem Pflichttexte, Kategorien, Datumsangaben, Tierstatus und Bildbeschreibungen. Änderungen werden im Projekt versioniert und mit dem nächsten Build veröffentlicht.
+
+Die Bildverarbeitung erzeugt optimierte Varianten; responsive Größen helfen, auf dem Smartphone passende Bilder auszuliefern. Die Schriftdateien werden lokal bereitgestellt. Instagram-Beiträge erscheinen zunächst als Platzhalter und laden erst, wenn Besucher den entsprechenden Button betätigen. Die Bildergalerie verwendet einen nativen Dialog und unterstützt die Navigation mit Pfeiltasten.
+
+## Suchmaschinen und maschinenlesbare Inhalte
+
+Ein gemeinsames Layout setzt Seitentitel, Beschreibungen, Canonical-URLs und Vorschauen für geteilte Links. Hinzu kommen **XML-Sitemap, robots.txt und strukturierte Daten**: Die Station wird als `AnimalShelter` beschrieben, ergänzt um Website-, Seiten-, Artikel- und Breadcrumb-Informationen.
+
+Veröffentlichte Artikel stehen zusätzlich als Markdown bereit und sind aus der HTML-Seite verlinkt. `llms.txt` und `llms-full.txt` erschließen die Inhalte auch für Werkzeuge, die diese Formate nutzen. Ein eigener SEO-Prüflauf kontrolliert die erzeugten Metadaten, internen Links, Bilder und die Sitemap. Damit bleiben die veröffentlichten Inhalte für Menschen und automatisierte Werkzeuge einheitlich strukturiert.
+
+## Ein kurzer Rundgang durch die Website
+
+Die Aufnahme zeigt die **Live-Website am Desktop**: zuerst die Startseite mit ihren Kontaktbuttons, dann den Erste-Hilfe-Überblick, die ausführliche Notfallseite und die Übersicht der Tiergeschichten. Die gezeigten Bereiche sind auch in den Screenshots dokumentiert.
+
+<CaseMedia
+  image="/cases/eichhoernchenberger/desktop.webp"
+  alt="Rundgang ohne Ton durch Startseite, Erste-Hilfe-Überblick, Notfallseite und Tiergeschichten"
+  caption="Website-Rundgang vom 11. Oktober 2026 · ca. 12 Sekunden · ohne Ton. Die Wiedergabe startet über die Videosteuerung."
+  width={1280}
+  height={800}
+  video="/cases/eichhoernchenberger/walkthrough.mp4"
+/>
 
 ## Ergebnis
 
-Auf der live erreichbaren Website finden Besucher den direkten Weg zur Auffangstation und zu den wichtigsten Informationen im Notfall. Die Berichte aus dem Stationsalltag geben der Arbeit hinter dem Angebot ein Gesicht – ohne erfundene Nutzungskennzahlen.
+Die Website ist live und verbindet **Notfallkontakt, Wissen, Stationsarbeit und Unterstützung** in einer gemeinsamen Struktur. Besucher können direkt anrufen, die ausführliche Notfallanleitung aufrufen und die Geschichten aus der Station lesen.
+
+Die eigenen Bereiche für Tiergeschichten und Unterstützung machen die laufende Arbeit sichtbar und zeigen konkrete Möglichkeiten zum Mithelfen. Die Screenshots und der Rundgang dokumentieren die umgesetzten Funktionen am realen Projekt.
+
+## Eine Website für Ihre Organisation – mit LK Media
+
+Sie brauchen einen Auftritt, der wichtige Informationen leicht auffindbar macht und zu Ihrer Arbeit passt? **LK Media verbindet individuelles Webdesign, technische Umsetzung und Suchmaschinenoptimierung.** Für Auffangstationen, Vereine und lokale Unternehmen planen wir Inhalt, Gestaltung und Technik entlang der Menschen, die die Website nutzen.
+
+[Projekt mit LK Media besprechen →](/kontakt) · [Unsere Leistungen ansehen →](/leistungen)
+
+## Pfotenweb: Vereinswebsite und Tierschutz-Verwaltung
+
+Wenn Ihr Team zusätzlich Tierprofile pflegen, Vermittlungsanfragen bearbeiten und Schutz- oder Pflegeverträge erstellen möchte, lohnt sich ein Blick auf **[pfotenweb.de](https://pfotenweb.de/)**. Die eigenständige Plattform von LK Media verbindet eine öffentliche Vereinswebsite mit einer auch mobil nutzbaren Verwaltung.
+
+Das Berger-Projekt zeigt unsere individuelle Website-Arbeit. Pfotenweb bietet ein Produkt für die laufenden Abläufe eines Tierschutzvereins. Entdecken Sie die Demos und den aktuellen Funktionsumfang, um den passenden Weg für Ihre Organisation zu finden.
+
+[Pfotenweb entdecken →](https://pfotenweb.de/) · [Den Pfotenweb-Case lesen →](/cases/pfotenweb)

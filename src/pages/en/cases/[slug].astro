@@ -1,6 +1,7 @@
 ---
 import { getCollection, render } from 'astro:content';
 import Base from '../../../layouts/Base.astro';
+import CaseMedia from '../../../components/CaseMedia.astro';
 import { breadcrumbs } from '../../../lib/schema';
 
 export async function getStaticPaths() {
@@ -26,7 +27,7 @@ const seo = {
   description: localizedSummary,
   canonical: `/en/cases/${entry.id}`,
   lang: 'en' as const,
-  ogImage: entry.data.heroImage,
+  ogImage: new URL(entry.data.heroImage, Astro.site).href,
   alternateUrls: {
     de: `https://lkmedia.net/cases/${entry.id}`,
     en: `https://lkmedia.net/en/cases/${entry.id}`,
@@ -54,6 +55,16 @@ const bc = breadcrumbs([
             <section>
               <h2>{section.heading}</h2>
               <p>{section.body}</p>
+              {section.media && <CaseMedia {...section.media} />}
+              {section.links && (
+                <div class="not-prose flex flex-wrap gap-3 my-6">
+                  {section.links.map((link) => (
+                    <a href={link.href} class="inline-flex items-center rounded-full border border-black/20 dark:border-white/20 px-5 py-3 text-sm font-medium hover:bg-black/5 dark:hover:bg-white/5 focus-visible:outline-2 focus-visible:outline-offset-4">
+                      {link.label} →
+                    </a>
+                  ))}
+                </div>
+              )}
             </section>
           ))
         : <Content />}

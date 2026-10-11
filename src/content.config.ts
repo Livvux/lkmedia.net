@@ -1,5 +1,6 @@
-import { defineCollection, z } from "astro:content";
+import { defineCollection } from "astro:content";
 import { glob } from "astro/loaders";
+import { z } from "astro/zod";
 
 const postSchema = z.object({
   title: z.string().max(70),
@@ -15,6 +16,17 @@ const postSchema = z.object({
   noindex: z.boolean().default(false),
   route: z.enum(["blog", "root"]).default("blog"),
 });
+
+const caseMediaSchema = z.object({
+  image: z.string(),
+  alt: z.string(),
+  caption: z.string(),
+  width: z.number().int().positive(),
+  height: z.number().int().positive(),
+  video: z.string().optional(),
+});
+
+export type CaseMedia = z.infer<typeof caseMediaSchema>;
 
 const caseSchema = z.object({
   title: z.string(),
@@ -32,7 +44,16 @@ const caseSchema = z.object({
   summary: z.string(),
   titleEn: z.string().optional(),
   summaryEn: z.string().optional(),
-  sectionsEn: z.array(z.object({ heading: z.string(), body: z.string() })).optional(),
+  sectionsEn: z
+    .array(
+      z.object({
+        heading: z.string(),
+        body: z.string(),
+        media: caseMediaSchema.optional(),
+        links: z.array(z.object({ label: z.string(), href: z.string() })).optional(),
+      }),
+    )
+    .optional(),
   heroImage: z.string(),
   website: z.string().url().optional(),
   pubDate: z.coerce.date(),
