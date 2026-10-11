@@ -1,23 +1,22 @@
-import { describe, it, expect } from 'vitest';
-import { getLangFromUrl, pathFor, routeFor, useTranslations } from '../../src/lib/i18n';
+import { describe, it, expect } from "vitest";
+import { getLangFromUrl, pathFor, routeFor, useTranslations } from "../../src/lib/i18n";
 
-describe('i18n', () => {
-  it('detects en from /en/...', () => expect(getLangFromUrl(new URL('https://x.dev/en/leistungen'))).toBe('en'));
-  it('detects de default', () => expect(getLangFromUrl(new URL('https://x.dev/leistungen'))).toBe('de'));
-  it('builds path for lang', () => {
-    expect(pathFor('leistungen', 'de')).toBe('/leistungen');
-    expect(pathFor('leistungen', 'en')).toBe('/en/leistungen');
+describe("German-only routing", () => {
+  it("uses German for the entire site", () => {
+    expect(getLangFromUrl(new URL("https://lkmedia.net/leistungen"))).toBe("de");
+    expect(getLangFromUrl(new URL("https://lkmedia.net/en/blog"))).toBe("de");
   });
-  it('maps named routes to existing localized pages', () => {
-    expect(routeFor('contact', 'de')).toBe('/kontakt');
-    expect(routeFor('contact', 'en')).toBe('/en/contact');
-    expect(routeFor('about', 'en')).toBe('/en/about');
-    expect(routeFor('home', 'de')).toBe('/');
-    expect(routeFor('home', 'en')).toBe('/en/');
-    expect(routeFor('craftsmen', 'de')).toBe('/handwerk');
+
+  it("builds paths without locale prefixes", () => {
+    expect(pathFor("leistungen", "de")).toBe("/leistungen");
+    expect(pathFor("/blog", "de")).toBe("/blog");
+    expect(routeFor("contact", "de")).toBe("/kontakt");
+    expect(routeFor("about", "de")).toBe("/ueber");
+    expect(routeFor("home", "de")).toBe("/");
+    expect(routeFor("craftsmen", "de")).toBe("/handwerk");
   });
-  it('translates keys', () => {
-    const t = useTranslations('de');
-    expect(t('nav.services')).toBe('Leistungen');
+
+  it("keeps German UI strings", () => {
+    expect(useTranslations("de")("nav.services")).toBe("Leistungen");
   });
 });

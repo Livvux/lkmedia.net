@@ -4,9 +4,7 @@ interface Props { lang: Lang }
 const { lang } = Astro.props;
 const t = useTranslations(lang);
 const turnstileKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY;
-const placeholders = lang === 'de'
-  ? { name: 'Name', email: 'E-Mail', company: 'Firma', budget: 'Budget', message: 'Nachricht' }
-  : { name: 'Name', email: 'Email', company: 'Company', budget: 'Budget', message: 'Message' };
+const placeholders = { name: 'Name', email: 'E-Mail', company: 'Firma', budget: 'Budget', message: 'Nachricht' };
 ---
 <form method="POST" action="/api/contact" class="space-y-4 max-w-xl">
   <input type="text" name="website" tabindex="-1" autocomplete="off" class="hidden" aria-hidden="true" />
@@ -25,12 +23,12 @@ const placeholders = lang === 'de'
   <label class="block">
     <span class="text-sm text-black/60 dark:text-white/60">{placeholders.budget}</span>
     <select name="budget" class="mt-1 w-full h-12 px-4 rounded-xl bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 focus:border-black dark:focus:border-white focus:outline-none">
-      <option value="" disabled selected>{lang === 'de' ? '— Budget wählen —' : '— Select budget —'}</option>
+      <option value="" disabled selected>{'— Budget wählen —'}</option>
       <option value="< 5k">&lt; 5k</option>
       <option value="5–15k">5–15k</option>
       <option value="15–30k">15–30k</option>
       <option value="30k+">30k+</option>
-      <option value="unklar">{lang === 'de' ? 'unklar' : 'not sure'}</option>
+      <option value="unklar">{'unklar'}</option>
     </select>
   </label>
   <label class="block">

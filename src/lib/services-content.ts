@@ -29,7 +29,6 @@ export interface ServicesContent {
 
 const casesBase = {
   de: routeFor("cases", "de"),
-  en: routeFor("cases", "en"),
 };
 
 const de: ServicesContent = {
@@ -127,99 +126,4 @@ const de: ServicesContent = {
   cta: homeContent.de.cta,
 };
 
-const en: ServicesContent = {
-  hero: {
-    lines: ["From the first search", "to the next enquiry."],
-    sub: "Web design, SEO and conversion in one place. We build your website, make your offer clear and give visitors a straightforward way to get in touch.",
-    note: homeContent.en.hero.note,
-    primary: { label: "Start a project", href: routeFor("contact", "en") },
-    secondary: { label: "Book a 15 min call", href: `${routeFor("contact", "en")}#termin` },
-    workLabel: "Selected client projects",
-    navigationLabel: "Explore our services",
-  },
-  services: [
-    {
-      id: "websites",
-      name: "Website & Development",
-      title: "A website that feels like you.",
-      body: "A website that makes your offer clear and builds trust. Individually developed in Astro, with fast load times and accessible navigation.",
-      points: [
-        "Custom development with Astro and modern web standards",
-        "Core Web Vitals in the green",
-        "Accessible interactions following WCAG",
-        "Structured data with Schema.org",
-      ],
-      link: {
-        label: "View the Klavierbau Milde project",
-        href: `${casesBase.en}/klavierbau-milde`,
-      },
-    },
-    {
-      id: "seo",
-      name: "SEO & Content",
-      title: "Get found when it matters.",
-      body: "We shape your site structure and content around your audience's questions. For Google and AI search, with useful answers and clearly established expertise.",
-      points: [
-        "Keyword strategy based on topics and search intent",
-        "Detailed editorial briefs for relevant content",
-        "Visible expertise, trustworthiness and authorship (E-E-A-T)",
-        "Content prepared for AI Overviews and AI assistants",
-      ],
-      link: {
-        label: "View the Patricks Fahrschule project",
-        href: `${casesBase.en}/patricks-fahrschule`,
-      },
-    },
-    {
-      id: "conversion",
-      name: "Conversion & Marketing",
-      title: "Turn interest into enquiries.",
-      body: "We make the path from a first visit to getting in touch clear. Focused pages, targeted tests and useful reporting reveal where your website can improve.",
-      points: [
-        "Landing pages with a clear goal",
-        "A/B tests based on meaningful data",
-        "Enquiry journeys and lead nurturing",
-        "Clear reporting to guide your next decisions",
-      ],
-      link: {
-        label: "View the CLEO Coaching project",
-        href: `${casesBase.en}/cleo-coaching`,
-      },
-    },
-  ],
-  proof: {
-    title: "See what that looks like in practice.",
-    body: "Selected websites and digital platforms for businesses, animal rescue and creators. Different needs, practical solutions.",
-    linkLabel: "View all projects",
-  },
-  investment: {
-    title: "Clear scope. Fixed price.",
-    price: "Projects from €25,000",
-    body: "Your fixed price is based on the agreed project scope.",
-    note: "No hourly billing.",
-  },
-  faq: {
-    title: "Before our first conversation.",
-    items: [
-      {
-        q: "What does a project cost?",
-        a: "Projects start at €25,000. The fixed price depends on the agreed scope. We do not bill by the hour.",
-      },
-      {
-        q: "Can you improve my existing website?",
-        a: "Yes. For CLEO Coaching, we improved the existing site's structure, content, metadata and internal links. We also created a dedicated landing page for their workshops.",
-      },
-      {
-        q: "What does working together involve?",
-        a: "We start with your goals and audience, then develop the concept, clickable prototype and copy before building the site. Launch includes publishing, Search Console, monitoring and final refinements. You work directly with Lucas Kleipoedszus.",
-      },
-      {
-        q: "Do you account for Google and AI search?",
-        a: "Yes. We work on search intent, clear content and structured data to help search engines and AI systems understand your offer. We cannot guarantee specific Google rankings or citations in AI answers.",
-      },
-    ],
-  },
-  cta: homeContent.en.cta,
-};
-
-export const servicesContent: Record<Lang, ServicesContent> = { de, en };
+export const servicesContent: Record<Lang, ServicesContent> = { de };

@@ -1,6 +1,6 @@
 import { defineMiddleware } from "astro:middleware";
 import { isBlockedCrossSitePost } from "./lib/csrf";
-import { exactRedirects } from "./lib/redirects";
+import { englishRedirectPath, exactRedirects } from "./lib/redirects";
 
 const SKIP_PREFIXES = [
   "/api/",
@@ -57,6 +57,10 @@ export const onRequest = defineMiddleware(async (ctx, next) => {
     })
   ) {
     return new Response("Cross-site form submissions are forbidden", { status: 403 });
+  }
+  const legacyEnglishTarget = englishRedirectPath(path);
+  if (legacyEnglishTarget) {
+    return Response.redirect(`${origin()}${legacyEnglishTarget}${ctx.url.search}`, 301);
   }
   const target = exactRedirects[path] ?? exactRedirects[path.replace(/\/$/, "")];
   if (target) return Response.redirect(`${origin()}${target}`, 301);

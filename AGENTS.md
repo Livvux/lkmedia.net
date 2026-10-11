@@ -21,11 +21,11 @@ Docker: multi-stage build in `Dockerfile` produces Node standalone server listen
 
 ## Architecture
 
-**Astro 6** site for lkmedia.net. `output: 'static'` with `@astrojs/node` standalone adapter — static by default, per-route SSR opt-in via `export const prerender = false`. Tailwind v4 via Vite plugin. MDX content. Sitemap with i18n.
+**Astro 6** site for lkmedia.net. `output: 'static'` with `@astrojs/node` standalone adapter — static by default, per-route SSR opt-in via `export const prerender = false`. Tailwind v4 via Vite plugin. MDX content. Single-language sitemap.
 
 ### i18n
 
-Two locales configured in `astro.config.mjs`: `de` (default, no prefix) and `en` (prefixed `/en/...`). German pages live at `src/pages/*.astro`; English mirrors under `src/pages/en/*.astro`. Keep both in sync when adding public routes. Helpers in `src/lib/i18n.ts`.
+German only. Public pages have no locale prefix. Old `/en/` URLs redirect permanently to their German equivalents; do not reintroduce English routes, hreflang or a language switcher. Route helpers in `src/lib/i18n.ts`.
 
 ### Routing & middleware
 
@@ -37,10 +37,10 @@ Two locales configured in `astro.config.mjs`: `de` (default, no prefix) and `en`
 ### Content collections
 
 Defined in `src/content.config.ts` via `astro:content` + `glob` loader:
-- `posts` (`src/content/posts/**/*.{md,mdx}`) — blog posts with strict zod schema (title ≤70, description ≤160, `lang: 'de'|'en'`, `route: 'blog'|'root'`).
+- `posts` (`src/content/posts/**/*.{md,mdx}`) — blog posts with strict zod schema (title ≤70, description ≤160, `lang: 'de'`, `route: 'blog'|'root'`).
 - `cases` (`src/content/cases/**`) — case studies, niche enum: `anwaelte | luxus-immobilien | privatkliniken | fintech | other`.
 
-Dynamic routes: `src/pages/[slug].astro` (root-level posts), `src/pages/blog/`, `src/pages/cases/`, and `src/pages/en/` mirrors.
+Dynamic routes: `src/pages/[slug].astro` (root-level posts), `src/pages/blog/`, and `src/pages/cases/`.
 
 ### SEO / LLM endpoints
 

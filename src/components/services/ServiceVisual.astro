@@ -3,25 +3,24 @@ import { routeFor } from '../../lib/i18n';
 
 interface Props {
   kind: 'websites' | 'seo' | 'conversion';
-  lang: 'de' | 'en';
+  lang: 'de';
 }
 
-const { kind, lang } = Astro.props;
-const de = lang === 'de';
+const { kind } = Astro.props;
 const journey = [
   {
-    title: de ? 'Angebot verstehen' : 'Understand the offer',
-    detail: de ? 'Was Sie tun. Für wen. Und warum es passt.' : 'What you do. Who it is for. Why it fits.',
+    title: 'Angebot verstehen',
+    detail: 'Was Sie tun. Für wen. Und warum es passt.',
     icon: 'M5 3.5h10L19.5 8v12.5H5V3.5Zm10 0V8h4.5M9 12h6M9 16h4',
   },
   {
-    title: de ? 'Vertrauen aufbauen' : 'Build confidence',
-    detail: de ? 'Echte Projekte. Klare Antworten. Ein Gesicht.' : 'Real projects. Clear answers. A person to trust.',
+    title: 'Vertrauen aufbauen',
+    detail: 'Echte Projekte. Klare Antworten. Ein Gesicht.',
     icon: 'm12 3 8 3v5c0 5-4.5 8-8 10-3.5-2-8-5-8-10V6l8-3Zm-4 9 3 3 5-6',
   },
   {
-    title: de ? 'Kontakt aufnehmen' : 'Get in touch',
-    detail: de ? 'Ein sichtbarer, einfacher nächster Schritt.' : 'One visible, straightforward next step.',
+    title: 'Kontakt aufnehmen',
+    detail: 'Ein sichtbarer, einfacher nächster Schritt.',
     icon: 'M4.5 4.5h15v12h-4l-3.5 4-3.5-4h-4v-12Zm4 5h7m-7 3h4',
   },
 ];
@@ -41,15 +40,15 @@ const journey = [
       src="/landing/shots/klavierbau-milde-1440.webp"
       width="1440"
       height="900"
-      alt={de ? 'Website von Klavierbau Hans Milde mit Termin-Anfrage und Kontaktmöglichkeiten' : 'Klavierbau Hans Milde website with appointment requests and contact options'}
+      alt={'Website von Klavierbau Hans Milde mit Termin-Anfrage und Kontaktmöglichkeiten'}
       loading="lazy"
       decoding="async"
     />
     <figcaption class="website-caption">
       <div>
-        <span class="visual-label">{de ? 'Kundenprojekt' : 'Client project'}</span>
+        <span class="visual-label">{'Kundenprojekt'}</span>
         <p class="client-name">Klavierbau Hans Milde</p>
-        <p class="scope">{de ? 'Design, Entwicklung, Local SEO' : 'Design, development, local SEO'}</p>
+        <p class="scope">{'Design, Entwicklung, Local SEO'}</p>
       </div>
       <svg class="caption-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8m-4-4v4"/></svg>
     </figcaption>
@@ -60,7 +59,7 @@ const journey = [
   <figure class="visual search-visual">
     <div class="search-content">
       <div class="visual-heading">
-        <span class="visual-label">{de ? 'Lokale Suche' : 'Local search'}</span>
+        <span class="visual-label">{'Lokale Suche'}</span>
         <svg class="muted-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M4 8V4h4m8 0h4v4M4 16v4h4m8 0h4v-4"/></svg>
       </div>
       <div class="search-query">
@@ -74,27 +73,27 @@ const journey = [
           </span>
           <div><p class="source-name">Klavierbau Hans Milde</p><p class="source-domain">klavierbau-milde.de</p></div>
         </div>
-        <p class="result-title">{de ? 'Klavierstimmung & Reparatur in Karlsruhe' : 'Piano tuning & repairs in Karlsruhe'}</p>
-        <p class="result-snippet">{de ? 'Für Klaviere und Flügel. Besprechen Sie Ihr Instrument und einen passenden Termin direkt mit Hans Milde.' : 'For upright and grand pianos. Discuss your instrument and a suitable appointment directly with Hans Milde.'}</p>
+        <p class="result-title">{'Klavierstimmung & Reparatur in Karlsruhe'}</p>
+        <p class="result-snippet">{'Für Klaviere und Flügel. Besprechen Sie Ihr Instrument und einen passenden Termin direkt mit Hans Milde.'}</p>
       </div>
       <div class="search-signals">
         <div class="signal">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4v12a3 3 0 0 0 3 3h3M5 9h6"/><rect x="12" y="6" width="7" height="6" rx="1.5"/><rect x="12" y="16" width="7" height="6" rx="1.5"/></svg>
-          <div><p class="signal-label">{de ? 'Klare Inhalte' : 'Clear content'}</p><p class="signal-detail">{de ? 'Leistung, Details, Kontakt' : 'Service, details, contact'}</p></div>
+          <div><p class="signal-label">{'Klare Inhalte'}</p><p class="signal-detail">{'Leistung, Details, Kontakt'}</p></div>
         </div>
         <div class="signal">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 10c0 5-7 11-7 11S5 15 5 10a7 7 0 0 1 14 0Z"/><circle cx="12" cy="10" r="2.5"/></svg>
-          <div><p class="signal-label">{de ? 'Lokaler Bezug' : 'Local relevance'}</p><p class="signal-detail">Karlsruhe</p></div>
+          <div><p class="signal-label">{'Lokaler Bezug'}</p><p class="signal-detail">Karlsruhe</p></div>
         </div>
       </div>
     </div>
-    <figcaption class="example-note">{de ? 'Beispiel · keine Live-Suchergebnisse' : 'Example · not live search results'}</figcaption>
+    <figcaption class="example-note">{'Beispiel · keine Live-Suchergebnisse'}</figcaption>
   </figure>
 )}
 
 {kind === 'conversion' && (
   <figure class="visual journey-visual">
-    <figcaption class="journey-caption visual-label">{de ? 'Vom ersten Eindruck zur Anfrage' : 'From first impression to enquiry'}</figcaption>
+    <figcaption class="journey-caption visual-label">{'Vom ersten Eindruck zur Anfrage'}</figcaption>
     <ol class="journey">
       {journey.map((step) => (
         <li class="journey-step">
@@ -106,11 +105,11 @@ const journey = [
       ))}
     </ol>
     <div class="journey-action">
-      <a class="contact-link" href={routeFor('contact', lang)}>
-        {de ? 'Projekt anfragen' : 'Discuss your project'}
+      <a class="contact-link" href={routeFor('contact', 'de')}>
+        {'Projekt anfragen'}
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
       </a>
-      <p>{de ? 'Direkt mit Lucas. Ohne Umwege.' : 'Talk directly to Lucas.'}</p>
+      <p>{'Direkt mit Lucas. Ohne Umwege.'}</p>
     </div>
   </figure>
 )}

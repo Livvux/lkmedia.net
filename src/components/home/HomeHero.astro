@@ -1,7 +1,7 @@
 ---
 import type { HomeContent } from '../../lib/home-content';
-interface Props { hero: HomeContent['hero']; lang: 'de' | 'en' }
-const { hero, lang } = Astro.props;
+interface Props { hero: HomeContent['hero']; lang: 'de' }
+const { hero } = Astro.props;
 
 // Floating "signal" cards around the headline – purely decorative.
 const floats = [
@@ -9,7 +9,7 @@ const floats = [
   { cls: 'f-rank', label: '#1', sub: 'Google', tint: 'oklch(0.7 0.15 250)' },
   { cls: 'f-lcp', label: '0.7s', sub: 'LCP', tint: 'oklch(0.75 0.14 190)' },
   { cls: 'f-a11y', label: 'AA', sub: 'WCAG', tint: 'oklch(0.72 0.15 300)' },
-  { cls: 'f-ai', label: 'AI', sub: lang === 'de' ? 'zitiert' : 'cited', tint: 'oklch(0.76 0.15 75)' },
+  { cls: 'f-ai', label: 'AI', sub: 'zitiert', tint: 'oklch(0.76 0.15 75)' },
   { cls: 'f-code', label: '</>', sub: 'Astro', tint: 'oklch(0.7 0.18 30)' },
 ];
 ---
@@ -64,7 +64,7 @@ const floats = [
             sizes="(max-width: 1240px) calc(100vw - 40px), 1180px"
             width="2880"
             height="1800"
-            alt={lang === 'de' ? 'Kundenprojekt: Website von Klavierbau Hans Milde' : 'Client project: Klavierbau Hans Milde website'}
+            alt={'Kundenprojekt: Website von Klavierbau Hans Milde'}
             loading="eager"
             fetchpriority="high"
             decoding="async"

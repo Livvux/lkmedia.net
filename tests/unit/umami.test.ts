@@ -15,7 +15,7 @@ describe('public Umami page ownership and privacy', () => {
 
   it('requires the displayed path to belong to the rendered public page', () => {
     expect(allowed('https://lkmedia.net/')).toBe(true);
-    expect(allowed('https://www.lkmedia.net/en/blog/', '/en/blog')).toBe(true);
+    expect(allowed('https://www.lkmedia.net/blog/', '/blog')).toBe(true);
     expect(allowed('https://lkmedia.net/not-an-owned-page')).toBe(false);
     expect(allowed('https://lkmedia.net/blog/private-id', '/blog')).toBe(false);
     expect(allowed('https://lkmedia.net/?q=private-search#private-fragment')).toBe(true);
@@ -32,7 +32,7 @@ describe('public Umami page ownership and privacy', () => {
   it.each([
     '/aenderung', '/aenderung/link', '/docweb/onboarding', '/docweb/danke',
     '/handwerk/onboarding', '/handwerk/danke', '/fahrschule-webdesign/onboarding',
-    '/fahrschule-webdesign/danke', '/danke', '/en/thanks', '/admin', '/api/contact',
+    '/fahrschule-webdesign/danke', '/danke', '/admin', '/api/contact',
     '/checkout', '/account', '/token/private', '/session/private', '/link/private', '/%61enderung',
   ])('excludes sensitive route %s even with a matching canonical', (path) => {
     expect(publicUmamiPath(path)).toBeNull();

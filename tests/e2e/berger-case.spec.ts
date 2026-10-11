@@ -1,12 +1,12 @@
 import { expect, test } from '@playwright/test';
 
-for (const locale of ['de', 'en'] as const) {
+const locale = 'de';
   for (const width of [1280, 390]) {
     test(`Berger case: ${locale}, ${width}px, working media and project links`, async ({ page }) => {
       await page.setViewportSize({ width, height: 844 });
       const runtimeErrors: string[] = [];
       page.on('pageerror', (error) => runtimeErrors.push(error.message));
-      const path = `${locale === 'en' ? '/en' : ''}/cases/eichhoernchenberger`;
+      const path = '/cases/eichhoernchenberger';
       const response = await page.goto(path);
       expect(response?.status()).toBe(200);
       await expect(page.locator('html')).toHaveAttribute('lang', locale);
@@ -30,13 +30,12 @@ for (const locale of ['de', 'en'] as const) {
       expect(await video.evaluate((element: HTMLVideoElement) => element.error)).toBeNull();
       await video.evaluate((element: HTMLVideoElement) => element.pause());
 
-      const contact = page.locator(`article a[href="${locale === 'en' ? '/en/contact' : '/kontakt'}"]`);
+      const contact = page.locator('article a[href="/kontakt"]');
       await contact.click();
-      await expect(page).toHaveURL(new RegExp(`${locale === 'en' ? '/en/contact' : '/kontakt'}$`));
+      await expect(page).toHaveURL(/\/kontakt$/);
       await page.goto(path);
-      await expect(page.locator('article a[href="https://pfotenweb.de/"]')).toHaveCount(locale === 'en' ? 1 : 2);
+      await expect(page.locator('article a[href="https://pfotenweb.de/"]')).toHaveCount(2);
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
       expect(runtimeErrors).toEqual([]);
     });
   }
-}

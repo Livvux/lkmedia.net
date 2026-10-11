@@ -14,22 +14,12 @@ export default defineConfig({
   adapter: node({ mode: 'standalone' }),
   integrations: [
     mdx(),
-    sitemap({
-      i18n: {
-        defaultLocale: 'de',
-        locales: { de: 'de-DE', en: 'en-US' },
-      },
-    }),
+    sitemap(),
   ],
   vite: {
     plugins: [tailwindcss()],
     // Sonst entdeckt Vite die Toolbar erst beim ersten Seitenaufruf, optimiert neu und lädt die Seite neu.
     optimizeDeps: { include: ['astro/runtime/client/dev-toolbar/entrypoint.js'] },
-  },
-  i18n: {
-    defaultLocale: 'de',
-    locales: ['de', 'en'],
-    routing: { prefixDefaultLocale: false },
   },
   prefetch: { prefetchAll: true, defaultStrategy: 'viewport' },
   // Eigener CSRF-Check in src/middleware.ts (Proxy-Origin + Handwerker-Endpoint), siehe src/lib/csrf.ts.

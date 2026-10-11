@@ -3,7 +3,6 @@ import type { SeoProps } from '../lib/seo';
 import { buildSeo } from '../lib/seo';
 const props = Astro.props as SeoProps;
 const seo = buildSeo(props);
-const { alternateUrls } = seo;
 ---
 <title>{seo.title}</title>
 <meta name="description" content={seo.description} />
@@ -15,11 +14,8 @@ const { alternateUrls } = seo;
 <meta property="og:image" content={seo.ogImage} />
 <meta property="og:url" content={seo.canonical} />
 <meta property="og:type" content="website" />
-<meta property="og:locale" content={seo.lang === 'de' ? 'de_DE' : 'en_US'} />
+<meta property="og:locale" content="de_DE" />
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content={seo.title} />
 <meta name="twitter:description" content={seo.description} />
 <meta name="twitter:image" content={seo.ogImage} />
-{alternateUrls?.de && <link rel="alternate" hreflang="de" href={alternateUrls.de} />}
-{alternateUrls?.en && <link rel="alternate" hreflang="en" href={alternateUrls.en} />}
-<link rel="alternate" hreflang="x-default" href={alternateUrls?.de ?? seo.canonical} />

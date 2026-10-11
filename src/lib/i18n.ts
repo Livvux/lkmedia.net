@@ -1,6 +1,6 @@
-export type Lang = "de" | "en";
+export type Lang = "de";
 
-export const languages = { de: "Deutsch", en: "English" } as const;
+export const languages = { de: "Deutsch" } as const;
 
 export const ui = {
   de: {
@@ -13,52 +13,39 @@ export const ui = {
     "cta.start": "Projekt starten",
     "cta.call": "15 min Call buchen",
   },
-  en: {
-    "nav.home": "Home",
-    "nav.services": "Services",
-    "nav.cases": "Cases",
-    "nav.about": "About",
-    "nav.contact": "Contact",
-    "nav.blog": "Blog",
-    "cta.start": "Start a project",
-    "cta.call": "Book a 15 min call",
-  },
 } as const;
 
-export function getLangFromUrl(url: URL): Lang {
-  const seg = url.pathname.split("/")[1];
-  return seg === "en" ? "en" : "de";
+export function getLangFromUrl(_url: URL): Lang {
+  return "de";
 }
 
-export function pathFor(path: string, lang: Lang): string {
-  const clean = path.replace(/^\//, "");
-  return lang === "de" ? `/${clean}` : `/en/${clean}`;
+export function pathFor(path: string, _lang: Lang): string {
+  return `/${path.replace(/^\//, "")}`;
 }
 
-/** Named routes → real localized paths (EN slugs differ from DE for some pages). */
 export const routes = {
-  home: { de: "/", en: "/en/" },
-  services: { de: "/leistungen", en: "/en/leistungen" },
-  cases: { de: "/cases", en: "/en/cases" },
-  blog: { de: "/blog", en: "/en/blog" },
-  about: { de: "/ueber", en: "/en/about" },
-  contact: { de: "/kontakt", en: "/en/contact" },
-  lawFirms: { de: "/anwaelte", en: "/en/anwaelte" },
-  realEstate: { de: "/luxus-immobilien", en: "/en/luxus-immobilien" },
-  clinics: { de: "/privatkliniken", en: "/privatkliniken" },
-  drivingSchools: { de: "/fahrschule-webdesign", en: "/fahrschule-webdesign" },
-  doctors: { de: "/docweb", en: "/docweb" },
-  craftsmen: { de: "/handwerk", en: "/handwerk" },
-  imprint: { de: "/imprint", en: "/imprint" },
-  privacy: { de: "/datenschutz", en: "/datenschutz" },
-} as const satisfies Record<string, Record<Lang, string>>;
+  home: "/",
+  services: "/leistungen",
+  cases: "/cases",
+  blog: "/blog",
+  about: "/ueber",
+  contact: "/kontakt",
+  lawFirms: "/anwaelte",
+  realEstate: "/luxus-immobilien",
+  clinics: "/privatkliniken",
+  drivingSchools: "/fahrschule-webdesign",
+  doctors: "/docweb",
+  craftsmen: "/handwerk",
+  imprint: "/imprint",
+  privacy: "/datenschutz",
+} as const;
 
 export type RouteName = keyof typeof routes;
 
-export function routeFor(name: RouteName, lang: Lang): string {
-  return routes[name][lang];
+export function routeFor(name: RouteName, _lang: Lang): string {
+  return routes[name];
 }
 
-export function useTranslations(lang: Lang) {
-  return (key: keyof (typeof ui)["de"]) => ui[lang][key] ?? ui.de[key];
+export function useTranslations(_lang: Lang) {
+  return (key: keyof (typeof ui)["de"]) => ui.de[key];
 }
