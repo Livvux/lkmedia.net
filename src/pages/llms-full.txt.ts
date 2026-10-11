@@ -2,7 +2,10 @@ import { getCollection } from "astro:content";
 import type { APIRoute } from "astro";
 
 export const GET: APIRoute = async () => {
-  const posts = await getCollection("posts", (p) => p.data.lang === "de" && !p.data.draft && !p.data.noindex);
+  const posts = await getCollection(
+    "posts",
+    (p) => p.data.lang === "de" && !p.data.draft && !p.data.noindex,
+  );
   const lines = [
     "# lkmedia — full content index for LLMs",
     "",

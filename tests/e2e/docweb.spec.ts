@@ -36,16 +36,11 @@ for (const path of ['/docweb', '/docweb/agb', '/docweb/danke', '/docweb/onboardi
   });
 }
 
-test('an existing English translation remains reachable through the language switch', async ({ page }) => {
+test('services page uses German without a language switch', async ({ page }) => {
   await page.goto('/leistungen');
-  const languageSwitch = page.getByRole('link', { name: 'Switch to English' });
-
-  await expect(languageSwitch).toHaveAttribute('href', /^\/en\/leistungen\/?$/);
-  await expectKeyboardAccessible(languageSwitch);
-  await languageSwitch.press('Enter');
-
-  await expect(page).toHaveURL(/\/en\/leistungen\/?$/);
-  await expect(page.locator('html')).toHaveAttribute('lang', 'en');
+  await expect(page.locator('html')).toHaveAttribute('lang', 'de');
+  await expect(page.getByRole('link', { name: 'Switch to English' })).toHaveCount(0);
+  await expect(page.locator('a[hreflang="en"]')).toHaveCount(0);
   await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
 });
 
