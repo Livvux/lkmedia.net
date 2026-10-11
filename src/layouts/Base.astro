@@ -5,6 +5,8 @@ import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
 import { organization } from '../lib/schema';
 import type { SeoProps } from '../lib/seo';
+import Umami from '../components/Umami.astro';
+import { publicUmamiPath } from '../lib/umami';
 
 // analytics={false} auf Seiten mit session_id in der URL (Zugangsschlüssel): kein Plausible,
 // Referrer nur same-origin – sonst landet der Link bei Dritten. Nicht no-referrer: dann schickt der
@@ -12,6 +14,8 @@ import type { SeoProps } from '../lib/seo';
 interface Props { seo: SeoProps; jsonLd?: unknown[]; analytics?: boolean; }
 const { seo, jsonLd = [], analytics = true } = Astro.props as Props;
 const allLd = [organization(), ...jsonLd];
+// Only a known indexable page with its own canonical may load Umami. Preserve analytics=false.
+const publicPath = analytics && !seo.noindex ? publicUmamiPath(seo.canonical) : null;
 ---
 <!doctype html>
 <html lang={seo.lang} class="dark">
@@ -28,6 +32,7 @@ const allLd = [organization(), ...jsonLd];
     ) : (
       <meta name="referrer" content="same-origin" />
     )}
+    {publicPath !== null && <Umami path={publicPath} />}
   </head>
   <body class="min-h-screen flex flex-col">
     <Nav lang={seo.lang} />
