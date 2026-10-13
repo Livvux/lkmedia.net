@@ -2,7 +2,52 @@
 @import "@fontsource-variable/dm-sans";
 @import "@fontsource/jetbrains-mono/400.css";
 @import "@fontsource/jetbrains-mono/500.css";
+@import "tw-animate-css";
 @plugin "@tailwindcss/typography";
+
+/* shadcn/ui-Tokens: auf die Seiten-Tokens gemappt. Bewusst ohne `accent`/`muted` (kollidieren mit
+   --color-accent/--color-muted der Altseiten); `tone` ist die Produktfarbe der Unterseite. */
+@theme inline {
+  --color-background: var(--bg);
+  --color-foreground: var(--fg);
+  --color-card: var(--bg-card);
+  --color-card-foreground: var(--fg);
+  --color-popover: var(--bg-card);
+  --color-popover-foreground: var(--fg);
+  --color-primary: var(--fg);
+  --color-primary-foreground: var(--bg);
+  --color-secondary: oklch(1 0 0 / 0.07);
+  --color-secondary-foreground: var(--fg);
+  --color-muted-foreground: var(--fg-muted);
+  --color-destructive: oklch(0.65 0.2 25);
+  --color-border: var(--border);
+  --color-input: var(--border-strong);
+  --color-ring: var(--tone);
+  --color-tone: var(--tone);
+  --color-tone-foreground: oklch(0.16 0.02 260);
+  --radius-sm: 8px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 22px;
+  --animate-marquee: marquee var(--duration) infinite linear;
+  --animate-marquee-vertical: marquee-vertical var(--duration) linear infinite;
+  @keyframes marquee {
+  from {
+    transform: translateX(0);
+    }
+  to {
+    transform: translateX(calc(-100% - var(--gap)));
+    }
+  }
+  @keyframes marquee-vertical {
+  from {
+    transform: translateY(0);
+    }
+  to {
+    transform: translateY(calc(-100% - var(--gap)));
+    }
+  }
+}
 
 /* Site is dark-only. The `dark` class is always set on <html>, so legacy `dark:` utilities apply. */
 @custom-variant dark (&:where(.dark, .dark *));
@@ -27,6 +72,7 @@
   --border-strong: #ffffff24;
   --accent: oklch(0.68 0.17 250);
   --accent-dim: oklch(0.68 0.17 250 / 0.15);
+  --tone: var(--accent); /* Unterseiten überschreiben --tone (handwerk: Signal-Orange, docweb: Mint) */
   --ok: oklch(72% 0.16 150);
   --warn: oklch(76% 0.15 75);
   --radius: 12px;

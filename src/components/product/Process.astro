@@ -1,0 +1,30 @@
+---
+interface Step { n: string; title: string; body: string }
+interface Props { steps: Step[]; title: string; note?: { after: number; text: string } }
+const { steps, title, note } = Astro.props;
+---
+<section class="border-t border-border py-24 md:py-32">
+  <div class="wrap">
+    <h2 class="section-title max-w-2xl">{title}</h2>
+    <div class="relative mt-14 md:mt-20">
+      <!-- Linie nur auf dem Desktop; sie läuft durch die Mittelpunkte der Schritt-Marken -->
+      <div class="absolute left-0 right-0 top-5 hidden h-px bg-border md:block" aria-hidden="true">
+        <div class="process-line h-full w-full bg-tone"></div>
+      </div>
+      <ol class="grid gap-10 md:grid-cols-4 md:gap-8">
+        {steps.map((s, i) => (
+          <li class="relative flex gap-5 md:block">
+            <span class="relative z-10 grid size-10 shrink-0 place-items-center rounded-full border border-border bg-background font-mono text-sm text-tone">{s.n}</span>
+            <div class="md:mt-8">
+              <h3 class="text-xl font-semibold tracking-tight">{s.title}</h3>
+              <p class="mt-2 text-[15px] leading-relaxed text-muted-foreground">{s.body}</p>
+              {note && note.after === i && (
+                <p class="mt-4 inline-block rounded-full border border-tone/40 bg-tone/10 px-3 py-1 font-mono text-xs text-tone">{note.text}</p>
+              )}
+            </div>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </div>
+</section>

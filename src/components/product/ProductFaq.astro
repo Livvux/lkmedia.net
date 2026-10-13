@@ -1,0 +1,27 @@
+---
+import { faqPage } from '../../lib/schema';
+interface Item { q: string; a: string }
+interface Props { items: Item[]; title?: string; intro?: string }
+const { items, title = 'Häufige Fragen.', intro } = Astro.props;
+---
+<section class="border-t border-border py-24 md:py-32">
+  <div class="wrap grid grid-cols-[minmax(0,1fr)] gap-12 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.4fr)] lg:gap-20">
+    <div class="lg:sticky lg:top-28 lg:self-start">
+      <h2 class="section-title">{title}</h2>
+      {intro && <p class="section-sub mt-5 max-w-sm">{intro}</p>}
+      <a href="/kontakt#termin" class="mt-6 inline-flex min-h-11 items-center gap-2 text-[15px] text-foreground underline underline-offset-4 decoration-border hover:decoration-tone">Frage nicht dabei? Kurz sprechen →</a>
+    </div>
+    <div class="faq border-t border-border">
+      {items.map((i) => (
+        <details class="group border-b border-border">
+          <summary class="flex min-h-14 cursor-pointer items-center justify-between gap-6 py-5 text-left text-[17px] font-medium tracking-tight md:text-lg">
+            <span>{i.q}</span>
+            <span class="faq-plus grid size-8 shrink-0 place-items-center rounded-full bg-secondary text-lg leading-none text-foreground transition-all duration-200" aria-hidden="true">+</span>
+          </summary>
+          <div class="max-w-[62ch] pb-6 pr-12 text-[15px] leading-relaxed text-muted-foreground md:text-base">{i.a}</div>
+        </details>
+      ))}
+    </div>
+  </div>
+</section>
+<script type="application/ld+json" set:html={JSON.stringify(faqPage(items))} />

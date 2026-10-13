@@ -1,0 +1,98 @@
+/* Produktseiten (/handwerk, /docweb): Bausteine auf Basis von global.css. Farbe kommt aus --tone. */
+
+.bento {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  background: var(--bg-card);
+  padding: 24px;
+  transition: border-color 0.25s;
+}
+@media (min-width: 768px) {
+  .bento {
+    padding: 32px;
+  }
+}
+/* Spotlight (Aceternity-Stil): folgt dem Mauszeiger, Position setzt das Script in ProductShell */
+.bento::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: radial-gradient(
+    380px circle at var(--mx, 50%) var(--my, 0%),
+    color-mix(in oklab, var(--tone) 16%, transparent),
+    transparent 65%
+  );
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.bento:hover {
+  border-color: color-mix(in oklab, var(--tone) 35%, var(--border-strong));
+}
+.bento:hover::before {
+  opacity: 1;
+}
+
+.dot-grid {
+  background-image: radial-gradient(#ffffff1c 1px, transparent 1px);
+  background-size: 22px 22px;
+  mask-image: radial-gradient(70% 60% at 70% 30%, #000 30%, transparent 100%);
+}
+
+/* Native FAQ-Akkordeon (Tastatur + ohne JS bedienbar) */
+.faq details > summary {
+  list-style: none;
+}
+.faq details > summary::-webkit-details-marker {
+  display: none;
+}
+.faq details[open] > summary .faq-plus {
+  transform: rotate(45deg);
+  background: var(--tone);
+  color: var(--color-tone-foreground);
+}
+
+/* Prozess-Linie füllt sich beim Scrollen (nur wo scroll-driven animations existieren; sonst voll sichtbar) */
+@supports (animation-timeline: view()) {
+  .process-line {
+    transform-origin: left;
+    animation: process-fill linear both;
+    animation-timeline: view();
+    animation-range: entry 20% cover 55%;
+  }
+  @keyframes process-fill {
+    from {
+      transform: scaleX(0);
+    }
+    to {
+      transform: scaleX(1);
+    }
+  }
+}
+
+@keyframes pulse-dot {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 color-mix(in oklab, var(--tone) 55%, transparent);
+  }
+  50% {
+    box-shadow: 0 0 0 6px transparent;
+  }
+}
+.pulse-dot {
+  animation: pulse-dot 2.4s ease-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .process-line,
+  .pulse-dot,
+  .animate-marquee {
+    animation: none !important;
+  }
+  .process-line {
+    transform: none;
+  }
+}
