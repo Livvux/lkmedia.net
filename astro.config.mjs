@@ -4,6 +4,7 @@ import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
 import node from '@astrojs/node';
 import tailwindcss from '@tailwindcss/vite';
+import react from '@astrojs/react';
 
 // Note: Astro v5+ removed `output: 'hybrid'`. `output: 'static'` now supports
 // per-route opt-in SSR via `export const prerender = false`.
@@ -14,6 +15,7 @@ export default defineConfig({
   adapter: node({ mode: 'standalone' }),
   integrations: [
     mdx(),
+    react(),
     sitemap(),
   ],
   vite: {

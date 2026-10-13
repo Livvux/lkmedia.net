@@ -1,7 +1,14 @@
 ---
 import Base from '../../layouts/Base.astro';
-import Hero from '../../components/landing/Hero.astro';
-import FaqBlock from '../../components/FaqBlock.astro';
+import ProductShell from '../../components/product/ProductShell.astro';
+import ProductFaq from '../../components/product/ProductFaq.astro';
+import Process from '../../components/product/Process.astro';
+import InboxDemo from '../../components/product/InboxDemo';
+import MailPreview from '../../components/product/MailPreview';
+import BeamFrame from '../../components/product/BeamFrame';
+import { Marquee } from '../../components/ui/marquee';
+import { buttonVariants } from '../../components/ui/button';
+import { Wrench, Zap, Layers, Check, ArrowRight, ArrowUpRight, MapPin, Briefcase, ImageIcon, ShieldCheck } from 'lucide-react';
 import { HANDWERKWEB } from '../../lib/handwerkweb';
 
 const seo = {
@@ -12,23 +19,22 @@ const seo = {
   alternateUrls: { de: 'https://lkmedia.net/handwerk' },
 };
 
+const TONE = 'oklch(0.78 0.165 55)';
 const ctaHref = HANDWERKWEB.paymentLink || '/kontakt#termin';
-const ctaLabel = HANDWERKWEB.paymentLink ? 'Jetzt starten →' : 'Gespräch vereinbaren →';
+const ctaLabel = HANDWERKWEB.paymentLink ? 'Jetzt starten' : 'Gespräch vereinbaren';
 
-const features = [
-  { title: 'Anfragen mit allen Angaben', body: 'Anliegen, PLZ, Objektart, Zeitrahmen, Beschreibung und bis zu 5 Fotos – strukturiert per Mail. Kein Hinterhertelefonieren für die Basics.' },
-  { title: 'Bewerbung in 60 Sekunden', body: 'Kurzbewerbung ohne Pflicht-Lebenslauf: Stelle, Name, Telefon, Erfahrung. Ihre Stellen erscheinen zusätzlich in Google for Jobs.' },
-  { title: 'Referenzen, die überzeugen', body: 'Projekte mit Ort, Jahr und Fotos. Zeigt, was Sie können – und wo Sie schon gearbeitet haben.' },
-  { title: 'Ihr Einsatzgebiet', body: 'Orte und PLZ-Gebiete auf einer eigenen Seite – lokal gefunden werden. Anfragen von außerhalb werden markiert.' },
-  { title: 'Leistungsseiten', body: 'Heizung, Wärmepumpe, Bad, Elektro, Wallbox, PV: je Leistung eine Seite mit klaren Infos und Anfrage-Button.' },
-  { title: 'Schnell, sicher, ohne Tracking', body: 'Statische Website, kein Cookie-Banner, keine Google Fonts, Hosting in der EU, barrierefrei nach WCAG 2.2 AA.' },
-];
+const primary = buttonVariants({ size: 'lg', className: 'h-12 rounded-full bg-tone px-7 text-base text-tone-foreground hover:bg-tone/90' });
+const ghost = buttonVariants({ variant: 'outline', size: 'lg', className: 'h-12 rounded-full px-7 text-base' });
 
 const audiences = [
-  { title: 'Sanitär, Heizung, Klima', body: 'SHK-Betriebe, Heizungsbauer, Badsanierer, Wärmepumpen-Fachbetriebe.' },
-  { title: 'Elektro', body: 'Elektroinstallateure, E-Check, Wallbox und Photovoltaik.' },
-  { title: 'Beides unter einem Dach', body: 'Haustechnik-Betriebe mit mehreren Gewerken – eine Website für alles.' },
+  { icon: Wrench, title: 'Sanitär, Heizung, Klima', body: 'SHK-Betriebe, Heizungsbauer, Badsanierer, Wärmepumpen-Fachbetriebe.' },
+  { icon: Zap, title: 'Elektro', body: 'Elektroinstallateure, E-Check, Wallbox und Photovoltaik.' },
+  { icon: Layers, title: 'Beides unter einem Dach', body: 'Haustechnik-Betriebe mit mehreren Gewerken – eine Website für alles.' },
 ];
+
+const services = ['Heizung', 'Wärmepumpe', 'Bad', 'Elektro', 'Wallbox', 'Photovoltaik'];
+const region = ['Rastatt', 'Baden-Baden', 'Gaggenau', 'Gernsbach', 'Bühl', 'Kuppenheim'];
+const privacy = ['Kein Cookie-Banner', 'Keine Google Fonts', 'Hosting in der EU', 'Barrierefrei nach WCAG 2.2 AA'];
 
 const steps = [
   { n: '01', title: 'Online buchen', body: 'Paket per Stripe bezahlen – Rechnung mit ausgewiesener Umsatzsteuer kommt automatisch.' },
@@ -75,90 +81,203 @@ const productSchema = {
 };
 ---
 <Base seo={seo} jsonLd={[productSchema]}>
-  <Hero
-    headline="Mehr passende Aufträge. Mehr Bewerbungen."
-    sub={`Die Website für SHK- und Elektrobetriebe: zeigt Ihre Arbeit und sorgt dafür, dass Anfragen mit den richtigen Angaben ankommen. ${HANDWERKWEB.setupPrice} einmalig + ${HANDWERKWEB.monthlyPrice}/Monat.`}
-    ctaHref="#preis" ctaLabel="Paket ansehen"
-    secondaryHref={HANDWERKWEB.demoUrl} secondaryLabel="Demo ansehen"
-    deviceImage="/images/handwerkweb-demo.webp" deviceAlt="Startseite der handwerkweb-Demo: Haustechnik-Betrieb mit Leistungen, Einsatzgebiet und Anfrage-Button"
-    deviceHref={HANDWERKWEB.demoUrl} />
+  <ProductShell tone={TONE} priceText={`${HANDWERKWEB.setupPrice} + ${HANDWERKWEB.monthlyPrice}/Monat`}>
 
-  <section class="py-24 px-6 max-w-6xl mx-auto">
-    <h2 class="text-3xl md:text-5xl font-semibold tracking-tight mb-12">Für wen handwerkweb gemacht ist.</h2>
-    <div class="grid md:grid-cols-3 gap-6">
-      {audiences.map((a) => (
-        <div class="rounded-2xl border border-black/10 dark:border-white/10 p-8">
-          <h3 class="text-xl font-semibold mb-3">{a.title}</h3>
-          <p class="text-black/70 dark:text-white/70 leading-relaxed">{a.body}</p>
-        </div>
-      ))}
-    </div>
-  </section>
+    <!-- Hero -->
+    <section data-hero class="relative isolate pb-20 pt-14 md:pb-32 md:pt-24">
+      <div class="dot-grid absolute inset-0 -z-10" aria-hidden="true"></div>
+      <div class="absolute -right-40 -top-40 -z-10 size-[620px] rounded-full bg-tone/15 blur-[120px]" aria-hidden="true"></div>
 
-  <section class="py-24 px-6 max-w-6xl mx-auto border-t border-black/10 dark:border-white/10">
-    <h2 class="text-3xl md:text-5xl font-semibold tracking-tight mb-12">Was Ihre Website kann.</h2>
-    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
-      {features.map((f) => (
+      <div class="wrap grid grid-cols-[minmax(0,1fr)] items-center gap-16 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)]">
         <div>
-          <h3 class="text-xl font-semibold mb-3">{f.title}</h3>
-          <p class="text-black/70 dark:text-white/70 leading-relaxed">{f.body}</p>
+          <p data-rise class="inline-flex items-center gap-2.5 rounded-full border border-border bg-secondary py-1.5 pl-3 pr-4 text-[13px] text-muted-foreground">
+            <span class="pulse-dot size-1.5 rounded-full bg-tone" aria-hidden="true"></span>
+            handwerkweb · für SHK- und Elektrobetriebe
+          </p>
+          <h1 data-rise style="--d:80ms" class="display mt-7 text-[clamp(2.6rem,6.2vw,5rem)]">
+            Mehr <span class="text-tone">passende</span> Aufträge. Mehr <span class="text-tone">Bewerbungen.</span>
+          </h1>
+          <p data-rise style="--d:160ms" class="section-sub mt-6 max-w-[52ch]">
+            Die Website, die Ihre Arbeit zeigt und dafür sorgt, dass Anfragen mit den richtigen Angaben ankommen. Festpreis, ohne Agentur-Stundensätze.
+          </p>
+
+          <p data-rise style="--d:220ms" class="mt-8 flex flex-wrap items-baseline gap-x-3 gap-y-1">
+            <span class="text-4xl font-semibold tracking-tight">{HANDWERKWEB.setupPrice}</span>
+            <span class="text-muted-foreground">einmalig</span>
+            <span class="text-xl font-medium">+ {HANDWERKWEB.monthlyPrice}<span class="text-muted-foreground"> / Monat</span></span>
+          </p>
+
+          <div data-rise style="--d:280ms" class="mt-8 flex flex-wrap items-center gap-3">
+            <a href="#preis" class={primary}>Paket ansehen <ArrowRight className="size-4" aria-hidden="true" /></a>
+            <a href={HANDWERKWEB.demoUrl} target="_blank" rel="noopener noreferrer" class={ghost}>Demo ansehen<ArrowUpRight className="size-4" aria-hidden="true" /></a>
+          </div>
+
+          <ul data-rise style="--d:340ms" class="mt-10 grid gap-2.5 text-[15px] text-muted-foreground sm:grid-cols-2">
+            {['Kein Cookie-Banner, kein Tracking', 'Hosting in der EU', 'Vorschau meist in 7 Werktagen', 'Kleine Änderungen sind inklusive'].map((t) => (
+              <li class="flex items-center gap-2.5"><Check className="size-4 shrink-0 text-tone" aria-hidden="true" />{t}</li>
+            ))}
+          </ul>
         </div>
-      ))}
-    </div>
-    <a href={HANDWERKWEB.demoUrl} target="_blank" rel="noopener" class="mt-12 inline-flex h-11 px-6 items-center rounded-full border border-black/30 dark:border-white/30 text-sm font-medium">
-      Live-Demo öffnen →
-    </a>
-  </section>
 
-  <section class="py-24 px-6 max-w-6xl mx-auto border-t border-black/10 dark:border-white/10">
-    <h2 class="text-3xl md:text-5xl font-semibold tracking-tight mb-12">So läuft es ab.</h2>
-    <ol class="grid md:grid-cols-4 gap-8">
-      {steps.map((s) => (
-        <li>
-          <div class="text-sm tracking-widest text-black/40 dark:text-white/40 mb-3">{s.n}</div>
-          <h3 class="text-xl font-semibold mb-2">{s.title}</h3>
-          <p class="text-black/70 dark:text-white/70 leading-relaxed">{s.body}</p>
-        </li>
-      ))}
-    </ol>
-  </section>
-
-  <section id="preis" class="py-24 px-6 max-w-6xl mx-auto border-t border-black/10 dark:border-white/10 scroll-mt-20">
-    <div class="grid lg:grid-cols-2 gap-12 items-start">
-      <div>
-        <h2 class="text-3xl md:text-5xl font-semibold tracking-tight">Ein Paket. Ein Preis.</h2>
-        <p class="mt-5 text-lg text-black/70 dark:text-white/70 leading-relaxed">
-          Kein Angebot, kein Baukasten, keine Agentur-Stundensätze. Wir bauen und betreuen Ihre Website, zeigen Ihre Arbeit und sorgen dafür, dass Anfragen mit den richtigen Angaben ankommen.
-        </p>
+        <div data-rise style="--d:200ms" class="relative">
+          <div class="overflow-hidden rounded-2xl border border-border bg-card shadow-[0_40px_120px_-30px_rgba(0,0,0,0.9)]">
+            <div class="flex items-center gap-2 border-b border-border bg-secondary px-4 py-3" aria-hidden="true">
+              <span class="size-2.5 rounded-full bg-white/15"></span><span class="size-2.5 rounded-full bg-white/15"></span><span class="size-2.5 rounded-full bg-white/15"></span>
+              <span class="ml-3 flex-1 truncate rounded-md bg-black/40 px-3 py-1 font-mono text-[11px] text-muted-foreground">handwerk.lkmedia.net</span>
+            </div>
+            <a href={HANDWERKWEB.demoUrl} target="_blank" rel="noopener noreferrer" class="group relative block">
+              <img src="/images/handwerkweb-demo.webp" alt="Startseite der handwerkweb-Demo: Haustechnik-Betrieb mit Leistungen, Einsatzgebiet und Anfrage-Button" width="1440" height="900" class="aspect-[16/10] w-full object-cover object-top" loading="eager" decoding="async" />
+              <span class="absolute inset-0 grid place-items-center bg-black/55 opacity-0 transition-opacity duration-200 group-hover:opacity-100 group-focus-visible:opacity-100">
+                <span class="inline-flex items-center gap-2 rounded-full bg-white px-5 py-2.5 text-sm font-medium text-black">Website ansehen <ArrowUpRight className="size-4" aria-hidden="true" /></span>
+              </span>
+            </a>
+          </div>
+          <div class="relative z-10 mx-auto -mt-16 px-3 sm:px-0 md:-mt-24 md:-ml-6 lg:-ml-14">
+            <InboxDemo client:visible />
+          </div>
+        </div>
       </div>
-      <div class="rounded-2xl border border-black/10 dark:border-white/15 bg-black/[0.02] dark:bg-white/[0.03] p-8 md:p-10">
-        <div class="text-sm tracking-widest text-black/50 dark:text-white/50">HANDWERKWEB KOMPLETTPAKET</div>
-        <div class="mt-4 flex flex-wrap items-baseline gap-x-3">
-          <span class="text-5xl font-semibold tracking-tight">{HANDWERKWEB.setupPrice}</span>
-          <span class="text-black/60 dark:text-white/60">einmalig</span>
-        </div>
-        <div class="mt-1 text-xl"><span class="font-semibold">+ {HANDWERKWEB.monthlyPrice}</span> <span class="text-black/60 dark:text-white/60">/ Monat</span></div>
-        <p class="mt-2 text-sm text-black/50 dark:text-white/50">inkl. USt. · 12 Monate Mindestlaufzeit, danach monatlich kündbar</p>
-        <ul class="mt-8 space-y-3">
-          {included.map((i) => (
-            <li class="flex gap-3"><span aria-hidden="true" class="text-black/40 dark:text-white/40">✓</span><span>{i}</span></li>
+    </section>
+
+    <!-- Für wen -->
+    <section class="border-t border-border py-20 md:py-24">
+      <div class="wrap">
+        <h2 class="section-title max-w-2xl">Für wen handwerkweb gemacht ist.</h2>
+        <ul class="mt-12 grid gap-px overflow-hidden rounded-2xl border border-border bg-border md:grid-cols-3">
+          {audiences.map((a) => (
+            <li class="bg-background p-7 md:p-9">
+              <a.icon className="size-6 text-tone" aria-hidden="true" />
+              <h3 class="mt-6 text-xl font-semibold tracking-tight">{a.title}</h3>
+              <p class="mt-2 text-[15px] leading-relaxed text-muted-foreground">{a.body}</p>
+            </li>
           ))}
         </ul>
-        <a href={ctaHref} class="mt-10 flex h-12 w-full items-center justify-center rounded-full bg-black text-white dark:bg-white dark:text-black font-medium hover:bg-black/90 dark:hover:bg-white/90 transition">
-          {ctaLabel}
-        </a>
-        <p class="mt-3 text-center text-xs text-black/50 dark:text-white/50">
-          Sichere Zahlung über Stripe · Es gelten die <a href="/handwerk/agb" class="underline">AGB für handwerkweb</a>
-        </p>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <FaqBlock items={faqs} />
+    <!-- Anfragen & Bewerbungen -->
+    <section class="border-t border-border py-24 md:py-32">
+      <div class="wrap grid grid-cols-[minmax(0,1fr)] items-center gap-14 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] lg:gap-20">
+        <div>
+          <h2 class="section-title">Anfragen, die schon alles enthalten.</h2>
+          <div class="mt-10 space-y-8">
+            <div>
+              <h3 class="text-xl font-semibold tracking-tight">Anfragen mit allen Angaben</h3>
+              <p class="mt-2 text-[15px] leading-relaxed text-muted-foreground md:text-base">Anliegen, PLZ, Objektart, Zeitrahmen, Beschreibung und bis zu 5 Fotos – strukturiert per Mail. Kein Hinterhertelefonieren für die Basics.</p>
+            </div>
+            <div>
+              <h3 class="text-xl font-semibold tracking-tight">Bewerbung in 60 Sekunden</h3>
+              <p class="mt-2 text-[15px] leading-relaxed text-muted-foreground md:text-base">Kurzbewerbung ohne Pflicht-Lebenslauf: Stelle, Name, Telefon, Erfahrung. Ihre Stellen erscheinen zusätzlich in Google for Jobs.</p>
+            </div>
+          </div>
+          <a href={HANDWERKWEB.demoUrl} target="_blank" rel="noopener noreferrer" class="mt-8 inline-flex min-h-11 items-center gap-2 text-[15px] underline decoration-border underline-offset-4 hover:decoration-tone">Live-Demo öffnen <ArrowUpRight className="size-4" aria-hidden="true" /></a>
+        </div>
+        <MailPreview client:visible />
+      </div>
+    </section>
 
-  <section class="py-24 px-6 text-center border-t border-black/10 dark:border-white/10">
-    <h2 class="text-3xl md:text-5xl font-semibold tracking-tight">Lieber erst sprechen?</h2>
-    <p class="mt-4 text-black/70 dark:text-white/70">15 Minuten, unverbindlich – wir klären, ob handwerkweb zu Ihrem Betrieb passt.</p>
-    <a href="/kontakt#termin" class="mt-8 inline-flex h-12 px-6 items-center rounded-full border border-black/30 dark:border-white/30 font-medium">Kurzes Gespräch buchen</a>
-  </section>
+    <!-- Bento -->
+    <section class="border-t border-border py-24 md:py-32">
+      <div class="wrap">
+        <h2 class="section-title max-w-3xl">Alles, was ein Betrieb online braucht.</h2>
+        <div class="mt-14 grid grid-cols-[minmax(0,1fr)] gap-4 lg:grid-cols-6">
+          <article class="bento lg:col-span-3">
+            <h3 class="text-xl font-semibold tracking-tight">Leistungsseiten</h3>
+            <p class="mt-2 max-w-[44ch] text-[15px] leading-relaxed text-muted-foreground">Heizung, Wärmepumpe, Bad, Elektro, Wallbox, PV: je Leistung eine Seite mit klaren Infos und Anfrage-Button.</p>
+            <Marquee className="-mx-8 mt-8 [--duration:28s] [--gap:0.75rem] [mask-image:linear-gradient(90deg,transparent,#000_15%,#000_85%,transparent)]" pauseOnHover repeat={3}>
+              {services.map((s) => <span class="shrink-0 rounded-full border border-border bg-secondary px-4 py-2 text-sm">{s}</span>)}
+            </Marquee>
+          </article>
+
+          <article class="bento lg:col-span-3">
+            <h3 class="text-xl font-semibold tracking-tight">Ihr Einsatzgebiet</h3>
+            <p class="mt-2 max-w-[44ch] text-[15px] leading-relaxed text-muted-foreground">Orte und PLZ-Gebiete auf einer eigenen Seite – lokal gefunden werden. Anfragen von außerhalb werden markiert.</p>
+            <ul class="mt-8 flex flex-wrap gap-2">
+              {region.map((r) => <li class="inline-flex items-center gap-1.5 rounded-full border border-border bg-secondary px-3.5 py-1.5 text-sm"><MapPin className="size-3.5 text-tone" aria-hidden="true" />{r}</li>)}
+              <li class="inline-flex items-center gap-1.5 rounded-full border border-dashed border-tone/50 px-3.5 py-1.5 text-sm text-tone">Außerhalb? Wird markiert</li>
+            </ul>
+          </article>
+
+          <article class="bento lg:col-span-2">
+            <h3 class="text-xl font-semibold tracking-tight">Referenzen, die überzeugen</h3>
+            <p class="mt-2 text-[15px] leading-relaxed text-muted-foreground">Projekte mit Ort, Jahr und Fotos. Zeigt, was Sie können – und wo Sie schon gearbeitet haben.</p>
+            <div class="mt-8 grid grid-cols-3 gap-2" aria-hidden="true">
+              {[0, 1, 2].map(() => (
+                <div>
+                  <div class="grid aspect-[4/3] place-items-center rounded-lg bg-secondary text-white/30"><ImageIcon className="size-5" /></div>
+                  <div class="mt-2 h-1.5 w-3/4 rounded bg-white/15"></div>
+                  <div class="mt-1.5 h-1.5 w-1/2 rounded bg-white/10"></div>
+                </div>
+              ))}
+            </div>
+          </article>
+
+          <article class="bento lg:col-span-2">
+            <h3 class="text-xl font-semibold tracking-tight">Stellen in Google for Jobs</h3>
+            <p class="mt-2 text-[15px] leading-relaxed text-muted-foreground">Ihre offenen Stellen werden zusätzlich so ausgezeichnet, dass Google sie als Stellenanzeige darstellen kann.</p>
+            <div class="mt-8 flex items-center gap-3 rounded-xl border border-border bg-secondary p-3.5" aria-hidden="true">
+              <span class="grid size-9 place-items-center rounded-lg bg-tone/15 text-tone"><Briefcase className="size-4" /></span>
+              <span class="text-sm"><span class="block font-medium">Anlagenmechaniker SHK (m/w/d)</span><span class="text-xs text-muted-foreground">Rastatt · Vollzeit · Beispiel</span></span>
+            </div>
+          </article>
+
+          <article class="bento lg:col-span-2">
+            <h3 class="text-xl font-semibold tracking-tight">Schnell, sicher, ohne Tracking</h3>
+            <p class="mt-2 text-[15px] leading-relaxed text-muted-foreground">Statische Website: schnell geladen und ohne Datensammler.</p>
+            <ul class="mt-6 space-y-2.5 text-[15px]">
+              {privacy.map((p) => <li class="flex items-center gap-2.5"><ShieldCheck className="size-4 shrink-0 text-tone" aria-hidden="true" />{p}</li>)}
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <Process title="So läuft es ab." steps={steps} note={{ after: 2, text: 'in der Regel 7 Werktage' }} />
+
+    <!-- Preis -->
+    <section id="preis" class="scroll-mt-20 border-t border-border py-24 md:py-32">
+      <div class="wrap grid grid-cols-[minmax(0,1fr)] items-start gap-12 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.1fr)] lg:gap-20">
+        <div class="lg:sticky lg:top-28">
+          <h2 class="section-title">Ein Paket. Ein Preis.</h2>
+          <p class="section-sub mt-5 max-w-[44ch]">
+            Kein Angebot, kein Baukasten, keine Agentur-Stundensätze. Wir bauen und betreuen Ihre Website, zeigen Ihre Arbeit und sorgen dafür, dass Anfragen mit den richtigen Angaben ankommen.
+          </p>
+          <a href="/kontakt#termin" class="mt-6 inline-flex min-h-11 items-center gap-2 text-[15px] underline decoration-border underline-offset-4 hover:decoration-tone">Erst kurz sprechen? 15 Minuten, unverbindlich →</a>
+        </div>
+
+        <div class="relative rounded-3xl border border-border bg-card p-7 md:p-10">
+          <BeamFrame client:visible />
+          <p class="font-mono text-xs text-muted-foreground">handwerkweb Komplettpaket</p>
+          <div class="mt-5 flex flex-wrap items-baseline gap-x-3">
+            <span class="text-6xl font-semibold tracking-tight">{HANDWERKWEB.setupPrice}</span>
+            <span class="text-muted-foreground">einmalig</span>
+          </div>
+          <p class="mt-1 text-2xl"><span class="font-semibold">+ {HANDWERKWEB.monthlyPrice}</span> <span class="text-muted-foreground">/ Monat</span></p>
+          <p class="mt-2 text-sm text-muted-foreground">inkl. USt. · 12 Monate Mindestlaufzeit, danach monatlich kündbar</p>
+          <ul class="mt-8 space-y-3.5 border-t border-border pt-8">
+            {included.map((i) => (
+              <li class="flex gap-3 text-[15px] leading-snug"><Check className="mt-0.5 size-4 shrink-0 text-tone" aria-hidden="true" /><span>{i}</span></li>
+            ))}
+          </ul>
+          <a href={ctaHref} class={`${primary} mt-10 h-14 w-full text-base`}>{ctaLabel} <ArrowRight className="size-4" aria-hidden="true" /></a>
+          <p class="mt-4 text-center text-sm text-muted-foreground">
+            Sichere Zahlung über Stripe · Es gelten die <a href="/handwerk/agb" class="underline underline-offset-2">AGB für handwerkweb</a>
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <ProductFaq items={faqs} intro="Preis, Ablauf, Datenschutz: die Antworten, die Betriebe vor dem Kauf wissen wollen." />
+
+    <!-- Abschluss -->
+    <section class="pb-28 pt-8 md:pb-36">
+      <div class="wrap">
+        <div class="rounded-[28px] bg-tone px-7 py-16 text-center text-tone-foreground md:px-16 md:py-24">
+          <h2 class="display mx-auto max-w-3xl text-[clamp(2rem,5vw,3.75rem)]">Lieber erst sprechen?</h2>
+          <p class="mx-auto mt-5 max-w-[48ch] text-lg opacity-80">15 Minuten, unverbindlich – wir klären, ob handwerkweb zu Ihrem Betrieb passt.</p>
+          <a href="/kontakt#termin" class="mt-10 inline-flex h-14 items-center gap-2 rounded-full bg-black px-8 text-base font-medium text-white transition-transform hover:scale-[1.02]">Kurzes Gespräch buchen <ArrowRight className="size-4" aria-hidden="true" /></a>
+        </div>
+      </div>
+    </section>
+  </ProductShell>
 </Base>

@@ -1,0 +1,47 @@
+---
+import '../../styles/product.css';
+
+interface Props {
+  tone: string;
+  /** Kurzer Preistext für die mobile Leiste, z. B. „1.990 € + 69 €/Monat“ */
+  priceText: string;
+}
+const { tone, priceText } = Astro.props;
+---
+<div style={`--tone:${tone}`} class="overflow-x-clip">
+  <slot />
+
+  <!-- Mobile Leiste: erscheint nach dem Hero, verschwindet am Preis. Label bewusst „Zum Preis“ (kein zweiter „Jetzt starten“-Link). -->
+  <div id="sticky-cta" hidden class="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-[#0c0c0e] px-4 pb-[max(12px,env(safe-area-inset-bottom))] pt-3 md:hidden">
+    <div class="mx-auto flex max-w-md items-center justify-between gap-4">
+      <p class="text-sm text-muted-foreground">{priceText}</p>
+      <a href="#preis" class="inline-flex h-11 shrink-0 items-center rounded-full bg-tone px-5 text-sm font-medium text-tone-foreground">Zum Preis</a>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Spotlight-Position für .bento
+  document.querySelectorAll<HTMLElement>('.bento').forEach((el) => {
+    el.addEventListener('pointermove', (e) => {
+      const r = el.getBoundingClientRect();
+      el.style.setProperty('--mx', `${e.clientX - r.left}px`);
+      el.style.setProperty('--my', `${e.clientY - r.top}px`);
+    });
+  });
+
+  // Mobile Leiste: sichtbar, wenn Hero und Preis nicht im Bild sind
+  const bar = document.getElementById('sticky-cta');
+  const hero = document.querySelector('[data-hero]');
+  const price = document.getElementById('preis');
+  if (bar && hero && price && 'IntersectionObserver' in window) {
+    const seen = new Set<Element>();
+    const update = () => { bar.hidden = seen.size > 0; };
+    const io = new IntersectionObserver((entries) => {
+      for (const e of entries) e.isIntersecting ? seen.add(e.target) : seen.delete(e.target);
+      update();
+    });
+    io.observe(hero);
+    io.observe(price);
+  }
+</script>

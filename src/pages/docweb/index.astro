@@ -1,7 +1,13 @@
 ---
 import Base from '../../layouts/Base.astro';
-import Hero from '../../components/landing/Hero.astro';
-import FaqBlock from '../../components/FaqBlock.astro';
+import ProductShell from '../../components/product/ProductShell.astro';
+import ProductFaq from '../../components/product/ProductFaq.astro';
+import Process from '../../components/product/Process.astro';
+import PraxisStatus from '../../components/product/PraxisStatus';
+import PrepChecklist from '../../components/product/PrepChecklist';
+import BeamFrame from '../../components/product/BeamFrame';
+import { buttonVariants } from '../../components/ui/button';
+import { Stethoscope, Brain, Smile, Check, X, ArrowRight, ArrowUpRight, CalendarCheck, FileText, Phone } from 'lucide-react';
 import { DOCWEB } from '../../lib/docweb';
 
 const seo = {
@@ -12,19 +18,15 @@ const seo = {
   alternateUrls: { de: 'https://lkmedia.net/docweb' },
 };
 
-const features = [
-  { title: 'Terminkalender Ihrer Praxis', body: 'Der Knopf „Termin buchen“ steht auf jeder Seite und öffnet den Kalender Ihrer Praxis bei Ihrem Kalender-Dienst, zum Beispiel Doctolib oder samedi. Dort wählen Patienten einen freien Termin. Wir verbinden den Kalender und prüfen vor dem Start, dass er sich öffnet und freie Termine zeigt. Telefon und E-Mail bleiben immer sichtbar.' },
-  { title: 'Für alle verständlich', body: 'Kurze Sätze und Alltagswörter; Fachbegriffe erklären wir direkt im Text. Die Gestaltung richtet sich nach dem Standard für barrierefreie Websites (WCAG 2.2 AA): gut lesbare Schrift, starke Kontraste, Bedienung auch ohne Maus. Ob die fertige Seite den Standard ganz erfüllt, lässt sich erst an der fertigen Praxiswebsite prüfen.' },
-  { title: 'Keine Datensammler', body: 'Keine eingebetteten Statistik- oder Kartendienste, Schriften liegen auf unserem Server und es gibt standardmäßig kein Kontaktformular. Der Terminkalender öffnet sich bei Ihrem Kalender-Dienst, sobald Patienten auf „Termin buchen“ klicken.' },
-  { title: 'Immer aktuell', body: 'Die Anzeige „Jetzt geöffnet“ kennt die Feiertage Ihres Bundeslands und Ihren eingetragenen Urlaub und zeigt dann „Heute geschlossen“. Alle 3 Monate prüfen wir Ihre Seite von uns aus auf veraltete Angaben und schicken Ihnen eine kurze Nachricht.' },
-  { title: 'Gut gefunden werden', body: 'Praxisdaten, Arztprofile, Leistungen und Öffnungszeiten stellen wir klar dar. Zusätzlich hinterlegen wir sie so, dass Suchmaschinen sie leichter einordnen können.' },
-  { title: 'Rechtstexte für Heilberufe', body: 'Impressum mit den Angaben zu Beruf und Kammer, Datenschutzerklärung und Erklärung zur Barrierefreiheit bereiten wir als Entwurf vor. Sie prüfen die Angaben und geben sie vor der Veröffentlichung frei.' },
-];
+const TONE = 'oklch(0.82 0.115 178)';
+
+const primary = buttonVariants({ size: 'lg', className: 'h-12 rounded-full bg-tone px-7 text-base text-tone-foreground hover:bg-tone/90' });
+const ghost = buttonVariants({ variant: 'outline', size: 'lg', className: 'h-12 rounded-full px-7 text-base' });
 
 const audiences = [
-  { title: 'Arztpraxen', body: 'Hausärzte, Fachärzte und MVZ. Bei mehreren Standorten klären wir den Umfang vor der Bestellung gemeinsam.' },
-  { title: 'Psychotherapie', body: 'Psychologische und ärztliche Psychotherapeuten, Kinder- und Jugendlichentherapie.' },
-  { title: 'Zahnarztpraxen', body: 'Zahnärzte und Kieferorthopäden.' },
+  { icon: Stethoscope, title: 'Arztpraxen', body: 'Hausärzte, Fachärzte und MVZ. Bei mehreren Standorten klären wir den Umfang vor der Bestellung gemeinsam.' },
+  { icon: Brain, title: 'Psychotherapie', body: 'Psychologische und ärztliche Psychotherapeuten, Kinder- und Jugendlichentherapie.' },
+  { icon: Smile, title: 'Zahnarztpraxen', body: 'Zahnärzte und Kieferorthopäden.' },
 ];
 
 const steps = [
@@ -88,126 +90,220 @@ const productSchema = {
 };
 ---
 <Base seo={seo} jsonLd={[productSchema]}>
-  <Hero
-    headline="Die Website für Ihre Praxis. Zum Festpreis."
-    sub={`Für Arztpraxen, Psychotherapie und Zahnärzte – verständlich, mit Terminkalender, ohne Datensammeln. ${DOCWEB.deliveryPromise}`}
-    metrics={[
-      { value: DOCWEB.setupPrice, label: 'Einrichtung inkl. USt.' },
-      { value: DOCWEB.monthlyPrice, label: 'pro Monat inkl. USt.' },
-      { value: `${DOCWEB.minimumTermMonths} Monate`, label: 'Mindestlaufzeit ab Bestellung' },
-    ]}
-    ctaHref="#preis" ctaLabel="Paket ansehen"
-    secondaryHref={DOCWEB.demoUrl} secondaryLabel="Demo ansehen"
-    deviceImage="/images/docweb-demo.webp" deviceAlt="Startseite der docweb-Demo: Hausarztpraxis mit Öffnungszeiten und Terminbuchung"
-    deviceHref={DOCWEB.demoUrl} />
+  <ProductShell tone={TONE} priceText={`${DOCWEB.setupPrice} + ${DOCWEB.monthlyPrice}/Monat`}>
 
-  <section class="py-24 px-6 max-w-6xl mx-auto">
-    <h2 class="text-3xl md:text-5xl font-semibold tracking-tight mb-12">Für wen docweb gemacht ist.</h2>
-    <div class="grid md:grid-cols-3 gap-6">
-      {audiences.map((a) => (
-        <div class="rounded-2xl border border-black/10 dark:border-white/10 p-8">
-          <h3 class="text-xl font-semibold mb-3">{a.title}</h3>
-          <p class="text-black/70 dark:text-white/70 leading-relaxed">{a.body}</p>
-        </div>
-      ))}
-    </div>
-  </section>
+    <!-- Hero -->
+    <section data-hero class="relative isolate pb-20 pt-14 md:pb-32 md:pt-24">
+      <div class="dot-grid absolute inset-0 -z-10" aria-hidden="true"></div>
+      <div class="absolute -left-48 top-20 -z-10 size-[560px] rounded-full bg-tone/12 blur-[130px]" aria-hidden="true"></div>
 
-  <section class="py-24 px-6 max-w-6xl mx-auto border-t border-black/10 dark:border-white/10">
-    <h2 class="text-3xl md:text-5xl font-semibold tracking-tight mb-12">Was Ihre Website kann.</h2>
-    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
-      {features.map((f) => (
+      <div class="wrap grid grid-cols-[minmax(0,1fr)] items-center gap-16 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)]">
         <div>
-          <h3 class="text-xl font-semibold mb-3">{f.title}</h3>
-          <p class="text-black/70 dark:text-white/70 leading-relaxed">{f.body}</p>
+          <p data-rise class="inline-flex items-center gap-2.5 rounded-full border border-border bg-secondary py-1.5 pl-3 pr-4 text-[13px] text-muted-foreground">
+            <span class="pulse-dot size-1.5 rounded-full bg-tone" aria-hidden="true"></span>
+            docweb · für Praxen, Therapie und Zahnärzte
+          </p>
+          <h1 data-rise style="--d:80ms" class="display mt-7 text-[clamp(2.6rem,6vw,4.75rem)]">
+            Die Website für <span class="text-tone">Ihre Praxis.</span> Zum Festpreis.
+          </h1>
+          <p data-rise style="--d:160ms" class="section-sub mt-6 max-w-[54ch]">
+            Verständlich für Patienten, mit Terminkalender, ohne Datensammeln. {DOCWEB.deliveryPromise}
+          </p>
+
+          <dl data-rise style="--d:220ms" class="mt-8 flex flex-wrap items-end gap-x-8 gap-y-4">
+            <div><dt class="text-sm text-muted-foreground">Einrichtung</dt><dd class="text-4xl font-semibold tracking-tight">{DOCWEB.setupPrice}</dd></div>
+            <div><dt class="text-sm text-muted-foreground">pro Monat</dt><dd class="text-4xl font-semibold tracking-tight">{DOCWEB.monthlyPrice}</dd></div>
+            <div><dt class="text-sm text-muted-foreground">Mindestlaufzeit ab Bestellung</dt><dd class="text-xl font-medium leading-[2.5rem]">{DOCWEB.minimumTermMonths} Monate</dd></div>
+          </dl>
+          <p data-rise style="--d:240ms" class="mt-2 text-sm text-muted-foreground">Preise inkl. USt., zuzüglich Domainkosten.</p>
+
+          <div data-rise style="--d:300ms" class="mt-8 flex flex-wrap items-center gap-3">
+            <a href="#preis" class={primary}>Paket ansehen <ArrowRight className="size-4" aria-hidden="true" /></a>
+            <a href={DOCWEB.demoUrl} target="_blank" rel="noopener noreferrer" class={ghost}>Demo ansehen<ArrowUpRight className="size-4" aria-hidden="true" /></a>
+          </div>
         </div>
-      ))}
-    </div>
-    <a href={DOCWEB.demoUrl} target="_blank" rel="noopener" class="mt-12 inline-flex h-11 px-6 items-center rounded-full border border-black/30 dark:border-white/30 text-sm font-medium">
-      Live-Demo öffnen →
-    </a>
-    <p class="mt-4 text-sm text-black/70 dark:text-white/70">Die Demo zeigt eine erfundene Praxis. Ihr Terminknopf führt dort nur zur Startseite von Doctolib – bei Ihnen direkt zu Ihrem eigenen Kalender.</p>
-  </section>
 
-  <section class="py-24 px-6 max-w-6xl mx-auto border-t border-black/10 dark:border-white/10">
-    <h2 class="text-3xl md:text-5xl font-semibold tracking-tight mb-12">So läuft es ab.</h2>
-    <ol class="grid md:grid-cols-4 gap-8">
-      {steps.map((s) => (
-        <li>
-          <div class="text-sm tracking-widest text-black/70 dark:text-white/70 mb-3">{s.n}</div>
-          <h3 class="text-xl font-semibold mb-2">{s.title}</h3>
-          <p class="text-black/70 dark:text-white/70 leading-relaxed">{s.body}</p>
-        </li>
-      ))}
-    </ol>
-  </section>
-
-  <section id="vorbereitung" aria-labelledby="vorbereitung-title" class="py-24 px-6 max-w-6xl mx-auto border-t border-black/10 dark:border-white/10 scroll-mt-20">
-    <h2 id="vorbereitung-title" class="text-3xl md:text-5xl font-semibold tracking-tight">Das benötigen wir von Ihnen.</h2>
-    <p class="mt-5 max-w-3xl text-lg text-black/70 dark:text-white/70 leading-relaxed">
-      Diese Checkliste können Sie schon vor der Bestellung durchgehen. Nach dem Kauf tragen Sie Ihre Angaben in einem kurzen Formular ein.
-      Der Zeitraum bis zur Vorschau beginnt, sobald alle benötigten Inhalte vorliegen.
-    </p>
-    <div class="mt-10 grid md:grid-cols-2 gap-8">
-      {preparation.map((item) => (
-        <div class="rounded-2xl border border-black/10 dark:border-white/10 p-6 md:p-8">
-          <h3 class="text-xl font-semibold mb-3">{item.title}</h3>
-          <p class="text-black/70 dark:text-white/70 leading-relaxed">{item.body}</p>
+        <div data-rise style="--d:200ms" class="relative lg:pb-24">
+          <div class="overflow-hidden rounded-[22px] border border-border bg-card shadow-[0_40px_120px_-30px_rgba(0,0,0,0.9)]">
+            <div class="flex items-center gap-2 border-b border-border bg-secondary px-4 py-3" aria-hidden="true">
+              <span class="size-2.5 rounded-full bg-white/15"></span><span class="size-2.5 rounded-full bg-white/15"></span><span class="size-2.5 rounded-full bg-white/15"></span>
+              <span class="ml-3 flex-1 truncate rounded-md bg-black/40 px-3 py-1 font-mono text-[11px] text-muted-foreground">docweb.lkmedia.net</span>
+            </div>
+            <a href={DOCWEB.demoUrl} target="_blank" rel="noopener noreferrer" class="group relative block">
+              <img src="/images/docweb-demo.webp" alt="Startseite der docweb-Demo: Hausarztpraxis mit Öffnungszeiten und Terminbuchung" width="1440" height="900" class="aspect-[16/11] w-full object-cover object-top" loading="eager" decoding="async" />
+              <span class="absolute inset-0 grid place-items-center bg-black/55 opacity-0 transition-opacity duration-200 group-hover:opacity-100 group-focus-visible:opacity-100">
+                <span class="inline-flex items-center gap-2 rounded-full bg-white px-5 py-2.5 text-sm font-medium text-black">Website ansehen <ArrowUpRight className="size-4" aria-hidden="true" /></span>
+              </span>
+            </a>
+          </div>
+          <div class="relative z-10 mx-auto mt-6 flex justify-center lg:absolute lg:-bottom-4 lg:-right-3 lg:mt-0">
+            <PraxisStatus client:visible />
+          </div>
         </div>
-      ))}
-    </div>
-    <p class="mt-8 text-black/70 dark:text-white/70 leading-relaxed">
-      Mehrere Standorte, zusätzliche Seiten, weitere Sprachen oder ein Umzug Ihrer bestehenden Website?
-      {' '}<a href="/kontakt#termin" class="underline underline-offset-4">Lassen Sie uns den Umfang vor der Bestellung klären.</a>
-    </p>
-  </section>
-
-  <section id="preis" class="py-24 px-6 max-w-6xl mx-auto border-t border-black/10 dark:border-white/10 scroll-mt-20">
-    <div class="grid lg:grid-cols-2 gap-12 items-start">
-      <div>
-        <h2 class="text-3xl md:text-5xl font-semibold tracking-tight">Ein Paket. Ein Preis.</h2>
-        <p class="mt-5 text-lg text-black/70 dark:text-white/70 leading-relaxed">
-          Sie bestellen das Praxis-Paket online. Wir bereiten Ihre Inhalte auf, erstellen die Website und übernehmen den laufenden Betrieb.
-        </p>
-        <p class="mt-5 text-black/70 dark:text-white/70 leading-relaxed">
-          Nicht enthalten: Domainkosten, Gebühren Ihres Kalender-Dienstes (zum Beispiel Doctolib oder samedi), Fotografie, weitergehende Texterstellung und Rechtsberatung.
-          Erweiterungen und zusätzlichen Aufwand vereinbaren wir vorab.
-        </p>
-        <a href="#vorbereitung" class="mt-6 inline-flex min-h-11 items-center underline underline-offset-4">Checkliste für Ihre Bestellung ansehen →</a>
       </div>
-      <div class="rounded-2xl border border-black/10 dark:border-white/15 bg-black/[0.02] dark:bg-white/[0.03] p-8 md:p-10">
-        <div class="text-sm tracking-widest text-black/70 dark:text-white/70">DOCWEB KOMPLETTPAKET</div>
-        <div class="mt-4 flex flex-wrap items-baseline gap-x-3">
-          <span class="text-5xl font-semibold tracking-tight">{DOCWEB.setupPrice}</span>
-          <span class="text-black/60 dark:text-white/60">einmalig</span>
-        </div>
-        <div class="mt-1 text-xl"><span class="font-semibold">+ {DOCWEB.monthlyPrice}</span> <span class="text-black/60 dark:text-white/60">/ Monat</span></div>
-        <p class="mt-2 text-sm text-black/70 dark:text-white/70">inkl. USt. · {DOCWEB.minimumTermMonths} Monate Mindestlaufzeit ab Bestellung</p>
-        <div class="mt-6 border-y border-black/10 dark:border-white/15 py-5 text-sm leading-relaxed">
-          <p><strong>Bei Bestellung: {DOCWEB.initialPrice}</strong> für Einrichtung und ersten Monat.</p>
-          <p class="mt-2 text-black/70 dark:text-white/70">Danach {DOCWEB.monthlyPrice} monatlich im Voraus. Einrichtung + {DOCWEB.minimumTermMonths} Monatsbeiträge: <strong class="text-black dark:text-white">{DOCWEB.minimumTotalPrice} inkl. USt.</strong>, zuzüglich Domainkosten.</p>
-          <p class="mt-2 text-black/70 dark:text-white/70">Nach der Mindestlaufzeit monatliche Verlängerung; Kündigungsfrist: ein Monat zum Monatsende.</p>
-        </div>
-        <ul class="mt-8 space-y-3">
-          {included.map((i) => (
-            <li class="flex gap-3"><span aria-hidden="true" class="text-black/70 dark:text-white/70">✓</span><span>{i}</span></li>
+    </section>
+
+    <!-- Für wen -->
+    <section class="border-t border-border py-20 md:py-24">
+      <div class="wrap">
+        <h2 class="section-title max-w-2xl">Für wen docweb gemacht ist.</h2>
+        <ul class="mt-12 grid gap-px overflow-hidden rounded-2xl border border-border bg-border md:grid-cols-3">
+          {audiences.map((a) => (
+            <li class="bg-background p-7 md:p-9">
+              <a.icon className="size-6 text-tone" aria-hidden="true" />
+              <h3 class="mt-6 text-xl font-semibold tracking-tight">{a.title}</h3>
+              <p class="mt-2 text-[15px] leading-relaxed text-muted-foreground">{a.body}</p>
+            </li>
           ))}
         </ul>
-        <a href={DOCWEB.paymentLink} class="mt-10 flex h-12 w-full items-center justify-center rounded-full bg-black text-white dark:bg-white dark:text-black font-medium hover:bg-black/90 dark:hover:bg-white/90 transition">
-          Jetzt starten →
-        </a>
-        <p class="mt-3 text-center text-sm text-black/70 dark:text-white/70">
-          Sichere Zahlung über Stripe · Es gelten die <a href="/docweb/agb" class="underline">AGB für docweb</a>
+      </div>
+    </section>
+
+    <!-- Bento -->
+    <section class="border-t border-border py-24 md:py-32">
+      <div class="wrap">
+        <h2 class="section-title max-w-3xl">Was Ihre Website kann.</h2>
+        <div class="mt-14 grid grid-cols-[minmax(0,1fr)] gap-4 lg:grid-cols-6">
+          <article class="bento lg:col-span-4">
+            <h3 class="text-xl font-semibold tracking-tight">Terminkalender Ihrer Praxis</h3>
+            <p class="mt-3 max-w-[62ch] text-[15px] leading-relaxed text-muted-foreground">Der Knopf „Termin buchen“ steht auf jeder Seite und öffnet den Kalender Ihrer Praxis bei Ihrem Kalender-Dienst, zum Beispiel Doctolib oder samedi. Dort wählen Patienten einen freien Termin. Wir verbinden den Kalender und prüfen vor dem Start, dass er sich öffnet und freie Termine zeigt. Telefon und E-Mail bleiben immer sichtbar.</p>
+            <div class="mt-8 flex flex-wrap items-center gap-3" aria-hidden="true">
+              <span class="inline-flex h-11 items-center gap-2 rounded-full bg-tone px-5 text-sm font-medium text-tone-foreground"><CalendarCheck className="size-4" />Termin buchen</span>
+              <ArrowRight className="size-4 text-muted-foreground" />
+              {['Doctolib', 'samedi', 'Ihr Kalender-Dienst'].map((p) => <span class="rounded-full border border-border bg-secondary px-3.5 py-2 text-sm">{p}</span>)}
+              <span class="inline-flex items-center gap-2 text-sm text-muted-foreground sm:ml-2"><Phone className="size-4" />Telefon bleibt sichtbar</span>
+            </div>
+          </article>
+
+          <article class="bento lg:col-span-2">
+            <h3 class="text-xl font-semibold tracking-tight">Für alle verständlich</h3>
+            <p class="mt-3 text-[15px] leading-relaxed text-muted-foreground">Kurze Sätze und Alltagswörter; Fachbegriffe erklären wir direkt im Text. Die Gestaltung richtet sich nach dem Standard für barrierefreie Websites (WCAG 2.2 AA): gut lesbare Schrift, starke Kontraste, Bedienung auch ohne Maus. Ob die fertige Seite den Standard ganz erfüllt, lässt sich erst an der fertigen Praxiswebsite prüfen.</p>
+          </article>
+
+          <article class="bento lg:col-span-2">
+            <h3 class="text-xl font-semibold tracking-tight">Keine Datensammler</h3>
+            <p class="mt-3 text-[15px] leading-relaxed text-muted-foreground">Keine eingebetteten Statistik- oder Kartendienste, Schriften liegen auf unserem Server und es gibt standardmäßig kein Kontaktformular. Der Terminkalender öffnet sich bei Ihrem Kalender-Dienst, sobald Patienten auf „Termin buchen“ klicken.</p>
+            <ul class="mt-6 space-y-2 text-sm" aria-hidden="true">
+              {['Statistik-Dienste', 'Karten-Embeds', 'Kontaktformular'].map((t) => <li class="flex items-center gap-2.5 text-muted-foreground"><X className="size-4 text-white/40" />{t}</li>)}
+              <li class="flex items-center gap-2.5"><Check className="size-4 text-tone" />Schriften vom eigenen Server</li>
+            </ul>
+          </article>
+
+          <article class="bento lg:col-span-2">
+            <h3 class="text-xl font-semibold tracking-tight">Immer aktuell</h3>
+            <p class="mt-3 text-[15px] leading-relaxed text-muted-foreground">Die Anzeige „Jetzt geöffnet“ kennt die Feiertage Ihres Bundeslands und Ihren eingetragenen Urlaub und zeigt dann „Heute geschlossen“. Alle 3 Monate prüfen wir Ihre Seite von uns aus auf veraltete Angaben und schicken Ihnen eine kurze Nachricht.</p>
+            <ol class="mt-6 flex items-center gap-2 font-mono text-xs text-muted-foreground" aria-hidden="true">
+              {['Q1', 'Q2', 'Q3', 'Q4'].map((q, i) => (
+                <li class="flex flex-1 items-center gap-2"><span class="grid size-8 shrink-0 place-items-center rounded-full border border-tone/50 bg-tone/10 text-tone">{q}</span>{i < 3 && <span class="h-px flex-1 bg-border"></span>}</li>
+              ))}
+            </ol>
+          </article>
+
+          <article class="bento lg:col-span-2">
+            <h3 class="text-xl font-semibold tracking-tight">Gut gefunden werden</h3>
+            <p class="mt-3 text-[15px] leading-relaxed text-muted-foreground">Praxisdaten, Arztprofile, Leistungen und Öffnungszeiten stellen wir klar dar. Zusätzlich hinterlegen wir sie so, dass Suchmaschinen sie leichter einordnen können.</p>
+            <pre class="mt-6 overflow-hidden rounded-xl border border-border bg-black/40 p-4 font-mono text-[11px] leading-relaxed text-muted-foreground" aria-hidden="true"><span class="text-tone">"@type"</span>: "Physician",
+<span class="text-tone">"name"</span>: "Praxis Dr. Beispiel",
+<span class="text-tone">"openingHours"</span>: "Mo-Do 08:00-17:00"</pre>
+          </article>
+
+          <article class="bento lg:col-span-6">
+            <div class="grid items-center gap-8 md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
+              <div>
+                <h3 class="text-xl font-semibold tracking-tight">Rechtstexte für Heilberufe</h3>
+                <p class="mt-3 max-w-[56ch] text-[15px] leading-relaxed text-muted-foreground">Impressum mit den Angaben zu Beruf und Kammer, Datenschutzerklärung und Erklärung zur Barrierefreiheit bereiten wir als Entwurf vor. Sie prüfen die Angaben und geben sie vor der Veröffentlichung frei.</p>
+              </div>
+              <ul class="grid gap-2 sm:grid-cols-3" aria-hidden="true">
+                {['Impressum', 'Datenschutz', 'Barrierefreiheit'].map((d) => (
+                  <li class="rounded-xl border border-border bg-secondary p-4"><FileText className="size-5 text-tone" /><p class="mt-3 text-sm font-medium">{d}</p><p class="mt-1 text-xs text-muted-foreground">Entwurf, Sie geben frei</p></li>
+                ))}
+              </ul>
+            </div>
+          </article>
+        </div>
+        <a href={DOCWEB.demoUrl} target="_blank" rel="noopener noreferrer" class="mt-8 inline-flex min-h-11 items-center gap-2 text-[15px] underline decoration-border underline-offset-4 hover:decoration-tone">Live-Demo öffnen <ArrowUpRight className="size-4" aria-hidden="true" /></a>
+        <p class="mt-2 max-w-[70ch] text-sm text-muted-foreground">Die Demo zeigt eine erfundene Praxis. Ihr Terminknopf führt dort nur zur Startseite von Doctolib – bei Ihnen direkt zu Ihrem eigenen Kalender.</p>
+      </div>
+    </section>
+
+    <Process title="So läuft es ab." steps={steps} />
+
+    <!-- Vorbereitung -->
+    <section id="vorbereitung" aria-labelledby="vorbereitung-title" class="scroll-mt-20 border-t border-border py-24 md:py-32">
+      <div class="wrap">
+        <h2 id="vorbereitung-title" class="section-title max-w-3xl">Das benötigen wir von Ihnen.</h2>
+        <p class="section-sub mt-5 max-w-[62ch]">
+          Haken Sie ab, was Sie schon bereit haben. Nach dem Kauf tragen Sie Ihre Angaben in einem kurzen Formular ein.
+          Der Zeitraum bis zur Vorschau beginnt, sobald alle benötigten Inhalte vorliegen.
+        </p>
+        <div class="mt-10">
+          <PrepChecklist items={preparation} ctaHref="#preis" client:visible />
+        </div>
+        <p class="mt-8 max-w-[70ch] leading-relaxed text-muted-foreground">
+          Mehrere Standorte, zusätzliche Seiten, weitere Sprachen oder ein Umzug Ihrer bestehenden Website?
+          {' '}<a href="/kontakt#termin" class="text-foreground underline underline-offset-4 decoration-border hover:decoration-tone">Lassen Sie uns den Umfang vor der Bestellung klären.</a>
         </p>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <FaqBlock items={faqs} />
+    <!-- Preis -->
+    <section id="preis" class="scroll-mt-20 border-t border-border py-24 md:py-32">
+      <div class="wrap grid grid-cols-[minmax(0,1fr)] items-start gap-12 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.1fr)] lg:gap-20">
+        <div class="lg:sticky lg:top-28">
+          <h2 class="section-title">Ein Paket. Ein Preis.</h2>
+          <p class="section-sub mt-5 max-w-[46ch]">
+            Sie bestellen das Praxis-Paket online. Wir bereiten Ihre Inhalte auf, erstellen die Website und übernehmen den laufenden Betrieb.
+          </p>
+          <div class="mt-8 rounded-2xl border border-border bg-card p-5 md:p-6">
+            <p class="font-medium">Nicht enthalten</p>
+            <ul class="mt-3 space-y-2 text-[15px] text-muted-foreground">
+              {['Domainkosten', 'Gebühren Ihres Kalender-Dienstes (zum Beispiel Doctolib oder samedi)', 'Fotografie', 'Weitergehende Texterstellung', 'Rechtsberatung'].map((t) => <li class="flex gap-2.5"><X className="mt-1 size-4 shrink-0 text-white/40" aria-hidden="true" />{t}</li>)}
+            </ul>
+            <p class="mt-4 text-sm text-muted-foreground">Erweiterungen und zusätzlichen Aufwand vereinbaren wir vorab.</p>
+          </div>
+          <a href="#vorbereitung" class="mt-6 inline-flex min-h-11 items-center gap-2 text-[15px] underline decoration-border underline-offset-4 hover:decoration-tone">Checkliste für Ihre Bestellung ansehen →</a>
+        </div>
 
-  <section class="py-24 px-6 text-center border-t border-black/10 dark:border-white/10">
-    <h2 class="text-3xl md:text-5xl font-semibold tracking-tight">Lieber erst sprechen?</h2>
-    <p class="mt-4 text-black/70 dark:text-white/70">15 Minuten, unverbindlich – wir klären, ob docweb zu Ihrer Praxis passt.</p>
-    <a href="/kontakt#termin" class="mt-8 inline-flex h-12 px-6 items-center rounded-full border border-black/30 dark:border-white/30 font-medium">Kurzes Gespräch buchen</a>
-  </section>
+        <div class="relative rounded-3xl border border-border bg-card p-7 md:p-10">
+          <BeamFrame client:visible />
+          <p class="font-mono text-xs text-muted-foreground">docweb Komplettpaket</p>
+          <div class="mt-5 flex flex-wrap items-baseline gap-x-3">
+            <span class="text-6xl font-semibold tracking-tight">{DOCWEB.setupPrice}</span>
+            <span class="text-muted-foreground">einmalig</span>
+          </div>
+          <p class="mt-1 text-2xl"><span class="font-semibold">+ {DOCWEB.monthlyPrice}</span> <span class="text-muted-foreground">/ Monat</span></p>
+          <p class="mt-2 text-sm text-muted-foreground">inkl. USt. · {DOCWEB.minimumTermMonths} Monate Mindestlaufzeit ab Bestellung</p>
+
+          <div class="mt-6 rounded-2xl bg-secondary p-5 text-sm leading-relaxed">
+            <p><strong>Bei Bestellung: {DOCWEB.initialPrice}</strong> für Einrichtung und ersten Monat.</p>
+            <p class="mt-2 text-muted-foreground">Danach {DOCWEB.monthlyPrice} monatlich im Voraus. Einrichtung + {DOCWEB.minimumTermMonths} Monatsbeiträge: <strong class="text-foreground">{DOCWEB.minimumTotalPrice} inkl. USt.</strong>, zuzüglich Domainkosten.</p>
+            <p class="mt-2 text-muted-foreground">Nach der Mindestlaufzeit monatliche Verlängerung; Kündigungsfrist: ein Monat zum Monatsende.</p>
+          </div>
+
+          <ul class="mt-8 space-y-3.5 border-t border-border pt-8">
+            {included.map((i) => (
+              <li class="flex gap-3 text-[15px] leading-snug"><Check className="mt-0.5 size-4 shrink-0 text-tone" aria-hidden="true" /><span>{i}</span></li>
+            ))}
+          </ul>
+          <a href={DOCWEB.paymentLink} class={`${primary} mt-10 h-14 w-full text-base`}>Jetzt starten <ArrowRight className="size-4" aria-hidden="true" /></a>
+          <p class="mt-4 text-center text-sm text-muted-foreground">
+            Sichere Zahlung über Stripe · Es gelten die <a href="/docweb/agb" class="underline underline-offset-2">AGB für docweb</a>
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <ProductFaq items={faqs} intro="Kosten, Terminbuchung, Datenschutz: die Antworten, die Praxen vor dem Kauf wissen wollen." />
+
+    <!-- Abschluss -->
+    <section class="pb-28 pt-8 md:pb-36">
+      <div class="wrap">
+        <div class="rounded-[28px] bg-tone px-7 py-16 text-center text-tone-foreground md:px-16 md:py-24">
+          <h2 class="display mx-auto max-w-3xl text-[clamp(2rem,5vw,3.75rem)]">Lieber erst sprechen?</h2>
+          <p class="mx-auto mt-5 max-w-[48ch] text-lg opacity-80">15 Minuten, unverbindlich – wir klären, ob docweb zu Ihrer Praxis passt.</p>
+          <a href="/kontakt#termin" class="mt-10 inline-flex h-14 items-center gap-2 rounded-full bg-black px-8 text-base font-medium text-white transition-transform hover:scale-[1.02]">Kurzes Gespräch buchen <ArrowRight className="size-4" aria-hidden="true" /></a>
+        </div>
+      </div>
+    </section>
+  </ProductShell>
 </Base>
