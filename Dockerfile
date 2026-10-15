@@ -10,7 +10,10 @@ RUN pnpm install --frozen-lockfile
 FROM base AS build
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
+ARG PUBLIC_TURNSTILE_SITE_KEY
+ARG PUBLIC_CAL_LINK
 RUN pnpm build
+RUN pnpm prune --prod
 
 FROM node:24-alpine AS runner
 ENV NODE_ENV=production HOST=0.0.0.0 PORT=4321
@@ -18,5 +21,6 @@ WORKDIR /app
 COPY --from=build /app/dist ./dist
 COPY --from=build /app/node_modules ./node_modules
 COPY --from=build /app/package.json ./
+USER node
 EXPOSE 4321
 CMD ["node", "./dist/server/entry.mjs"]

@@ -70,9 +70,9 @@ export async function aenderungDeps(sessionId: string): Promise<AenderungDeps> {
     return (await import("./aenderung-fake")).fakeDeps(sessionId);
   }
   // Statische Zugriffe statt env(k): sonst kann Vite den DEV-Zweig samt Fake nicht entfernen.
-  const token = process.env.GITHUB_KUNDEN_TOKEN ?? import.meta.env.GITHUB_KUNDEN_TOKEN;
+  const token = process.env.GITHUB_KUNDEN_TOKEN;
   return {
-    stripeKey: process.env.STRIPE_SECRET_KEY ?? import.meta.env.STRIPE_SECRET_KEY,
+    stripeKey: process.env.STRIPE_SECRET_KEY,
     checkAnySession,
     registry,
     gh: token ? createGitHub({ token }) : null,

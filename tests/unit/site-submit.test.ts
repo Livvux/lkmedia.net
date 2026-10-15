@@ -33,7 +33,7 @@ const input = (o: Partial<SubmitInput> = {}): SubmitInput => ({
   formData: async () => valid(), ...o,
 });
 const deps = (o: Partial<SubmitDeps> = {}): SubmitDeps => ({
-  send: vi.fn(async () => {}), allow: () => true, dev: false, registry: fakeRegistry(DEMO_KUNDEN), ...o,
+  send: vi.fn(async () => {}), release: vi.fn(), allow: () => true, dev: false, registry: fakeRegistry(DEMO_KUNDEN), ...o,
 });
 
 describe('handleSubmission', () => {
@@ -126,5 +126,23 @@ describe('createRateLimiter', () => {
     expect([allow('a'), allow('a'), allow('a'), allow('b')]).toEqual([true, true, false, true]);
     t = 1001;
     expect(allow('a')).toBe(true);
+  });
+});
+
+describe('failure recovery and limiter capacity', () => {
+  it('releases failed delivery attempts so a retry can succeed', async () => {
+    const allow = createRateLimiter(1, 60_000);
+    const d = deps({ allow, release: allow.release, send: vi.fn().mockRejectedValueOnce(new Error('smtp')).mockResolvedValue(undefined) });
+    expect(await handleSubmission(input(), d)).toEqual({ status: 303, location: `${ORIGIN}/fehler?grund=versand&f=anfrage` });
+    expect(await handleSubmission(input(), d)).toEqual({ status: 303, location: `${ORIGIN}/danke?f=anfrage` });
+    expect(await handleSubmission(input(), d)).toEqual({ status: 303, location: `${ORIGIN}/fehler?grund=limit&f=anfrage` });
+  });
+  it('evicts only the oldest key at capacity and retains other counters', () => {
+    const allow = createRateLimiter(1, 60_000);
+    for (let n = 0; n < 10_000; n++) expect(allow(`ip-${n}`)).toBe(true);
+    expect(allow('new-ip')).toBe(true);
+    expect(allow('ip-1')).toBe(false);
+    expect(allow('ip-9999')).toBe(false);
+    expect(allow('ip-0')).toBe(true);
   });
 });

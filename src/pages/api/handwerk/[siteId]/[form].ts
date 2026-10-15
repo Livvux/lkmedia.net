@@ -19,7 +19,7 @@ export const POST: APIRoute = async ({ params, request, clientAddress }) => {
       contentLength: Number(request.headers.get("content-length") ?? 0),
       formData: () => request.formData(),
     },
-    { send: sendMail, allow, dev: import.meta.env.DEV, registry },
+    { send: sendMail, allow, release: allow.release, dev: import.meta.env.DEV, registry },
   );
   if (r.status === 303)
     return new Response(null, { status: 303, headers: { Location: r.location } });

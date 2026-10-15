@@ -51,6 +51,14 @@ nodemailer.createTransport = () => {
 globalThis.fetch = async (input, options = {}) => {
   const url = new URL(typeof input === 'string' || input instanceof URL ? input : input.url);
   const method = options.method ?? 'GET';
+  if (url.origin === 'https://challenges.cloudflare.com') {
+    return json({ success: options.body?.get('response') === 'local_captcha_token' });
+  }
+  if (url.origin === 'https://api.resend.com') {
+    const message = JSON.parse(options.body);
+    mail.push(message);
+    return json({ id: 'local-contact-mail' });
+  }
   if (url.origin === 'https://api.stripe.com') {
     const id = url.pathname.split('/').at(-1);
     const session = sessions.get(id);

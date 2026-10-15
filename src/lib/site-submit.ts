@@ -32,6 +32,7 @@ export interface SubmitInput {
 export interface SubmitDeps {
   send: (m: OutgoingMail) => Promise<void>;
   allow: (key: string) => boolean;
+  release: (key: string) => void;
   dev: boolean;
   registry: Registry;
 }
@@ -44,7 +45,10 @@ export function createRateLimiter(max: number, windowMs: number, now: () => numb
   const hits = new Map<string, number[]>();
   const allow = (key: string): boolean => {
     const t = now();
-    if (hits.size > 10_000) hits.clear();
+    if (!hits.has(key) && hits.size >= 10_000) {
+      const oldest = hits.keys().next().value;
+      if (oldest !== undefined) hits.delete(oldest);
+    }
     const recent = (hits.get(key) ?? []).filter((x) => t - x < windowMs);
     const ok = recent.length < max;
     hits.set(key, ok ? [...recent, t] : recent);
@@ -92,9 +96,10 @@ export async function handleSubmission(i: SubmitInput, deps: SubmitDeps): Promis
 
   try {
     await deps.send({ ...parsed.mail, to: kunde.formulare.email });
-  } catch (error) {
+  } catch {
+    deps.release(`${i.siteId}:${i.ip}`);
     // Nur Metadaten loggen (keine personenbezogenen Daten); Absender sieht /fehler mit Telefonnummer.
-    console.error("[site-submit] Versand fehlgeschlagen", i.siteId, i.form, error);
+    console.error("[site-submit] Versand fehlgeschlagen", i.siteId, i.form);
     return go(`/fehler?grund=versand&f=${i.form}`);
   }
   return go(`/danke?f=${i.form}`);

@@ -132,3 +132,13 @@ describe("findSessionsByEmail", () => {
     await expect(findSessionsByEmail(MAIL, "sk", f as unknown as typeof fetch)).rejects.toThrow();
   });
 });
+
+it("paginates filtered Stripe sessions and checks each buyer address", async () => {
+  const fetchFn = vi.fn()
+    .mockResolvedValueOnce(Response.json({ has_more: true, data: [{ id: "cs_test_first", payment_status: "paid", payment_link: PAYMENT_LINKS.docweb, customer_details: { email: MAIL } }] }))
+    .mockResolvedValueOnce(Response.json({ has_more: false, data: [{ id: "cs_test_old", payment_status: "paid", payment_link: PAYMENT_LINKS.docweb, customer_details: { email: MAIL } }, { id: "cs_test_other", payment_status: "paid", payment_link: PAYMENT_LINKS.docweb, customer_details: { email: "other@example.test" } }] }));
+  expect(await findSessionsByEmail(MAIL, "sk", fetchFn)).toEqual([{ id: "cs_test_first", produkt: "docweb" }, { id: "cs_test_old", produkt: "docweb" }]);
+  const next = new URL(fetchFn.mock.calls[1][0]);
+  expect(next.searchParams.get("starting_after")).toBe("cs_test_first");
+  expect(next.searchParams.get("customer_details[email]")).toBe(MAIL);
+});

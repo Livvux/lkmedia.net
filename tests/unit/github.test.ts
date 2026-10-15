@@ -163,3 +163,25 @@ describe("Fehler", () => {
     expect(e.message).not.toContain("geheim");
   });
 });
+
+describe("concurrent commits", () => {
+  it.each([409, 422])("rebases once after ref conflict %s", async (status) => {
+    let reads = 0;
+    let writes = 0;
+    const { gh, calls } = mk({
+      ...commitRoutes,
+      "GET git/ref/heads/main": () => json({ object: { sha: ++reads === 1 ? "head1" : "new-head" } }),
+      "GET git/commits/new-head": () => json({ tree: { sha: "new-tree" } }),
+      "PATCH git/refs/heads/main": () => ++writes === 1 ? json({}, { status }) : json({}),
+    });
+    await gh.commitFiles("Livvux/kunden", { branch: "main", message: "m", files: [{ path: "a", content: "x" }] });
+    expect(writes).toBe(2);
+    expect(calls.filter((c) => c.path === "git/trees").at(-1)?.body.base_tree).toBe("new-tree");
+    expect(calls.filter((c) => c.path === "git/commits" && c.method === "POST").at(-1)?.body.parents).toEqual(["new-head"]);
+  });
+  it("stops after a second conflict", async () => {
+    const { gh, calls } = mk({ ...commitRoutes, "GET git/ref/heads/main": () => json({ object: { sha: "head1" } }), "PATCH git/refs/heads/main": () => json({}, { status: 422 }) });
+    await expect(gh.commitFiles("Livvux/kunden", { branch: "main", message: "m", files: [] })).rejects.toBeInstanceOf(GitHubError);
+    expect(calls.filter((c) => c.method === "PATCH")).toHaveLength(2);
+  });
+});

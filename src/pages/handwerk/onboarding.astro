@@ -11,11 +11,11 @@ export const prerender = false;
 
 const sessionId = Astro.url.searchParams.get('session_id') ?? '';
 const fehler = Astro.url.searchParams.get('fehler');
-const stripeKey = process.env.STRIPE_SECRET_KEY ?? import.meta.env.STRIPE_SECRET_KEY;
+const stripeKey = process.env.STRIPE_SECRET_KEY;
 // Ohne Key nur im Dev-Server Formular zeigen; in Produktion nur nach bezahlter Bestellung.
 const { paid, stoerung } = await zahlungFuerSeite(sessionId, stripeKey, checkSession, import.meta.env.DEV);
 if (stoerung) Astro.response.status = 503;
-const ghToken = process.env.GITHUB_KUNDEN_TOKEN ?? import.meta.env.GITHUB_KUNDEN_TOKEN;
+const ghToken = process.env.GITHUB_KUNDEN_TOKEN;
 // Schon eingereicht? Dann auf den Änderungs-Link hinweisen; das Formular bleibt nutzbar.
 const eingegangen =
   paid && sessionId ? await hatOnboarding(ghToken ? createGitHub({ token: ghToken }) : null, sessionId) : false;

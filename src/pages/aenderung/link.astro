@@ -23,7 +23,7 @@ if (Astro.request.method === 'POST') {
   const form = await Astro.request.formData().catch(() => null);
   if (form) {
     const r = await handleLinkRecovery(form, clientIp(Astro.request, Astro.clientAddress), {
-      stripeKey: process.env.STRIPE_SECRET_KEY ?? import.meta.env.STRIPE_SECRET_KEY,
+      stripeKey: process.env.STRIPE_SECRET_KEY,
       find: findSessionsByEmail,
       registry,
       send: sendMail,

@@ -1,7 +1,5 @@
 export type Lang = "de";
 
-export const languages = { de: "Deutsch" } as const;
-
 export const ui = {
   de: {
     "nav.home": "Start",
@@ -14,14 +12,6 @@ export const ui = {
     "cta.call": "15 min Call buchen",
   },
 } as const;
-
-export function getLangFromUrl(_url: URL): Lang {
-  return "de";
-}
-
-export function pathFor(path: string, _lang: Lang): string {
-  return `/${path.replace(/^\//, "")}`;
-}
 
 export const routes = {
   home: "/",

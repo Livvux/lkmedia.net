@@ -7,7 +7,7 @@ import { createRateLimiter } from "../../lib/site-submit";
 
 export const prerender = false;
 
-const env = (k: string): string | undefined => process.env[k] ?? import.meta.env[k];
+const env = (k: string): string | undefined => process.env[k];
 // ponytail: In-Memory-Sperre gegen Doppelklick (1 pro Session/60 s); nach Neustart leer.
 const allow = createRateLimiter(1, 60_000);
 

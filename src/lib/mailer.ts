@@ -6,7 +6,7 @@ export interface OutgoingMail extends MailContent {
   to: string;
 }
 
-const env = (k: string): string | undefined => process.env[k] ?? import.meta.env[k];
+const env = (k: string): string | undefined => process.env[k];
 let transport: Transporter | undefined;
 
 export async function sendMail(m: OutgoingMail): Promise<void> {

@@ -109,5 +109,5 @@ export function createRegistry(o: {
 }
 
 export const registry = createRegistry({
-  token: process.env.GITHUB_KUNDEN_TOKEN ?? import.meta.env.GITHUB_KUNDEN_TOKEN,
+  token: process.env.GITHUB_KUNDEN_TOKEN,
 });

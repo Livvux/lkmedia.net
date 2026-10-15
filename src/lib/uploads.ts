@@ -92,7 +92,7 @@ export async function readUploads(
     if (f.size > maxBytes) {
       return {
         ok: false,
-        fehler: `„${f.name}“ ist größer als 8 MB. Bitte ein kleineres Bild wählen.`,
+        fehler: `„${f.name}“ ist größer als ${Math.round(maxBytes / 1024 / 1024)} MB. Bitte ein kleineres Bild wählen.`,
       };
     }
     const bytes = new Uint8Array(await f.arrayBuffer());

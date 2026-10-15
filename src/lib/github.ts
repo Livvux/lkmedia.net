@@ -62,7 +62,8 @@ export function createGitHub({ token, fetchFn = fetch }: Opts) {
   const commitFiles = async (
     repo: string,
     o: { branch: string; base?: string; message: string; files: Files },
-  ) => {
+    retry = true,
+  ): Promise<{ sha: string }> => {
     let isNew = false;
     let headRes = await raw(repo, "GET", `git/ref/${refPath(o.branch)}`);
     if (headRes.status === 404) {
@@ -86,10 +87,18 @@ export function createGitHub({ token, fetchFn = fetch }: Opts) {
       tree: t.sha,
       parents: [head],
     });
-    if (isNew) {
-      await call(repo, "POST", "git/refs", { ref: `refs/heads/${o.branch}`, sha: c.sha });
-    } else {
-      await call(repo, "PATCH", `git/refs/${refPath(o.branch)}`, { sha: c.sha });
+    try {
+      if (isNew) {
+        await call(repo, "POST", "git/refs", { ref: `refs/heads/${o.branch}`, sha: c.sha });
+      } else {
+        await call(repo, "PATCH", `git/refs/${refPath(o.branch)}`, { sha: c.sha, force: false });
+      }
+    } catch (error) {
+      // Nur Ref-Konflikte wiederholen, mit aktuellem Parent/Tree; niemals fremde Commits überschreiben.
+      if (retry && error instanceof GitHubError && (error.status === 409 || error.status === 422)) {
+        return commitFiles(repo, o, false);
+      }
+      throw error;
     }
     return { sha: c.sha as string };
   };

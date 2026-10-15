@@ -174,3 +174,10 @@ describe("readUploads", () => {
     });
   });
 });
+
+ it("reports the configured upload size", async () => {
+    const big = new Uint8Array(2 * 1024 * 1024 + 1);
+    expect(await readUploads(form(file(big, "gross.png")), "bilder", { max: 1, maxBytes: 2 * 1024 * 1024 })).toEqual({
+      ok: false, fehler: "„gross.png“ ist größer als 2 MB. Bitte ein kleineres Bild wählen.",
+    });
+  });

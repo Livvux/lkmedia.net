@@ -89,26 +89,35 @@ export async function findSessionsByEmail(
     status: "complete",
     limit: "100",
   });
-  const r = await fetchFn(`https://api.stripe.com/v1/checkout/sessions?${q}`, {
-    headers: { Authorization: `Bearer ${secretKey}` },
-    signal: AbortSignal.timeout(10_000),
-  });
-  if (!r.ok) throw new Error(`Stripe ${r.status}`);
-  const { data = [] } = (await r.json()) as {
-    data?: {
-      id: string;
-      payment_status?: string;
-      payment_link?: string | null;
-      customer_details?: { email?: string | null } | null;
-    }[];
-  };
   const gesucht = email.trim().toLowerCase();
-  return data.flatMap((s) => {
-    // Links sind Zugangsdaten: nicht allein auf Stripes Filter verlassen, Käuferadresse selbst prüfen.
-    if (s.customer_details?.email?.trim().toLowerCase() !== gesucht) return [];
-    const produkt = PRODUKTE.find((p) => PAYMENT_LINKS[p] && PAYMENT_LINKS[p] === s.payment_link);
-    return produkt && s.payment_status === "paid" ? [{ id: s.id, produkt }] : [];
-  });
+  q.set("customer_details[email]", gesucht);
+  const sessions: { id: string; produkt: Produkt }[] = [];
+  for (;;) {
+    const r = await fetchFn(`https://api.stripe.com/v1/checkout/sessions?${q}`, {
+      headers: { Authorization: `Bearer ${secretKey}` },
+      signal: AbortSignal.timeout(10_000),
+    });
+    if (!r.ok) throw new Error(`Stripe ${r.status}`);
+    const { data = [], has_more } = (await r.json()) as {
+      has_more?: boolean;
+      data?: {
+        id: string;
+        payment_status?: string;
+        payment_link?: string | null;
+        customer_details?: { email?: string | null } | null;
+      }[];
+    };
+    for (const s of data) {
+      // Links sind Zugangsdaten: Käuferadresse unabhängig vom Stripe-Filter prüfen.
+      if (s.customer_details?.email?.trim().toLowerCase() !== gesucht) continue;
+      const produkt = PRODUKTE.find((p) => PAYMENT_LINKS[p] && PAYMENT_LINKS[p] === s.payment_link);
+      if (produkt && s.payment_status === "paid") sessions.push({ id: s.id, produkt });
+    }
+    if (!has_more) return sessions;
+    const last = data.at(-1)?.id;
+    if (!last || last === q.get("starting_after")) throw new Error("Stripe pagination failed");
+    q.set("starting_after", last);
+  }
 }
 
 /** Stripe-Kundenportal (Rechnungen, Zahlungsart, Kündigung). Leer → Portal-Hinweise entfallen. */
