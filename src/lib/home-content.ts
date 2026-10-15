@@ -1,3 +1,6 @@
+import { DOCWEB } from "./docweb";
+import { FAHRSCHULWEB } from "./fahrschulweb";
+import { HANDWERKWEB } from "./handwerkweb";
 import { type Lang, routeFor } from "./i18n";
 
 export interface Shot {
@@ -9,52 +12,40 @@ export interface Shot {
   image?: string;
 }
 
+interface Link {
+  label: string;
+  href: string;
+}
+
 export interface HomeContent {
   hero: {
-    lines: [string, string, string];
+    statement: string;
+    links: Link[];
+    facts: string[];
+    rail: string[];
+    action: Link;
+  };
+  proof: { title: string; all: Link; shots: Shot[] };
+  marquee: string;
+  stats: { title: string; figures: { value: string; caption: string }[] };
+  search: {
+    title: string;
     sub: string;
-    cta: { label: string; href: string };
-    secondary: { label: string; href: string };
+    defaults: { service: string; place: string; business: string; domain: string };
     note: string;
   };
-  proof: { title: string; highlight: string; sub: string; shots: Shot[]; caseLabel: string };
-  speed: {
-    eyebrow: string;
-    title: string;
-    sub: string;
-    points: string[];
-    scores: { label: string; value: number }[];
-    vitals: { label: string; value: string }[];
-  };
-  ai: {
-    eyebrow: string;
-    title: string;
-    sub: string;
-    points: string[];
-    question: string;
-    answer: string;
-    sources: string[];
-  };
-  niches: {
-    title: string;
-    sub: string;
-    items: { tag: string; title: string; body: string; href: string }[];
-  };
+  niches: { title: string; items: { title: string; body: string; href: string; price?: string }[] };
   process: {
     title: string;
     sub: string;
     steps: { n: string; title: string; body: string }[];
   };
-  craft: {
-    title: string;
-    sub: string;
-    items: { title: string; body: string }[];
-  };
+  about: { title: string; lead: string; craft: string; facts: { label: string; value: string }[] };
   cta: {
     lines: [string, string];
     sub: string;
-    primary: { label: string; href: string };
-    secondary: { label: string; href: string };
+    primary: Link;
+    secondary: Link;
   };
 }
 
@@ -123,121 +114,129 @@ const shotsDe: Shot[] = [
 
 const de: HomeContent = {
   hero: {
-    lines: ["Websites, die", "gefunden werden", "und überzeugen."],
-    sub: "Webdesign & SEO aus Rastatt für Kanzleien, Kliniken und Unternehmen mit Anspruch. Handgebaut statt Baukasten – schnell, barrierefrei und sichtbar bei Google und in ChatGPT.",
-    cta: { label: "Projekt starten", href: routeFor("contact", "de") },
-    secondary: { label: "15-min-Call buchen", href: `${routeFor("contact", "de")}#termin` },
-    note: "Direkt mit Lucas Kleipoedszus. Rastatt & remote.",
+    statement: "Websites aus Rastatt, die bei Google vorne stehen.",
+    links: [
+      { label: "Arbeiten", href: "#arbeiten" },
+      { label: "Leistungen", href: routeFor("services", "de") },
+      { label: "Ablauf", href: "#ablauf" },
+      { label: "Blog", href: routeFor("blog", "de") },
+    ],
+    facts: [
+      "Webdesign & SEO",
+      "Rastatt & remote",
+      "Direkt mit Lucas Kleipoedszus",
+      "Handgebaut in Astro",
+      "Kein WordPress, kein Baukasten",
+    ],
+    rail: [
+      "Platz 1–2 für „Klavierstimmer Karlsruhe“",
+      "Lighthouse 100 in allen vier Kategorien",
+      "0,7 s, bis der Inhalt steht",
+      "15 Minuten Erstgespräch",
+    ],
+    action: { label: "Projekt starten", href: routeFor("contact", "de") },
   },
   proof: {
-    title: "Ausgewählte Projekte,",
-    highlight: "die online etwas bewegen.",
-    sub: "Websites und digitale Produkte – von lokalem SEO bis zu Plattformen für Vereine und Creator.",
+    title: "Arbeiten",
+    all: { label: "Alle Cases", href: routeFor("cases", "de") },
     shots: shotsDe,
-    caseLabel: "Case ansehen",
   },
-  speed: {
-    eyebrow: "Performance",
-    title: "Lädt, bevor der Daumen zuckt.",
-    sub: "Langsame Seiten kosten Anfragen und Rankings. Wir bauen statisch, schlank und ohne Plugin-Ballast – damit Ihre Website auf jedem Smartphone sofort da ist.",
-    points: [
-      "Statisch ausgeliefert, kein WordPress, keine Plugin-Lücken",
-      "Optimierte Bilder, Fonts und Code auf jeder Seite",
-      "Core Web Vitals im grünen Bereich als Abnahmekriterium",
-    ],
-    scores: [
-      { label: "Performance", value: 100 },
-      { label: "Barrierefreiheit", value: 100 },
-      { label: "Best Practices", value: 100 },
-      { label: "SEO", value: 100 },
-    ],
-    vitals: [
-      { label: "LCP", value: "0.7 s" },
-      { label: "INP", value: "48 ms" },
-      { label: "CLS", value: "0.00" },
+  marquee: "Websites, die gefunden werden.",
+  stats: {
+    title: "Gemessen, nicht versprochen",
+    figures: [
+      { value: "Platz 1", caption: "für „Klavierstimmer Karlsruhe“ – Klavierbau Hans Milde" },
+      {
+        value: "0,7 s",
+        caption: "Largest Contentful Paint auf klavierbau-milde.de, mobil gemessen",
+      },
+      {
+        value: "100",
+        caption: "Lighthouse in Performance, Barrierefreiheit, Best Practices und SEO",
+      },
     ],
   },
-  ai: {
-    eyebrow: "KI-Suche",
-    title: "Sichtbar, wo heute gesucht wird.",
-    sub: "Ihre Kunden fragen nicht mehr nur Google, sondern ChatGPT, Perplexity und Gemini. Wir strukturieren Inhalte so, dass KI-Systeme Sie verstehen, zitieren und empfehlen.",
-    points: [
-      "Strukturierte Daten (JSON-LD) für jede Seite",
-      "llms.txt und klare, zitierfähige Antworten",
-      "Lokale SEO-Architektur für jeden Standort",
-    ],
-    question: "Welche Kanzlei für Arbeitsrecht in Rastatt ist empfehlenswert?",
-    answer:
-      "Für Arbeitsrecht in Rastatt wird häufig die Kanzlei Muster genannt. Sie ist auf Arbeitnehmer spezialisiert, bietet kurzfristige Erstberatungen und hat ausgezeichnete Bewertungen.",
-    sources: ["kanzlei-muster.de", "google.com/maps"],
+  search: {
+    title: "Wo Ihre Kunden suchen",
+    sub: "Tragen Sie Ihre Leistung und Ihren Ort ein. So soll Ihr Eintrag bei Google und in ChatGPT aussehen.",
+    defaults: {
+      service: "Klavierstimmer",
+      place: "Karlsruhe",
+      business: "Klavierbau Hans Milde",
+      domain: "klavierbau-milde.de",
+    },
+    note: "Strukturierte Daten, llms.txt und klare Antworten auf jeder Seite, damit Google und KI-Systeme Sie verstehen und zitieren.",
   },
   niches: {
-    title: "Spezialisiert, wo Vertrauen verkauft.",
-    sub: "Branchen, in denen der erste Eindruck über ein Mandat, einen Patienten oder ein Objekt entscheidet.",
+    title: "Branchen",
     items: [
       {
-        tag: "01 / Recht",
         title: "Kanzleien",
         body: "Seriöse Auftritte, die Mandanten aus der Region gewinnen – berufsrechtskonform.",
         href: routeFor("lawFirms", "de"),
       },
       {
-        tag: "02 / Immobilien",
         title: "Luxus-Immobilien",
         body: "Exposés mit Wirkung und Websites, die Käufer und Eigentümer gleichermaßen überzeugen.",
         href: routeFor("realEstate", "de"),
       },
       {
-        tag: "03 / Medizin",
         title: "Privatkliniken",
         body: "Vertrauen auf den ersten Blick und Terminanfragen, die ohne Umwege ankommen.",
         href: routeFor("clinics", "de"),
       },
       {
-        tag: "04 / Lokal",
+        title: "Arztpraxen mit docweb",
+        body: "Das Website-Paket für Arzt-, Psychotherapie- und Zahnarztpraxen. Vorschau in der Regel nach 7 Werktagen.",
+        href: routeFor("doctors", "de"),
+        price: `${DOCWEB.setupPrice} + ${DOCWEB.monthlyPrice} im Monat`,
+      },
+      {
+        title: "Handwerk mit handwerkweb",
+        body: "Das Website-Paket für Handwerksbetriebe, mit Formularen für Projektanfragen und Bewerbungen.",
+        href: routeFor("craftsmen", "de"),
+        price: `${HANDWERKWEB.setupPrice} + ${HANDWERKWEB.monthlyPrice} im Monat`,
+      },
+      {
+        title: "Fahrschulen mit fahrschulweb",
+        body: "Das Website-Paket für Fahrschulen, mit Online-Anmeldung direkt auf der Seite.",
+        href: routeFor("drivingSchools", "de"),
+        price: `${FAHRSCHULWEB.setupPrice} + ${FAHRSCHULWEB.monthlyPrice} im Monat`,
+      },
+      {
         title: "Lokale Unternehmen",
-        body: "Handwerk, Fahrschulen, Dienstleister: Platz 1 in der Region statt Seite 3.",
+        body: "Dienstleister und Betriebe aus der Region: Platz 1 in der Region statt Seite 3.",
         href: routeFor("services", "de"),
       },
     ],
   },
   process: {
-    title: "Vom Erstgespräch zum Launch.",
+    title: "Ihr Auftrag",
     sub: "Ein klarer Ablauf, ein Ansprechpartner, keine Überraschungen.",
     steps: [
-      { n: "01", title: "Brief", body: "Kickoff, Ziele, Zielgruppe und KPIs – in einem Gespräch." },
-      { n: "02", title: "Design", body: "Konzept, klickbarer Prototyp und Texte, die verkaufen." },
-      { n: "03", title: "Build", body: "Handgebaut in Astro, auf Speed und SEO optimiert." },
-      { n: "04", title: "Launch", body: "Deploy, Search Console, Monitoring und Feinschliff." },
+      { n: "01", title: "Zuerst reden wir 15 Minuten.", body: "Ziele, Zielgruppe und Kennzahlen" },
+      { n: "02", title: "Dann sehen Sie das Konzept.", body: "Prototyp und Texte, die verkaufen" },
+      { n: "03", title: "Dann baue ich es von Hand.", body: "Astro, auf Tempo und SEO gebaut" },
+      { n: "04", title: "Am Ende geht es live.", body: "Search Console, Monitoring, Feinschliff" },
     ],
   },
-  craft: {
-    title: "Kein Baukasten. Kein Template.",
-    sub: "Jede Website wird für genau ein Unternehmen gebaut. Das sieht man – und Google merkt es auch.",
-    items: [
-      {
-        title: "Handgeschriebener Code",
-        body: "Kein Page-Builder, keine 40 Plugins. Nur das, was Ihre Seite wirklich braucht.",
-      },
-      {
-        title: "DSGVO von Anfang an",
-        body: "Keine Cookie-Banner-Hölle: datensparsame Analytics und lokal eingebundene Schriften.",
-      },
-      {
-        title: "Barrierefrei",
-        body: "Kontraste, Tastaturbedienung und Screenreader – für alle Besucher zugänglich.",
-      },
-      {
-        title: "Zweisprachig, wenn nötig",
-        body: "Mehrsprachige Seiten mit sauberer hreflang-Struktur für internationale Kunden.",
-      },
+  about: {
+    title: "Direkt mit Lucas",
+    lead: "Ich bin Lucas Kleipoedszus und baue jede Website selbst, aus Rastatt oder remote. Vom ersten Call bis zum Launch sprechen Sie mit derselben Person.",
+    craft:
+      "Handgeschriebener Code statt 40 Plugins, datensparsame Analytics statt Cookie-Banner, Kontraste und Tastaturbedienung für alle Besucher.",
+    facts: [
+      { label: "Standort", value: "Rastatt" },
+      { label: "Arbeitsweise", value: "Vor Ort & remote" },
+      { label: "Technik", value: "Astro, statisch" },
+      { label: "Analytics", value: "Selbst gehostet" },
     ],
   },
   cta: {
-    lines: ["Ihre Kunden suchen schon.", "Lassen Sie sich finden."],
-    sub: "Erzählen Sie kurz von Ihrem Projekt – Sie bekommen eine ehrliche Einschätzung, kein Verkaufsgespräch.",
+    lines: ["Lassen Sie sich", "finden."],
+    sub: "Erzählen Sie kurz von Ihrem Projekt. Sie bekommen eine ehrliche Einschätzung, kein Verkaufsgespräch.",
     primary: { label: "Projekt starten", href: routeFor("contact", "de") },
-    secondary: { label: "15-min-Call buchen", href: `${routeFor("contact", "de")}#termin` },
+    secondary: { label: "15-Minuten-Call buchen", href: `${routeFor("contact", "de")}#termin` },
   },
 };
 

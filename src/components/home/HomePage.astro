@@ -1,29 +1,179 @@
 ---
 import type { Lang } from '../../lib/i18n';
 import { homeContent } from '../../lib/home-content';
-import HomeHero from './HomeHero.astro';
-import ProjectMarquee from './ProjectMarquee.astro';
-import FeatureSplit from './FeatureSplit.astro';
-import LighthousePanel from './LighthousePanel.astro';
-import AiAnswerPanel from './AiAnswerPanel.astro';
-import NicheGrid from './NicheGrid.astro';
-import ProcessSteps from './ProcessSteps.astro';
-import CraftSection from './CraftSection.astro';
-import FinalCta from './FinalCta.astro';
+import BoardHero from './BoardHero.astro';
+import WorkWall from './WorkWall.astro';
+import StatTiles from './StatTiles.astro';
+import SearchPreview from './SearchPreview.astro';
+import NicheBars from './NicheBars.astro';
+import ProcessFields from './ProcessFields.astro';
+import AboutLucas from './AboutLucas.astro';
+import BoardClose from './BoardClose.astro';
 
 interface Props { lang: Lang }
 const { lang } = Astro.props;
 const c = homeContent[lang];
 ---
-<HomeHero hero={c.hero} lang={lang} />
-<ProjectMarquee proof={c.proof} lang={lang} />
-<FeatureSplit eyebrow={c.speed.eyebrow} title={c.speed.title} sub={c.speed.sub} points={c.speed.points}>
-  <LighthousePanel scores={c.speed.scores} vitals={c.speed.vitals} url="klavierbau-milde.de" />
-</FeatureSplit>
-<FeatureSplit eyebrow={c.ai.eyebrow} title={c.ai.title} sub={c.ai.sub} points={c.ai.points} reverse>
-  <AiAnswerPanel question={c.ai.question} answer={c.ai.answer} sources={c.ai.sources} lang={lang} />
-</FeatureSplit>
-<NicheGrid niches={c.niches} />
-<ProcessSteps process={c.process} />
-<CraftSection craft={c.craft} />
-<FinalCta cta={c.cta} />
+<div class="board">
+  <BoardHero hero={c.hero} />
+  <WorkWall proof={c.proof} />
+  <StatTiles stats={c.stats} />
+  <div class="marquee" aria-hidden="true">
+    <div class="marquee-track">
+      {[0, 1].map(() => <span>{c.marquee}&nbsp;{c.marquee}&nbsp;</span>)}
+    </div>
+  </div>
+  <SearchPreview search={c.search} />
+  <NicheBars niches={c.niches} />
+  <ProcessFields process={c.process} />
+  <AboutLucas about={c.about} />
+  <BoardClose cta={c.cta} />
+</div>
+
+<style is:global>
+  /* Startseite: ein Kachelbrett. Fünf Schriftstufen, ein Radius, 8px-Fugen. */
+  .board {
+    --ground: #09090b;
+    --tile: #141417;
+    --tile-2: #222226;
+    --tile-3: #34343a;
+    --paper: #fafafa;
+    --ink: #fafafa;
+    --ink-dark: #09090b;
+    --soft: #a1a1aa;
+    --soft-dark: #52525b;
+    --accent: oklch(0.68 0.17 250);
+    --gap: 8px;
+    --edge: 10px;
+    --r: 8px;
+    --t-xxl: clamp(84px, 14.4vw, 220px);
+    --t-xl: clamp(56px, 6vw, 96px);
+    --t-l: clamp(26px, 2.5vw, 36px);
+    --t-m: 17px;
+    --t-s: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap);
+    padding: var(--edge);
+    background: var(--ground);
+    font-size: var(--t-m);
+    line-height: 1.5;
+  }
+  .board h2,
+  .board h3 {
+    font-weight: 650;
+    letter-spacing: -0.03em;
+    line-height: 1.05;
+    text-wrap: balance;
+  }
+  :where(.board) .tile {
+    border-radius: var(--r);
+    background: var(--tile);
+    padding: 22px;
+    overflow: hidden;
+  }
+  :where(.board) .t-l {
+    font-size: var(--t-l);
+  }
+  :where(.board) .t-s {
+    font-size: var(--t-s);
+  }
+  :where(.board) .soft {
+    color: var(--soft);
+  }
+  .board .link {
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    text-decoration-thickness: 1.5px;
+    transition: color 0.18s ease;
+  }
+  .board .link:hover {
+    color: var(--accent);
+  }
+  .board .pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 48px;
+    padding: 0 24px;
+    border-radius: 999px;
+    background: var(--ink-dark);
+    color: var(--paper);
+    font-size: var(--t-s);
+    font-weight: 600;
+    white-space: nowrap;
+    transition:
+      transform 0.14s var(--ease-out),
+      background 0.18s ease;
+  }
+  .board .pill:hover {
+    background: #26262b;
+  }
+  .board .pill:active {
+    transform: scale(0.97);
+  }
+  .board img,
+  .board video {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .board .pic {
+    overflow: hidden;
+  }
+  .board .pic img,
+  .board .pic video {
+    transition: transform 0.7s var(--ease-out);
+  }
+  .board .pic:hover img,
+  .board .pic:hover video {
+    transform: scale(1.04);
+  }
+  .marquee {
+    overflow: hidden;
+    border-radius: var(--r);
+    background: var(--accent);
+    color: var(--ink-dark);
+    padding: 18px 0 26px;
+  }
+  .marquee-track {
+    display: flex;
+    width: max-content;
+    animation: marquee-run 40s linear infinite;
+  }
+  .marquee:hover .marquee-track {
+    animation-play-state: paused;
+  }
+  .marquee-track span {
+    font-size: var(--t-xxl);
+    font-weight: 700;
+    letter-spacing: -0.045em;
+    line-height: 0.95;
+    white-space: nowrap;
+  }
+  @keyframes marquee-run {
+    to {
+      transform: translateX(-50%);
+    }
+  }
+  @media (max-width: 760px) {
+    .board {
+      --gap: 6px;
+      --edge: 6px;
+    }
+    :where(.board) .tile {
+      padding: 18px;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .marquee-track {
+      animation: none;
+    }
+    .board .pic img,
+    .board .pic video {
+      transition: none;
+    }
+  }
+</style>

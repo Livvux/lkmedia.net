@@ -1,0 +1,146 @@
+---
+import type { HomeContent } from '../../lib/home-content';
+import { routeFor } from '../../lib/i18n';
+interface Props { proof: HomeContent['proof'] }
+const { proof } = Astro.props;
+
+const bySlug = new Map(proof.shots.map((s) => [s.slug, s]));
+// Reihen mit fester Höhe; Breite folgt dem Bildformat (ratio), so liegen die Kanten nie übereinander.
+const rows: { h: number; items: { slug: string; ratio: number; video?: boolean }[] }[] = [
+  { h: 240, items: [{ slug: 'lorenz-logistik', ratio: 1.6 }, { slug: 'cleo-coaching', ratio: 1.6 }, { slug: 'five-rp', ratio: 1.9 }] },
+  { h: 360, items: [{ slug: 'klavierbau-milde', ratio: 1.6 }, { slug: 'eichhoernchenberger', ratio: 1.6, video: true }] },
+  { h: 200, items: [{ slug: 'pfotenweb', ratio: 1.6 }, { slug: 'streamerloft', ratio: 1.9 }, { slug: 'patricks-fahrschule', ratio: 1.6 }] },
+];
+const src = (slug: string) => bySlug.get(slug)?.image ?? `/landing/shots/${slug}-1440.webp`;
+---
+<section id="arbeiten" class="tile work" aria-labelledby="work-title">
+  <div class="work-head" data-reveal>
+    <h2 id="work-title" class="work-title">{proof.title}</h2>
+    <a class="link t-s all" href={proof.all.href}>{proof.all.label}</a>
+  </div>
+  {rows.map((row, r) => (
+    <ul class="row" style={`--h:${row.h}px`}>
+      {row.items.map((item, i) => {
+        const shot = bySlug.get(item.slug);
+        if (!shot) return null;
+        return (
+          <li data-reveal style={`flex-grow:${item.ratio};--d:${r * 60 + i * 80}ms`}>
+            <a href={`${routeFor('cases', 'de')}/${shot.slug}`} class="item">
+              <span class="pic frame">
+                {item.video ? (
+                  <video src="/cases/eichhoernchenberger/walkthrough.mp4" poster="/cases/eichhoernchenberger/desktop.webp" muted loop playsinline autoplay preload="none" aria-label={`Rundgang durch ${shot.domain}`}></video>
+                ) : (
+                  <img src={src(shot.slug)} width="1440" height="900" alt={`Website von ${shot.client}`} loading="lazy" decoding="async" />
+                )}
+              </span>
+              <span class="caption t-s">
+                <span>{shot.client}</span>
+                <span class="soft">{shot.scope}</span>
+              </span>
+            </a>
+          </li>
+        );
+      })}
+    </ul>
+  ))}
+</section>
+
+<style>
+  .work {
+    padding: 28px 22px 72px;
+    background: var(--tile);
+  }
+  .work-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 24px;
+    margin-bottom: 32px;
+  }
+  .work-title {
+    font-size: var(--t-xxl);
+    font-weight: 700;
+    letter-spacing: -0.05em;
+    line-height: 0.85;
+    text-transform: uppercase;
+  }
+  .all {
+    white-space: nowrap;
+  }
+  .row {
+    display: flex;
+    gap: var(--gap);
+    margin-top: 28px;
+  }
+  .row li {
+    flex-basis: 0;
+    min-width: 0;
+  }
+  .item {
+    display: block;
+  }
+  .frame {
+    display: block;
+    height: var(--h);
+    border-radius: var(--r);
+    background: var(--tile-2);
+  }
+  .frame img,
+  .frame video {
+    object-position: top center;
+  }
+  .caption {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    margin-top: 10px;
+    white-space: nowrap;
+  }
+  .caption span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .caption span:first-child {
+    font-weight: 600;
+  }
+  .row:has(.item:hover) .item:not(:hover) {
+    opacity: 0.55;
+  }
+  .item {
+    transition: opacity 0.2s ease;
+  }
+  @media (max-width: 1100px) {
+    .work {
+      padding-top: 96px;
+    }
+  }
+  @media (max-width: 900px) {
+    .caption .soft {
+      display: none;
+    }
+  }
+  @media (max-width: 760px) {
+    .work {
+      padding: 64px 14px 24px;
+    }
+    .work-title {
+      font-size: 17vw;
+    }
+    .row {
+      flex-wrap: wrap;
+      margin-top: 6px;
+    }
+    .row li {
+      flex: 1 1 38% !important;
+    }
+    .row li:first-child {
+      flex-basis: 100% !important;
+    }
+    .frame {
+      height: 150px;
+    }
+    .row li:first-child .frame {
+      height: 220px;
+    }
+  }
+</style>

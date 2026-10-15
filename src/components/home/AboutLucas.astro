@@ -1,0 +1,158 @@
+---
+import type { HomeContent } from '../../lib/home-content';
+interface Props { about: HomeContent['about'] }
+const { about } = Astro.props;
+// Kartenpunkte grob nach Längen-/Breitengrad: x = (lon − 7.95) · 600, y = (49.1 − lat) · 800
+const towns = [
+  { name: 'Karlsruhe', x: 270, y: 72, end: true },
+  { name: 'Durmersheim', x: 192, y: 128 },
+  { name: 'Baden-Baden', x: 174, y: 272 },
+];
+---
+<section class="tile about" aria-labelledby="about-title">
+  <div class="intro" data-reveal>
+    <h2 id="about-title" class="about-title">{about.title}</h2>
+    <p class="lead">{about.lead}</p>
+  </div>
+  <div class="pair">
+    <figure class="photo pic" data-reveal style="--d:100ms">
+      <img src="/home/lucas-1600.webp" width="1600" height="1380" alt="Lucas Kleipoedszus lächelt am Schreibtisch, im Hintergrund ein zweiter Bildschirm mit Code" loading="lazy" decoding="async" />
+      <figcaption class="craft">{about.craft}</figcaption>
+    </figure>
+    <div class="side" data-reveal style="--d:180ms">
+      <div class="map">
+        <svg viewBox="0 0 320 320" role="img" aria-label="Karte: Rastatt zwischen Karlsruhe und Baden-Baden, westlich davon der Rhein">
+          <path d="M40 320 C70 260 90 230 100 200 S140 130 150 110 S200 60 215 40 S228 10 232 0" fill="none" stroke="#3b82f61f" stroke-width="22" stroke-linecap="round" />
+          <path d="M40 320 C70 260 90 230 100 200 S140 130 150 110 S200 60 215 40 S228 10 232 0" fill="none" stroke="#fafafa33" stroke-width="6" stroke-linecap="round" />
+          <text x="62" y="250" class="river">Rhein</text>
+          {towns.map((t) => (
+            <g>
+              <circle cx={t.x} cy={t.y} r="5" fill="#a1a1aa" />
+              <text x={t.end ? t.x : t.x + 10} y={t.end ? t.y + 24 : t.y + 5} text-anchor={t.end ? 'middle' : 'start'}>{t.name}</text>
+            </g>
+          ))}
+          <circle cx="156" cy="192" r="11" fill="oklch(0.68 0.17 250)" />
+          <text x="174" y="198" class="here">Rastatt</text>
+        </svg>
+      </div>
+      <dl class="facts">
+        {about.facts.map((f) => (
+          <div>
+            <dt class="soft">{f.label}</dt>
+            <dd>{f.value}</dd>
+          </div>
+        ))}
+      </dl>
+    </div>
+  </div>
+</section>
+
+<style>
+  .about {
+    padding: 28px 28px 32px;
+  }
+  .about-title {
+    font-size: var(--t-xl);
+    font-weight: 700;
+    letter-spacing: -0.045em;
+  }
+  .lead {
+    max-width: 52ch;
+    margin-top: 24px;
+    font-size: clamp(19px, 1.6vw, 22px);
+    line-height: 1.45;
+  }
+  .pair {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 16px;
+    margin-top: 56px;
+    align-items: start;
+  }
+  .photo {
+    position: relative;
+    aspect-ratio: 16 / 10;
+    border-radius: var(--r);
+  }
+  .photo img {
+    object-position: 50% 30%;
+  }
+  .craft {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 320px;
+    padding: 20px;
+    border-bottom-left-radius: var(--r);
+    background: var(--paper);
+    color: var(--ink-dark);
+    font-size: var(--t-s);
+    line-height: 1.45;
+  }
+  .map {
+    aspect-ratio: 1;
+    max-height: 60%;
+    border-radius: var(--r);
+    background: var(--tile-2);
+  }
+  .map svg {
+    width: 100%;
+    height: 100%;
+  }
+  .map text {
+    fill: #d4d4d8;
+    font-size: 15px;
+    font-weight: 500;
+  }
+  .map .here {
+    fill: #fafafa;
+    font-size: 20px;
+    font-weight: 700;
+  }
+  .map .river {
+    fill: #a1a1aa;
+    font-style: italic;
+  }
+  .facts {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-top: 20px;
+    font-size: var(--t-s);
+  }
+  dd {
+    font-weight: 600;
+  }
+  @media (max-width: 900px) {
+    .about {
+      padding: 18px;
+    }
+    .about-title {
+      font-size: 11vw;
+    }
+    .lead {
+      font-size: var(--t-m);
+    }
+    .pair {
+      grid-template-columns: 1fr;
+      margin-top: 32px;
+    }
+    .photo {
+      aspect-ratio: auto;
+      display: flex;
+      flex-direction: column;
+    }
+    .photo img {
+      aspect-ratio: 4 / 3;
+      height: auto;
+    }
+    .craft {
+      position: static;
+      width: auto;
+      border-radius: 0;
+    }
+    .map {
+      aspect-ratio: 3 / 2;
+    }
+  }
+</style>

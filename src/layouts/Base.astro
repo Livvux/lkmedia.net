@@ -11,8 +11,9 @@ import { publicUmamiPath } from '../lib/umami';
 // analytics={false} auf Seiten mit session_id in der URL (Zugangsschlüssel): kein Plausible,
 // Referrer nur same-origin – sonst landet der Link bei Dritten. Nicht no-referrer: dann schickt der
 // Browser bei Formular-POSTs „Origin: null“ und die CSRF-Prüfung (src/lib/csrf.ts) blockt.
-interface Props { seo: SeoProps; jsonLd?: unknown[]; analytics?: boolean; }
-const { seo, jsonLd = [], analytics = true } = Astro.props as Props;
+// nav={false}: Startseite bringt ihre Navigation als Kacheln im Hero mit.
+interface Props { seo: SeoProps; jsonLd?: unknown[]; analytics?: boolean; nav?: boolean; }
+const { seo, jsonLd = [], analytics = true, nav = true } = Astro.props as Props;
 const allLd = [organization(), ...jsonLd];
 // Only a known indexable page with its own canonical may load Umami. Preserve analytics=false.
 const publicPath = analytics && !seo.noindex ? publicUmamiPath(seo.canonical) : null;
@@ -22,6 +23,7 @@ const publicPath = analytics && !seo.noindex ? publicUmamiPath(seo.canonical) : 
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <script is:inline>document.documentElement.classList.add('js')</script>
     <meta name="theme-color" content="#09090b" />
     <link rel="icon" href="/favicon.ico" sizes="any" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
@@ -35,7 +37,7 @@ const publicPath = analytics && !seo.noindex ? publicUmamiPath(seo.canonical) : 
     {publicPath !== null && <Umami path={publicPath} />}
   </head>
   <body class="min-h-screen flex flex-col">
-    <Nav lang={seo.lang} />
+    {nav && <Nav lang={seo.lang} />}
     <main class="flex-1"><slot /></main>
     <Footer lang={seo.lang} />
     <script>

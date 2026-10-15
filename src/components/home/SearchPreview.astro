@@ -1,0 +1,249 @@
+---
+import type { HomeContent } from '../../lib/home-content';
+interface Props { search: HomeContent['search'] }
+const { search } = Astro.props;
+const d = search.defaults;
+// Ohne JavaScript bleibt das echte Beispiel stehen: Klavierbau Hans Milde, Karlsruhe.
+---
+<section class="search" aria-labelledby="search-title" data-search>
+  <form class="tile ask" data-reveal>
+    <h2 id="search-title" class="t-l">{search.title}</h2>
+    <p class="sub">{search.sub}</p>
+    <label>
+      <span class="t-s">Ihre Leistung</span>
+      <input name="service" value={d.service} autocomplete="off" maxlength="40" />
+    </label>
+    <label>
+      <span class="t-s">Ihr Ort</span>
+      <input name="place" value={d.place} autocomplete="address-level2" maxlength="40" />
+    </label>
+    <label>
+      <span class="t-s">Ihr Betrieb</span>
+      <input name="business" value={d.business} autocomplete="organization" maxlength="50" />
+    </label>
+    <p class="t-s soft note">{search.note}</p>
+  </form>
+
+  <div class="tile result-tile" data-reveal style="--d:120ms">
+    <p class="t-s where">Google, Platz 1</p>
+    <article class="serp" data-ui aria-live="polite">
+      <p class="q">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="7" cy="7" r="4.5" stroke="currentColor" stroke-width="1.6" /><path d="M10.5 10.5 14 14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" /></svg>
+        <span><span data-out="service">{d.service}</span> <span data-out="place">{d.place}</span></span>
+      </p>
+      <div class="hit">
+        <span class="fav" data-out="initials" aria-hidden="true">KH</span>
+        <span>
+          <span class="biz" data-out="business">{d.business}</span>
+          <span class="url">https://<span data-out="domain">{d.domain}</span></span>
+        </span>
+      </div>
+      <p class="title"><span data-out="service">{d.service}</span> in <span data-out="place">{d.place}</span> | <span data-out="business">{d.business}</span></p>
+      <p class="snip"><span data-out="service">{d.service}</span> in <span data-out="place">{d.place}</span> und Umgebung. Termin direkt online anfragen oder anrufen.</p>
+    </article>
+  </div>
+
+  <div class="tile ai-tile" data-reveal style="--d:200ms">
+    <p class="t-s where">ChatGPT, als Beispiel</p>
+    <div class="ai" data-ui>
+      <p class="bubble">Wer ist ein guter <span data-out="service">{d.service}</span> in <span data-out="place">{d.place}</span>?</p>
+      <p class="answer">Für <span data-out="service">{d.service}</span> in <span data-out="place">{d.place}</span> wird häufig <strong data-out="business">{d.business}</strong> genannt. Die Website beantwortet die wichtigsten Fragen direkt und nennt Leistungen, Einzugsgebiet und Kontakt.</p>
+      <p class="sources"><span data-out="domain">{d.domain}</span><span>google.com/maps</span></p>
+    </div>
+  </div>
+</section>
+
+<script>
+  const root = document.querySelector<HTMLElement>('[data-search]');
+  const defaults = { business: root?.querySelector<HTMLInputElement>('[name=business]')?.defaultValue, domain: root?.querySelector('[data-out=domain]')?.textContent };
+  const form = root?.querySelector('form');
+  if (root && form) {
+    const slug = (s: string) =>
+      s
+        .toLowerCase()
+        .replace(/ä/g, 'ae').replace(/ö/g, 'oe').replace(/ü/g, 'ue').replace(/ß/g, 'ss')
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-|-$/g, '')
+        .slice(0, 40);
+    const initials = (s: string) =>
+      s.split(/\s+/).filter(Boolean).slice(0, 2).map((w) => w[0]?.toUpperCase()).join('') || '?';
+    const update = () => {
+      const data = new FormData(form);
+      const get = (k: string) => String(data.get(k) ?? '').trim();
+      const business = get('business') || 'Ihr Betrieb';
+      const out: Record<string, string> = {
+        service: get('service') || 'Ihre Leistung',
+        place: get('place') || 'Ihr Ort',
+        business,
+        // Das echte Beispiel behält seine echte Domain.
+        domain: business === defaults.business && defaults.domain ? defaults.domain : `${slug(business) || 'ihr-betrieb'}.de`,
+        initials: initials(business),
+      };
+      root.querySelectorAll<HTMLElement>('[data-out]').forEach((el) => {
+        el.textContent = out[el.dataset.out ?? ''] ?? '';
+      });
+    };
+    form.addEventListener('input', update);
+    form.addEventListener('submit', (e) => e.preventDefault());
+    update();
+  }
+</script>
+
+<style>
+  .search {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: var(--gap);
+  }
+  .ask {
+    grid-column: 1 / 5;
+    display: grid;
+    align-content: start;
+    gap: 16px;
+    padding: 28px;
+  }
+  .sub {
+    margin-bottom: 8px;
+  }
+  label {
+    display: grid;
+    gap: 6px;
+  }
+  input {
+    height: 48px;
+    padding: 0 14px;
+    border: 1px solid #ffffff2e;
+    border-radius: var(--r);
+    background: var(--ground);
+    color: var(--ink);
+    font: inherit;
+    transition: border-color 0.15s ease;
+  }
+  input:hover {
+    border-color: #ffffff5c;
+  }
+  input:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 1px;
+  }
+  .note {
+    margin-top: 8px;
+  }
+  .result-tile,
+  .ai-tile {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 28px;
+  }
+  .result-tile {
+    grid-column: 5 / 9;
+    background: var(--paper);
+    color: var(--ink-dark);
+  }
+  .ai-tile {
+    grid-column: 9 / 13;
+    background: var(--tile-2);
+  }
+  .where {
+    font-weight: 600;
+  }
+  .serp {
+    display: grid;
+    gap: 12px;
+    font-family: Arial, Helvetica, sans-serif;
+  }
+  .q {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 48px;
+    padding: 0 18px;
+    border: 1px solid #dadce0;
+    border-radius: 999px;
+    color: #202124;
+    font-size: 16px;
+  }
+  .hit {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 8px;
+    color: #202124;
+    font-size: 14px;
+    line-height: 1.3;
+  }
+  .hit > span:last-child {
+    display: grid;
+  }
+  .fav {
+    display: grid;
+    place-items: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 999px;
+    background: #e8eaed;
+    font-size: 11px;
+    font-weight: 700;
+  }
+  .url {
+    color: #4d5156;
+    overflow-wrap: anywhere;
+  }
+  .title {
+    color: #1558d6;
+    font-size: 20px;
+    line-height: 1.3;
+  }
+  .snip {
+    color: #4d5156;
+    font-size: 14px;
+    line-height: 1.55;
+  }
+  .ai {
+    display: grid;
+    gap: 14px;
+    font-size: 15px;
+    line-height: 1.55;
+  }
+  .bubble {
+    justify-self: end;
+    max-width: 85%;
+    padding: 12px 16px;
+    border-radius: 18px;
+    background: var(--tile-3);
+  }
+  .sources {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .sources span {
+    padding: 4px 12px;
+    border-radius: 999px;
+    background: var(--tile-3);
+    font-size: 13px;
+  }
+  @media (max-width: 1100px) {
+    .ask {
+      grid-column: 1 / -1;
+    }
+    .result-tile {
+      grid-column: 1 / 7;
+    }
+    .ai-tile {
+      grid-column: 7 / 13;
+    }
+  }
+  @media (max-width: 760px) {
+    .search {
+      grid-template-columns: 1fr;
+    }
+    .ask,
+    .result-tile,
+    .ai-tile {
+      grid-column: auto;
+      padding: 18px;
+    }
+  }
+</style>
