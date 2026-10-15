@@ -48,7 +48,7 @@ const columns = [
     <div class="footer-cols">
       {columns.map((col) => (
         <div>
-          <div class="eyebrow mb-4">{col.title}</div>
+          <h2 class="footer-title">{col.title}</h2>
           <ul class="space-y-2.5">
             {col.links.map((l) => <li><a href={l.href} class="footer-link">{l.label}</a></li>)}
           </ul>
@@ -60,8 +60,13 @@ const columns = [
 
 <style>
   .footer {
-    border-top: 1px solid var(--border);
-    font-size: 14px;
+    background: var(--bg-elev);
+    font-size: 15px;
+  }
+  .footer-title {
+    margin-bottom: 16px;
+    font-weight: 600;
+    color: var(--fg);
   }
   .footer-inner {
     display: grid;
@@ -85,9 +90,8 @@ const columns = [
   }
   .footer-meta {
     margin-top: 24px;
-    font-family: var(--font-mono);
-    font-size: 12px;
-    color: var(--fg-faint);
+    font-size: 14px;
+    color: var(--fg-muted);
   }
   .footer-cols {
     display: grid;
