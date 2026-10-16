@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 
 test('missing pages and assets return real 404 responses', async ({ request }) => {
-  for (const path of ['/some/old/legacy/path-xyz', '/tools/sora-downloader', '/seo-tools', '/blog/unknown-post', '/cases/unknown-case', '/posts/missing.webp']) {
+  for (const path of ['/some/old/legacy/path-xyz', '/tools/sora-downloader', '/seo-tools', '/blog/unknown-post', '/cases/unknown-case', '/posts/missing.webp', '/en/unknown-page-xyz', '/en/blog/unknown-post-xyz', '/en/cases/unknown-case-xyz']) {
     const response = await request.get(path, { maxRedirects: 0 });
     expect(response.status(), path).toBe(404);
     expect(response.headers().location, path).toBeUndefined();
