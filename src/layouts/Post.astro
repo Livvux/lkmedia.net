@@ -1,9 +1,10 @@
 ---
 import Base from './Base.astro';
+import type { CollectionEntry } from 'astro:content';
 import { breadcrumbs, blogPosting } from '../lib/schema';
 import type { SeoProps } from '../lib/seo';
 
-interface Props { entry: any; lang: 'de' }
+interface Props { entry: CollectionEntry<'posts'>; lang: 'de' }
 const { entry, lang } = Astro.props as Props;
 const slug = entry.id.replace(/^(de|en)\//, '');
 const url = entry.data.route === 'root' ? `/${slug}/` : `/blog/${slug}/`;
@@ -15,6 +16,10 @@ const seo: SeoProps = {
   lang,
   ogImage: entry.data.ogImage,
   noindex: entry.data.noindex,
+  type: 'article',
+  publishedTime: entry.data.pubDate.toISOString(),
+  modifiedTime: (entry.data.updatedDate ?? entry.data.pubDate).toISOString(),
+  author: entry.data.author,
 };
 const bc = breadcrumbs([
   { name: 'Home', url: 'https://lkmedia.net/' },
@@ -42,7 +47,7 @@ const bp = blogPosting({
     </div>
     <div class="mt-10"><slot /></div>
     <footer class="mt-20 border-t border-black/10 dark:border-white/10 pt-8 text-sm text-black/50 dark:text-white/50 not-prose">
-      Geschrieben von {entry.data.author}.
+      Geschrieben von <a href="/ueber" class="underline">{entry.data.author}</a>.
     </footer>
   </article>
 </Base>

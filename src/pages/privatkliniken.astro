@@ -4,10 +4,11 @@ import Base from '../layouts/Base.astro';
 import Hero from '../components/landing/Hero.astro';
 import CTABlock from '../components/landing/CTABlock.astro';
 import FaqBlock from '../components/FaqBlock.astro';
+import IndustryProof from '../components/landing/IndustryProof.astro';
 
 const seo = {
-  title: 'Privatklinik Website — Premium-Auftritte für Kliniken',
-  description: 'Privatklinik-Websites, die Patienten gewinnen. Seriöse, HWG-konforme Premium-Auftritte für Ästhetik, Orthopädie und Zahnmedizin.',
+  title: 'Webdesign für Privatkliniken: Leistungen & Patientenanfragen',
+  description: 'Webdesign für Privatkliniken: Fachbereiche, Arztprofile und verständliche Kontaktwege. Individuelle Klinik-Websites ab 25.000 € anfragen.',
   canonical: '/privatkliniken',
   lang: 'de' as const,
 };
@@ -22,19 +23,19 @@ const features = [
   { title: 'HWG-konformes Copywriting', body: 'Texte, die klare Positionierung zeigen — ohne unzulässige Heilversprechen oder Werbeaussagen.' },
   { title: 'Arzt-Profile', body: 'E-E-A-T-starke Profile mit Qualifikationen, Publikationen und Fachbereichen — Vertrauen auf den ersten Blick.' },
   { title: 'Terminbuchung', body: 'Direkte Online-Buchung mit Vorqualifizierung — integriert mit gängigen Praxisverwaltungen oder Cal.com.' },
-  { title: 'Patientenstimmen-Framework', body: 'Strukturierte, rechtssichere Erfahrungsberichte — anonymisiert, verifiziert, HWG-konform.' },
+  { title: 'Patientenstimmen-Framework', body: 'Erfahrungsberichte nur mit geklärten Einwilligungen und Ihrer rechtlichen Freigabe. Keine erfundenen Bewertungen oder unbelegten Behandlungserfolge.' },
   { title: 'Mehrsprachigkeit', body: 'DE / EN / AR für internationale Selbstzahler und Medical-Tourism-Anfragen.' },
 ];
 
 const faqs = [
-  { q: 'Was ist beim HWG zu beachten?', a: 'Werbung für bestimmte Heilverfahren, Vorher-Nachher-Bilder bei operativen Eingriffen und bestimmte Wirkaussagen sind streng reguliert. Wir bauen Struktur, Copy und Bildsprache entlang der aktuellen Rechtslage — inkl. Fachanwalts-Review bei sensiblen Bereichen.' },
+  { q: 'Was ist beim HWG zu beachten?', a: 'Werbung für bestimmte Heilverfahren, Vorher-Nachher-Bilder bei operativen Eingriffen und bestimmte Wirkaussagen sind streng reguliert. Medizinische Aussagen und Bildmaterial veröffentlichen wir erst nach Ihrer fachlichen und rechtlichen Freigabe. Eine externe Rechtsprüfung muss gesondert beauftragt werden.' },
   { q: 'Wie lange dauert das Projekt?', a: 'Ein vollständiger Relaunch liegt typischerweise bei 10–14 Wochen. Die Anzahl der Fachbereiche, Arzt-Profile und Sprachen bestimmen den genauen Rahmen.' },
   { q: 'Was kostet eine Privatklinik-Website?', a: 'Projekte starten bei 25k € als Fixpreis auf Scope. Mehrsprachigkeit, Terminbuchungs-Integration oder mehrere Standorte werden individuell kalkuliert. Für niedergelassene Praxen gibt es mit docweb ein Komplettpaket zum Festpreis (lkmedia.net/docweb).' },
   { q: 'Wie gehen Sie mit Patientendaten und DSGVO um?', a: 'Kontaktformulare und Terminbuchung laufen über DSGVO-konforme, EU-gehostete Dienste. Keine US-Tracker, keine unsauberen Cookie-Banner. Datenschutzerklärung wird mit Ihrem DSB abgestimmt.' },
 ];
 
 const allCases = await getCollection('cases');
-const relatedCase = allCases.find((c) => c.data.niche === 'anwaelte') ?? allCases.find((c) => c.data.niche === 'luxus-immobilien');
+const relatedCase = allCases.find((c) => c.data.niche === 'privatkliniken');
 
 const serviceSchema = {
   '@context': 'https://schema.org',
@@ -57,8 +58,8 @@ const faqSchema = {
 ---
 <Base seo={seo} jsonLd={[serviceSchema, faqSchema]}>
   <Hero
-    headline="Privatklinik-Websites, die Patienten gewinnen."
-    sub="Seriöse, medizinrechtlich saubere Premium-Auftritte für Ästhetik, Orthopädie, Zahnmedizin."
+    headline="Webdesign für Privatkliniken."
+    sub="Individuelle Klinik-Websites für Ästhetik, Orthopädie und Zahnmedizin: verständliche Leistungen, qualifizierte Arztprofile und klare Kontaktwege."
     ctaHref="/kontakt" ctaLabel="Projekt starten" />
 
   <section class="py-24 px-6 max-w-6xl mx-auto">
@@ -98,6 +99,8 @@ const faqSchema = {
       </a>
     </section>
   )}
+
+  <IndustryProof industry="privatkliniken" hasReference={!!relatedCase} />
 
   <FaqBlock items={faqs} />
 

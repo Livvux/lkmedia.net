@@ -4,10 +4,11 @@ import Base from '../layouts/Base.astro';
 import Hero from '../components/landing/Hero.astro';
 import CTABlock from '../components/landing/CTABlock.astro';
 import FaqBlock from '../components/FaqBlock.astro';
+import IndustryProof from '../components/landing/IndustryProof.astro';
 
 const seo = {
-  title: 'Luxus Immobilien Website — Premium-Auftritte',
-  description: 'Luxus-Immobilien, die online verkaufen. Apple-Grade Objekt-Präsentationen für Off-Market-Villen, Penthouses und Hotels.',
+  title: 'Webdesign für Luxus-Immobilien: Exposés & Objekt-Websites',
+  description: 'Webdesign für Luxus-Immobilien: Objektpräsentation, Galerien und diskrete Anfragen. Individuelle Websites für Makler und Projektentwickler ab 25.000 €.',
   canonical: '/luxus-immobilien',
   lang: 'de' as const,
 };
@@ -58,8 +59,8 @@ const faqSchema = {
 ---
 <Base seo={seo} jsonLd={[serviceSchema, faqSchema]}>
   <Hero
-    headline="Luxus-Immobilien, die online verkaufen."
-    sub="Apple-Grade Objekt-Präsentationen für Off-Market-Villen, Penthouses und Hotels."
+    headline="Webdesign für Luxus-Immobilien."
+    sub="Individuelle Objekt-Websites für Villen, Penthouses und Hotels — mit hochwertigen Medien und diskreten Kontaktwegen."
     ctaHref="/kontakt" ctaLabel="Projekt starten" />
 
   <section class="py-24 px-6 max-w-6xl mx-auto">
@@ -99,6 +100,8 @@ const faqSchema = {
       </a>
     </section>
   )}
+
+  <IndustryProof industry="luxus-immobilien" hasReference={!!relatedCase} />
 
   <FaqBlock items={faqs} />
 

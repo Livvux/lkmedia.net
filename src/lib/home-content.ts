@@ -114,7 +114,7 @@ const shotsDe: Shot[] = [
 
 const de: HomeContent = {
   hero: {
-    statement: "Websites aus Rastatt, die bei Google vorne stehen.",
+    statement: "Webdesign aus Rastatt. Websites und SEO für Ihr Unternehmen.",
     links: [
       { label: "Arbeiten", href: "#arbeiten" },
       { label: "Leistungen", href: routeFor("services", "de") },

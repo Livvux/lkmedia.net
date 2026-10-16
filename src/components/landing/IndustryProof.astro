@@ -1,0 +1,43 @@
+---
+interface Props {
+  industry: 'anwaelte' | 'privatkliniken' | 'luxus-immobilien';
+  hasReference: boolean;
+}
+const { industry, hasReference } = Astro.props;
+const content = {
+  anwaelte: {
+    audience: 'Kanzleien',
+    scope: 'Rechtsgebiete und Teamprofile, verständliche Kontaktwege, technische SEO, Weiterleitungen beim Relaunch und gemeinsame Abnahme vor dem Start.',
+    guide: '/leistungen',
+    label: 'Leistungen und Projektmodelle vergleichen',
+  },
+  privatkliniken: {
+    audience: 'Privatkliniken',
+    scope: 'Fachbereiche, Arztprofile und Standorte, mobile Kontaktwege, technische SEO und eine Abstimmung der Inhalte mit Ihren medizinisch und rechtlich Verantwortlichen.',
+    guide: '/docweb',
+    label: 'Website-Paket für eine einzelne Arztpraxis ansehen',
+  },
+  'luxus-immobilien': {
+    audience: 'Luxus-Immobilien',
+    scope: 'Objektstruktur und Exposés, Bild- und Videokonzept, mobile Galerien, technische SEO und Kontaktwege. Mehrsprachigkeit und geschützte Bereiche nach vereinbartem Umfang.',
+    guide: '/cases',
+    label: 'Weitere Webdesign-Referenzen ansehen',
+  },
+}[industry];
+---
+<section class="py-24 px-6 max-w-6xl mx-auto border-t border-black/10 dark:border-white/10" aria-labelledby="proof-heading">
+  <h2 id="proof-heading" class="text-3xl md:text-5xl font-semibold tracking-tight">Erfahrung, die Sie prüfen können.</h2>
+  {!hasReference && <p class="mt-6 max-w-3xl text-lg">Für {content.audience} veröffentlichen wir derzeit keine eigene Branchenreferenz. Die folgenden Projekte zeigen unsere Arbeit in anderen Branchen.</p>}
+  <div class="mt-10 grid md:grid-cols-2 gap-10">
+    <div>
+      <h3 class="text-xl font-semibold">Reale Projekte, klar eingeordnet</h3>
+      <p class="mt-4 leading-relaxed">Bei <a class="underline" href="/cases/klavierbau-milde">Klavierbau Hans Milde</a> verbinden wir Website und lokale Suchmaschinenoptimierung. Die <a class="underline" href="/case-study-patricks-fahrschule-local-seo/">Fallstudie zu Patricks Fahrschule</a> beschreibt ein weiteres lokales SEO-Projekt. Die dort genannten Ergebnisse gelten für diese Projekte und sind keine Prognose für Ihre Website.</p>
+    </div>
+    <div>
+      <h3 class="text-xl font-semibold">Ihr individuelles Projekt ab 25.000 €</h3>
+      <p class="mt-4 leading-relaxed">{content.scope} Im Erstgespräch klären wir Seitenumfang, Inhalte, Schnittstellen und Budget. Das schriftliche Angebot legt Leistungen, Zeitplan und Abnahmekriterien fest.</p>
+      <p class="mt-4"><a class="underline" href={content.guide}>{content.label} →</a></p>
+    </div>
+  </div>
+  <p class="mt-8"><a class="underline font-medium" href="/kontakt">Projektumfang besprechen →</a></p>
+</section>

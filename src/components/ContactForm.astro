@@ -7,6 +7,7 @@ const turnstileKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY;
 const placeholders = { name: 'Name', email: 'E-Mail', company: 'Firma', budget: 'Budget', message: 'Nachricht' };
 ---
 <form method="POST" action="/api/contact" class="space-y-4 max-w-xl">
+  <input type="hidden" name="source" value="/kontakt" />
   <input type="text" name="website" tabindex="-1" autocomplete="off" class="hidden" aria-hidden="true" />
   <label class="block">
     <span class="text-sm text-black/60 dark:text-white/60">{placeholders.name}</span>
@@ -40,6 +41,14 @@ const placeholders = { name: 'Name', email: 'E-Mail', company: 'Firma', budget: 
 </form>
 {turnstileKey && <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>}
 <script>
+  import { leadSource } from '../lib/lead-source';
+  const source = document.querySelector<HTMLInputElement>('input[name="source"]');
+  if (source && document.referrer) {
+    try {
+      const referrer = new URL(document.referrer);
+      if (referrer.origin === location.origin) source.value = leadSource(referrer.pathname);
+    } catch { /* No usable referrer means a direct inquiry. */ }
+  }
   const form = document.querySelector<HTMLFormElement>('form[action="/api/contact"]');
   const btn = document.getElementById('contact-submit') as HTMLButtonElement | null;
   form?.addEventListener('submit', () => {
