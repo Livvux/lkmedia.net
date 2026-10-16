@@ -1,21 +1,26 @@
 export const organization = () => ({
   "@context": "https://schema.org",
   "@type": "Organization",
+  "@id": "https://lkmedia.net/#organization",
   name: "lkmedia",
   url: "https://lkmedia.net",
   logo: "https://lkmedia.net/logo.svg",
   founder: { "@type": "Person", name: "Lucas Kleipoedszus" },
   email: "lucas@lkmedia.net",
+  address: {
+    "@type": "PostalAddress",
+    streetAddress: "Felchenstraße 21",
+    postalCode: "76437",
+    addressLocality: "Rastatt",
+    addressCountry: "DE",
+  },
   sameAs: ["https://github.com/livvux"],
 });
 
 export const professionalService = () => ({
-  "@context": "https://schema.org",
+  ...organization(),
   "@type": "ProfessionalService",
-  name: "lkmedia — Premium Web Development & SEO",
-  areaServed: "DE",
-  priceRange: "€€€€",
-  url: "https://lkmedia.net",
+  areaServed: ["Rastatt", "Baden-Württemberg", "Deutschland"],
 });
 
 export const blogPosting = (post: {
@@ -34,7 +39,8 @@ export const blogPosting = (post: {
   datePublished: post.pubDate.toISOString(),
   dateModified: (post.updatedDate ?? post.pubDate).toISOString(),
   author: { "@type": "Person", name: post.author },
-  image: post.image,
+  image: post.image ? new URL(post.image, "https://lkmedia.net").href : undefined,
+  publisher: { "@id": "https://lkmedia.net/#organization" },
   mainEntityOfPage: post.url,
 });
 

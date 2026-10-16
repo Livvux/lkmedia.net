@@ -3,10 +3,12 @@ export const exactRedirects: Record<string, string> = {
   "/impressum/": "/imprint",
   "/webdesign-fahrschulen": "/fahrschule-webdesign",
   "/webdesign-fahrschulen/": "/fahrschule-webdesign",
-  "/online-marketing-fahrschulen": "/blog/marketing-ideen-fahrschule/",
-  "/online-marketing-fahrschulen/": "/blog/marketing-ideen-fahrschule/",
-  "/blog/digital-marketing-fahrschulen": "/blog/marketing-ideen-fahrschule/",
-  "/blog/digital-marketing-fahrschulen/": "/blog/marketing-ideen-fahrschule/",
+  "/online-marketing-fahrschulen": "/marketing-ideen-fahrschule/",
+  "/online-marketing-fahrschulen/": "/marketing-ideen-fahrschule/",
+  "/blog/marketing-ideen-fahrschule": "/marketing-ideen-fahrschule/",
+  "/blog/marketing-ideen-fahrschule/": "/marketing-ideen-fahrschule/",
+  "/blog/digital-marketing-fahrschulen": "/marketing-ideen-fahrschule/",
+  "/blog/digital-marketing-fahrschulen/": "/marketing-ideen-fahrschule/",
 };
 
 /**

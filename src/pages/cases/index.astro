@@ -14,7 +14,7 @@ const nicheLabel: Record<string, string> = {
   creator: 'Creator',
 };
 const seo = {
-  title: 'Cases',
+  title: 'Webdesign-Referenzen & SEO-Ergebnisse',
   description: 'Cases: Websites, SEO-Projekte und digitale Plattformen für Unternehmen, Tierschutz und Creator.',
   canonical: '/cases',
   lang: 'de' as const,
@@ -22,7 +22,7 @@ const seo = {
 ---
 <Base seo={seo}>
   <section class="py-32 px-6 max-w-6xl mx-auto">
-    <h1 class="text-5xl md:text-7xl font-semibold tracking-tight">Cases.</h1>
+    <h1 class="text-5xl md:text-7xl font-semibold tracking-tight">Webdesign-Referenzen & SEO-Ergebnisse.</h1>
     <div class="mt-16 grid md:grid-cols-2 gap-8">
       {cases.map((c) => (
         <a href={`/cases/${c.id}`} class="group block">

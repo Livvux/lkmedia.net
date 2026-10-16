@@ -1,7 +1,7 @@
 import { expect, test } from '@playwright/test';
 
 // Seiten mit session_id in der URL: kein Plausible und kein Referrer, sonst geht der Link an Dritte.
-const PLAUSIBLE = 'script[src*="vertexmods"]';
+const PLAUSIBLE = 'script[data-domain="lkmedia.net"]';
 const REFERRER = 'meta[name="referrer"][content="same-origin"]';
 
 for (const path of ['/aenderung?session_id=cs_test_x', '/fahrschule-webdesign/onboarding?session_id=cs_test_x']) {

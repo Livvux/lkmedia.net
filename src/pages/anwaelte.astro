@@ -4,10 +4,11 @@ import Base from '../layouts/Base.astro';
 import Hero from '../components/landing/Hero.astro';
 import CTABlock from '../components/landing/CTABlock.astro';
 import FaqBlock from '../components/FaqBlock.astro';
+import IndustryProof from '../components/landing/IndustryProof.astro';
 
 const seo = {
-  title: 'Kanzlei Website — Premium-Auftritte für Anwälte',
-  description: 'Kanzlei-Websites, die Mandate bringen. DSGVO- und berufsrechtskonforme Premium-Auftritte für Wirtschafts-, IT- und Steuerrecht.',
+  title: 'Webdesign für Anwaltskanzleien: Konzept, Website & SEO',
+  description: 'Webdesign für Anwaltskanzleien: Rechtsgebiete, Teamprofile, lokale Sichtbarkeit und klare Mandantenanfragen. Individuelle Projekte ab 25.000 €.',
   canonical: '/anwaelte',
   lang: 'de' as const,
 };
@@ -19,7 +20,7 @@ const pains = [
 ];
 
 const features = [
-  { title: 'DSGVO & Berufsrecht', body: 'Rechtssichere Umsetzung nach BRAO, BORA und DSGVO — inkl. Impressum mit Kammerangabe.' },
+  { title: 'DSGVO & Berufsrecht', body: 'Technische Umsetzung mit abgestimmten Pflichtangaben und datensparsamen Kontaktwegen. Ihre Kanzlei prüft und genehmigt die rechtlichen Inhalte.' },
   { title: 'Mandantenportal-Ready', body: 'Vorbereitet für sicheren Dokumentenaustausch und Mandanten-Login, wenn Sie es brauchen.' },
   { title: 'E-E-A-T Autorenprofile', body: 'Partner- und Associate-Profile mit Expertise-Signalen, die Google und KI-Assistenten zitieren.' },
   { title: 'Team- und Rechtsgebiets-Seiten', body: 'Strukturierte Übersichten für Dezernate, Partner und Fachbereiche — klar navigierbar.' },
@@ -27,7 +28,7 @@ const features = [
 ];
 
 const faqs = [
-  { q: 'Darf meine Kanzlei-Website werben?', a: 'Ja — innerhalb der Grenzen von § 43b BRAO und § 6 BORA. Sachliche Information über die berufliche Tätigkeit ist zulässig; reißerische oder vergleichende Werbung nicht. Wir gestalten Copy und Claims genau an dieser Linie.' },
+  { q: 'Darf meine Kanzlei-Website werben?', a: 'Wir strukturieren sachliche Informationen zu Ihren Rechtsgebieten und Qualifikationen. Die berufsrechtliche Prüfung und Freigabe Ihrer Werbeaussagen erfolgt durch Ihre Kanzlei oder eine beauftragte Rechtsberatung.' },
   { q: 'Brauche ich ein Impressum mit RA-Kammer?', a: 'Ja. Das Impressum muss die zuständige Rechtsanwaltskammer, die Berufsbezeichnung inkl. Staat der Verleihung sowie die maßgeblichen berufsrechtlichen Regelungen enthalten. Das ist bei jeder unserer Kanzlei-Websites Standard.' },
   { q: 'Wie lange dauert ein Relaunch?', a: 'Ein vollständiger Relaunch liegt typischerweise bei 8–12 Wochen — von Kickoff bis Go-Live. Der Scope, die Anzahl der Anwaltsprofile und der Umfang der Inhalte bestimmen den genauen Rahmen.' },
   { q: 'Was kostet eine Kanzleiwebsite?', a: 'Projekte starten bei 25k € als Fixpreis auf Scope. Enthalten sind Konzept, Design, Build, Copy-Feinschliff und Launch. Keine Stundenabrechnung, keine Überraschungen.' },
@@ -57,8 +58,8 @@ const faqSchema = {
 ---
 <Base seo={seo} jsonLd={[serviceSchema, faqSchema]}>
   <Hero
-    headline="Kanzlei-Websites, die Mandate bringen."
-    sub="Digitale Premium-Auftritte für Wirtschafts-, IT- und Steuerrecht — DSGVO- und berufsrechtskonform."
+    headline="Webdesign für Anwaltskanzleien."
+    sub="Individuelle Websites für Kanzleien: mit klaren Rechtsgebieten, aussagekräftigen Teamprofilen und kurzen Wegen zur Mandatsanfrage."
     ctaHref="/kontakt" ctaLabel="Projekt starten" />
 
   <section class="py-24 px-6 max-w-6xl mx-auto">
@@ -98,6 +99,8 @@ const faqSchema = {
       </a>
     </section>
   )}
+
+  <IndustryProof industry="anwaelte" hasReference={!!relatedCase} />
 
   <FaqBlock items={faqs} />
 

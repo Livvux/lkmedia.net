@@ -1,6 +1,7 @@
 import type { APIRoute } from "astro";
 import { Resend } from "resend";
 import { clientIp } from "../../lib/client-ip";
+import { leadSource } from "../../lib/lead-source";
 
 export const prerender = false;
 
@@ -38,6 +39,7 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
     .slice(0, 120)
     .trim();
   const budget = String(form.get("budget") ?? "").trim();
+  const source = leadSource(String(form.get("source") ?? "/kontakt"));
   const message = String(form.get("message") ?? "")
     .slice(0, 5000)
     .trim();
@@ -56,7 +58,7 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
       to: TO,
       replyTo: email,
       subject: `Projektanfrage: ${name} (${budget})`,
-      text: `Name: ${name}\nEmail: ${email}\nFirma: ${company}\nBudget: ${budget}\n\n${message}`,
+      text: `Angebotsseite: ${source}\nName: ${name}\nEmail: ${email}\nFirma: ${company}\nBudget: ${budget}\n\n${message}`,
     });
     if (error) throw new Error("Resend delivery failed");
   } catch {
@@ -65,5 +67,6 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
       status: 503,
     });
   }
+  console.info(`[seo] lead_received source=${source}`);
   return new Response(null, { status: 303, headers: { Location: "/danke" } });
 };

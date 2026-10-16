@@ -2,12 +2,12 @@
 import Base from '../../layouts/Base.astro';
 import { getCollection } from 'astro:content';
 
-const posts = (await getCollection('posts', (p) => p.data.lang === 'de' && !p.data.draft))
+const posts = (await getCollection('posts', (p) => p.data.lang === 'de' && !p.data.draft && !p.data.noindex))
   .sort((a, b) => +b.data.pubDate - +a.data.pubDate);
 
 const seo = {
-  title: 'Blog',
-  description: 'Artikel zu SEO, Webentwicklung und Marketing.',
+  title: 'SEO, Webdesign & Marketing: Ratgeber',
+  description: 'Praxiswissen zu Webdesign, lokalem SEO und Marketing: Kosten, Funktionen und Strategien für Kanzleien, Praxen, Handwerker und Fahrschulen.',
   canonical: '/blog',
   lang: 'de' as const,
 };
@@ -19,7 +19,7 @@ function urlFor(p: (typeof posts)[number]) {
 ---
 <Base seo={seo}>
   <section class="py-32 px-6 max-w-4xl mx-auto">
-    <h1 class="text-5xl md:text-7xl font-semibold tracking-tight">Blog.</h1>
+    <h1 class="text-5xl md:text-7xl font-semibold tracking-tight">SEO, Webdesign & Marketing.</h1>
     <ul class="mt-16 divide-y divide-black/10 dark:divide-white/10">
       {posts.map((p) => (
         <li class="py-6">

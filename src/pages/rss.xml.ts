@@ -3,9 +3,9 @@ import rss from "@astrojs/rss";
 import type { APIContext } from "astro";
 
 export async function GET(context: APIContext) {
-  const posts = (await getCollection("posts", (p) => p.data.lang === "de" && !p.data.draft)).sort(
-    (a, b) => +b.data.pubDate - +a.data.pubDate,
-  );
+  const posts = (
+    await getCollection("posts", (p) => p.data.lang === "de" && !p.data.draft && !p.data.noindex)
+  ).sort((a, b) => +b.data.pubDate - +a.data.pubDate);
   return rss({
     title: "lkmedia Blog",
     description: "SEO, Webentwicklung, Marketing.",
