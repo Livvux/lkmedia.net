@@ -1,0 +1,26 @@
+---
+import Base from '../layouts/Base.astro';
+
+export const prerender = false;
+
+const seo = {
+  title: 'Seite nicht gefunden',
+  description: 'Diese Seite existiert nicht. Finden Sie unsere Leistungen, Referenzen und Artikel über die Navigation.',
+  canonical: '/404',
+  noindex: true,
+  lang: 'de' as const,
+};
+---
+<Base seo={seo} analytics={false}>
+  <section class="py-32 px-6 max-w-4xl mx-auto">
+    <p class="text-sm mb-6">Fehler 404</p>
+    <h1 class="text-4xl md:text-6xl font-semibold">Seite nicht gefunden.</h1>
+    <p class="mt-6 text-lg">Die angefragte Seite existiert nicht oder wurde entfernt.</p>
+    <nav class="mt-10 flex flex-wrap gap-6 underline" aria-label="Weitere Seiten">
+      <a href="/">Startseite</a>
+      <a href="/leistungen">Leistungen</a>
+      <a href="/blog">Blog</a>
+      <a href="/kontakt">Kontakt</a>
+    </nav>
+  </section>
+</Base>

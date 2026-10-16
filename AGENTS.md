@@ -31,7 +31,7 @@ German only. Public pages have no locale prefix. Old `/en/` URLs redirect perman
 
 `src/middleware.ts` runs on every request:
 1. Exact-path redirects from `src/lib/redirects.ts` (301).
-2. 404 fallback → 301 to `/blog` (except paths matching `SKIP_PREFIXES` / `SKIP_SUFFIXES`, which pass through).
+2. Unknown URLs retain HTTP 404. Never redirect missing pages or assets to generic destinations.
 3. Uses `x-forwarded-host` / `x-forwarded-proto` to build absolute redirect URLs — required because app runs behind Traefik. Don't use `ctx.url.origin` for redirects.
 
 ### Content collections
