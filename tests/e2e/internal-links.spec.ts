@@ -18,9 +18,15 @@ test('sitemap pages have working internal links and image sources', async ({ pag
     const response = await page.goto(path);
     expect(response?.status(), path).toBe(200);
     await expect(page.locator('meta[name="robots"][content*="noindex"]'), path).toHaveCount(0);
+    const schemaErrors = await page.locator('script[type="application/ld+json"]').evaluateAll((scripts) => scripts.flatMap((script) => {
+      try { JSON.parse(script.textContent ?? ''); return []; }
+      catch { return ['Invalid JSON-LD']; }
+    }));
+    expect(schemaErrors, path).toEqual([]);
     const refs = await page.evaluate(() => {
-      const refs = [...document.querySelectorAll('a[href], img[src], source[src], meta[property="og:image"]')]
-        .map((el) => el.getAttribute('href') ?? el.getAttribute('src') ?? el.getAttribute('content'));
+      const refs = [...document.querySelectorAll('a[href], img[src], source[src], video[src], [poster], meta[property="og:image"]')]
+        .map((el) => el.getAttribute('href') ?? el.getAttribute('src') ?? el.getAttribute('poster') ?? el.getAttribute('content'));
+      refs.push(...[...document.querySelectorAll('[poster]')].map((el) => el.getAttribute('poster')));
       for (const el of document.querySelectorAll('[srcset]')) {
         refs.push(...(el.getAttribute('srcset') ?? '').split(',').map((src) => src.trim().split(/\s+/)[0]));
       }
