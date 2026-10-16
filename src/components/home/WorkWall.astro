@@ -28,7 +28,7 @@ const src = (slug: string) => bySlug.get(slug)?.image ?? `/landing/shots/${slug}
             <a href={`${routeFor('cases', 'de')}/${shot.slug}`} class="item">
               <span class="pic frame">
                 {item.video ? (
-                  <video src="/cases/eichhoernchenberger/walkthrough.mp4" poster="/cases/eichhoernchenberger/desktop.webp" muted loop playsinline autoplay preload="none" aria-label={`Rundgang durch ${shot.domain}`}></video>
+                  <video data-preview data-src="/cases/eichhoernchenberger/walkthrough.mp4" poster="/cases/eichhoernchenberger/desktop.webp" muted loop playsinline autoplay preload="none" aria-label={`Rundgang durch ${shot.domain}`}></video>
                 ) : (
                   <img src={src(shot.slug)} width="1440" height="900" alt={`Website von ${shot.client}`} loading="lazy" decoding="async" />
                 )}
@@ -44,6 +44,22 @@ const src = (slug: string) => bySlug.get(slug)?.image ?? `/landing/shots/${slug}
     </ul>
   ))}
 </section>
+
+
+<script>
+  if (!matchMedia('(prefers-reduced-motion: reduce)').matches && 'IntersectionObserver' in window) {
+    const observer = new IntersectionObserver((entries) => {
+      for (const entry of entries) {
+        if (!entry.isIntersecting || !(entry.target instanceof HTMLVideoElement)) continue;
+        const video = entry.target;
+        if (video.dataset.src) video.src = video.dataset.src;
+        void video.play().catch(() => {});
+        observer.unobserve(video);
+      }
+    }, { rootMargin: '200px' });
+    document.querySelectorAll<HTMLVideoElement>('video[data-preview]').forEach(video => observer.observe(video));
+  }
+</script>
 
 <style>
   .work {

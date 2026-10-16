@@ -1,5 +1,7 @@
+import { getCollection } from "astro:content";
 import { defineMiddleware } from "astro:middleware";
 import { isBlockedCrossSitePost } from "./lib/csrf";
+import { routes } from "./lib/i18n";
 import { englishRedirectPath, exactRedirects } from "./lib/redirects";
 
 function externalOrigin(request: Request, fallback: URL): string {
@@ -27,7 +29,25 @@ export const onRequest = defineMiddleware(async (ctx, next) => {
   }
   const legacyEnglishTarget = englishRedirectPath(path);
   if (legacyEnglishTarget) {
-    return Response.redirect(`${origin()}${legacyEnglishTarget}${ctx.url.search}`, 301);
+    const [posts, cases] = await Promise.all([
+      getCollection("posts", (post) => !post.data.draft),
+      getCollection("cases"),
+    ]);
+    const knownTargets = new Set<string>([
+      ...Object.values(routes),
+      "/danke",
+      "/help",
+      "/phone-privacy",
+      "/rss.xml",
+      ...posts.map((post) => {
+        const slug = post.id.replace(/^de\//, "");
+        return post.data.route === "root" ? `/${slug}` : `/blog/${slug}`;
+      }),
+      ...cases.map((entry) => `/cases/${entry.id}`),
+    ]);
+    if (knownTargets.has(legacyEnglishTarget.replace(/\/+$/, "") || "/")) {
+      return Response.redirect(`${origin()}${legacyEnglishTarget}${ctx.url.search}`, 301);
+    }
   }
   const target = exactRedirects[path] ?? exactRedirects[path.replace(/\/$/, "")];
   if (target) return Response.redirect(`${origin()}${target}`, 301);

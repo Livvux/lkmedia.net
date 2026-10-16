@@ -3,9 +3,14 @@
     "collect": {
       "url": [
         "http://localhost:4321/",
-        "http://localhost:4321/leistungen",
         "http://localhost:4321/anwaelte",
-        "http://localhost:4321/blog"
+        "http://localhost:4321/privatkliniken",
+        "http://localhost:4321/luxus-immobilien",
+        "http://localhost:4321/docweb",
+        "http://localhost:4321/handwerk",
+        "http://localhost:4321/fahrschule-webdesign",
+        "http://localhost:4321/blog",
+        "http://localhost:4321/blog/kanzlei-website-kosten/"
       ],
       "startServerCommand": "node ./dist/server/entry.mjs",
       "startServerReadyPattern": "Server listening",
