@@ -6,7 +6,7 @@ const { hero } = Astro.props;
 const rail = ['r-1', 'r-2', 'r-3', 'r-4'];
 ---
 <header class="hero">
-  <div class="tile band" data-reveal>
+  <div class="tile band">
     <p class="name">lkmedia</p>
     <svg class="mark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 836.36 873.35" fill="currentColor" aria-hidden="true">
       <path d="M712.53,695.46l122.93,170.26c.99,1.38,1.2,4.24.44,5.12s-3.14,2.24-4.67,2.24l-179.68.26c-21.41.03-39.95-8.79-52.65-26.03l-187.57-257.86h-3.74s-.07,277.39-.07,277.39c0,3.08-2.27,5.48-5.17,5.48l-146.83-.08c-3.32,0-5.1-2-5.1-5.47V4.47c0-2.42,4.19-4.42,6.05-4.42l94.76.1c29.85,2.3,53.4,24.25,56.17,54.03l.3,454.32,154.92-197.1,77-99.1c10.11-14.56,25.73-25.63,44.15-25.66l144.2-.24c1.21,0,3.55.95,4.04,1.81.59,1.03.09,3.29-.68,5.06l-216.59,267.94-37.9,46.25,135.69,188Z"/>
@@ -15,21 +15,21 @@ const rail = ['r-1', 'r-2', 'r-3', 'r-4'];
   </div>
 
   <nav class="links" aria-label="Startseite">
-    {hero.links.map((l, i) => (
-      <a class="tile link-tile" href={l.href} data-reveal style={`--d:${60 + i * 60}ms`}>{l.label}</a>
+    {hero.links.map((l) => (
+      <a class="tile link-tile" href={l.href}>{l.label}</a>
     ))}
   </nav>
 
   <div class="left">
-    <ul class="tile facts t-s" data-reveal style="--d:260ms">
+    <ul class="tile facts t-s">
       {hero.facts.map((f) => <li>{f}</li>)}
     </ul>
-    <div class="tile pic portrait" data-reveal style="--d:200ms">
-      <img src="/home/lucas-1600.webp" width="1600" height="1380" alt="Lucas Kleipoedszus am Schreibtisch vor seinem Laptop" fetchpriority="high" decoding="async" />
+    <div class="tile pic portrait">
+      <img src="/home/lucas-1600.webp" width="1600" height="1380" alt="Lucas Kleipoedszus am Schreibtisch vor seinem Laptop" loading="lazy" decoding="async" />
     </div>
   </div>
 
-  <div class="tile pic shot" data-reveal style="--d:140ms">
+  <div class="tile pic shot">
     <img
       src="/landing/shots/klavierbau-milde-1440.webp"
       srcset="/landing/shots/klavierbau-milde-1440.webp 1440w, /landing/shots/klavierbau-milde-2880.webp 2880w"
@@ -45,9 +45,9 @@ const rail = ['r-1', 'r-2', 'r-3', 'r-4'];
 
   <ul class="rail">
     {hero.rail.map((f, i) => (
-      <li class={`tile t-s ${rail[i]}`} data-reveal style={`--d:${220 + i * 70}ms`}>{f}</li>
+      <li class={`tile t-s ${rail[i]}`}>{f}</li>
     ))}
-    <li class="tile r-action" data-reveal style="--d:520ms">
+    <li class="tile r-action">
       <a class="pill" href={hero.action.href}>
         {hero.action.label}
         <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" /></svg>

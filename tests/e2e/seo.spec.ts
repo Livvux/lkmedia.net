@@ -41,3 +41,26 @@ test('articles have absolute social images and article metadata', async ({ page,
   await expect(page.locator('main a[href*="real-debrid"]')).toHaveCount(0);
   expect(await (await request.get('/rss.xml')).text()).not.toContain('real-debrid-review');
 });
+
+
+test('homepage hero renders without waiting for deferred scripts', async ({ page }) => {
+  await page.route(/\.m?js(?:\?|$)/, route => route.fulfill({ contentType: 'application/javascript', body: '' }));
+  await page.goto('/');
+  await expect(page.locator('h1')).toBeVisible();
+  await expect(page.locator('main header.hero [data-reveal]')).toHaveCount(0);
+  expect(await page.locator('main header.hero .shot').evaluate(el => getComputedStyle(el).opacity)).toBe('1');
+});
+
+
+test('offscreen preview video loads only near the viewport', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.emulateMedia({ reducedMotion: 'no-preference' });
+  const videoRequests: string[] = [];
+  page.on('request', request => { if (request.url().includes('walkthrough.mp4')) videoRequests.push(request.url()); });
+  await page.goto('/');
+  const video = page.locator('video[data-preview]');
+  await expect(video).not.toHaveAttribute('src');
+  expect(videoRequests).toEqual([]);
+  await video.scrollIntoViewIfNeeded();
+  await expect(video).toHaveAttribute('src', '/cases/eichhoernchenberger/walkthrough.mp4');
+});

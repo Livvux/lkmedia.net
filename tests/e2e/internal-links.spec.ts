@@ -24,8 +24,8 @@ test('sitemap pages have working internal links and image sources', async ({ pag
     }));
     expect(schemaErrors, path).toEqual([]);
     const refs = await page.evaluate(() => {
-      const refs = [...document.querySelectorAll('a[href], img[src], source[src], video[src], [poster], meta[property="og:image"]')]
-        .map((el) => el.getAttribute('href') ?? el.getAttribute('src') ?? el.getAttribute('poster') ?? el.getAttribute('content'));
+      const refs = [...document.querySelectorAll('a[href], img[src], source[src], video[src], video[data-src], [poster], meta[property="og:image"]')]
+        .map((el) => el.getAttribute('href') ?? el.getAttribute('src') ?? el.getAttribute('data-src') ?? el.getAttribute('poster') ?? el.getAttribute('content'));
       refs.push(...[...document.querySelectorAll('[poster]')].map((el) => el.getAttribute('poster')));
       for (const el of document.querySelectorAll('[srcset]')) {
         refs.push(...(el.getAttribute('srcset') ?? '').split(',').map((src) => src.trim().split(/\s+/)[0]));
