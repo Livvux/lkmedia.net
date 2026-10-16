@@ -6,6 +6,7 @@ import node from '@astrojs/node';
 import tailwindcss from '@tailwindcss/vite';
 import react from '@astrojs/react';
 const noindexRoutes = [
+  /^\/404$/,
   /^\/aenderung(?:\/|$)/,
   /\/(?:onboarding|danke)$/,
   /^\/blog\/real-debrid-review-multi-hoster-downloader$/,
