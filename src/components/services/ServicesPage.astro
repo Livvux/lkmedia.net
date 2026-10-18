@@ -64,14 +64,49 @@ const steps = [
             <div class="price">
               <p><strong>{offer.price.setupPrice}</strong> einmalig</p>
               <p class="monthly">+ {offer.price.monthlyPrice} / Monat</p>
-              <p class="terms">inkl. USt. · 12 Monate Mindestlaufzeit</p>
+              <p class="terms">inkl. USt. · {offer.price.minimumTermMonths} Monate Mindestlaufzeit ab Bestellung</p>
+              <p class="total">Mindestens <strong>{offer.price.minimumTotalPrice}</strong> für Einrichtung und {offer.price.minimumTermMonths} Monate, zuzüglich Domainkosten.</p>
             </div>
             <a class="btn btn-primary" href={offer.href}>Paket ansehen & bestellen <span aria-hidden="true">→</span></a>
           </div>
         </article>
       ))}
     </div>
-    <p class="offer-note">Den vollständigen Leistungsumfang, weitere Kosten und Vertragsbedingungen finden Sie auf der jeweiligen Angebotsseite. Die Bestellung erfolgt dort über Stripe.</p>
+    <p class="offer-note">Alle Preise enthalten USt. Domainkosten kommen hinzu. Gebühren externer Dienste, etwa eines Praxiskalenders, sind nicht enthalten. Den vollständigen Leistungsumfang und die Vertragsbedingungen finden Sie auf der jeweiligen Angebotsseite. Die Bestellung erfolgt dort über Stripe.</p>
+  </section>
+
+  <section id="entscheidungshilfe" class="decision wrap" aria-labelledby="decision-heading">
+    <h2 id="decision-heading" class="section-title">Website-Paket, individuelle Website oder selbst erstellen?</h2>
+    <p class="section-sub">Vergleichen Sie denselben Umfang und dieselbe Laufzeit. Entscheidend sind Funktionen, Zuständigkeiten und laufende Kosten.</p>
+    <div class="decision-options">
+      <div>
+        <h3>Ein Branchenpaket passt, wenn …</h3>
+        <p>Sie eine Praxis, Fahrschule oder einen SHK- oder Elektrobetrieb mit der vorgesehenen Seitenstruktur präsentieren möchten. Hosting, technische Betreuung und kleine Inhaltsänderungen bis 30 Minuten pro Monat sind enthalten. Sie liefern Angaben, freigegebene Texte und Bilder; wir setzen die Website um.</p>
+        <p>Besondere Schnittstellen, weitere Sprachen oder zusätzliche Standorte klären wir vor der Bestellung. Bei fahrschulweb sind bis zu {FAHRSCHULWEB.includedLocations} Standorte enthalten. docweb verlinkt Ihren vorhandenen Praxiskalender; ein eigener Buchungsdienst und Kontaktformulare gehören nicht zum Paket.</p>
+        <a class="decision-link" href="#branchen">Die drei Pakete vergleichen →</a>
+      </div>
+      <div>
+        <h3>Eine individuelle Website passt, wenn …</h3>
+        <p>Sie eine umfangreiche Kanzlei-, Klinik- oder Immobilienwebsite, besondere Abläufe oder Schnittstellen benötigen. Unsere individuellen Projekte beginnen bei 25.000 €. Das ist ein Einstiegspreis für einen anderen Leistungsumfang, kein Preis für ein Branchenpaket.</p>
+        <p>Konzept, Seiten, Inhalte, Datenübernahme, Schnittstellen und spätere Betreuung vereinbaren wir im Angebot. Bestehende URLs und E-Mail-Postfächer sollten beim Relaunch vorab berücksichtigt werden.</p>
+        <a class="decision-link" href={routeFor('contact', lang)}>Anforderungen besprechen →</a>
+      </div>
+      <div>
+        <h3>Selbst erstellen passt, wenn …</h3>
+        <p>Sie Gestaltung, Inhalte und Pflege selbst übernehmen können und möchten. Ob Baukasten oder eigenes CMS: Prüfen Sie Domain, Tarif, zusätzliche Funktionen, Backups, Datenschutz und Exportmöglichkeiten beim gewählten Anbieter.</p>
+        <p>Rechnen Sie Ihre eigene Zeit für Einrichtung, Aktualisierungen und die Bearbeitung von Formularproblemen mit ein. Für einen fairen Vergleich zählen Einrichtung plus laufende Kosten über zwölf Monate und der tatsächlich enthaltene Support.</p>
+        <a class="decision-link" href={routeFor('contact', lang)}>Offene Anforderungen klären →</a>
+      </div>
+    </div>
+    <div class="planning-guides">
+      <h3>Vor der Bestellung: Ihre Website planen</h3>
+      <ul>
+        <li><a href="/blog/arztpraxis-website-erstellen-lassen/">Praxiswebsite: Inhalte, Terminbuchung und Kosten</a></li>
+        <li><a href="/blog/fahrschul-website-kosten-funktionen/">Fahrschul-Website: Funktionen und Online-Anmeldung</a></li>
+        <li><a href="/blog/webdesign-fuer-handwerker/">Handwerker-Website: Einsatzgebiet und Projektanfragen</a></li>
+        <li><a href="/blog/kanzlei-website-kosten/">Individuelle Kanzlei-Website: Umfang und Budget</a></li>
+      </ul>
+    </div>
   </section>
 
   <section class="order-process wrap" aria-labelledby="process-heading">
@@ -110,9 +145,20 @@ const steps = [
   .price strong { font-size: 30px; font-weight: 600; letter-spacing: -0.03em; color: var(--fg); }
   .monthly { margin-top: 4px; font-size: 16px; color: var(--fg); }
   .terms { margin-top: 12px; font-size: 11px; line-height: 1.6; }
+  .total { margin-top: 12px; line-height: 1.7; }
+  .total strong { font-size: inherit; letter-spacing: normal; }
   .offer .btn { margin-top: 24px; padding-inline: 12px; font-size: 14px; }
   .offer-note { max-width: 820px; margin: 24px auto 0; text-align: center; font-size: 13px; line-height: 1.7; color: var(--fg-muted); }
   .order-process { padding-block: 100px 80px; }
+  .decision { padding-top: 80px; scroll-margin-top: 100px; }
+  .decision > .section-sub { max-width: 760px; margin-top: 20px; }
+  .decision-options { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 32px; margin-top: 40px; }
+  .decision h3 { font-size: 21px; font-weight: 600; line-height: 1.35; }
+  .decision-options p { margin-top: 16px; font-size: 15px; line-height: 1.75; color: var(--fg-muted); }
+  .decision-link { display: inline-block; margin-top: 20px; text-decoration: underline; text-underline-offset: 4px; }
+  .planning-guides { margin-top: 40px; padding-top: 32px; border-top: 1px solid var(--border); }
+  .planning-guides ul { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px 32px; margin-top: 20px; line-height: 1.6; }
+  .planning-guides a { text-decoration: underline; text-underline-offset: 4px; }
   .order-process ol { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 40px; margin-top: 40px; }
   .step-number { font-family: var(--font-mono); font-size: 13px; color: var(--fg-muted); }
   .order-process h3 { margin-top: 16px; font-size: 20px; font-weight: 500; }
@@ -122,6 +168,6 @@ const steps = [
   .custom h2 { margin-block: 12px 16px; font-size: 32px; font-weight: 600; letter-spacing: -0.03em; line-height: 1.15; }
   .custom .btn { flex-shrink: 0; }
   @media (max-width: 1000px) { .offers { gap: 16px; } .offer-content { padding: 20px; } }
-  @media (max-width: 820px) { .offers, .order-process ol { grid-template-columns: 1fr; } .offer { max-width: 560px; width: 100%; margin-inline: auto; } .custom { flex-direction: column; align-items: flex-start; } }
+  @media (max-width: 820px) { .offers, .order-process ol, .decision-options, .planning-guides ul { grid-template-columns: 1fr; } .offer { max-width: 560px; width: 100%; margin-inline: auto; } .custom { flex-direction: column; align-items: flex-start; } }
   @media (max-width: 640px) { .industry-hero { padding-block: 48px 36px; } .industry-hero h1 { font-size: 44px; } .order-process { padding-block: 64px; } .custom h2 { font-size: 28px; } .offer-content { padding: 24px; } }
 </style>

@@ -158,14 +158,14 @@ const de: HomeContent = {
   },
   search: {
     title: "Wo Ihre Kunden suchen",
-    sub: "Tragen Sie Ihre Leistung und Ihren Ort ein. So soll Ihr Eintrag bei Google und in ChatGPT aussehen.",
+    sub: "Tragen Sie Ihre Leistung und Ihren Ort ein. Die Beispiele zeigen, wie verständliche Informationen aussehen können; sie rufen keine Suchergebnisse ab.",
     defaults: {
       service: "Klavierstimmer",
       place: "Karlsruhe",
       business: "Klavierbau Hans Milde",
       domain: "klavierbau-milde.de",
     },
-    note: "Strukturierte Daten, llms.txt und klare Antworten auf jeder Seite, damit Google und KI-Systeme Sie verstehen und zitieren.",
+    note: "Klare Antworten und passende strukturierte Daten helfen bei der Einordnung Ihrer Inhalte. llms.txt bietet zusätzliche Orientierung; Rankings und KI-Zitationen lassen sich damit nicht garantieren.",
   },
   niches: {
     title: "Branchen",

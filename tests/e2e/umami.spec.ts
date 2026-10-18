@@ -31,6 +31,8 @@ async function fixture(page: import('@playwright/test').Page, path = '/', expect
         'access-control-allow-origin': 'https://lkmedia.net',
         'access-control-allow-headers': 'content-type,x-umami-hostname,x-umami-website-id',
       } });
+    } else if (new URL(request.url()).hostname === 'buy.stripe.com') {
+      await route.fulfill({ contentType: 'text/html', body: '<title>Checkout destination fixture</title>' });
     } else if (new URL(request.url()).hostname === 'lkmedia.net') {
       await route.fulfill({ contentType: 'text/html', body: `<title>Public fixture</title>
         <script type="module">${client}
@@ -93,3 +95,72 @@ test('an unset ID stays disabled', async ({ page }) => {
   expect(f.loads()).toBe(0);
   expect(f.posts).toEqual([]);
 });
+
+test('goal clicks use sanitized payloads and preserve native navigation', async ({ page }) => {
+  const f = await fixture(page, '/docweb?q=PRIVATE#PRIVATE', '/docweb');
+  await expect.poll(() => f.posts.length).toBe(1);
+  await page.evaluate(() => {
+    document.body.innerHTML += '<a href="https://buy.stripe.com/fixture?email=PRIVATE#PRIVATE">Paket bestellen</a>';
+  });
+  await page.getByRole('link', { name: 'Paket bestellen' }).click();
+  await expect(page).toHaveURL('https://buy.stripe.com/fixture?email=PRIVATE#PRIVATE');
+  await expect.poll(() => f.posts.length).toBe(2);
+  expect(f.posts[1]).toEqual({ type: 'event', payload: {
+    website: ID, hostname: 'lkmedia.net', url: '/docweb', title: 'Public fixture', referrer: '',
+    name: 'checkout_click', data: { target: 'docweb' },
+  } });
+  expect(JSON.stringify(f.posts)).not.toContain('PRIVATE');
+});
+
+test('privacy changes suppress later goal clicks and unrelated links emit nothing', async ({ page }) => {
+  const f = await fixture(page);
+  await expect.poll(() => f.posts.length).toBe(1);
+  await page.evaluate(() => {
+    document.body.innerHTML += '<a href="/cases">Cases</a><a href="/kontakt">Kontakt</a>';
+    document.addEventListener('click', event => event.preventDefault());
+  });
+  await page.getByRole('link', { name: 'Cases' }).click();
+  expect(f.posts).toHaveLength(1);
+  await page.evaluate(() => Object.defineProperty(navigator, 'globalPrivacyControl', { value: true }));
+  await page.getByRole('link', { name: 'Kontakt' }).click();
+  expect(f.posts).toHaveLength(1);
+});
+
+test('loading a calendar records a contact click without button text or booking data', async ({ page }) => {
+  const f = await fixture(page, '/kontakt', '/kontakt');
+  await expect.poll(() => f.posts.length).toBe(1);
+  await page.evaluate(() => {
+    document.body.innerHTML += '<button data-contact-calendar>PRIVATE</button>';
+  });
+  await page.getByRole('button', { name: 'PRIVATE', exact: true }).click();
+  await expect.poll(() => f.posts.length).toBe(2);
+  expect(f.posts[1]).toEqual({ type: 'event', payload: {
+    website: ID, hostname: 'lkmedia.net', url: '/kontakt', title: 'Public fixture', referrer: '',
+    name: 'contact_click', data: { target: 'appointment' },
+  } });
+  expect(JSON.stringify(f.posts)).not.toContain('PRIVATE');
+});
+
+for (const [href, name, target] of [
+  ['/kontakt', 'contact_click', 'form'], ['/kontakt#termin', 'contact_click', 'appointment'],
+  ['mailto:lucas@lkmedia.net?body=PRIVATE', 'contact_click', 'email'],
+  ['https://cal.com/lucas-lkmedia/15min?private=PRIVATE', 'contact_click', 'appointment'],
+  ['https://handwerk.lkmedia.net/?private=PRIVATE', 'demo_click', 'handwerkweb'],
+]) {
+  test(`goal ${name}/${target} from ${href} sends once without link contents`, async ({ page }) => {
+    const f = await fixture(page);
+    await expect.poll(() => f.posts.length).toBe(1);
+    await page.evaluate((href) => {
+      const link = document.createElement('a'); link.href = href; link.textContent = 'PRIVATE label';
+      document.body.append(link);
+      document.addEventListener('click', event => event.preventDefault());
+    }, href);
+    await page.getByRole('link', { name: 'PRIVATE label' }).click();
+    await expect.poll(() => f.posts.length).toBe(2);
+    expect(f.posts[1]).toEqual({ type: 'event', payload: {
+      website: ID, hostname: 'lkmedia.net', url: '/', title: 'Public fixture', referrer: '',
+      name, data: { target },
+    } });
+    expect(JSON.stringify(f.posts)).not.toContain('PRIVATE');
+  });
+}

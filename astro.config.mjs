@@ -5,6 +5,17 @@ import sitemap from '@astrojs/sitemap';
 import node from '@astrojs/node';
 import tailwindcss from '@tailwindcss/vite';
 import react from '@astrojs/react';
+import { readdirSync, readFileSync } from 'node:fs';
+import { parse } from 'yaml';
+
+const postsDirectory = new URL('./src/content/posts/de/', import.meta.url);
+const rootPostPaths = new Set(
+  readdirSync(postsDirectory).filter((file) => /\.mdx?$/.test(file)).flatMap((file) => {
+    const frontmatter = readFileSync(new URL(file, postsDirectory), 'utf8').split(/^---\s*$/m)[1];
+    return parse(frontmatter ?? '')?.route === 'root' ? [`/${file.replace(/\.mdx?$/, '')}`] : [];
+  }),
+);
+
 const noindexRoutes = [
   /^\/404$/,
   /^\/aenderung(?:\/|$)/,
@@ -22,7 +33,18 @@ export default defineConfig({
   integrations: [
     mdx(),
     react(),
-    sitemap({ filter: (page) => !noindexRoutes.some((route) => route.test(new URL(page).pathname.replace(/\/$/, ''))) }),
+    sitemap({
+      filter: (page) => !noindexRoutes.some((route) => route.test(new URL(page).pathname.replace(/\/$/, ''))),
+      serialize: (item) => {
+        const url = new URL(item.url);
+        const path = url.pathname.replace(/\/$/, '');
+        // Post.astro uses trailing slashes; static pages and case studies do not.
+        url.pathname = path === '' || path.startsWith('/blog/') || rootPostPaths.has(path)
+          ? `${path}/`
+          : path;
+        return { ...item, url: url.href };
+      },
+    }),
   ],
   vite: {
     plugins: [tailwindcss()],

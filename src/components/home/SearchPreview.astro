@@ -25,7 +25,7 @@ const d = search.defaults;
   </form>
 
   <div class="tile result-tile" data-reveal style="--d:120ms">
-    <p class="t-s where">Google, Platz 1</p>
+    <p class="t-s where">Google – Layoutbeispiel</p>
     <article class="serp" data-ui aria-live="polite">
       <p class="q">
         <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="7" cy="7" r="4.5" stroke="currentColor" stroke-width="1.6" /><path d="M10.5 10.5 14 14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" /></svg>
@@ -44,11 +44,12 @@ const d = search.defaults;
   </div>
 
   <div class="tile ai-tile" data-reveal style="--d:200ms">
-    <p class="t-s where">ChatGPT, als Beispiel</p>
+    <p class="t-s where">KI-Antwort – Textbeispiel</p>
     <div class="ai" data-ui>
       <p class="bubble">Wer ist ein guter <span data-out="service">{d.service}</span> in <span data-out="place">{d.place}</span>?</p>
-      <p class="answer">Für <span data-out="service">{d.service}</span> in <span data-out="place">{d.place}</span> wird häufig <strong data-out="business">{d.business}</strong> genannt. Die Website beantwortet die wichtigsten Fragen direkt und nennt Leistungen, Einzugsgebiet und Kontakt.</p>
-      <p class="sources"><span data-out="domain">{d.domain}</span><span>google.com/maps</span></p>
+      <p class="answer"><strong data-out="business">{d.business}</strong> kann auf der eigenen Website erklären, welche Leistungen als <span data-out="service">{d.service}</span> in <span data-out="place">{d.place}</span> angeboten werden und wie Interessenten Kontakt aufnehmen.</p>
+      <p class="sources"><span data-out="domain">{d.domain}</span></p>
+      <p class="t-s soft">Illustration, keine Live-Suche oder nachgewiesene KI-Empfehlung.</p>
     </div>
   </div>
 </section>

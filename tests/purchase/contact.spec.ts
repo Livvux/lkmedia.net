@@ -11,6 +11,7 @@ test('built contact form sends with runtime keys and redirects directly to /dank
   await expect(page.locator('script[src="https://challenges.cloudflare.com/turnstile/v0/api.js"]')).toHaveCount(1);
   await page.locator('[name="name"]').fill('Contact fixture');
   await page.locator('[name="email"]').fill('contact@example.test');
+  await page.getByLabel('Wie haben Sie uns gefunden? (optional)').selectOption('chatgpt');
   await page.locator('[name="message"]').fill('Isolated runtime delivery check');
   await page.locator('form[action="/api/contact"]').evaluate(form => {
     const input = document.createElement('input');
@@ -24,5 +25,6 @@ test('built contact form sends with runtime keys and redirects directly to /dank
   const state = await (await request.get('http://localhost:4328/state')).json();
   expect(state.mail).toContainEqual(expect.objectContaining({ subject: 'Projektanfrage: Contact fixture ()', text: expect.stringContaining('Isolated runtime delivery check') }));
   expect(state.mail).toContainEqual(expect.objectContaining({ text: expect.stringContaining('Angebotsseite: /anwaelte') }));
+  expect(state.mail).toContainEqual(expect.objectContaining({ text: expect.stringContaining('Herkunft (Selbstauskunft): ChatGPT') }));
   expect(errors).toEqual([]);
 });

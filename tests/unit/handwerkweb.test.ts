@@ -120,3 +120,14 @@ describe('HANDWERKWEB Payment Link', () => {
     expect(HANDWERKWEB.paymentLink.startsWith('https://buy.stripe.com/')).toBe(true);
   });
 });
+
+describe('HANDWERKWEB Vertragskosten', () => {
+  it('trennt Einrichtung, erste Zahlung und zwölfmonatige Mindestkosten', () => {
+    expect(HANDWERKWEB.setupPrice).toBe('1.990 €');
+    expect(HANDWERKWEB.monthlyPrice).toBe('69 €');
+    expect(HANDWERKWEB.initialAmount).toBe(2059);
+    expect(HANDWERKWEB.initialPrice).toBe('2.059 €');
+    expect(HANDWERKWEB.minimumTermMonths).toBe(12);
+    expect(HANDWERKWEB.minimumTotalPrice).toBe('2.818 €');
+  });
+});

@@ -1,9 +1,18 @@
 // handwerkweb – Website-Paket für Handwerksbetriebe (Produktseite /handwerk, Onboarding nach Stripe-Checkout).
 import { checkPaidSession, SESSION_ID } from "./stripe";
 
+const setupAmount = 1990;
+const monthlyAmount = 69;
+const minimumTermMonths = 12;
+const price = (amount: number) => `${new Intl.NumberFormat("de-DE").format(amount)} €`;
+
 export const HANDWERKWEB = {
-  setupPrice: "1.990 €",
-  monthlyPrice: "69 €",
+  setupPrice: price(setupAmount),
+  monthlyPrice: price(monthlyAmount),
+  initialPrice: price(setupAmount + monthlyAmount),
+  minimumTotalPrice: price(setupAmount + monthlyAmount * minimumTermMonths),
+  initialAmount: setupAmount + monthlyAmount,
+  minimumTermMonths,
   deliveryPromise:
     "Sobald Ihre Angaben und die benötigten Bilder vollständig vorliegen, erhalten Sie in der Regel innerhalb von 7 Werktagen eine Vorschau. Wir veröffentlichen Ihre Website nach Ihrer Freigabe.",
   demoUrl: "https://handwerk.lkmedia.net",

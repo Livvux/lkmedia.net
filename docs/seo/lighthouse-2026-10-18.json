@@ -1,0 +1,149 @@
+{
+  "context": "Local built Node server on webserver, Lighthouse mobile lab, one run per URL; contact remeasured after click-to-load fix",
+  "fieldData": null,
+  "results": [
+    {
+      "measuredUrl": "http://localhost:4321/kontakt",
+      "fetchTime": "2026-10-18T12:15:22.579Z",
+      "scores": {
+        "performance": 98,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "lcpMs": 1957.4304000000002,
+      "cls": 0.00035,
+      "tbtMs": 0
+    },
+    {
+      "measuredUrl": "http://localhost:4321/blog/kanzlei-website-kosten/",
+      "fetchTime": "2026-10-18T12:10:47.178Z",
+      "scores": {
+        "performance": 98,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "lcpMs": 1952.0973000000001,
+      "cls": 0.014006,
+      "tbtMs": 0
+    },
+    {
+      "measuredUrl": "http://localhost:4321/luxus-immobilien",
+      "fetchTime": "2026-10-18T12:09:49.036Z",
+      "scores": {
+        "performance": 98,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "lcpMs": 1952.6544000000001,
+      "cls": 0.0005,
+      "tbtMs": 0
+    },
+    {
+      "measuredUrl": "http://localhost:4321/leistungen",
+      "fetchTime": "2026-10-18T12:09:01.220Z",
+      "scores": {
+        "performance": 93,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "lcpMs": 2779.5651,
+      "cls": 0.066865,
+      "tbtMs": 0
+    },
+    {
+      "measuredUrl": "http://localhost:4321/anwaelte",
+      "fetchTime": "2026-10-18T12:09:26.724Z",
+      "scores": {
+        "performance": 98,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "lcpMs": 1952.6491500000002,
+      "cls": 0.006546,
+      "tbtMs": 0
+    },
+    {
+      "measuredUrl": "http://localhost:4321/fahrschule-webdesign",
+      "fetchTime": "2026-10-18T12:10:24.919Z",
+      "scores": {
+        "performance": 88,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "lcpMs": 3303.6068999999998,
+      "cls": 0.002776,
+      "tbtMs": 0
+    },
+    {
+      "measuredUrl": "http://localhost:4321/blog",
+      "fetchTime": "2026-10-18T12:10:36.249Z",
+      "scores": {
+        "performance": 98,
+        "accessibility": 95,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "lcpMs": 1951.8980999999999,
+      "cls": 0.038499,
+      "tbtMs": 0
+    },
+    {
+      "measuredUrl": "http://localhost:4321/handwerk",
+      "fetchTime": "2026-10-18T12:10:12.647Z",
+      "scores": {
+        "performance": 92,
+        "accessibility": 97,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "lcpMs": 2852.40105,
+      "cls": 0,
+      "tbtMs": 0
+    },
+    {
+      "measuredUrl": "http://localhost:4321/",
+      "fetchTime": "2026-10-18T12:08:49.038Z",
+      "scores": {
+        "performance": 87,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "lcpMs": 3761.61795,
+      "cls": 0.011379,
+      "tbtMs": 0
+    },
+    {
+      "measuredUrl": "http://localhost:4321/docweb",
+      "fetchTime": "2026-10-18T12:10:00.163Z",
+      "scores": {
+        "performance": 92,
+        "accessibility": 96,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "lcpMs": 2852.69985,
+      "cls": 0,
+      "tbtMs": 0
+    },
+    {
+      "measuredUrl": "http://localhost:4321/privatkliniken",
+      "fetchTime": "2026-10-18T12:09:37.850Z",
+      "scores": {
+        "performance": 98,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "lcpMs": 1951.9587000000001,
+      "cls": 0.0005,
+      "tbtMs": 0
+    }
+  ]
+}

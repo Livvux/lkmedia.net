@@ -1,5 +1,6 @@
 ---
 import { useTranslations, type Lang } from '../lib/i18n';
+import { DISCOVERY_CHANNELS } from '../lib/lead-source';
 interface Props { lang: Lang }
 const { lang } = Astro.props;
 const t = useTranslations(lang);
@@ -35,6 +36,12 @@ const placeholders = { name: 'Name', email: 'E-Mail', company: 'Firma', budget: 
   <label class="block">
     <span class="text-sm text-black/60 dark:text-white/60">{placeholders.message}</span>
     <textarea required name="message" rows="5" class="mt-1 w-full p-4 rounded-xl bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10"></textarea>
+  </label>
+  <label class="block">
+    <span class="text-sm text-black/60 dark:text-white/60">Wie haben Sie uns gefunden? (optional)</span>
+    <select name="discovery" class="mt-1 w-full h-12 px-4 rounded-xl bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10">
+      {Object.entries(DISCOVERY_CHANNELS).map(([value, label]) => <option value={value}>{label}</option>)}
+    </select>
   </label>
   {turnstileKey && <div class="cf-turnstile" data-sitekey={turnstileKey}></div>}
   <button id="contact-submit" class="h-12 px-6 rounded-full bg-black text-white dark:bg-white dark:text-black font-medium disabled:opacity-50">{t('cta.start')}</button>

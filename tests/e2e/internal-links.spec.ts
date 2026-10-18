@@ -17,6 +17,7 @@ test('sitemap pages have working internal links and image sources', async ({ pag
     const path = new URL(url).pathname;
     const response = await page.goto(path);
     expect(response?.status(), path).toBe(200);
+    await expect(page.locator('link[rel="canonical"]'), path).toHaveAttribute('href', url);
     await expect(page.locator('meta[name="robots"][content*="noindex"]'), path).toHaveCount(0);
     const schemaErrors = await page.locator('script[type="application/ld+json"]').evaluateAll((scripts) => scripts.flatMap((script) => {
       try { JSON.parse(script.textContent ?? ''); return []; }
