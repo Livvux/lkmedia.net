@@ -1,7 +1,7 @@
 import type { APIRoute } from "astro";
 import { Resend } from "resend";
 import { clientIp } from "../../lib/client-ip";
-import { leadSource } from "../../lib/lead-source";
+import { DISCOVERY_CHANNELS, discoveryChannel, leadSource } from "../../lib/lead-source";
 
 export const prerender = false;
 
@@ -40,6 +40,7 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
     .trim();
   const budget = String(form.get("budget") ?? "").trim();
   const source = leadSource(String(form.get("source") ?? "/kontakt"));
+  const discovery = discoveryChannel(String(form.get("discovery") ?? "unknown"));
   const message = String(form.get("message") ?? "")
     .slice(0, 5000)
     .trim();
@@ -58,7 +59,7 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
       to: TO,
       replyTo: email,
       subject: `Projektanfrage: ${name} (${budget})`,
-      text: `Angebotsseite: ${source}\nName: ${name}\nEmail: ${email}\nFirma: ${company}\nBudget: ${budget}\n\n${message}`,
+      text: `Angebotsseite: ${source}\nHerkunft (Selbstauskunft): ${DISCOVERY_CHANNELS[discovery]}\nName: ${name}\nEmail: ${email}\nFirma: ${company}\nBudget: ${budget}\n\n${message}`,
     });
     if (error) throw new Error("Resend delivery failed");
   } catch {
@@ -67,6 +68,6 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
       status: 503,
     });
   }
-  console.info(`[seo] lead_received source=${source}`);
+  console.info(`[seo] lead_received source=${source} discovery=${discovery}`);
   return new Response(null, { status: 303, headers: { Location: "/danke" } });
 };

@@ -71,12 +71,14 @@ const faqs = [
   { q: `Was passiert nach ${DOCWEB.minimumTermMonths} Monaten?`, a: 'Der Vertrag verlängert sich jeweils um einen Monat. Sie können dann mit einem Monat Frist zum Monatsende per E-Mail kündigen. Nach der Mindestlaufzeit und vollständiger Zahlung erhalten Sie auf Wunsch den Quellcode (den Programmtext Ihrer Website), um sie bei einem anderen Anbieter weiterzubetreiben.' },
 ];
 
-const productSchema = {
+const serviceSchema = {
   '@context': 'https://schema.org',
-  '@type': 'Product',
+  '@type': 'Service',
+  serviceType: 'Erstellung und Betrieb einer Praxiswebsite',
   name: 'docweb – Website für Arztpraxen',
   description: seo.description,
-  brand: { '@type': 'Organization', name: 'lkmedia' },
+  provider: { '@id': 'https://lkmedia.net/#organization' },
+  image: 'https://lkmedia.net/images/docweb-demo.webp',
   url: 'https://lkmedia.net/docweb',
   offers: {
     '@type': 'Offer',
@@ -89,7 +91,7 @@ const productSchema = {
   },
 };
 ---
-<Base seo={seo} jsonLd={[productSchema]}>
+<Base seo={seo} jsonLd={[serviceSchema]}>
   <ProductShell tone={TONE} priceText={`${DOCWEB.setupPrice} + ${DOCWEB.monthlyPrice}/Monat`}>
 
     <!-- Hero -->

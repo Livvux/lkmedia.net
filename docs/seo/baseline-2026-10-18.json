@@ -1,0 +1,83 @@
+{
+  "capturedAt": "2026-10-18",
+  "source": "Google Search Console, gsc seo-summary sc-domain:lkmedia.net 28 200",
+  "property": "sc-domain:lkmedia.net",
+  "totals": {
+    "current": {
+      "startDate": "2026-09-19",
+      "endDate": "2026-10-16",
+      "clicks": 132,
+      "impressions": 986,
+      "ctr": 0.13387423935091278,
+      "position": 13.21602434077079
+    },
+    "previous": {
+      "startDate": "2026-08-22",
+      "endDate": "2026-09-18",
+      "clicks": 78,
+      "impressions": 972,
+      "ctr": 0.08024691358024691,
+      "position": 20.153292181069958
+    }
+  },
+  "pageClickSegments": {
+    "current": {
+      "mainHost": 13,
+      "meowHost": 119
+    },
+    "previous": {
+      "mainHost": 9,
+      "meowHost": 69
+    }
+  },
+  "commercialQueries": [
+    {
+      "key": "seo agentur rastatt",
+      "clicks": 0,
+      "impressions": 119,
+      "ctr": 0.0,
+      "position": 7.69
+    },
+    {
+      "key": "webdesign rastatt",
+      "clicks": 0,
+      "impressions": 101,
+      "ctr": 0.0,
+      "position": 25.06
+    },
+    {
+      "key": "seo rastatt",
+      "clicks": 0,
+      "impressions": 30,
+      "ctr": 0.0,
+      "position": 15.73
+    },
+    {
+      "key": "suchmaschinenoptimierung rastatt",
+      "clicks": 0,
+      "impressions": 29,
+      "ctr": 0.0,
+      "position": 18.45
+    },
+    {
+      "key": "webdesigner rastatt",
+      "clicks": 0,
+      "impressions": 11,
+      "ctr": 0.0,
+      "position": 11.0
+    },
+    {
+      "key": "webdesign fahrschule",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0.0,
+      "position": 37.0
+    }
+  ],
+  "limitations": [
+    "Domain property includes all subdomains.",
+    "Query and page aggregations differ; anonymized queries may be omitted.",
+    "No revenue, qualified-lead or analytics-reporting baseline available.",
+    "Averages are not fixed local search positions."
+  ]
+}

@@ -42,6 +42,17 @@ test('articles have absolute social images and article metadata', async ({ page,
   expect(await (await request.get('/rss.xml')).text()).not.toContain('real-debrid-review');
 });
 
+test('homepage separates illustrative search examples from actual recommendations', async ({ page }) => {
+  await page.goto('/');
+  const preview = page.locator('[data-search]');
+  await expect(preview).toContainText('Google – Layoutbeispiel');
+  await expect(preview).toContainText('keine Live-Suche oder nachgewiesene KI-Empfehlung');
+  await preview.getByLabel('Ihr Betrieb').fill('Beispielbetrieb');
+  await expect(preview.locator('.answer')).toContainText('Beispielbetrieb');
+  await expect(preview.locator('.answer')).not.toContainText('wird häufig');
+  await expect(page.getByRole('link', { name: 'SEO-Erstgespräch vereinbaren →' })).toHaveAttribute('href', '/kontakt#termin');
+});
+
 
 test('homepage hero renders without waiting for deferred scripts', async ({ page }) => {
   await page.route(/\.m?js(?:\?|$)/, route => route.fulfill({ contentType: 'application/javascript', body: '' }));

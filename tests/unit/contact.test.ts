@@ -5,11 +5,12 @@ vi.mock("resend", () => ({ Resend: class { emails = { send }; } }));
 
 afterEach(() => { vi.unstubAllEnvs(); vi.unstubAllGlobals(); vi.restoreAllMocks(); vi.resetModules(); });
 
-async function submit(key = "runtime-key", headers: Record<string, string> = {}) {
+async function submit(key = "runtime-key", headers: Record<string, string> = {}, discovery = "unknown") {
   vi.stubEnv("RESEND_API_KEY", key);
   vi.stubEnv("TURNSTILE_SECRET_KEY", "");
   const { POST } = await import("../../src/pages/api/contact");
   const form = new FormData();
+  form.set("discovery", discovery);
   for (const [k, v] of Object.entries({ name: "Test Person", email: "test@example.test", message: "Private message", "cf-turnstile-response": "token" })) form.set(k, v);
   return POST({ request: new Request("http://internal:4321/api/contact", { method: "POST", headers, body: form }), clientAddress: "10.0.0.1" } as Parameters<typeof POST>[0]);
 }
@@ -29,10 +30,23 @@ describe("contact", () => {
   });
   it.each(["returned", "thrown"])("reports %s provider errors without exposing them", async (mode) => {
     const log = vi.spyOn(console, "error").mockImplementation(() => {});
+    const success = vi.spyOn(console, "info").mockImplementation(() => {});
     if (mode === "returned") send.mockResolvedValue({ error: { message: "Private message" } });
     else send.mockRejectedValue(new Error("Private message"));
     expect((await submit()).status).toBe(503);
     expect(log.mock.calls).toEqual([["[contact] Versand fehlgeschlagen"]]);
+    expect(success).not.toHaveBeenCalled();
+  });
+  it.each([
+    ["chatgpt", "ChatGPT", "chatgpt"],
+    ["https://private.example?email=PRIVATE", "Keine Angabe", "unknown"],
+    ["__proto__", "Keine Angabe", "unknown"],
+  ])("retains only allowed self-reported channels: %s", async (input, label, channel) => {
+    send.mockResolvedValue({ error: null });
+    const log = vi.spyOn(console, "info").mockImplementation(() => {});
+    expect((await submit("runtime-key", {}, input)).status).toBe(303);
+    expect(send).toHaveBeenCalledWith(expect.objectContaining({ text: expect.stringContaining(`Herkunft (Selbstauskunft): ${label}`) }));
+    expect(log.mock.calls).toEqual([[`[seo] lead_received source=/kontakt discovery=${channel}`]]);
   });
   it("uses the visitor IP for Turnstile", async () => {
     vi.stubEnv("RESEND_API_KEY", "runtime-key");

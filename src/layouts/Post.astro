@@ -43,7 +43,11 @@ const bp = blogPosting({
     </nav>
     <h1 class="text-4xl md:text-6xl font-semibold tracking-tight">{entry.data.title}</h1>
     <div class="text-sm text-black/50 dark:text-white/50 mt-4 not-prose">
-      {entry.data.pubDate.toISOString().slice(0, 10)} · {entry.data.author}
+      Veröffentlicht: <time datetime={entry.data.pubDate.toISOString()}>{entry.data.pubDate.toISOString().slice(0, 10)}</time>
+      {entry.data.updatedDate && <>
+        {' · Aktualisiert: '}<time datetime={entry.data.updatedDate.toISOString()}>{entry.data.updatedDate.toISOString().slice(0, 10)}</time>
+      </>}
+      {' · '}{entry.data.author}
     </div>
     <div class="mt-10"><slot /></div>
     <footer class="mt-20 border-t border-black/10 dark:border-white/10 pt-8 text-sm text-black/50 dark:text-white/50 not-prose">
