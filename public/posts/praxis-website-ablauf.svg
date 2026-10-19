@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" role="img" aria-labelledby="title desc">
+<title id="title">Praxiswebsite: Vier Antworten, die zählen</title>
+<desc id="desc">Patienten brauchen Orientierung, keine unnötigen Klickwege. Beispielhafter Informationsweg – keine Darstellung einer Kundenwebsite.</desc>
+<rect width="1200" height="675" fill="#09090b"/>
+<rect x="24" y="24" width="1152" height="627" rx="22" fill="#101012" stroke="#34343b" stroke-width="2"/>
+<rect x="49" y="50" width="9" height="9" rx="2" fill="#8dddb9"/>
+<text x="72" y="59" fill="#b7b7be" font-size="15" font-weight="650" letter-spacing="2.5">LKMEDIA / PRAXISWISSEN</text>
+<text x="1149" y="59" fill="#96969f" font-size="13" font-family="ui-monospace,SFMono-Regular,monospace" text-anchor="end">SCHEMA · KEINE ECHTEN KUNDENDATEN</text>
+<line x1="48" y1="85" x2="1152" y2="85" stroke="#35353b"/>
+<text x="48" y="148" fill="#fafafa" font-family="system-ui,-apple-system,Segoe UI,sans-serif" font-size="38" font-weight="650" letter-spacing="-.9">Praxiswebsite: Vier Antworten, die zählen</text>
+<text x="48" y="192" fill="#b4b4bc" font-family="system-ui,-apple-system,Segoe UI,sans-serif" font-size="22">Patienten brauchen Orientierung, keine unnötigen Klickwege.</text>
+<g font-family="system-ui,-apple-system,Segoe UI,sans-serif"><g>
+    <rect x="48" y="238" width="264" height="295" rx="16" fill="#161619" stroke="#39393f" stroke-width="1.5"/>
+    <rect x="68" y="260" width="50" height="42" rx="10" fill="#8dddb9" fill-opacity=".11"/>
+    <text x="93" y="287" fill="#8dddb9" font-size="21" font-weight="700" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,monospace">01</text>
+    <text x="68" y="348" fill="#f7f7f8" font-size="22" font-weight="650">Erreichbarkeit</text>
+    <line x1="68" x2="292" y1="367" y2="367" stroke="#3e3e44"/>
+    <circle cx="73" cy="392" r="3" fill="#8dddb9"/><text x="87" y="399" font-size="18" fill="#d0d0d4">Praxis und Adresse</text>
+<circle cx="73" cy="437" r="3" fill="#8dddb9"/><text x="87" y="444" font-size="18" fill="#d0d0d4">Sprechzeiten</text>
+<circle cx="73" cy="482" r="3" fill="#8dddb9"/><text x="87" y="489" font-size="18" fill="#d0d0d4">Telefon &amp; Kontakt</text>
+  </g>
+<g>
+    <rect x="328" y="238" width="264" height="295" rx="16" fill="#161619" stroke="#39393f" stroke-width="1.5"/>
+    <rect x="348" y="260" width="50" height="42" rx="10" fill="#8dddb9" fill-opacity=".11"/>
+    <text x="373" y="287" fill="#8dddb9" font-size="21" font-weight="700" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,monospace">02</text>
+    <text x="348" y="348" fill="#f7f7f8" font-size="22" font-weight="650">Leistungen</text>
+    <line x1="348" x2="572" y1="367" y2="367" stroke="#3e3e44"/>
+    <circle cx="353" cy="392" r="3" fill="#8dddb9"/><text x="367" y="399" font-size="18" fill="#d0d0d4">Behandlungsspektrum</text>
+<circle cx="353" cy="437" r="3" fill="#8dddb9"/><text x="367" y="444" font-size="18" fill="#d0d0d4">Team &amp; Qualifikation</text>
+<circle cx="353" cy="482" r="3" fill="#8dddb9"/><text x="367" y="489" font-size="18" fill="#d0d0d4">Für wen ist es gedacht?</text>
+  </g>
+<g>
+    <rect x="608" y="238" width="264" height="295" rx="16" fill="#161619" stroke="#39393f" stroke-width="1.5"/>
+    <rect x="628" y="260" width="50" height="42" rx="10" fill="#8dddb9" fill-opacity=".11"/>
+    <text x="653" y="287" fill="#8dddb9" font-size="21" font-weight="700" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,monospace">03</text>
+    <text x="628" y="348" fill="#f7f7f8" font-size="22" font-weight="650">Terminweg</text>
+    <line x1="628" x2="852" y1="367" y2="367" stroke="#3e3e44"/>
+    <circle cx="633" cy="392" r="3" fill="#8dddb9"/><text x="647" y="399" font-size="18" fill="#d0d0d4">Direkter Kalenderlink</text>
+<circle cx="633" cy="437" r="3" fill="#8dddb9"/><text x="647" y="444" font-size="18" fill="#d0d0d4">Alternativ per Telefon</text>
+<circle cx="633" cy="482" r="3" fill="#8dddb9"/><text x="647" y="489" font-size="18" fill="#d0d0d4">Mobil testen</text>
+  </g>
+<g>
+    <rect x="888" y="238" width="264" height="295" rx="16" fill="#161619" stroke="#39393f" stroke-width="1.5"/>
+    <rect x="908" y="260" width="50" height="42" rx="10" fill="#8dddb9" fill-opacity=".11"/>
+    <text x="933" y="287" fill="#8dddb9" font-size="21" font-weight="700" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,monospace">04</text>
+    <text x="908" y="348" fill="#f7f7f8" font-size="22" font-weight="650">Freigabe</text>
+    <line x1="908" x2="1132" y1="367" y2="367" stroke="#3e3e44"/>
+    <circle cx="913" cy="392" r="3" fill="#8dddb9"/><text x="927" y="399" font-size="18" fill="#d0d0d4">Medizinische Inhalte</text>
+<circle cx="913" cy="437" r="3" fill="#8dddb9"/><text x="927" y="444" font-size="18" fill="#d0d0d4">Datenschutz &amp; Rechte</text>
+<circle cx="913" cy="482" r="3" fill="#8dddb9"/><text x="927" y="489" font-size="18" fill="#d0d0d4">Änderungen zuständig</text>
+  </g></g>
+<line x1="48" y1="568" x2="1152" y2="568" stroke="#34343b"/>
+<circle cx="56" cy="606" r="5" fill="#8dddb9"/>
+<text x="75" y="613" font-family="system-ui,-apple-system,Segoe UI,sans-serif" fill="#c9c9d0" font-size="19">Beispielhafter Informationsweg – keine Darstellung einer Kundenwebsite.</text>
+<text x="1149" y="636" fill="#888892" text-anchor="end" font-family="ui-monospace,SFMono-Regular,monospace" font-size="13">lkmedia.net</text>
+</svg>

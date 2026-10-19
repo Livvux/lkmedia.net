@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" role="img" aria-labelledby="title desc">
+<title id="title">Fahrschulwebsite: Ein klarer Weg zur Anfrage</title>
+<desc id="desc">Vom Interesse an einer Klasse bis zur bearbeitbaren Anmeldung. Die Anfrage ist noch kein Vertrag und keine Kursplatzbestätigung.</desc>
+<rect width="1200" height="675" fill="#09090b"/>
+<rect x="24" y="24" width="1152" height="627" rx="22" fill="#101012" stroke="#34343b" stroke-width="2"/>
+<rect x="49" y="50" width="9" height="9" rx="2" fill="#9bb5ff"/>
+<text x="72" y="59" fill="#b7b7be" font-size="15" font-weight="650" letter-spacing="2.5">LKMEDIA / PRAXISWISSEN</text>
+<text x="1149" y="59" fill="#96969f" font-size="13" font-family="ui-monospace,SFMono-Regular,monospace" text-anchor="end">SCHEMA · KEINE ECHTEN KUNDENDATEN</text>
+<line x1="48" y1="85" x2="1152" y2="85" stroke="#35353b"/>
+<text x="48" y="148" fill="#fafafa" font-family="system-ui,-apple-system,Segoe UI,sans-serif" font-size="38" font-weight="650" letter-spacing="-.9">Fahrschulwebsite: Ein klarer Weg zur Anfrage</text>
+<text x="48" y="192" fill="#b4b4bc" font-family="system-ui,-apple-system,Segoe UI,sans-serif" font-size="22">Vom Interesse an einer Klasse bis zur bearbeitbaren Anmeldung.</text>
+<g font-family="system-ui,-apple-system,Segoe UI,sans-serif"><g>
+    <rect x="48" y="238" width="264" height="295" rx="16" fill="#161619" stroke="#39393f" stroke-width="1.5"/>
+    <rect x="68" y="260" width="50" height="42" rx="10" fill="#9bb5ff" fill-opacity=".11"/>
+    <text x="93" y="287" fill="#9bb5ff" font-size="21" font-weight="700" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,monospace">01</text>
+    <text x="68" y="348" fill="#f7f7f8" font-size="22" font-weight="650">Standort</text>
+    <line x1="68" x2="292" y1="367" y2="367" stroke="#3e3e44"/>
+    <circle cx="73" cy="392" r="3" fill="#9bb5ff"/><text x="87" y="399" font-size="18" fill="#d0d0d4">Richtige Filiale</text>
+<circle cx="73" cy="437" r="3" fill="#9bb5ff"/><text x="87" y="444" font-size="18" fill="#d0d0d4">Büro- &amp; Theoriezeiten</text>
+<circle cx="73" cy="482" r="3" fill="#9bb5ff"/><text x="87" y="489" font-size="18" fill="#d0d0d4">Ansprechpartner</text>
+  </g>
+<g>
+    <rect x="328" y="238" width="264" height="295" rx="16" fill="#161619" stroke="#39393f" stroke-width="1.5"/>
+    <rect x="348" y="260" width="50" height="42" rx="10" fill="#9bb5ff" fill-opacity=".11"/>
+    <text x="373" y="287" fill="#9bb5ff" font-size="21" font-weight="700" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,monospace">02</text>
+    <text x="348" y="348" fill="#f7f7f8" font-size="19" font-weight="650">Führerscheinklasse</text>
+    <line x1="348" x2="572" y1="367" y2="367" stroke="#3e3e44"/>
+    <circle cx="353" cy="392" r="3" fill="#9bb5ff"/><text x="367" y="399" font-size="18" fill="#d0d0d4">Tatsächliches Angebot</text>
+<circle cx="353" cy="437" r="3" fill="#9bb5ff"/><text x="367" y="444" font-size="18" fill="#d0d0d4">Voraussetzungen prüfen</text>
+<circle cx="353" cy="482" r="3" fill="#9bb5ff"/><text x="367" y="489" font-size="18" fill="#d0d0d4">Preisübersicht</text>
+  </g>
+<g>
+    <rect x="608" y="238" width="264" height="295" rx="16" fill="#161619" stroke="#39393f" stroke-width="1.5"/>
+    <rect x="628" y="260" width="50" height="42" rx="10" fill="#9bb5ff" fill-opacity=".11"/>
+    <text x="653" y="287" fill="#9bb5ff" font-size="21" font-weight="700" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,monospace">03</text>
+    <text x="628" y="348" fill="#f7f7f8" font-size="22" font-weight="650">Anfrage</text>
+    <line x1="628" x2="852" y1="367" y2="367" stroke="#3e3e44"/>
+    <circle cx="633" cy="392" r="3" fill="#9bb5ff"/><text x="647" y="399" font-size="18" fill="#d0d0d4">Klasse &amp; Standort</text>
+<circle cx="633" cy="437" r="3" fill="#9bb5ff"/><text x="647" y="444" font-size="18" fill="#d0d0d4">Nötige Kontaktdaten</text>
+<circle cx="633" cy="482" r="3" fill="#9bb5ff"/><text x="647" y="489" font-size="18" fill="#d0d0d4">E-Mail oder Software</text>
+  </g>
+<g>
+    <rect x="888" y="238" width="264" height="295" rx="16" fill="#161619" stroke="#39393f" stroke-width="1.5"/>
+    <rect x="908" y="260" width="50" height="42" rx="10" fill="#9bb5ff" fill-opacity=".11"/>
+    <text x="933" y="287" fill="#9bb5ff" font-size="21" font-weight="700" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,monospace">04</text>
+    <text x="908" y="348" fill="#f7f7f8" font-size="22" font-weight="650">Bearbeitung</text>
+    <line x1="908" x2="1132" y1="367" y2="367" stroke="#3e3e44"/>
+    <circle cx="913" cy="392" r="3" fill="#9bb5ff"/><text x="927" y="399" font-size="18" fill="#d0d0d4">Empfänger festlegen</text>
+<circle cx="913" cy="437" r="3" fill="#9bb5ff"/><text x="927" y="444" font-size="18" fill="#d0d0d4">Rückmeldung organisieren</text>
+<circle cx="913" cy="482" r="3" fill="#9bb5ff"/><text x="927" y="489" font-size="18" fill="#d0d0d4">Plätze bestätigen</text>
+  </g></g>
+<line x1="48" y1="568" x2="1152" y2="568" stroke="#34343b"/>
+<circle cx="56" cy="606" r="5" fill="#9bb5ff"/>
+<text x="75" y="613" font-family="system-ui,-apple-system,Segoe UI,sans-serif" fill="#c9c9d0" font-size="19">Die Anfrage ist noch kein Vertrag und keine Kursplatzbestätigung.</text>
+<text x="1149" y="636" fill="#888892" text-anchor="end" font-family="ui-monospace,SFMono-Regular,monospace" font-size="13">lkmedia.net</text>
+</svg>

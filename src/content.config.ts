@@ -1,6 +1,7 @@
 import { defineCollection } from "astro:content";
 import { glob } from "astro/loaders";
 import { z } from "astro/zod";
+import { blogTopicIds } from "./lib/blog-topics";
 
 const postSchema = z.object({
   title: z.string().max(70),
@@ -10,6 +11,7 @@ const postSchema = z.object({
   lang: z.literal("de"),
   author: z.string().default("Lucas Kleipoedszus"),
   tags: z.array(z.string()).default([]),
+  topic: z.enum(blogTopicIds).optional(),
   ogImage: z.string().optional(),
   draft: z.boolean().default(false),
   canonicalUrl: z.string().url().optional(),
