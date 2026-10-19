@@ -70,7 +70,8 @@ const src = (slug: string) => bySlug.get(slug)?.image ?? `/landing/shots/${slug}
     display: flex;
     align-items: baseline;
     justify-content: space-between;
-    gap: 24px;
+    flex-wrap: wrap;
+    gap: 16px 24px;
     margin-bottom: 32px;
   }
   .work-title {
