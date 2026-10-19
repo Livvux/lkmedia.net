@@ -27,3 +27,11 @@ test('related articles connect actual sibling URLs and an appropriate offer', as
   await expect(fahrschule.locator('a[href="/marketing-ideen-fahrschule/"]')).toHaveCount(1);
   await expect(fahrschule.locator('a[href="/fahrschule-webdesign"]')).toHaveCount(1);
 });
+
+test('the Kanzlei service hub links back to its supporting guides', async ({ page }) => {
+  await page.goto('/anwaelte');
+  const guides = page.locator('section[aria-labelledby="kanzlei-ratgeber-title"]');
+  await expect(guides.locator('a[href="/blog/kanzlei-website-kosten/"]')).toHaveCount(1);
+  await expect(guides.locator('a[href="/kanzlei-marketing-2026-anwaelte-google/"]')).toHaveCount(1);
+  await expect(guides.locator('a[href="/local-seo-anwaelte-google-maps/"]')).toHaveCount(1);
+});
