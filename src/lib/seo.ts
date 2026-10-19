@@ -18,7 +18,8 @@ const DEFAULT_OG = `${SITE}/og/default.png`;
 
 export function buildSeo(p: SeoProps) {
   return {
-    title: `${p.title} · lkmedia`,
+    // Suffix nur, wenn der Titel unter ~60 Zeichen bleibt (SERP-Abschnitt).
+    title: `${p.title} · lkmedia`.length <= 60 ? `${p.title} · lkmedia` : p.title,
     description: p.description,
     canonical: p.canonical.startsWith("http") ? p.canonical : `${SITE}${p.canonical}`,
     ogImage: new URL(p.ogImage ?? DEFAULT_OG, SITE).href,

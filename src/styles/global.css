@@ -292,3 +292,12 @@ body {
     transition: none;
   }
 }
+/* Blog-Tabellen: auf schmalen Viewports seitlich scrollen statt das Layout zu sprengen. */
+.prose-tables-scroll {
+  overflow-wrap: anywhere;
+}
+.prose-tables-scroll table {
+  display: block;
+  max-width: 100%;
+  overflow-x: auto;
+}

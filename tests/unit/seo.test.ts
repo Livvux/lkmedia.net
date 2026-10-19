@@ -11,6 +11,12 @@ describe('SEO metadata', () => {
     expect(seo.type).toBe('article');
     expect(seo.publishedTime).toBe('2026-10-16T00:00:00.000Z');
   });
+  it('appends the brand suffix only while the title stays within 60 characters', () => {
+    const base = { description: 'Beschreibung', canonical: '/x', lang: 'de' as const };
+    expect(buildSeo({ ...base, title: 'Kontakt' }).title).toBe('Kontakt · lkmedia');
+    const long = 'A'.repeat(55);
+    expect(buildSeo({ ...base, title: long }).title).toBe(long);
+  });
   it('uses absolute images in BlogPosting data', () => {
     const data = blogPosting({ title: 'Ratgeber', description: 'Text', pubDate: new Date('2026-10-16'), author: 'Lucas Kleipoedszus', image: '/posts/image.png', url: 'https://lkmedia.net/blog/ratgeber/' });
     expect(data.image).toBe('https://lkmedia.net/posts/image.png');
