@@ -1,7 +1,6 @@
 ---
 import Base from '../../layouts/Base.astro';
 import FeatureSplit from '../../components/home/FeatureSplit.astro';
-import LighthousePanel from '../../components/home/LighthousePanel.astro';
 import ProcessSteps from '../../components/home/ProcessSteps.astro';
 import FinalCta from '../../components/home/FinalCta.astro';
 import FaqBlock from '../../components/FaqBlock.astro';
@@ -120,7 +119,7 @@ const included = [
   'Seiten für Führerscheinklassen, Preise, Theorie & Kurse, Team & Fahrzeuge, Kontakt',
   `Eigene Standortseite für bis zu ${FAHRSCHULWEB.includedLocations} Standorte`,
   'Online-Anmeldung per E-Mail oder Link zu Ihrer Fahrschulsoftware',
-  'Google-Unternehmensprofil je Standort eingerichtet bzw. optimiert',
+  'Bestehende Google-Unternehmensprofile prüfen und, soweit zulässig, einrichten oder optimieren',
   'Impressum und Datenschutzerklärung (als Entwurf zur Freigabe)',
   'Eine Korrekturschleife nach der Vorschau',
   'Hosting in der EU, SSL, Sicherungen und technische Updates',
@@ -158,12 +157,12 @@ const faqs = [
   },
   {
     q: 'Lohnt sich eine neue Website, wenn wir sowieso ausgebucht sind?',
-    a: 'Gerade dann. Eine gute Website sorgt dafür, dass die richtigen Fahrschüler kommen: die Klassen, die Sie füllen wollen, aus den Orten, die Sie bedienen – und mit vollständigen Unterlagen. Außerdem gewinnen Sie Fahrlehrer: Viele Bewerber prüfen Ihre Website, bevor sie sich melden.',
+    a: 'Nicht zwangsläufig. Wenn alle Kurse ausgebucht sind, sollte die Website zunächst verlässliche Informationen bieten, verfügbare Klassen und Standorte richtig ausweisen und Bewerbungen ermöglichen. Zusätzliche Reichweite hat nur dann einen Wert, wenn Sie passende Anfragen bearbeiten können.',
   },
 ];
 
 const cta = {
-  lines: ['Mehr Fahrschüler.', 'Weniger Telefon-Pingpong.'] as [string, string],
+  lines: ['Passende Anfragen.', 'Klare Abläufe.'] as [string, string],
   sub: 'Lassen Sie uns in 15 Minuten prüfen, wo Ihre Fahrschule bei Google steht – und was nötig ist, um nach oben zu kommen.',
   primary: { label: 'Paket ansehen', href: '#preis' },
   secondary: { label: '15-min-Call buchen', href: `${contact}#termin` },
@@ -256,7 +255,7 @@ const crumbs = breadcrumbs([
     <div class="wrap">
       <div class="max-w-2xl" data-reveal>
         <div class="eyebrow">Das Problem</div>
-        <h2 class="section-title mt-4">Warum die meisten Fahrschul-Websites keine Fahrschüler bringen.</h2>
+        <h2 class="section-title mt-4">Was Interessenten auf einer Fahrschul-Website brauchen.</h2>
       </div>
       <ul class="pain-grid">
         {pains.map((p, i) => (
@@ -287,7 +286,7 @@ const crumbs = breadcrumbs([
         <span>Fiktive Suchvorschau · keine Google-Platzierung</span>
       </div>
       <ol class="serp-list">
-        {serp.map((r, i) => (
+        {serp.map((r) => (
           <li class={`serp-item ${r.primary ? 'is-primary' : ''}`}>
             <span class="serp-pos" aria-hidden="true">•</span>
             <div class="min-w-0">
@@ -333,20 +332,18 @@ const crumbs = breadcrumbs([
     ]}
     reverse
   >
-    <LighthousePanel
-      scores={[
-        { label: 'Performance', value: 100 },
-        { label: 'Barrierefreiheit', value: 100 },
-        { label: 'Best Practices', value: 100 },
-        { label: 'SEO', value: 100 },
-      ]}
-      vitals={[
-        { label: 'LCP', value: '0.8 s' },
-        { label: 'INP', value: '52 ms' },
-        { label: 'CLS', value: '0.00' },
-      ]}
-      url="fahrschul-website"
-    />
+    <figure class="rounded-2xl border border-white/15 bg-[#111113] p-3">
+      <img
+        src="/posts/fahrschule-website-anmeldung.svg"
+        alt="Beispiel einer mobilen Informationsstruktur von Standort und Führerscheinklasse bis zur Anmeldung"
+        width="1200"
+        height="675"
+        loading="lazy"
+        decoding="async"
+        class="w-full rounded-lg"
+      />
+      <figcaption class="mt-3 text-sm text-white/60">Ablaufskizze statt unüberprüfbarer Lighthouse-Ergebniswerte.</figcaption>
+    </figure>
   </FeatureSplit>
 
   <!-- Case -->
