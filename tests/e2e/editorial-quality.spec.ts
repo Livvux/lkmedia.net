@@ -40,7 +40,8 @@ test('every indexable article has an accessible visible image with a working sou
       expect(src?.startsWith('/'), path).toBe(true);
       const asset = await request.get(src ?? '/');
       expect(asset.status(), `${path} references ${src}`).toBe(200);
-      expect(await image.evaluate((el: HTMLImageElement) => el.complete && el.naturalWidth > 0), src ?? path).toBe(true);
+      await image.scrollIntoViewIfNeeded();
+      await expect.poll(() => image.evaluate((el: HTMLImageElement) => el.complete && el.naturalWidth > 0), { timeout: 5000 }).toBe(true);
     }
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), path).toBe(true);
   }
