@@ -2,7 +2,7 @@ import { expect, test } from '@playwright/test';
 
 test('blog groups existing articles by user topic without indexing noindex content', async ({ page }) => {
   await page.goto('/blog');
-  await expect(page.locator('h1')).toContainText('Wissen, nach Themen geordnet');
+  await expect(page.locator('h1')).toContainText('SEO, Webdesign & Marketing');
   for (const id of ['kanzleien', 'fahrschulen', 'arztpraxen', 'handwerk', 'seo-technik']) {
     await expect(page.locator(`nav[aria-label="Themen im Blog"] a[href="#${id}"]`)).toHaveCount(1);
     await expect(page.locator(`section#${id} h2`)).toBeVisible();
