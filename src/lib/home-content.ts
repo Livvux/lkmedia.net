@@ -61,7 +61,7 @@ const shotsDe: Shot[] = [
     slug: "patricks-fahrschule",
     client: "Patricks Fahrschule",
     domain: "patricks-fahrschule.de",
-    result: "Platz 1 für fast jeden lokalen Suchbegriff – in zwei Sprachen.",
+    result: "Standortseiten und rumänischsprachige Informationen für echte Filialen.",
     scope: "Local SEO & Mehrsprachigkeit",
   },
   {

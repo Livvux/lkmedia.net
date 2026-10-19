@@ -55,12 +55,17 @@ const seo = {
             <ul class="divide-y divide-white/10 lg:col-span-8">
               {group.posts.map((post) => (
                 <li class="py-5 first:pt-0">
-                  <a href={blogPostUrl(post)} class="group block">
-                    <time datetime={(post.data.updatedDate ?? post.data.pubDate).toISOString()} class="text-xs text-white/45">
-                      {post.data.updatedDate ? 'Aktualisiert' : 'Veröffentlicht'}: {(post.data.updatedDate ?? post.data.pubDate).toISOString().slice(0, 10)}
-                    </time>
-                    <h3 class="mt-2 text-xl font-medium leading-snug group-hover:underline md:text-2xl">{post.data.title}</h3>
-                    <p class="mt-2 max-w-2xl leading-relaxed text-white/60">{post.data.description}</p>
+                  <a href={blogPostUrl(post)} class="group flex items-start gap-5">
+                    <div class="min-w-0 flex-1">
+                      <time datetime={(post.data.updatedDate ?? post.data.pubDate).toISOString()} class="text-xs text-white/45">
+                        {post.data.updatedDate ? 'Aktualisiert' : 'Veröffentlicht'}: {(post.data.updatedDate ?? post.data.pubDate).toISOString().slice(0, 10)}
+                      </time>
+                      <h3 class="mt-2 text-xl font-medium leading-snug group-hover:underline md:text-2xl">{post.data.title}</h3>
+                      <p class="mt-2 max-w-2xl leading-relaxed text-white/60">{post.data.description}</p>
+                    </div>
+                    {post.data.ogImage && (
+                      <img src={post.data.ogImage} alt="" width="160" height="90" loading="lazy" decoding="async" class="hidden aspect-video w-32 shrink-0 rounded-lg border border-white/10 bg-[#141417] object-cover sm:block lg:w-40" />
+                    )}
                   </a>
                 </li>
               ))}
@@ -81,12 +86,17 @@ const seo = {
             <ul class="divide-y divide-white/10 lg:col-span-8">
               {otherPosts.map((post) => (
                 <li class="py-5 first:pt-0">
-                  <a href={blogPostUrl(post)} class="group block">
-                    <time datetime={(post.data.updatedDate ?? post.data.pubDate).toISOString()} class="text-xs text-white/45">
-                      {post.data.updatedDate ? 'Aktualisiert' : 'Veröffentlicht'}: {(post.data.updatedDate ?? post.data.pubDate).toISOString().slice(0, 10)}
-                    </time>
-                    <h3 class="mt-2 text-xl font-medium leading-snug group-hover:underline md:text-2xl">{post.data.title}</h3>
-                    <p class="mt-2 max-w-2xl leading-relaxed text-white/60">{post.data.description}</p>
+                  <a href={blogPostUrl(post)} class="group flex items-start gap-5">
+                    <div class="min-w-0 flex-1">
+                      <time datetime={(post.data.updatedDate ?? post.data.pubDate).toISOString()} class="text-xs text-white/45">
+                        {post.data.updatedDate ? 'Aktualisiert' : 'Veröffentlicht'}: {(post.data.updatedDate ?? post.data.pubDate).toISOString().slice(0, 10)}
+                      </time>
+                      <h3 class="mt-2 text-xl font-medium leading-snug group-hover:underline md:text-2xl">{post.data.title}</h3>
+                      <p class="mt-2 max-w-2xl leading-relaxed text-white/60">{post.data.description}</p>
+                    </div>
+                    {post.data.ogImage && (
+                      <img src={post.data.ogImage} alt="" width="160" height="90" loading="lazy" decoding="async" class="hidden aspect-video w-32 shrink-0 rounded-lg border border-white/10 bg-[#141417] object-cover sm:block lg:w-40" />
+                    )}
                   </a>
                 </li>
               ))}

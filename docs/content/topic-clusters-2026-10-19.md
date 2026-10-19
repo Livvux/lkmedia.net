@@ -52,3 +52,16 @@ Erst vorhandene Search-Console-Daten der **Hauptdomain** und echte Interessenten
 Die Blog-Übersicht zeigt fünf Gruppen; `topic` ist ein optionales, typisiertes Feld im bestehenden Content-Schema. Auf Artikelunterseiten werden thematisch verwandte Texte und nur ein passendes Angebot verlinkt. Noindex-/Draft-Seiten erscheinen nicht in der Navigation. Keine vorhandene Artikel-URL, kein Canonical und keine Weiterleitung wird geändert.
 
 Die Artikel sind damit **strukturiert**, aber die oben genannte fachliche Nachprüfung und inhaltliche Erweiterung ist nicht automatisch erledigt. Diese Checkliste bestimmt den nächsten redaktionellen Durchgang.
+
+## Redaktionelle Umsetzung am 19.10.2026
+
+- Vier vorhandene Kaufberater wurden substanziell überarbeitet: docweb/Praxis, fahrschulweb, handwerkweb und individuelle Kanzlei-Websites. Kein zusätzlicher Suchintent und keine neue Artikel-URL.
+- Sieben eigene SVG-Erklärgrafiken unter `public/posts/`: Praxisweg, Fahrschulanmeldung, Handwerker-Projektanfrage, Kanzlei-Budget, Kanzlei-Marketing-Audit, Fahrschul-Marketing-Ablauf und standortbezogene Fallstudie. Alle sind **als schematisch gekennzeichnet**, nicht als verifizierte Screenshots oder Statistik.
+- Alle zwölf indexierbaren MDX-Beiträge besitzen ein sichtbares Bild mit aussagekräftigem Alternativtext. Bereits vorhandene Rank-Math-/How-Its-Built-Illustrationen und Bilder der Local-SEO-Anleitung bleiben bestehen. Historische KI-/ChatGPT-Beiträge nutzen vorhandene Titelgrafiken zusätzlich im Artikel.
+- Die Fallstudie „Patricks Fahrschule“ wurde in der Blogroute und im Case-Eintrag auf den nachprüfbaren Prozess und die tatsächliche Websiteansicht ausgerichtet. Frühere absolute Platzierungs- und Klickbehauptungen sind ohne nachvollziehbare Rohdaten/Zeitraum nicht mehr als aktuelle Ergebnisse veröffentlicht. Dasselbe gilt für die Fahrschul-Angebotsseite und die Ergebniszeile auf der Startseite.
+- Preise und Paketgrenzen stammen aus den `DOCWEB`, `FAHRSCHULWEB` und `HANDWERKWEB` Konstanten, keine selbst erfundenen Marktpreisvergleiche. **Die Angebotspreise im Bestellprozess bleiben die maßgeblichen Konditionen.**
+- Die bestehende Blogübersicht zeigt Themencluster und künftig OG-/Beitragsgrafiken als dekorative Vorschau. Im vollständigen Artikel gibt es beschreibenden Alt-Text.
+
+**Ausstehende Redaktionsnachweise:** Datierte Search-Console-Exporte je Stadt/URL/Suchanfrage sowie schriftliche Freigaben für alte Kundenresultate wurden nicht bereitgestellt. Die vorher veröffentlichten Ergebnis-PNGs bleiben aus Gründen der Historie im Git-Repository, werden aber nicht mehr in Live-Artikel/Angebot eingebunden; **nicht als aktuelle Rankings wiederverwenden**. Die Bilder auf echten Kundenwebsites ersetzen keine schriftlich dokumentierten Nutzungsrechte.
+
+**Bildredaktion:** Vor Veröffentlichungen reale Kundenbilder/Fotos nur mit bestätigten Nutzungsrechten und sachlicher Beschriftung übernehmen. Schemata dienen zur Erklärung. Sichtbare Formeln, Standorte und Stichproben müssen fachlich kontrolliert werden. Keine dekorativen KI-Screenshots als vermeintliche Kundenarbeit.
