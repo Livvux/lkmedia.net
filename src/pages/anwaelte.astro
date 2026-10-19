@@ -39,7 +39,8 @@ const allCases = await getCollection('cases');
 const relatedCase = allCases.find((c) => c.data.niche === 'anwaelte');
 const kanzleiGuides = (await getCollection('posts', (p) =>
   p.data.lang === 'de' && p.data.topic === 'kanzleien' && !p.data.draft && !p.data.noindex,
-)).sort((a, b) => +b.data.pubDate - +a.data.pubDate);
+)).filter((post) => blogPostUrl(post) !== '/blog/kanzlei-website-kosten/') // Already linked in IndustryProof.
+  .sort((a, b) => +b.data.pubDate - +a.data.pubDate);
 
 const serviceSchema = {
   '@context': 'https://schema.org',
