@@ -2,7 +2,6 @@
 import type { HomeContent } from '../../lib/home-content';
 interface Props { hero: HomeContent['hero'] }
 const { hero } = Astro.props;
-const scores = ['Performance', 'Barrierefreiheit', 'Best Practices', 'SEO'];
 // Kein data-reveal und keine Opacity-Animation im Hero: er muss ohne JavaScript sofort stehen.
 ---
 <header class="hero">
@@ -46,25 +45,10 @@ const scores = ['Performance', 'Barrierefreiheit', 'Best Practices', 'SEO'];
         />
       </div>
 
-      <div class="float serp-card" aria-hidden="true">
-        <p class="float-label">Google · Klavierstimmer Karlsruhe</p>
-        <p class="serp-rank"><span>Position</span> 1–2</p>
-        <p class="float-sub">Klickrate über 16 %</p>
-      </div>
-
-      <div class="float lh-card" aria-hidden="true">
-        <p class="float-label">Lighthouse · mobil</p>
-        <ul class="rings">
-          {scores.map((s) => (
-            <li>
-              <svg viewBox="0 0 36 36"><circle cx="18" cy="18" r="15.5" /><circle class="arc" cx="18" cy="18" r="15.5" pathLength="100" /></svg>
-              <span class="score">100</span>
-              <span class="ring-name">{s}</span>
-            </li>
-          ))}
-        </ul>
-      </div>
-      <figcaption class="sr-only">Lokale Sichtbarkeit von Klavierbau Hans Milde: Position 1–2 bei Google und Lighthouse 100 in allen vier Kategorien.</figcaption>
+      <figcaption class="project-caption">
+        <span>Klavierbau Hans Milde · Webdesign & Local SEO</span>
+        <a class="mono-link" href="/cases/klavierbau-milde">Projekt ansehen →</a>
+      </figcaption>
     </figure>
   </div>
 </header>
@@ -219,95 +203,15 @@ const scores = ['Performance', 'Barrierefreiheit', 'Best Practices', 'SEO'];
     object-position: top center;
   }
 
-  .float {
-    position: absolute;
-    z-index: 1;
-    padding: 16px 18px;
-    border: 1px solid var(--border-strong);
-    border-radius: 12px;
-    background: #111113e6;
-    backdrop-filter: blur(12px);
-    box-shadow: 0 24px 60px -20px #000;
-    animation: lift 1s var(--ease-out) both;
-  }
-  .float-label {
-    color: var(--fg-dim);
-    font-family: var(--font-mono);
-    font-size: 11px;
-    letter-spacing: 0.02em;
-  }
-  .float-sub {
-    margin-top: 2px;
+  .project-caption {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 16px;
     color: var(--fg-muted);
-    font-size: 13px;
+    font-size: 14px;
   }
-  .serp-card {
-    top: 18%;
-    left: -28px;
-    animation-delay: 0.45s;
-  }
-  .serp-rank {
-    margin-top: 8px;
-    font-size: 30px;
-    font-weight: 600;
-    letter-spacing: -0.04em;
-    line-height: 1;
-  }
-  .serp-rank span {
-    color: var(--fg-dim);
-    font-size: 15px;
-    font-weight: 500;
-    letter-spacing: -0.01em;
-  }
-  .lh-card {
-    right: -28px;
-    bottom: 22%;
-    animation-delay: 0.6s;
-  }
-  .rings {
-    display: grid;
-    grid-template-columns: repeat(4, 56px);
-    gap: 10px;
-    margin-top: 12px;
-  }
-  .rings li {
-    position: relative;
-    display: grid;
-    justify-items: center;
-    gap: 6px;
-  }
-  .rings svg {
-    width: 44px;
-    height: 44px;
-    transform: rotate(-90deg);
-    fill: none;
-    stroke-width: 3;
-  }
-  .rings circle {
-    stroke: #ffffff14;
-  }
-  .rings .arc {
-    stroke: var(--ok);
-    stroke-dasharray: 100;
-    stroke-dashoffset: 100;
-    stroke-linecap: round;
-    animation: fill 1.4s 0.9s var(--ease-out) forwards;
-  }
-  .score {
-    position: absolute;
-    top: 13px;
-    color: var(--ok);
-    font-family: var(--font-mono);
-    font-size: 12px;
-    font-weight: 500;
-  }
-  .ring-name {
-    color: var(--fg-dim);
-    font-size: 10px;
-    line-height: 1.2;
-    text-align: center;
-  }
-
   @keyframes lift {
     from {
       transform: translateY(16px);
@@ -316,49 +220,14 @@ const scores = ['Performance', 'Barrierefreiheit', 'Best Practices', 'SEO'];
       transform: none;
     }
   }
-  @keyframes fill {
-    to {
-      stroke-dashoffset: 0;
-    }
-  }
-
-  @media (max-width: 1320px) {
-    .serp-card {
-      left: 16px;
-    }
-    .lh-card {
-      right: 16px;
-    }
-  }
   @media (max-width: 760px) {
-    .hero-actions .btn {
-      flex: 1 1 auto;
-    }
-    .shot img {
-      aspect-ratio: 16 / 11;
-    }
-    .serp-card {
-      top: auto;
-      bottom: 12px;
-      left: 12px;
-      padding: 12px 14px;
-    }
-    .serp-rank {
-      font-size: 24px;
-    }
-    .lh-card {
-      display: none;
-    }
+    .hero-actions .btn { flex: 1 1 auto; }
+    .shot img { aspect-ratio: 16 / 11; }
   }
   @media (prefers-reduced-motion: reduce) {
     .line,
-    .stage,
-    .float {
+    .stage {
       animation: none;
-    }
-    .rings .arc {
-      animation: none;
-      stroke-dashoffset: 0;
     }
   }
 </style>

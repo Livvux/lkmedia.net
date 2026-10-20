@@ -15,7 +15,7 @@ const month = new Intl.DateTimeFormat('de-DE', { month: 'short', year: 'numeric'
 const src = (s: (typeof shots)[number]) => s.image ?? `/landing/shots/${s.slug}-1440.webp`;
 ---
 <section id="arbeiten" class="work wrap" aria-labelledby="work-title">
-  <SectionHead n="01" id="work-title" title={proof.title} sub={proof.sub} link={proof.all} />
+  <SectionHead n="02" id="work-title" title={proof.title} sub={proof.sub} link={proof.all} />
   <ul class="grid">
     {shots.map((shot, i) => (
       <li class:list={['cell', { big: i < 2 }]} data-reveal style={`--d:${(i % 3) * 70}ms`}>

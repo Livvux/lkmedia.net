@@ -210,6 +210,7 @@ const crumbs = breadcrumbs([
         Damit Interessenten vor Ort Führerscheinklassen, Theoriezeiten und den passenden Weg zur Anmeldung finden.
       </p>
       <div class="hero-actions" data-rise style="--d:360ms">
+        <a href="#rundgang" class="btn btn-ghost btn-lg">Website-Rundgang ansehen</a>
         <a href="#preis" class="btn btn-primary btn-lg">
           Paket ansehen · {FAHRSCHULWEB.setupPrice}
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -217,6 +218,10 @@ const crumbs = breadcrumbs([
         <a href={`${contact}#termin`} class="mono-link">Erst sprechen? 15-min-Call</a>
         <a href={caseStudy} class="mono-link"><span class="dot" aria-hidden="true"></span>Case: Standortseiten & Sprachen</a>
       </div>
+      <p class="card-body mt-5" data-rise>
+        {FAHRSCHULWEB.setupPrice} Einrichtung + {FAHRSCHULWEB.monthlyPrice} monatlich.
+        Mindestens {FAHRSCHULWEB.minimumTotalPrice} inkl. USt. bei {FAHRSCHULWEB.minimumTermMonths} Monaten Mindestlaufzeit, zzgl. Domainkosten.
+      </p>
 
       <dl class="stats" data-rise style="--d:460ms">
         {stats.map((s) => (
@@ -246,6 +251,41 @@ const crumbs = breadcrumbs([
             decoding="async"
           />
         </figure>
+      </div>
+    </div>
+  </section>
+
+  <section id="rundgang" class="block scroll-mt-20" aria-labelledby="rundgang-title">
+    <div class="wrap">
+      <div class="max-w-2xl">
+        <div class="eyebrow">Website-Rundgang</div>
+        <h2 id="rundgang-title" class="section-title mt-4">Vom Standort zur Anfrage.</h2>
+        <p class="section-sub mt-5">Drei Dinge, die Interessenten vor der Anmeldung brauchen. Das Kundenprojekt zeigt die Standortstruktur; in der Musterwebsite sehen Sie den vorgesehenen Anfrageweg des Pakets.</p>
+      </div>
+      <ol class="pain-grid">
+        <li class="card pain">
+          <span class="pain-n">01</span>
+          <h3 class="card-title">Den passenden Standort finden</h3>
+          <p class="card-body">Patricks Fahrschule zeigt für Durmersheim eine eigene Adresse sowie Anmelde- und Unterrichtszeiten. So müssen Interessenten die Angaben ihrer Filiale nicht zusammensuchen.</p>
+          <a href="https://patricks-fahrschule.de/standorte/fahrschule-durmersheim/" class="mono-link mt-5" target="_blank" rel="noopener noreferrer">Kundenprojekt: Standort ansehen ↗</a>
+        </li>
+        <li class="card pain">
+          <span class="pain-n">02</span>
+          <h3 class="card-title">Zeiten und Klassen prüfen</h3>
+          <p class="card-body">Die Paketdemo zeigt, wie Theoriezeiten und Führerscheinklassen zusammen mit den Standortangaben erreichbar sind. Namen, Termine und Preise dort sind Beispieldaten.</p>
+          <a href={FAHRSCHULWEB.demoUrl} class="mono-link mt-5" target="_blank" rel="noopener noreferrer">Musterwebsite: Demo ansehen ↗</a>
+        </li>
+        <li class="card pain">
+          <span class="pain-n">03</span>
+          <h3 class="card-title">Eine Anfrage vorbereiten</h3>
+          <p class="card-body">Im Paket ist eine strukturierte Anfrage per E-Mail oder ein Link zu Ihrer Fahrschulsoftware vorgesehen. Ihre Fahrschule prüft anschließend Klasse, Standort und Verfügbarkeit. Die Anfrage allein bestätigt keinen Ausbildungsplatz.</p>
+          <a href="/blog/fahrschul-website-kosten-funktionen/#was-passiert-nach-der-online-anmeldung" class="mono-link mt-5">Ablauf nach der Anfrage lesen →</a>
+        </li>
+      </ol>
+      <p class="card-body mt-6">Patricks Fahrschule ist ein individuelles Kundenprojekt und kein unverändertes fahrschulweb-Paket. Zusätzliche Sprachen und mehr als {FAHRSCHULWEB.includedLocations} Standorte werden separat vereinbart.</p>
+      <div class="hero-actions mt-6">
+        <a href="#preis" class="btn btn-primary">Paket und Gesamtkosten prüfen</a>
+        <a href={`${contact}#termin`} class="mono-link">Passt das zu Ihrer Fahrschule? Erstgespräch buchen →</a>
       </div>
     </div>
   </section>
