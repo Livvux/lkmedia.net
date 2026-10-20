@@ -12,7 +12,7 @@ Stand: 20.10.2026. Verantwortlich: Lucas. Fokus aus der freigegebenen Marketingp
 - [x] Vier Fachbeiträge und Empfehlungstext vorbereiten (unten).
 - [x] Remote: `pnpm check`, `pnpm lint`, `pnpm test`, `pnpm build`, `pnpm test:e2e`, `pnpm test:purchase`.
 - [x] Browser: geänderte Wege bei 390 und 1280 px, Links, Medien, Konsole und Netzwerkanfragen prüfen.
-- [ ] Veröffentlichung und öffentlicher Readback.
+- [x] Veröffentlichung und öffentlicher Readback.
 
 Bestehende Astro-/MDX-Komponenten, Preis-Konstanten und Trackingregeln bleiben die Grundlage. Keine neue Abhängigkeit, Route, Registrierung oder CRM-Integration. Designfreigabe: Gespräch vom 20.10.2026 und Marketingprüfung; Umsetzung durch den Agenten in dieser Sitzung. Betragsangaben stammen aus `FAHRSCHULWEB` und müssen vor späterer Wiederverwendung geprüft werden.
 
@@ -26,7 +26,7 @@ Woche 3: Beitrag 3 veröffentlichen. Gespräche über Standorte, Sprachen oder S
 
 Woche 4: Beitrag 4 veröffentlichen. Qualifizierte Anfragen, Angebote, Abschlüsse, tatsächlich vereinnahmten Nettoerlös und Zeitaufwand auswerten. Fokus anhand der Ergebnisse fortsetzen oder ändern. Bei noch offenen Angeboten das Ergebnis als ausstehend führen.
 
-Die Wochen beginnen nach dem verifizierten Website-Release. Die Texte sind vorbereitet, aber weder auf Social Media veröffentlicht noch an Kunden versendet. Keine automatische Terminplanung oder unautorisierte Nachricht auslösen.
+Die Wochen beginnen nach dem verifizierten Website-Release. Die Texte wurden zunächst als Entwürfe vorbereitet; den anschließenden Veröffentlichungsstand dokumentiert der Launch-Status am Ende dieser Datei. Zusätzliche Kampagnen oder Nachrichten sind nicht Teil dieser Veröffentlichung.
 
 ## Beitrag 1: Der richtige Standort
 
@@ -123,4 +123,13 @@ Nach 30 Tagen eine konkrete Entscheidung: Welche Käuferfrage erzeugte passende 
 - Reale Browser-Vorschau über SSH-Tunnel: Startseite, Fahrschulangebot und Case bei 390/1280 px geprüft; Video spielt, 15 Sekunden, 187.109 Byte, kein Autoplay und kein horizontaler Überlauf. Der Guide-Anker und die optionalen Formularfelder sind zusätzlich per E2E geprüft.
 - Verwendete Framework-Schnittstellen anhand bestehender Astro-/MDX-/Playwright-Muster und lokaler Typen geprüft; keine neue Bibliotheks-API eingeführt.
 
-Social-Verteilung, aktuelle Geschäftszahlen und bestätigte Collector-/Umsatzzuordnung bleiben gesonderte operative Schritte. Ein fertiger Text ist noch keine Veröffentlichung oder gewonnene Anfrage.
+Die Ausführung der künftig geplanten Posts, aktuelle Geschäftszahlen und bestätigte Collector-/Umsatzzuordnung bleiben gesondert zu prüfen. Ein geplanter Beitrag ist noch keine Veröffentlichung oder gewonnene Anfrage.
+
+## Launch-Status am 20.10.2026
+
+- Website über PR #36 gemergt: Code-Commit `fe5088054a5b75cedc448dfdde943020a332a866`. PR-CI und anschließende Main-CI bestanden: 432 Unit-, 110 E2E- und 5 simulierte Kauf-Tests; Lighthouse-Gates für elf URLs bestanden.
+- Dokploy-Build erfolgreich, produktiver Checkout auf diesem Commit. Neues Image `sha256:a26088db784a198390bd8f4a2fbd7ca105a64346ca8d60b62b20dc3884aab151`; vorheriges Image unter `lkmedia-web-l4e6sn:pre-marketing-20261020` erhalten.
+- Öffentliche Startseite, Fahrschul-Rundgang, Kontakttext und Case-Video nach Deployment im Browser geprüft. Video spielt mit 15 Sekunden Laufzeit. SHA-256 des öffentlichen MP4 stimmt mit dem Git-Asset überein: `3aa06fe0c93220b20cb06ed86adb5a3d10df2940fa386ba31eb170336367f3e8`.
+- Nutzer bestätigte das persönliche LinkedIn-Profil und Zugriff über ego lite. Beitrag 1 veröffentlicht: https://www.linkedin.com/feed/update/urn:li:activity:7518254445483311104/
+- Beitrag 2 (Anfragebearbeitung): 27.10.2026, 10:00 Uhr; Beitrag 3 (Gesamtkosten): 03.11.2026, 10:00 Uhr; Beitrag 4 (Handy-Check): 10.11.2026, 10:00 Uhr. In der LinkedIn-Terminliste abschließend mit allen drei Texten und Terminen bestätigt, Zeitzone Europe/Berlin. Geplant bedeutet nicht bereits veröffentlicht.
+- Empfehlungstexte bleiben Vorlagen für passende bestehende Beziehungen; keine Direktnachrichten oder E-Mails versendet. GSC-Zugang sowie echte Leads, Abschlussquote und Wirtschaftlichkeit sind weiterhin separat zu erheben.
