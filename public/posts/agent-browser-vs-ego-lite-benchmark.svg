@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" role="img" aria-labelledby="title desc">
+<title id="title">agent-browser vs. ego-lite: Benchmark mit 120 Läufen</title>
+<desc id="desc">Balkendiagramm: agent-browser ist je Aufgabe 4,3- bis 11,8-mal schneller als ego-lite. Summe der Medianzeiten 1,22 s gegen 4,46 s, 0 Fehler in 120 Läufen.</desc>
+<rect width="1200" height="675" fill="#09090b"/>
+<rect x="24" y="24" width="1152" height="627" rx="22" fill="#101012" stroke="#34343b" stroke-width="2"/>
+<rect x="49" y="50" width="9" height="9" rx="2" fill="#c6b5ff"/>
+<text x="72" y="59" fill="#b7b7be" font-size="15" font-weight="650" letter-spacing="2.5" font-family="system-ui,-apple-system,Segoe UI,sans-serif">LKMEDIA / PRAXISWISSEN</text>
+<text x="1149" y="59" fill="#96969f" font-size="13" font-family="ui-monospace,SFMono-Regular,monospace" text-anchor="end">BENCHMARK · 20.10.2026</text>
+<line x1="48" y1="85" x2="1152" y2="85" stroke="#35353b"/>
+<text x="48" y="148" fill="#fafafa" font-family="system-ui,-apple-system,Segoe UI,sans-serif" font-size="38" font-weight="650" letter-spacing="-.9">agent-browser vs. ego-lite</text>
+<text x="48" y="192" fill="#b4b4bc" font-family="system-ui,-apple-system,Segoe UI,sans-serif" font-size="22">120 Browserläufe, 10 Aufgaben, 0 Fehler – und ein klares Ergebnis.</text>
+<g font-family="system-ui,-apple-system,Segoe UI,sans-serif">
+  <rect x="48" y="228" width="357.333" height="100" rx="16" fill="#161619" stroke="#39393f" stroke-width="1.5"/>
+  <text x="68" y="256" fill="#c6b5ff" font-size="12" font-weight="700" letter-spacing="1.6" font-family="ui-monospace,SFMono-Regular,monospace">GESAMTZEIT</text>
+  <text x="68" y="292" fill="#f7f7f8" font-size="26" font-weight="650">3,7× schneller</text>
+  <text x="68" y="316" fill="#8f8f98" font-size="14">1,22 s gegen 4,46 s</text>
+  <rect x="421.333" y="228" width="357.333" height="100" rx="16" fill="#161619" stroke="#39393f" stroke-width="1.5"/>
+  <text x="441.333" y="256" fill="#c6b5ff" font-size="12" font-weight="700" letter-spacing="1.6" font-family="ui-monospace,SFMono-Regular,monospace">ERGEBNIS</text>
+  <text x="441.333" y="292" fill="#f7f7f8" font-size="26" font-weight="650">0 Fehler</text>
+  <text x="441.333" y="316" fill="#8f8f98" font-size="14">in 120 Läufen</text>
+  <rect x="794.667" y="228" width="357.333" height="100" rx="16" fill="#161619" stroke="#39393f" stroke-width="1.5"/>
+  <text x="814.667" y="256" fill="#c6b5ff" font-size="12" font-weight="700" letter-spacing="1.6" font-family="ui-monospace,SFMono-Regular,monospace">BYTES</text>
+  <text x="814.667" y="292" fill="#f7f7f8" font-size="26" font-weight="650">5.974 vs 5.671</text>
+  <text x="814.667" y="316" fill="#8f8f98" font-size="14">nahezu gleichauf</text>
+</g>
+<g font-family="system-ui,-apple-system,Segoe UI,sans-serif">
+  <rect x="48" y="344" width="12" height="12" rx="3" fill="#c6b5ff"/>
+  <text x="68" y="355" fill="#b4b4bc" font-size="15">agent-browser (Brave per CDP)</text>
+  <rect x="330" y="344" width="12" height="12" rx="3" fill="#8b8b96"/>
+  <text x="350" y="355" fill="#b4b4bc" font-size="15">ego-lite (eigenes Chromium)</text>
+  <text x="1149" y="355" fill="#7c7c85" font-size="13" text-anchor="end" font-family="ui-monospace,SFMono-Regular,monospace">MS PRO AUFGABE · MEDIAN AUS 5 LÄUFEN</text>
+</g>
+<g font-family="system-ui,-apple-system,Segoe UI,sans-serif">
+  <text x="48" y="390" fill="#d0d0d4" font-size="15">6-Feld-Formular</text>
+  <rect x="310" y="376" width="47.2" height="13" rx="3" fill="#c6b5ff"/>
+  <rect x="310" y="392" width="560" height="13" rx="3" fill="#8b8b96"/>
+  <text x="1149" y="394" fill="#8f8f98" font-size="14" text-anchor="end" font-family="ui-monospace,SFMono-Regular,monospace">138 ms / 1.636 ms</text>
+
+  <text x="48" y="430" fill="#d0d0d4" font-size="15">Interaktiver Snapshot</text>
+  <rect x="310" y="416" width="10.6" height="13" rx="3" fill="#c6b5ff"/>
+  <rect x="310" y="432" width="69.5" height="13" rx="3" fill="#8b8b96"/>
+  <text x="1149" y="434" fill="#8f8f98" font-size="14" text-anchor="end" font-family="ui-monospace,SFMono-Regular,monospace">31 ms / 203 ms</text>
+
+  <text x="48" y="470" fill="#d0d0d4" font-size="15">20 Einträge auslesen</text>
+  <rect x="310" y="456" width="10.3" height="13" rx="3" fill="#c6b5ff"/>
+  <rect x="310" y="472" width="64.4" height="13" rx="3" fill="#8b8b96"/>
+  <text x="1149" y="474" fill="#8f8f98" font-size="14" text-anchor="end" font-family="ui-monospace,SFMono-Regular,monospace">30 ms / 188 ms</text>
+
+  <text x="48" y="510" fill="#d0d0d4" font-size="15">Screenshot</text>
+  <rect x="310" y="496" width="17.5" height="13" rx="3" fill="#c6b5ff"/>
+  <rect x="310" y="512" width="76" height="13" rx="3" fill="#8b8b96"/>
+  <text x="1149" y="514" fill="#8f8f98" font-size="14" text-anchor="end" font-family="ui-monospace,SFMono-Regular,monospace">51 ms / 222 ms</text>
+
+  <text x="48" y="550" fill="#d0d0d4" font-size="15">DuckDuckGo-Ergebnisseite</text>
+  <rect x="310" y="536" width="254.6" height="13" rx="3" fill="#c6b5ff"/>
+  <rect x="310" y="552" width="333.1" height="13" rx="3" fill="#8b8b96"/>
+  <text x="1149" y="554" fill="#8f8f98" font-size="14" text-anchor="end" font-family="ui-monospace,SFMono-Regular,monospace">744 ms / 973 ms</text>
+
+  <text x="48" y="590" fill="#d0d0d4" font-size="15">Link in einem Iframe</text>
+  <rect x="310" y="576" width="28.8" height="13" rx="3" fill="#c6b5ff"/>
+  <rect x="310" y="592" width="133.8" height="13" rx="3" fill="#8b8b96"/>
+  <text x="1149" y="594" fill="#8f8f98" font-size="14" text-anchor="end" font-family="ui-monospace,SFMono-Regular,monospace">84 ms / 391 ms</text>
+</g>
+<text x="48" y="640" fill="#7c7c85" font-size="14" font-family="system-ui,-apple-system,Segoe UI,sans-serif">Gemessen auf macOS 26 · agent-browser 0.39.1 (Brave 154 via CDP) gegen ego-lite 0.6.0.16 (Chromium 154) · 20.10.2026</text>
+</svg>

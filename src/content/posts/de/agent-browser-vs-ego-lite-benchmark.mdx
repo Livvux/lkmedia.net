@@ -1,0 +1,118 @@
+---
+title: "agent-browser vs. ego-lite: Benchmark mit 120 Läufen"
+description: "120 Browserläufe, 10 Aufgaben, 0 Fehler: agent-browser ist 3,7-mal schneller als ego-lite. Wo ego-lite gewinnt und welche Fallstricke bleiben."
+pubDate: 2026-10-20
+lang: de
+author: "Lucas Kleipoedszus"
+topic: seo-technik
+tags: ["browser-agenten", "ki", "benchmark", "werkzeuge"]
+ogImage: /posts/agent-browser-vs-ego-lite-benchmark.svg
+draft: false
+route: blog
+---
+
+![Balkendiagramm: agent-browser ist je Aufgabe 4,3- bis 11,8-mal schneller als ego-lite](/posts/agent-browser-vs-ego-lite-benchmark.svg)
+
+*Median aus 5 Läufen je Aufgabe und Werkzeug, gemessen am 20. Oktober 2026 auf macOS 26.*
+
+Zwei Werkzeuge steuern heute Browser für KI-Agenten. **agent-browser** hängt sich per CDP an den Brave, den Sie ohnehin schon offen haben. **ego-lite** (CLI: `ego-browser`) startet ein eigenes Chromium. Beide können Seiten öffnen, Formulare ausfüllen, Texte lesen, Screenshots anfertigen.
+
+Wir haben beide 120 Mal dieselben Aufgaben erledigen lassen. Das Ergebnis ist eindeutig, aber nicht so, wie die Produktbeschreibungen nahelegen: agent-browser gewinnt die Geschwindigkeit, ego-lite gewinnt die Bequemlichkeit bei mehrstufigen Abläufen, und beim Token-Verbrauch ist es ein Unentschieden.
+
+## Der Testaufbau
+
+Für beide Werkzeuge galt dieselbe Regel: Jede Aufgabe wurde so umgesetzt, wie die jeweilige Dokumentation es vorsieht. agent-browser bekam seine kanonische Form (Snapshot, dann Aktionen über Referenzen wie `@e5`) und zusätzlich seinen Batch-Modus, ego-lite ein Skript pro Aufgabe.
+
+- **Testseiten:** ein lokaler HTTP-Server auf `127.0.0.1:8899` mit einem 6-Feld-Formular, einer 50-Einträge-Liste, einem 57-kB-Artikel und einer Iframe-Seite. Beide Werkzeuge treffen dieselben Bytes. Dazu zwei echte Seiten: example.com und eine DuckDuckGo-Ergebnisseite.
+- **Gemessen:** Wanduhrzeit pro Aufgabe, geschriebene und gelesene Bytes und eine Zusicherung auf das Ergebnis. Median aus 5 Läufen je Aufgabe und Werkzeug, nacheinander ausgeführt, damit sich die beiden Werkzeuge nicht die CPU streitig machen.
+- **Umgebung:** macOS 26, agent-browser 0.39.1 am laufenden Brave 154.1.96.61 (CDP `:9222`), ego-lite 0.6.0.16 mit eigenem Chromium 154.
+
+Insgesamt 120 Läufe: 70 für agent-browser (14 Aufgabenvarianten), 50 für ego-lite (10 Aufgaben), in der finalen Serie keine Fehlschläge.
+
+## Das Ergebnis in Zahlen
+
+| Aufgabe | agent-browser | ego-lite | Faktor |
+| --- | --- | --- | --- |
+| Seite öffnen, Titel und URL lesen | 34 ms | 194 ms | 5,7× |
+| Interaktiver Snapshot | 31 ms | 203 ms | 6,6× |
+| 6-Feld-Formular ausfüllen und abschicken | 138 ms | 1.636 ms | 11,8× |
+| Button klicken, Ergebnis lesen | 40 ms | 273 ms | 6,8× |
+| 20 Einträge strukturiert auslesen | 30 ms | 188 ms | 6,4× |
+| 57-kB-Seite komplett lesen | 32 ms | 191 ms | 5,9× |
+| Screenshot | 51 ms | 222 ms | 4,3× |
+| example.com (echte Seite) | 34 ms | 186 ms | 5,5× |
+| DuckDuckGo-Ergebnisseite (echte Seite) | 744 ms | 973 ms | 1,3× |
+| Link in einem Iframe klicken | 84 ms | 391 ms | 4,6× |
+| **Summe der Medianzeiten** | **1,22 s** | **4,46 s** | **3,7×** |
+
+Der Abstand fällt je nach Aufgabe unterschiedlich aus. Am deutlichsten ist er beim Formular, weil agent-browser dafür zehn Einzelaufrufe braucht und ego-lite einen einzigen. Am kleinsten ist er bei DuckDuckGo, weil dort die Wartezeit auf die Seite die Werkzeugkosten überdeckt.
+
+## Warum agent-browser schneller ist
+
+- **Rund 10 ms pro Aktion.** agent-browser ist eine native CLI, die über CDP mit einem dauerhaft laufenden Daemon spricht. ego-lite zahlt pro Skript einen Node-Start (etwa 185 ms) und pro DOM-Aktion rund 100 ms. Muss ego-lite ein Ziel außerhalb des Sichtfelds erst herterrollen, werden daraus bis zu 900 ms.
+- **Batch-Modus.** Ein Aufruf, neun Kommandos:
+
+```bash
+agent-browser batch "open https://example.com/form" "fill #name Ada" \
+  "fill #email ada@example.com" "select #country us" "check #newsletter" \
+  "fill #message hallo" "click button[type=submit]" "wait --text FORM-OK" \
+  "get text #form-result"
+```
+
+  Das 6-Feld-Formular fällt dadurch von 138 ms auf 59 ms und von zehn Round-Trips auf einen.
+- **Lesen ohne Browser.** `agent-browser read <url>` holte die 57-kB-Seite in 6,6 ms und damit rund fünfmal schneller, als einen Tab nur zum Lesen zu öffnen.
+- **Der kalte Start ist ein Unentschieden:** rund 300 ms für agent-browser (Daemon starten, an Brave andocken) gegen rund 330 ms für ego-lite (neuer Task-Space).
+
+## Wann ego-lite die bessere Wahl ist
+
+- **Ein Skript, ein Round-Trip.** Aktion, Warten, Prüfen und Abschluss-Snapshot passieren in einem einzigen Programm. Ein Agent muss den Zustand unterwegs nicht neu beobachten:
+
+```js
+const task = await taskSpace("check-form");
+const page = task.page("p1");
+await page.goto("https://example.com/form");
+await page.fill("#name", "Ada");
+await page.click("button[type=submit]");
+await page.waitForFunction(() => document.getElementById("form-result").textContent.startsWith("FORM-OK"));
+console.log(await page.evaluate(() => document.getElementById("form-result").textContent));
+```
+
+- **Stille Aktionen.** ego-lite gibt nur aus, was Sie ausgeben. agent-browser bestätigt jeden Befehl mit einer eigenen Zeile. Das ist der Unterschied zwischen 655 und 33 Bytes beim Formular.
+- **Belege statt Behauptungen.** Popups, Dialoge, Dateiauswahler und Downloads sind erste Klasse, dazu eine explizite Übergabe an den Menschen (`handOff()`).
+- **Ein eigenes Snapshot-Format**, das Referenzen, Locators und Iframe-Wurzeln ausdrücklich ausweist.
+
+## Token-Effizienz: ein Unentschieden
+
+Hier sieht die Rechnung in den Produktbeschreibungen besser aus, als sie ist.
+
+- ego-lite liest **2,2-mal weniger** Bytes (2.061 gegen 4.481), weil Aktionen still sind.
+- ego-lite schreibt dafür **2,4-mal mehr** (3.610 gegen 1.493), weil ein JS-Programm mehr Text hat als ein Einzeiler.
+- Unterm Strich bleiben **5.671 Bytes für ego-lite gegen 5.974 für agent-browser**, ohne den 57-kB-Lesevorgang.
+
+Zählen Sie nur die Bytes, die das Modell liest, gewinnt ego-lite bei Aufgaben mit mehreren Aktionen. Bei Snapshots gewinnt agent-browser: 561 Bytes für den interaktiven Snapshot, 683 Bytes für den vollständigen Baum. ego-lite braucht für denselben Baum 988 Bytes. Ein Benchmark, der nur eine Seite misst, führt hier in die Irre.
+
+## Fallstricke, die uns Zeit gekostet haben
+
+1. **ego-lite schreibt die Ausgabe nach stderr.** `out=$(ego-browser nodejs < s.mjs)` liefert eine leere Variable, der Agent rechnet mit falschen Daten weiter und meldet Erfolg. Abhilfe: `2>&1` mitschreiben.
+2. **Gleicher User-Agent, anderes DOM.** Brave und egos Chromium melden beide `Chrome/154.0.0.0`. Trotzdem lieferte DuckDuckGo Brave eine deutsche Oberfläche mit 0 `<article>`-Elementen (17 externe Links) und ego 67 Links. Ein DuckDuckGo-spezifischer Selektor funktionierte in einem Browser und scheiterte im anderen. In Brave kostete das 25 Sekunden `wait --fn`-Timeouts in 5 von 5 Läufen, bis wir auf den generischen Selektor `a[href^="http"]` umgestellt haben. Deshalb steht in der finalen Serie auch „DuckDuckGo-Ergebnisseite“ statt eines Ergebnisses, das nur für einen Browser gilt.
+3. **Ein kaputter Selektor kostet ego-lite drei Sekunden und das ganze Skript.** `page.click("#nope")` läuft in den 3-Sekunden-Timeout, wirft und reißt den Rest der Runde mit. agent-browser antwortet in rund 0,1 Sekunden: „Element not found: #nope. Verify the selector, role, or name is correct.“
+4. **ego-lite braucht pro Runde eine neue Skriptdatei** und kann keine Umgebungsvariablen lesen. Die Task-ID muss in der Datei stehen.
+5. **ego-lite hat keinen Text-Getter.** Text lesen geht nur über `page.evaluate()`. agent-browser hat `get text @e5`.
+
+## Unsere Empfehlung
+
+**agent-browser als Standard.** Es ist 3,7-mal schneller, es benutzt den Browser, den Sie bereits offen haben (Logins, Cookies, uBlock), und es meldet Fehler so schnell, dass ein Fehlversuch billig ist.
+
+**ego-lite, wenn eine Aufgabe programmatisch ist:** ein längerer Ablauf, der in einem Skript durchläuft, ohne dass ein Modell zwischendurch neu entscheiden muss. Dort ist ein Round-Trip mehr wert als zehn schnelle.
+
+**Bei der Token-Bilanz auf die Aufgabe schauen, nicht auf die eine Zahl.** Snapshot lastig? agent-browser. Skript lastig? ego-lite.
+
+## Fazit
+
+Die Frage war eindeutig, die Antwort auch: agent-browser ist das Werkzeug für den Alltag, 4,3- bis 11,8-mal schneller pro Aufgabe und 3,7-mal schneller in der Summe, mit Anbindung an den eigenen Browser und schnellen Fehlermeldungen. ego-lite ist nicht die schlechtere Wahl, sondern die spezialisiertere: ein Skript, ein Round-Trip, stille Aktionen, belastbare Übergaben an den Menschen.
+
+Der unangenehmste Fund des Tages hatte mit Geschwindigkeit nichts zu tun. ego-lite schreibt nach stderr, agent-browser nach stdout. Ein Test, der die Ausgabe nicht prüft, meldet für ego-lite eine leere Seite und trotzdem Erfolg.
+
+## Reproduktion
+
+Die Messskripte liegen in unserem internen Benchmark-Ordner, die Rohdaten je Lauf als JSON-Zeilen. Der Ablauf: eine Runde pro Werkzeug und Aufgabe, Median über 5 Wiederholungen, Auswertung über ein Python-Skript. Die Aufgaben sind oben so beschrieben, dass sich der Test nachbauen lässt.
