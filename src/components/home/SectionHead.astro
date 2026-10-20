@@ -1,0 +1,38 @@
+---
+// Swiss-Kopfzeile: Nummer links, Titel und Unterzeile, optionaler Link rechts.
+interface Props { n: string; id: string; title: string; sub?: string; link?: { label: string; href: string } }
+const { n, id, title, sub, link } = Astro.props;
+---
+<div class="head" data-reveal>
+  <span class="n" aria-hidden="true">{n}</span>
+  <div>
+    <h2 id={id} class="section-title">{title}</h2>
+    {sub && <p class="section-sub mt-3">{sub}</p>}
+  </div>
+  {link && <a class="mono-link more" href={link.href}>{link.label} <span aria-hidden="true">→</span></a>}
+</div>
+
+<style>
+  .head {
+    display: grid;
+    grid-template-columns: 80px minmax(0, 1fr) auto;
+    align-items: end;
+    gap: 16px 24px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+  }
+  .n {
+    align-self: start;
+    color: var(--fg-dim);
+    font-family: var(--font-mono);
+    font-size: 12px;
+  }
+  .more {
+    white-space: nowrap;
+  }
+  @media (max-width: 760px) {
+    .head {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

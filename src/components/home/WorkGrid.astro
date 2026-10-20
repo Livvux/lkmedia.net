@@ -1,0 +1,172 @@
+---
+import { getCollection } from 'astro:content';
+import type { HomeContent } from '../../lib/home-content';
+import { routeFor } from '../../lib/i18n';
+import SectionHead from './SectionHead.astro';
+interface Props { proof: HomeContent['proof'] }
+const { proof } = Astro.props;
+
+// Neueste Cases zuerst; bei gleichem Datum gilt die Reihenfolge aus home-content (sort ist stabil).
+const dates = new Map((await getCollection('cases')).map((c) => [c.id, c.data.pubDate]));
+const shots = proof.shots
+  .filter((s) => dates.has(s.slug))
+  .sort((a, b) => +(dates.get(b.slug) ?? 0) - +(dates.get(a.slug) ?? 0));
+const month = new Intl.DateTimeFormat('de-DE', { month: 'short', year: 'numeric' });
+const src = (s: (typeof shots)[number]) => s.image ?? `/landing/shots/${s.slug}-1440.webp`;
+---
+<section id="arbeiten" class="work wrap" aria-labelledby="work-title">
+  <SectionHead n="01" id="work-title" title={proof.title} sub={proof.sub} link={proof.all} />
+  <ul class="grid">
+    {shots.map((shot, i) => (
+      <li class:list={['cell', { big: i < 2 }]} data-reveal style={`--d:${(i % 3) * 70}ms`}>
+        <a class="tile" href={`${routeFor('cases', 'de')}/${shot.slug}`}>
+          <span class="frame">
+            {shot.slug === 'eichhoernchenberger' ? (
+              <video data-preview data-src="/cases/eichhoernchenberger/walkthrough.mp4" poster="/cases/eichhoernchenberger/desktop.webp" muted loop playsinline autoplay preload="none" aria-label={`Rundgang durch ${shot.domain}`}></video>
+            ) : (
+              <img src={src(shot)} width="1440" height="900" alt={`Website von ${shot.client}`} loading="lazy" decoding="async" />
+            )}
+          </span>
+          <span class="meta">
+            <span class="client">{shot.client}<span class="arrow" aria-hidden="true">↗</span></span>
+            <span class="date">{month.format(dates.get(shot.slug))}</span>
+          </span>
+          <span class="scope">{shot.scope}</span>
+          {i < 2 && <span class="result">{shot.result}</span>}
+        </a>
+      </li>
+    ))}
+  </ul>
+</section>
+
+<script>
+  if (!matchMedia('(prefers-reduced-motion: reduce)').matches && 'IntersectionObserver' in window) {
+    const observer = new IntersectionObserver((entries) => {
+      for (const entry of entries) {
+        if (!entry.isIntersecting || !(entry.target instanceof HTMLVideoElement)) continue;
+        const video = entry.target;
+        if (video.dataset.src) video.src = video.dataset.src;
+        void video.play().catch(() => {});
+        observer.unobserve(video);
+      }
+    }, { rootMargin: '200px' });
+    document.querySelectorAll<HTMLVideoElement>('video[data-preview]').forEach((video) => observer.observe(video));
+  }
+</script>
+
+<style>
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 40px 20px;
+    margin-top: 48px;
+  }
+  .cell {
+    grid-column: span 2;
+  }
+  .cell.big {
+    grid-column: span 3;
+  }
+  .tile {
+    display: grid;
+    gap: 6px;
+  }
+  .frame {
+    position: relative;
+    display: block;
+    overflow: hidden;
+    aspect-ratio: 16 / 10;
+    margin-bottom: 10px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: var(--bg-card);
+    transition: border-color 0.25s ease;
+  }
+  .frame img,
+  .frame video {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+    transition: transform 0.8s var(--ease-out);
+  }
+  .meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 16px;
+  }
+  .client {
+    display: inline-flex;
+    gap: 6px;
+    font-size: 16px;
+    font-weight: 550;
+    letter-spacing: -0.01em;
+  }
+  .arrow {
+    color: var(--fg-dim);
+    transition:
+      transform 0.25s var(--ease-out),
+      color 0.25s ease;
+  }
+  .date,
+  .scope {
+    color: var(--fg-dim);
+    font-family: var(--font-mono);
+    font-size: 12px;
+  }
+  .date {
+    white-space: nowrap;
+  }
+  .result {
+    max-width: 48ch;
+    margin-top: 4px;
+    color: var(--fg-muted);
+    font-size: 15px;
+    line-height: 1.5;
+  }
+  .tile:hover .frame,
+  .tile:focus-visible .frame {
+    border-color: var(--border-strong);
+  }
+  .tile:hover img,
+  .tile:hover video {
+    transform: scale(1.025);
+  }
+  .tile:hover .arrow {
+    color: var(--fg);
+    transform: translate(2px, -2px);
+  }
+  .grid:has(.tile:hover) .tile:not(:hover) {
+    opacity: 0.6;
+  }
+  .tile {
+    transition: opacity 0.25s ease;
+  }
+  @media (max-width: 900px) {
+    .grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 32px 16px;
+    }
+    .cell,
+    .cell.big {
+      grid-column: span 1;
+    }
+    .cell.big {
+      grid-column: 1 / -1;
+    }
+  }
+  @media (max-width: 560px) {
+    .grid {
+      grid-template-columns: 1fr;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .frame img,
+    .frame video,
+    .arrow {
+      transition: none;
+    }
+  }
+</style>

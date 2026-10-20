@@ -11,9 +11,8 @@ import { publicUmamiPath } from '../lib/umami';
 // analytics={false} auf Seiten mit session_id in der URL (Zugangsschlüssel): kein Plausible,
 // Referrer nur same-origin – sonst landet der Link bei Dritten. Nicht no-referrer: dann schickt der
 // Browser bei Formular-POSTs „Origin: null“ und die CSRF-Prüfung (src/lib/csrf.ts) blockt.
-// nav={false}: Startseite bringt ihre Navigation als Kacheln im Hero mit.
-interface Props { seo: SeoProps; jsonLd?: unknown[]; analytics?: boolean; nav?: boolean; }
-const { seo, jsonLd = [], analytics = true, nav = true } = Astro.props as Props;
+interface Props { seo: SeoProps; jsonLd?: unknown[]; analytics?: boolean; }
+const { seo, jsonLd = [], analytics = true } = Astro.props as Props;
 const allLd = [organization(), ...jsonLd];
 // Only a known indexable page with its own canonical may load Umami. Preserve analytics=false.
 const publicPath = analytics && !seo.noindex ? publicUmamiPath(seo.canonical) : null;
@@ -37,7 +36,7 @@ const publicPath = analytics && !seo.noindex ? publicUmamiPath(seo.canonical) : 
     {publicPath !== null && <Umami path={publicPath} />}
   </head>
   <body class="min-h-screen flex flex-col">
-    {nav && <Nav lang={seo.lang} />}
+    <Nav lang={seo.lang} />
     <main class="flex-1"><slot /></main>
     <Footer lang={seo.lang} />
     <script>
