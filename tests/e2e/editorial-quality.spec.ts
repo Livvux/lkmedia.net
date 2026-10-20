@@ -1,6 +1,7 @@
 import { expect, test } from '@playwright/test';
 
 const publishedPosts = [
+  '/blog/agent-browser-vs-ego-lite-benchmark/',
   '/blog/arztpraxis-website-erstellen-lassen/',
   '/case-study-patricks-fahrschule-local-seo/',
   '/e-mails-schreiben-mit-chatgpt/',
