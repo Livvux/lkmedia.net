@@ -1,0 +1,91 @@
+---
+import { getCollection } from 'astro:content';
+import type { HomeContent } from '../../lib/home-content';
+import SectionHead from './SectionHead.astro';
+interface Props { journal: HomeContent['journal'] }
+const { journal } = Astro.props;
+
+// Gleicher Filter wie /blog: nur veröffentlichte, indexierbare deutsche Artikel.
+const posts = (await getCollection('posts', (p) => p.data.lang === 'de' && !p.data.draft && !p.data.noindex))
+  .sort((a, b) => +b.data.pubDate - +a.data.pubDate)
+  .slice(0, 3);
+const urlFor = (p: (typeof posts)[number]) => {
+  const slug = p.id.replace(/^(de|en)\//, '');
+  return p.data.route === 'root' ? `/${slug}/` : `/blog/${slug}/`;
+};
+const day = new Intl.DateTimeFormat('de-DE', { day: '2-digit', month: 'short', year: 'numeric' });
+---
+<section class="journal wrap" aria-labelledby="journal-title">
+  <SectionHead n="05" id="journal-title" title={journal.title} sub={journal.sub} link={journal.all} />
+  <ul class="posts">
+    {posts.map((p, i) => (
+      <li data-reveal style={`--d:${i * 70}ms`}>
+        <a class="post" href={urlFor(p)}>
+          <time class="date" datetime={p.data.pubDate.toISOString()}>{day.format(p.data.pubDate)}</time>
+          <span class="title">{p.data.title}</span>
+          <span class="desc">{p.data.description}</span>
+          <span class="read" aria-hidden="true">Lesen →</span>
+        </a>
+      </li>
+    ))}
+  </ul>
+</section>
+
+<style>
+  .posts {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1px;
+    margin-top: 48px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    background: var(--border);
+  }
+  .post {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    height: 100%;
+    padding: 28px;
+    background: var(--bg);
+    transition: background 0.2s ease;
+  }
+  .post:hover {
+    background: var(--bg-card);
+  }
+  .date,
+  .read {
+    color: var(--fg-dim);
+    font-family: var(--font-mono);
+    font-size: 12px;
+  }
+  .title {
+    font-size: 19px;
+    font-weight: 550;
+    letter-spacing: -0.02em;
+    line-height: 1.3;
+    text-wrap: balance;
+  }
+  .desc {
+    color: var(--fg-muted);
+    font-size: 15px;
+    line-height: 1.55;
+  }
+  .read {
+    margin-top: auto;
+    padding-top: 12px;
+    transition:
+      color 0.2s ease,
+      transform 0.25s var(--ease-out);
+  }
+  .post:hover .read {
+    color: var(--fg);
+    transform: translateX(3px);
+  }
+  @media (max-width: 900px) {
+    .posts {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

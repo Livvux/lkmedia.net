@@ -17,16 +17,24 @@ interface Link {
   href: string;
 }
 
+export interface Offer {
+  title: string;
+  body: string;
+  href: string;
+  price?: string;
+}
+
 export interface HomeContent {
   hero: {
-    statement: string;
-    links: Link[];
+    eyebrow: string;
+    title: string;
+    subtitle: string;
+    lead: string;
+    primary: Link;
+    secondary: Link;
     facts: string[];
-    rail: string[];
-    action: Link;
   };
-  proof: { title: string; all: Link; shots: Shot[] };
-  marquee: string;
+  proof: { title: string; sub: string; all: Link; shots: Shot[] };
   stats: { title: string; figures: { value: string; caption: string }[] };
   search: {
     title: string;
@@ -34,12 +42,17 @@ export interface HomeContent {
     defaults: { service: string; place: string; business: string; domain: string };
     note: string;
   };
-  niches: { title: string; items: { title: string; body: string; href: string; price?: string }[] };
+  offers: {
+    title: string;
+    sub: string;
+    tabs: { value: string; label: string; lead: string; link: Link; items: Offer[] }[];
+  };
   process: {
     title: string;
     sub: string;
     steps: { n: string; title: string; body: string }[];
   };
+  journal: { title: string; sub: string; all: Link };
   about: { title: string; lead: string; craft: string; facts: { label: string; value: string }[] };
   cta: {
     lines: [string, string];
@@ -49,34 +62,15 @@ export interface HomeContent {
   };
 }
 
+// Reihenfolge = Reihenfolge auf der Startseite bei gleichem Case-Datum (neueste Cases zuerst).
 const shotsDe: Shot[] = [
   {
-    slug: "klavierbau-milde",
-    client: "Klavierbau Hans Milde",
-    domain: "klavierbau-milde.de",
-    result: "Position 1–2 für Klavierstimmer in Karlsruhe.",
-    scope: "Webdesign & Local SEO",
-  },
-  {
-    slug: "patricks-fahrschule",
-    client: "Patricks Fahrschule",
-    domain: "patricks-fahrschule.de",
-    result: "Standortseiten und rumänischsprachige Informationen für echte Filialen.",
-    scope: "Local SEO & Mehrsprachigkeit",
-  },
-  {
-    slug: "lorenz-logistik",
-    client: "Lorenz Logistik",
-    domain: "lorenz-logistik.de",
-    result: "Neugründung, die vom ersten Tag an Anfragen erzeugt.",
-    scope: "Landingpage & Conversion",
-  },
-  {
-    slug: "cleo-coaching",
-    client: "CLEO Coaching",
-    domain: "cleo-coaching.de",
-    result: "SEO-Feintuning plus Workshop-Landingpage, die bucht.",
-    scope: "SEO & Workshop-Landingpage",
+    slug: "eichhoernchenberger",
+    client: "Eichhörnchen Berger",
+    domain: "eichhoernchenberger.de",
+    result: "Notfallhilfe und Einblicke in eine ehrenamtliche Auffangstation.",
+    scope: "Website & Notfall-Kommunikation",
+    image: "https://eichhoernchenberger.de/_astro/jungtier-schlafend.DKAZgyRW_Z1KWXhE.jpg",
   },
   {
     slug: "pfotenweb",
@@ -95,57 +89,63 @@ const shotsDe: Shot[] = [
     image: "https://five-rp.de/wp-content/uploads/2026/07/fiverp-open-graph.jpg",
   },
   {
-    slug: "eichhoernchenberger",
-    client: "Eichhörnchen Berger",
-    domain: "eichhoernchenberger.de",
-    result: "Notfallhilfe und Einblicke in eine ehrenamtliche Auffangstation.",
-    scope: "Website & klare Notfall-Kommunikation",
-    image: "https://eichhoernchenberger.de/_astro/jungtier-schlafend.DKAZgyRW_Z1KWXhE.jpg",
-  },
-  {
     slug: "streamerloft",
     client: "StreamerLoft",
     domain: "streamerloft.com",
     result: "Ein WordPress-Website-Kit für Streamer und ihre Community.",
-    scope: "Creator-Produkt & WordPress-Entwicklung",
+    scope: "Creator-Produkt & WordPress",
     image: "https://streamerloft.com/og/streamerloft.png",
+  },
+  {
+    slug: "klavierbau-milde",
+    client: "Klavierbau Hans Milde",
+    domain: "klavierbau-milde.de",
+    result: "Position 1–2 für Klavierstimmer in Karlsruhe.",
+    scope: "Webdesign & Local SEO",
+  },
+  {
+    slug: "patricks-fahrschule",
+    client: "Patricks Fahrschule",
+    domain: "patricks-fahrschule.de",
+    result: "Standortseiten und rumänischsprachige Informationen für echte Filialen.",
+    scope: "Local SEO & Mehrsprachigkeit",
+  },
+  {
+    slug: "cleo-coaching",
+    client: "CLEO Coaching",
+    domain: "cleo-coaching.de",
+    result: "SEO-Feintuning plus Workshop-Landingpage, die bucht.",
+    scope: "SEO & Workshop-Landingpage",
+  },
+  {
+    slug: "lorenz-logistik",
+    client: "Lorenz Logistik",
+    domain: "lorenz-logistik.de",
+    result: "Neugründung, die vom ersten Tag an Anfragen erzeugt.",
+    scope: "Landingpage & Conversion",
   },
 ];
 
 const de: HomeContent = {
   hero: {
-    statement: "Webdesign aus Rastatt. Websites und SEO für Ihr Unternehmen.",
-    links: [
-      { label: "Arbeiten", href: "#arbeiten" },
-      { label: "Leistungen", href: routeFor("services", "de") },
-      { label: "Ablauf", href: "#ablauf" },
-      { label: "Blog", href: routeFor("blog", "de") },
-    ],
-    facts: [
-      "Webdesign & SEO",
-      "Rastatt & remote",
-      "Direkt mit Lucas Kleipoedszus",
-      "Handgebaut in Astro",
-      "Kein WordPress, kein Baukasten",
-    ],
-    rail: [
-      "Platz 1–2 für „Klavierstimmer Karlsruhe“",
-      "Lighthouse 100 in allen vier Kategorien",
-      "0,7 s, bis der Inhalt steht",
-      "15 Minuten Erstgespräch",
-    ],
-    action: { label: "Projekt starten", href: routeFor("contact", "de") },
+    eyebrow: "Webdesign & SEO · Rastatt & remote",
+    title: "Webdesign aus Rastatt.",
+    subtitle: "Websites und SEO für Ihr Unternehmen.",
+    lead: "Handgebaute Websites, die schnell laden, verständlich erklären und bei Google gefunden werden. Konzept, Design, Code und SEO aus einer Hand, direkt mit Lucas Kleipoedszus.",
+    primary: { label: "Projekt starten", href: routeFor("contact", "de") },
+    secondary: { label: "Arbeiten ansehen", href: "#arbeiten" },
+    facts: ["Handgebaut in Astro", "Kein Baukasten", "Lighthouse 100", "15 Minuten Erstgespräch"],
   },
   proof: {
     title: "Arbeiten",
+    sub: "Neueste Projekte zuerst: Plattformen, Portale und lokale Websites.",
     all: { label: "Alle Cases", href: routeFor("cases", "de") },
     shots: shotsDe,
   },
-  marquee: "Websites, die gefunden werden.",
   stats: {
     title: "Gemessen, nicht versprochen",
     figures: [
-      { value: "Platz 1", caption: "für „Klavierstimmer Karlsruhe“ – Klavierbau Hans Milde" },
+      { value: "Platz 1–2", caption: "für „Klavierstimmer Karlsruhe“, Klavierbau Hans Milde" },
       {
         value: "0,7 s",
         caption: "Largest Contentful Paint auf klavierbau-milde.de, mobil gemessen",
@@ -167,46 +167,63 @@ const de: HomeContent = {
     },
     note: "Klare Antworten und passende strukturierte Daten helfen bei der Einordnung Ihrer Inhalte. llms.txt bietet zusätzliche Orientierung; Rankings und KI-Zitationen lassen sich damit nicht garantieren.",
   },
-  niches: {
-    title: "Branchen",
-    items: [
+  offers: {
+    title: "Zwei Wege zu Ihrer Website",
+    sub: "Ein Festpreis-Paket für typische Branchen oder ein individuelles Projekt mit eigenem Konzept.",
+    tabs: [
       {
-        title: "Kanzleien",
-        body: "Seriöse Auftritte, die Mandanten aus der Region gewinnen – berufsrechtskonform.",
-        href: routeFor("lawFirms", "de"),
+        value: "pakete",
+        label: "Branchenpakete",
+        lead: "Bewährte Seitenstruktur, definierte Funktionen und laufende Betreuung. Einrichtung ab 1.490 € plus Monatspreis, inkl. USt., 12 Monate Mindestlaufzeit und zusätzliche Domainkosten laut Angebot.",
+        link: { label: "Pakete und Gesamtkosten vergleichen", href: routeFor("services", "de") },
+        items: [
+          {
+            title: "Arztpraxen mit docweb",
+            body: "Für Arzt-, Psychotherapie- und Zahnarztpraxen. Vorschau in der Regel nach 7 Werktagen.",
+            href: routeFor("doctors", "de"),
+            price: `${DOCWEB.setupPrice} + ${DOCWEB.monthlyPrice} im Monat`,
+          },
+          {
+            title: "Handwerk mit handwerkweb",
+            body: "Für Handwerksbetriebe, mit Formularen für Projektanfragen und Bewerbungen.",
+            href: routeFor("craftsmen", "de"),
+            price: `${HANDWERKWEB.setupPrice} + ${HANDWERKWEB.monthlyPrice} im Monat`,
+          },
+          {
+            title: "Fahrschulen mit fahrschulweb",
+            body: "Für Fahrschulen, mit Online-Anmeldung direkt auf der Seite.",
+            href: routeFor("drivingSchools", "de"),
+            price: `${FAHRSCHULWEB.setupPrice} + ${FAHRSCHULWEB.monthlyPrice} im Monat`,
+          },
+        ],
       },
       {
-        title: "Luxus-Immobilien",
-        body: "Exposés mit Wirkung und Websites, die Käufer und Eigentümer gleichermaßen überzeugen.",
-        href: routeFor("realEstate", "de"),
-      },
-      {
-        title: "Privatkliniken",
-        body: "Vertrauen auf den ersten Blick und Terminanfragen, die ohne Umwege ankommen.",
-        href: routeFor("clinics", "de"),
-      },
-      {
-        title: "Arztpraxen mit docweb",
-        body: "Das Website-Paket für Arzt-, Psychotherapie- und Zahnarztpraxen. Vorschau in der Regel nach 7 Werktagen.",
-        href: routeFor("doctors", "de"),
-        price: `${DOCWEB.setupPrice} + ${DOCWEB.monthlyPrice} im Monat`,
-      },
-      {
-        title: "Handwerk mit handwerkweb",
-        body: "Das Website-Paket für Handwerksbetriebe, mit Formularen für Projektanfragen und Bewerbungen.",
-        href: routeFor("craftsmen", "de"),
-        price: `${HANDWERKWEB.setupPrice} + ${HANDWERKWEB.monthlyPrice} im Monat`,
-      },
-      {
-        title: "Fahrschulen mit fahrschulweb",
-        body: "Das Website-Paket für Fahrschulen, mit Online-Anmeldung direkt auf der Seite.",
-        href: routeFor("drivingSchools", "de"),
-        price: `${FAHRSCHULWEB.setupPrice} + ${FAHRSCHULWEB.monthlyPrice} im Monat`,
-      },
-      {
-        title: "Lokale Unternehmen",
-        body: "Dienstleister und Betriebe aus der Region: Platz 1 in der Region statt Seite 3.",
-        href: routeFor("services", "de"),
+        value: "individuell",
+        label: "Individuell ab 25.000 €",
+        lead: "Für umfangreiche Kanzlei-, Klinik- und Immobilienprojekte. Konzept, Design und Entwicklung richten sich nach Ihren Anforderungen. Schnittstellen, Inhalte und Betreuung werden im Angebot festgelegt.",
+        link: { label: "Individuelles Projekt besprechen", href: routeFor("contact", "de") },
+        items: [
+          {
+            title: "Kanzleien",
+            body: "Seriöse Auftritte, die Mandanten aus der Region gewinnen, berufsrechtskonform.",
+            href: routeFor("lawFirms", "de"),
+          },
+          {
+            title: "Luxus-Immobilien",
+            body: "Exposés mit Wirkung und Websites, die Käufer und Eigentümer überzeugen.",
+            href: routeFor("realEstate", "de"),
+          },
+          {
+            title: "Privatkliniken",
+            body: "Vertrauen auf den ersten Blick und Terminanfragen, die ohne Umwege ankommen.",
+            href: routeFor("clinics", "de"),
+          },
+          {
+            title: "Lokale Unternehmen",
+            body: "Dienstleister und Betriebe aus der Region, mit Local SEO von Anfang an.",
+            href: routeFor("services", "de"),
+          },
+        ],
       },
     ],
   },
@@ -219,6 +236,11 @@ const de: HomeContent = {
       { n: "03", title: "Dann baue ich es von Hand.", body: "Astro, auf Tempo und SEO gebaut" },
       { n: "04", title: "Am Ende geht es live.", body: "Search Console, Monitoring, Feinschliff" },
     ],
+  },
+  journal: {
+    title: "Aus dem Blog",
+    sub: "Praxiswissen zu Webdesign, lokalem SEO und Marketing.",
+    all: { label: "Alle Artikel", href: routeFor("blog", "de") },
   },
   about: {
     title: "Direkt mit Lucas",
