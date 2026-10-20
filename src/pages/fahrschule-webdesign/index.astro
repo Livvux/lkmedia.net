@@ -1,7 +1,6 @@
 ---
 import Base from '../../layouts/Base.astro';
 import FeatureSplit from '../../components/home/FeatureSplit.astro';
-import LighthousePanel from '../../components/home/LighthousePanel.astro';
 import ProcessSteps from '../../components/home/ProcessSteps.astro';
 import FinalCta from '../../components/home/FinalCta.astro';
 import FaqBlock from '../../components/FaqBlock.astro';
@@ -25,21 +24,21 @@ const seo = {
 };
 
 const stats = [
-  { value: '#1', label: 'in 5 Städten gleichzeitig' },
-  { value: '671', label: 'Klicks auf den Namen in 90 Tagen' },
-  { value: '2', label: 'Sprachen, eine Zielgruppe mehr' },
+  { value: String(FAHRSCHULWEB.includedLocations), label: 'Standorte im Paket' },
+  { value: String(FAHRSCHULWEB.minimumTermMonths), label: 'Monate Mindestlaufzeit' },
+  { value: '7', label: 'Werktage bis zur Vorschau – in der Regel ab vollständigen Angaben' },
 ];
 
 const pains = [
   {
     n: '01',
-    title: 'Seite 2 bei Google',
-    body: 'Wer „Fahrschule + Ort“ sucht, ruft die ersten drei Treffer an. Steht Ihre Fahrschule nicht dort, existiert sie für diese Fahrschüler nicht.',
+    title: 'Lokale Informationen fehlen',
+    body: 'Wenn für eine Filiale Adresse, Theoriezeiten oder Kontaktdaten fehlen, können Interessenten nur schwer entscheiden, ob das Angebot passt.',
   },
   {
     n: '02',
     title: 'Gebaut für Desktop, besucht am Handy',
-    body: 'Ihre Zielgruppe ist 17 und hat kein Notebook. Lädt die Seite zäh oder ist das Formular fummelig, ist der Tab zu – und die Konkurrenz einen Wisch entfernt.',
+    body: 'Viele Interessenten informieren sich mobil. Eine langsame Seite oder ein umständliches Formular erschwert die Anmeldung – unabhängig vom Alter.',
   },
   {
     n: '03',
@@ -51,11 +50,11 @@ const pains = [
 const features = [
   {
     title: 'Online-Anmeldung',
-    body: 'Klasse wählen, Standort wählen, Daten eingeben – fertig. Die Anfrage landet vollständig in Ihrem Postfach, ohne Rückfragen.',
+    body: 'Klasse und Standort auswählen, nötige Kontaktdaten eingeben: Die Anfrage kommt strukturiert an. Sie ist noch keine verbindliche Kursbestätigung.',
   },
   {
     title: 'Eine Seite pro Standort',
-    body: 'Eigene, inhaltlich eigenständige Seiten für jeden Ort, den Sie abdecken. Genau so rankt Patricks Fahrschule in fünf Städten auf Platz 1.',
+    body: 'Eigene Seiten für tatsächliche Filialen mit Adresse, Zeiten und Ansprechpartner. Kein austauschbarer Ortsnamen-Content und keine Rankingzusage.',
   },
   {
     title: 'Führerscheinklassen klar erklärt',
@@ -67,7 +66,7 @@ const features = [
   },
   {
     title: 'Google-Unternehmensprofil',
-    body: 'Einrichtung und Optimierung für jeden Standort – damit Sie im Maps-Pack erscheinen, wo die meisten Klicks passieren.',
+    body: 'Bestehende Profile prüfen und berechtigte Standorte mit korrekten Angaben pflegen. Eine Maps-Pack-Position lässt sich nicht garantieren.',
   },
   {
     title: 'Theorie- & Ferienkurse',
@@ -75,7 +74,7 @@ const features = [
   },
   {
     title: 'Mehrsprachig',
-    body: 'Fahrschüler, die auf Englisch, Rumänisch, Türkisch oder Arabisch suchen, finden fast nie ein Angebot. Ihre Website ist auf Deutsch; diese Sprachen ergänzen wir als Extra nach Absprache.',
+    body: 'Weitere Sprachen sind ein Extra gegen Aufpreis nach Absprache. Inhalte und Kontaktwege müssen auch in der zusätzlichen Sprache gepflegt werden.',
   },
   {
     title: 'Bewertungen sichtbar',
@@ -83,22 +82,22 @@ const features = [
   },
   {
     title: 'DSGVO ohne Banner-Hölle',
-    body: 'Datensparsame Analytics, lokal eingebundene Schriften, sauberes Impressum. Rechtssicher, ohne Ihre Besucher mit Pop-ups zu vergraulen.',
+    body: 'Datensparsame Umsetzung, lokal eingebundene Schriften und Pflichtangaben zur Freigabe. Eine rechtliche Prüfung kann das Paket nicht ersetzen.',
   },
 ];
 
 const serp = [
   {
-    domain: 'patricks-fahrschule.de',
+    domain: 'muster-fahrschule.invalid',
     path: '› fahrschule-durmersheim',
-    title: 'Fahrschule Durmersheim – Führerschein B, A & BE | Patricks Fahrschule',
-    desc: 'Deine Fahrschule in Durmersheim: Theorie, Fahrstunden und Prüfung aus einer Hand. Jetzt online anmelden …',
+    title: 'Fahrschule Muster – Standort Durmersheim',
+    desc: 'Beispiel für Adresse, Klassen, Theoriezeiten und Anfrageweg am Standort.',
     primary: true,
   },
   {
-    domain: 'fahrschule-beispiel.de',
+    domain: 'beispiel.invalid',
     path: '',
-    title: 'Fahrschule Beispiel – Startseite',
+    title: 'Beispielhafter Website-Eintrag',
     desc: 'Herzlich willkommen auf unserer Homepage. Hier finden Sie Informationen über unsere …',
     primary: false,
   },
@@ -111,7 +110,7 @@ const process = {
     { n: '01', title: 'Paket bestellen', body: `Sichere Zahlung über Stripe: ${FAHRSCHULWEB.initialPrice} für Einrichtung und ersten Monat. Rechnung kommt automatisch.` },
     { n: '02', title: 'Daten eintragen', body: 'Klassen, Preise, Standorte, Theoriezeiten, Team – in ca. 15 Minuten. Logo und Fotos laden Sie direkt im Formular hoch.' },
     { n: '03', title: 'Vorschau prüfen', body: `${FAHRSCHULWEB.deliveryPromise} Eine Korrekturschleife ist enthalten.` },
-    { n: '04', title: 'Online & aktuell', body: 'Wir schalten Ihre Domain auf und richten Google-Profile ein. Änderungen stellen Sie jederzeit über Ihren Änderungs-Link ein und sehen dort auch den Status.' },
+    { n: '04', title: 'Online & aktuell', body: 'Wir schalten Ihre Domain auf und prüfen bestehende Google-Profile beziehungsweise die Berechtigung neuer Standorte. Änderungen stellen Sie über Ihren persönlichen Änderungs-Link ein.' },
   ],
 };
 
@@ -120,7 +119,7 @@ const included = [
   'Seiten für Führerscheinklassen, Preise, Theorie & Kurse, Team & Fahrzeuge, Kontakt',
   `Eigene Standortseite für bis zu ${FAHRSCHULWEB.includedLocations} Standorte`,
   'Online-Anmeldung per E-Mail oder Link zu Ihrer Fahrschulsoftware',
-  'Google-Unternehmensprofil je Standort eingerichtet bzw. optimiert',
+  'Bestehende Google-Unternehmensprofile prüfen und, soweit zulässig, einrichten oder optimieren',
   'Impressum und Datenschutzerklärung (als Entwurf zur Freigabe)',
   'Eine Korrekturschleife nach der Vorschau',
   'Hosting in der EU, SSL, Sicherungen und technische Updates',
@@ -158,12 +157,12 @@ const faqs = [
   },
   {
     q: 'Lohnt sich eine neue Website, wenn wir sowieso ausgebucht sind?',
-    a: 'Gerade dann. Eine gute Website sorgt dafür, dass die richtigen Fahrschüler kommen: die Klassen, die Sie füllen wollen, aus den Orten, die Sie bedienen – und mit vollständigen Unterlagen. Außerdem gewinnen Sie Fahrlehrer: Viele Bewerber prüfen Ihre Website, bevor sie sich melden.',
+    a: 'Nicht zwangsläufig. Wenn alle Kurse ausgebucht sind, sollte die Website zunächst verlässliche Informationen bieten, verfügbare Klassen und Standorte richtig ausweisen und Bewerbungen ermöglichen. Zusätzliche Reichweite hat nur dann einen Wert, wenn Sie passende Anfragen bearbeiten können.',
   },
 ];
 
 const cta = {
-  lines: ['Mehr Fahrschüler.', 'Weniger Telefon-Pingpong.'] as [string, string],
+  lines: ['Passende Anfragen.', 'Klare Abläufe.'] as [string, string],
   sub: 'Lassen Sie uns in 15 Minuten prüfen, wo Ihre Fahrschule bei Google steht – und was nötig ist, um nach oben zu kommen.',
   primary: { label: 'Paket ansehen', href: '#preis' },
   secondary: { label: '15-min-Call buchen', href: `${contact}#termin` },
@@ -216,7 +215,7 @@ const crumbs = breadcrumbs([
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </a>
         <a href={`${contact}#termin`} class="mono-link">Erst sprechen? 15-min-Call</a>
-        <a href={caseStudy} class="mono-link"><span class="dot" aria-hidden="true"></span>Case: #1 in 5 Städten</a>
+        <a href={caseStudy} class="mono-link"><span class="dot" aria-hidden="true"></span>Case: Standortseiten & Sprachen</a>
       </div>
 
       <dl class="stats" data-rise style="--d:460ms">
@@ -256,7 +255,7 @@ const crumbs = breadcrumbs([
     <div class="wrap">
       <div class="max-w-2xl" data-reveal>
         <div class="eyebrow">Das Problem</div>
-        <h2 class="section-title mt-4">Warum die meisten Fahrschul-Websites keine Fahrschüler bringen.</h2>
+        <h2 class="section-title mt-4">Was Interessenten auf einer Fahrschul-Website brauchen.</h2>
       </div>
       <ul class="pain-grid">
         {pains.map((p, i) => (
@@ -273,23 +272,23 @@ const crumbs = breadcrumbs([
   <!-- Local SEO -->
   <FeatureSplit
     eyebrow="Local SEO"
-    title="Platz 1 für „Fahrschule + Ihr Ort“."
-    sub="Fahrschüler suchen lokal. Darum bekommt jeder Ihrer Standorte eine eigene, eigenständige Seite, ein eigenes Google-Unternehmensprofil und strukturierte Daten, die Google und KI-Assistenten verstehen."
+    title="Lokale Standorte verständlich sichtbar machen."
+    sub="Fahrschüler suchen lokal. Reale Filialen erhalten eigenständige Standortinformationen. Ob ein separates Google-Unternehmensprofil zulässig ist, hängt von den Google-Richtlinien ab."
     points={[
       'Eigene Standortseite pro Ort, keine Copy-Paste-Texte',
-      'Google-Unternehmensprofil für jede Filiale eingerichtet',
-      'Schema-Markup für Fahrschule, Kurse und Bewertungen',
+      'Bestehende Profile und Berechtigung pro tatsächlicher Filiale prüfen',
+      'Strukturierte Daten nur passend zu real veröffentlichten Inhalten',
     ]}
   >
     <div class="serp card" aria-hidden="true">
       <div class="serp-bar">
         <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><circle cx="7" cy="7" r="4.5" stroke="currentColor" stroke-width="1.5"/><path d="M10.5 10.5L14 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-        <span>fahrschule durmersheim</span>
+        <span>Fiktive Suchvorschau · keine Google-Platzierung</span>
       </div>
       <ol class="serp-list">
-        {serp.map((r, i) => (
+        {serp.map((r) => (
           <li class={`serp-item ${r.primary ? 'is-primary' : ''}`}>
-            <span class="serp-pos">#{i + 1}</span>
+            <span class="serp-pos" aria-hidden="true">•</span>
             <div class="min-w-0">
               <div class="serp-url">{r.domain} <span class="text-[var(--fg-faint)]">{r.path}</span></div>
               <div class="serp-title">{r.title}</div>
@@ -324,29 +323,27 @@ const crumbs = breadcrumbs([
   <!-- Speed -->
   <FeatureSplit
     eyebrow="Mobile Performance"
-    title="Schneller da als der Daumen weg ist."
-    sub="Fast alle Ihre Besucher kommen vom Smartphone – oft im Bus, mit wackeligem Netz. Wir bauen statisch und schlank, ohne WordPress-Plugins. Das mögen Fahrschüler und Google gleichermaßen."
+    title="Für die mobile Nutzung konsequent geplant."
+    sub="Eine mobile, schlanke Website soll auch bei schlechter Verbindung gut bedienbar sein. Ob sie in echten Nutzungsdaten schnell ist, muss nach dem Start gemessen werden."
     points={[
       'Core Web Vitals im grünen Bereich als Abnahmekriterium',
-      'Anmeldeformular in unter einer Minute ausgefüllt',
-      'Keine Plugin-Updates, keine Sicherheitslücken',
+      'Anmeldeformular auf kleinen Bildschirmen getestet',
+      'Weniger Abhängigkeiten, regelmäßige Sicherheitsprüfungen',
     ]}
     reverse
   >
-    <LighthousePanel
-      scores={[
-        { label: 'Performance', value: 100 },
-        { label: 'Barrierefreiheit', value: 100 },
-        { label: 'Best Practices', value: 100 },
-        { label: 'SEO', value: 100 },
-      ]}
-      vitals={[
-        { label: 'LCP', value: '0.8 s' },
-        { label: 'INP', value: '52 ms' },
-        { label: 'CLS', value: '0.00' },
-      ]}
-      url="fahrschul-website"
-    />
+    <figure class="rounded-2xl border border-white/15 bg-[#111113] p-3">
+      <img
+        src="/posts/fahrschule-website-anmeldung.svg"
+        alt="Beispiel einer mobilen Informationsstruktur von Standort und Führerscheinklasse bis zur Anmeldung"
+        width="1200"
+        height="675"
+        loading="lazy"
+        decoding="async"
+        class="w-full rounded-lg"
+      />
+      <figcaption class="mt-3 text-sm text-white/60">Ablaufskizze statt unüberprüfbarer Lighthouse-Ergebniswerte.</figcaption>
+    </figure>
   </FeatureSplit>
 
   <!-- Case -->
@@ -358,10 +355,10 @@ const crumbs = breadcrumbs([
         </div>
         <div class="case-copy">
           <div class="eyebrow">Case Study · Patricks Fahrschule</div>
-          <h2 class="case-title">Position 1 in Rastatt, Durmersheim, Sinzheim, Iffezheim und Kuppenheim.</h2>
+          <h2 class="case-title">Standortseiten und mehrsprachige Informationen für reale Filialen.</h2>
           <p class="card-body mt-4">
-            Fünf Standorte, fünf eigene Seiten, fünf Google-Profile – plus rumänischsprachige Inhalte
-            für eine Zielgruppe, die keine andere Fahrschule in der Region anspricht.
+            Eine lokale Inhaltsstruktur mit eigenständigen Filialinformationen und rumänischsprachiger Orientierung.
+            Die Case Study erklärt den Aufbau statt ungeprüfte historische Rankingzahlen zu versprechen.
           </p>
           <blockquote class="quote">
             „Klasse Typ, fachlich Top! Wünsche, Änderungen und Fragen werden immer sofort bearbeitet und beantwortet.“
@@ -453,7 +450,7 @@ const crumbs = breadcrumbs([
     <FaqBlock items={faqs} />
     <p class="wrap text-center card-body">
       Mehr Ideen für Ihre Fahrschule:
-      <a href="/marketing-ideen-fahrschule" class="underline underline-offset-4 hover:text-[var(--fg)]">15+ Marketing-Strategien für Fahrschulen</a>
+      <a href="/marketing-ideen-fahrschule" class="underline underline-offset-4 hover:text-[var(--fg)]">8 praktische Maßnahmen für Fahrschulen</a>
     </p>
   </section>
 
