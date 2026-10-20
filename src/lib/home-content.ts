@@ -100,7 +100,7 @@ const shotsDe: Shot[] = [
     slug: "klavierbau-milde",
     client: "Klavierbau Hans Milde",
     domain: "klavierbau-milde.de",
-    result: "Position 1–2 für Klavierstimmer in Karlsruhe.",
+    result: "Leistungen, regionale Informationen und klare Kontaktwege für einen Klavierbauer.",
     scope: "Webdesign & Local SEO",
   },
   {
@@ -130,11 +130,19 @@ const de: HomeContent = {
   hero: {
     eyebrow: "Webdesign & SEO · Rastatt & remote",
     title: "Webdesign aus Rastatt.",
-    subtitle: "Websites und SEO für Ihr Unternehmen.",
-    lead: "Handgebaute Websites, die schnell laden, verständlich erklären und bei Google gefunden werden. Konzept, Design, Code und SEO aus einer Hand, direkt mit Lucas Kleipoedszus.",
-    primary: { label: "Projekt starten", href: routeFor("contact", "de") },
-    secondary: { label: "Arbeiten ansehen", href: "#arbeiten" },
-    facts: ["Handgebaut in Astro", "Kein Baukasten", "Lighthouse 100", "15 Minuten Erstgespräch"],
+    subtitle: "Klar für Ihre Kunden. Betreut von Lucas.",
+    lead: "Ich plane und entwickle Ihre Website, strukturiere Leistungen und Kontaktwege und übernehme die technische Betreuung. Für Praxen, Fahrschulen und Handwerksbetriebe gibt es feste Pakete; besondere Anforderungen besprechen wir individuell.",
+    primary: { label: "Website-Pakete vergleichen", href: routeFor("services", "de") },
+    secondary: {
+      label: "Individuelles Projekt besprechen",
+      href: `${routeFor("contact", "de")}#termin`,
+    },
+    facts: [
+      "Direkt mit Lucas",
+      "Feste Paketleistungen",
+      "Individuell ab 25.000 €",
+      "15 Minuten Erstgespräch",
+    ],
   },
   proof: {
     title: "Arbeiten",
@@ -143,16 +151,16 @@ const de: HomeContent = {
     shots: shotsDe,
   },
   stats: {
-    title: "Gemessen, nicht versprochen",
+    title: "Was Sie von der Zusammenarbeit erwarten können",
     figures: [
-      { value: "Platz 1–2", caption: "für „Klavierstimmer Karlsruhe“, Klavierbau Hans Milde" },
+      { value: "Persönlich", caption: "Konzept, Gestaltung und Entwicklung direkt mit Lucas" },
       {
-        value: "0,7 s",
-        caption: "Largest Contentful Paint auf klavierbau-milde.de, mobil gemessen",
+        value: "Definiert",
+        caption: "Paketleistungen, laufende Kosten und Mindestlaufzeit vor der Bestellung",
       },
       {
-        value: "100",
-        caption: "Lighthouse in Performance, Barrierefreiheit, Best Practices und SEO",
+        value: "Betreut",
+        caption: "Hosting und vereinbarte Inhaltsänderungen in den Branchenpaketen",
       },
     ],
   },

@@ -28,12 +28,12 @@ const c = homeContent[lang];
     </dl>
   </section>
 
-  <WorkGrid proof={c.proof} />
-
   <section class="wrap" aria-labelledby="offer-models">
-    <SectionHead n="02" id="offer-models" title={c.offers.title} sub={c.offers.sub} />
+    <SectionHead n="01" id="offer-models" title={c.offers.title} sub={c.offers.sub} />
     <OfferTabs tabs={c.offers.tabs} client:visible />
   </section>
+
+  <WorkGrid proof={c.proof} />
 
   <SearchPreview search={c.search} />
 
