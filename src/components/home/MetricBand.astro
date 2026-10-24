@@ -48,15 +48,12 @@ const { title, figures } = Astro.props;
     border-left: 1px solid var(--border);
   }
   .metric__value {
+    color: var(--fg);
     font-size: clamp(46px, 5.4vw, 78px);
     font-weight: 600;
     letter-spacing: -0.05em;
     line-height: 1;
     font-variant-numeric: tabular-nums;
-    background: linear-gradient(120deg, var(--fg) 20%, oklch(0.78 0.16 260) 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
   }
   .metric__caption {
     max-width: 28ch;

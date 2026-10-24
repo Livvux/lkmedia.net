@@ -1,6 +1,5 @@
 ---
 import type { HomeContent } from '../../lib/home-content';
-import GradientText from '../reactbits/GradientText.astro';
 import Magnet from '../reactbits/Magnet.tsx';
 interface Props { cta: HomeContent['cta'] }
 const { cta } = Astro.props;
@@ -13,7 +12,7 @@ const { cta } = Astro.props;
   <div class="wrap final-inner" data-reveal>
     <p class="eyebrow">Nächster Schritt</p>
     <h2 class="display final-title">
-      {cta.lines[0]}<br /><span class="final-title-dim"><GradientText text={cta.lines[1]} /></span>
+      {cta.lines[0]}<br /><span class="final-title-accent">{cta.lines[1]}</span>
     </h2>
     <p class="section-sub final-sub">{cta.sub}</p>
     <div class="final-actions">
@@ -58,7 +57,7 @@ const { cta } = Astro.props;
     height: 420px;
     transform: translateX(-50%);
     border-radius: 50%;
-    background: radial-gradient(closest-side, oklch(0.72 0.16 300 / 0.16), transparent);
+    background: radial-gradient(closest-side, oklch(0.68 0.17 250 / 0.14), transparent);
     animation: orb-drift 16s ease-in-out infinite alternate;
   }
   .final-inner {
@@ -72,8 +71,8 @@ const { cta } = Astro.props;
     margin: 0 auto;
     font-size: clamp(36px, 5vw, 68px);
   }
-  .final-title-dim {
-    color: var(--fg-dim);
+  .final-title-accent {
+    color: var(--accent);
   }
   .final-sub {
     max-width: 540px;

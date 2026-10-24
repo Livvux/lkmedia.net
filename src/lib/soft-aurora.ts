@@ -218,8 +218,8 @@ export interface SoftAuroraOptions {
 export const SOFT_AURORA_DEFAULTS: SoftAuroraOptions = {
   speed: 0.5,
   scale: 1.4,
-  brightness: 0.85,
-  color1: "#e8ecff",
+  brightness: 0.42,
+  color1: "#8fa4ff",
   color2: "#4d6cff",
   noiseFrequency: 2.4,
   noiseAmplitude: 1,
@@ -228,10 +228,11 @@ export const SOFT_AURORA_DEFAULTS: SoftAuroraOptions = {
   octaveDecay: 0.12,
   layerOffset: 0.45,
   colorSpeed: 1,
-  spectrum: 0.9,
+  // 0 = einfarbig. Die Aurora bleibt in Bewegung, mischt aber keine Farben mehr.
+  spectrum: 0,
   tilt: 0,
   mouseInfluence: 0.2,
-  opacity: 0.55,
+  opacity: 0.42,
 };
 
 interface Pulse {

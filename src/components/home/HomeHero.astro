@@ -1,7 +1,6 @@
 ---
 import type { HomeContent } from '../../lib/home-content';
 import SoftAurora from './SoftAurora.astro';
-import GradientText from '../reactbits/GradientText.astro';
 import TiltedCard from '../reactbits/TiltedCard.tsx';
 import Magnet from '../reactbits/Magnet.tsx';
 import Spotlight from '../reactbits/Spotlight.tsx';
@@ -24,11 +23,11 @@ const chips = ['Kein Cookie-Banner', 'Statisch & schnell', 'SEO von Anfang an'];
     <Spotlight client:idle className="hero-copy" size={560} intensity={0.12}>
       <p class="hero-eyebrow"><span class="hero-pulse" aria-hidden="true"></span>{hero.eyebrow}</p>
       <h1 class="hero-title">
-        <span class="hero-brand"><GradientText text={hero.title} /></span>
+        <span class="hero-brand">{hero.title}</span>
         <span class="hero-claim">
           {claimPlain && <span class="hero-claim-plain">{claimPlain}</span>}
           {claimPlain && ' '}
-          <GradientText text={claimAccent} class="hero-claim-accent" />
+          <span class="hero-claim-accent">{claimAccent}</span>
         </span>
       </h1>
       <p class="hero-sub">{hero.subtitle} · Website, SEO und Betreuung aus einer Hand</p>
@@ -90,9 +89,7 @@ const chips = ['Kein Cookie-Banner', 'Statisch & schnell', 'SEO von Anfang an'];
     inset: 0;
     z-index: 0;
     pointer-events: none;
-    background:
-      radial-gradient(70% 48% at 18% 8%, oklch(0.68 0.17 250 / 0.12), transparent 70%),
-      radial-gradient(50% 40% at 92% 30%, oklch(0.72 0.16 310 / 0.1), transparent 72%);
+    background: radial-gradient(70% 48% at 18% 8%, oklch(0.68 0.17 250 / 0.12), transparent 70%);
   }
   .hero-inner {
     position: relative;
@@ -135,6 +132,7 @@ const chips = ['Kein Cookie-Banner', 'Statisch & schnell', 'SEO von Anfang an'];
     display: block;
     max-width: 100%;
     white-space: nowrap;
+    color: var(--fg);
     font-size: clamp(44px, 8.6vw, 132px);
     line-height: 0.92;
     animation: hero-line 0.95s 0.05s var(--ease-out) both;
@@ -148,6 +146,9 @@ const chips = ['Kein Cookie-Banner', 'Statisch & schnell', 'SEO von Anfang an'];
     line-height: 1.08;
     letter-spacing: -0.035em;
     animation: hero-line 0.95s 0.16s var(--ease-out) both;
+  }
+  .hero-claim-accent {
+    color: var(--accent);
   }
   .hero-sub {
     margin-top: 20px;
