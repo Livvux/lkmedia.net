@@ -128,7 +128,7 @@ const shotsDe: Shot[] = [
 const de: HomeContent = {
   hero: {
     title: "lk media.",
-    subtitle: "Klar für Ihre Kunden. Betreut von Lucas.",
+    subtitle: "seit 2015",
     lead: "Ich plane und entwickle Ihre Website, strukturiere Leistungen und Kontaktwege und übernehme die technische Betreuung. Für Praxen, Fahrschulen und Handwerksbetriebe gibt es feste Pakete; besondere Anforderungen besprechen wir individuell.",
     primary: { label: "Website-Pakete vergleichen", href: routeFor("services", "de") },
     secondary: {

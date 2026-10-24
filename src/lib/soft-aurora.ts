@@ -223,7 +223,7 @@ export const SOFT_AURORA_DEFAULTS: SoftAuroraOptions = {
   color2: "#4d6cff",
   noiseFrequency: 2.4,
   noiseAmplitude: 1,
-  bandHeight: 0.66,
+  bandHeight: 0.8,
   bandSpread: 0.9,
   octaveDecay: 0.12,
   layerOffset: 0.45,

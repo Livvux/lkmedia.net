@@ -1,7 +1,7 @@
 import { expect, test } from '@playwright/test';
 
 const pages = [
-  ['/', 'Webdesign aus Rastatt'],
+  ['/', 'lk media.'],
   ['/anwaelte', 'Webdesign für Anwaltskanzleien'],
   ['/privatkliniken', 'Webdesign für Privatkliniken'],
   ['/luxus-immobilien', 'Webdesign für Luxus-Immobilien'],
