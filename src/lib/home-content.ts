@@ -26,13 +26,16 @@ export interface Offer {
 
 export interface HomeContent {
   hero: {
+    eyebrow: string;
     title: string;
+    claim: string;
     subtitle: string;
     lead: string;
     primary: Link;
     secondary: Link;
-    facts: string[];
   };
+  marquee: { label: string; items: string[] };
+  metrics: { title: string; items: { key: string; caption: string }[] };
   proof: { title: string; sub: string; all: Link; shots: Shot[] };
   stats: { title: string; figures: { value: string; caption: string }[] };
   search: {
@@ -127,7 +130,9 @@ const shotsDe: Shot[] = [
 
 const de: HomeContent = {
   hero: {
+    eyebrow: "Webdesign · SEO · Hosting aus Rastatt",
     title: "lk media.",
+    claim: "Klar, schnell, auffindbar.",
     subtitle: "seit 2015",
     lead: "Ich plane und entwickle Ihre Website, strukturiere Leistungen und Kontaktwege und übernehme die technische Betreuung. Für Praxen, Fahrschulen und Handwerksbetriebe gibt es feste Pakete; besondere Anforderungen besprechen wir individuell.",
     primary: { label: "Website-Pakete vergleichen", href: routeFor("services", "de") },
@@ -135,11 +140,26 @@ const de: HomeContent = {
       label: "Individuelles Projekt besprechen",
       href: `${routeFor("contact", "de")}#termin`,
     },
-    facts: [
-      "Direkt mit Lucas",
-      "Feste Paketleistungen",
-      "Individuell ab 25.000 €",
-      "15 Minuten Erstgespräch",
+  },
+  marquee: {
+    label: "Ausgewählte Projekte",
+    items: [
+      "Eichhörnchen Berger",
+      "Pfotenweb",
+      "FiveRP",
+      "StreamerLoft",
+      "Klavierbau Hans Milde",
+      "Patricks Fahrschule",
+      "CLEO Coaching",
+      "Lorenz Logistik",
+    ],
+  },
+  metrics: {
+    title: "Zahlen, die sich nachprüfen lassen",
+    items: [
+      { key: "years", caption: "Jahre Websites aus Rastatt und Umgebung" },
+      { key: "projects", caption: "veröffentlichte Projekte" },
+      { key: "articles", caption: "Artikel zu SEO, Webdesign und Marketing" },
     ],
   },
   proof: {
@@ -205,7 +225,7 @@ const de: HomeContent = {
       },
       {
         value: "individuell",
-        label: "Individuell ab 25.000 €",
+        label: "Individuelles Projekt",
         lead: "Für umfangreiche Kanzlei-, Klinik- und Immobilienprojekte. Konzept, Design und Entwicklung richten sich nach Ihren Anforderungen. Schnittstellen, Inhalte und Betreuung werden im Angebot festgelegt.",
         link: { label: "Individuelles Projekt besprechen", href: routeFor("contact", "de") },
         items: [
@@ -249,7 +269,7 @@ const de: HomeContent = {
     all: { label: "Alle Artikel", href: routeFor("blog", "de") },
   },
   about: {
-    title: "Direkt mit Lucas",
+    title: "Wer dahintersteht",
     lead: "Ich bin Lucas Kleipoedszus und baue jede Website selbst, aus Rastatt oder remote. Vom ersten Call bis zum Launch sprechen Sie mit derselben Person.",
     craft:
       "Handgeschriebener Code statt 40 Plugins, datensparsame Analytics statt Cookie-Banner, Kontraste und Tastaturbedienung für alle Besucher.",

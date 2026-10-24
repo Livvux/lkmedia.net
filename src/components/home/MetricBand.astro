@@ -1,0 +1,78 @@
+---
+import Counter from '../reactbits/Counter.tsx';
+
+interface Figure {
+  value: number;
+  suffix?: string;
+  caption: string;
+}
+
+interface Props {
+  title: string;
+  figures: Figure[];
+}
+
+const { title, figures } = Astro.props;
+---
+
+<section class="metrics wrap" aria-labelledby="metrics-title">
+  <h2 id="metrics-title" class="sr-only">{title}</h2>
+  <ul class="metrics__list">
+    {
+      figures.map((f, i) => (
+        <li class="metric" data-reveal style={`--d:${i * 90}ms`}>
+          <span class="metric__value">
+            <Counter client:visible value={f.value} suffix={f.suffix} />
+          </span>
+          <span class="metric__caption">{f.caption}</span>
+        </li>
+      ))
+    }
+  </ul>
+</section>
+
+<style>
+  .metrics__list {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    border-top: 1px solid var(--border);
+  }
+  .metric {
+    display: grid;
+    align-content: end;
+    gap: 12px;
+    padding: 30px 30px 0 0;
+  }
+  .metric + .metric {
+    padding-left: 30px;
+    border-left: 1px solid var(--border);
+  }
+  .metric__value {
+    font-size: clamp(46px, 5.4vw, 78px);
+    font-weight: 600;
+    letter-spacing: -0.05em;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+    background: linear-gradient(120deg, var(--fg) 20%, oklch(0.78 0.16 260) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .metric__caption {
+    max-width: 28ch;
+    color: var(--fg-muted);
+    font-size: 14px;
+    line-height: 1.5;
+  }
+  @media (max-width: 900px) {
+    .metrics__list {
+      grid-template-columns: 1fr;
+    }
+    .metric,
+    .metric + .metric {
+      padding: 24px 0;
+      border-left: 0;
+      border-bottom: 1px solid var(--border);
+    }
+  }
+</style>

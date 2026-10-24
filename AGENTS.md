@@ -55,6 +55,10 @@ Dynamic routes: `src/pages/[slug].astro` (root-level posts), `src/pages/blog/`, 
 
 `src/pages/api/handwerk/[siteId]/[form].ts` — Formular-Endpoint für handwerkweb-Kunden-Websites (Projektanfrage, Bewerbung). Empfänger/Origins nur aus `src/lib/handwerk-sites.ts`; Versand per SMTP (`src/lib/mailer.ts`, Env `SMTP_*`). Astros `security.checkOrigin` ist aus; CSRF prüft `src/lib/csrf.ts` in der Middleware.
 
+### Landing page
+
+`src/components/home/` baut die Startseite in `src/lib/home-content.ts` (Copy + Links). Animationen stammen aus React-Bits-Ports in `src/components/reactbits/` (Spotlight, Magnet, Counter, TiltedCard, ProcessFlow) plus CSS-Varianten (BlurText, GradientText, ShinyText, Marquee) mit Styles in `src/styles/react-bits.css`. Alle Effekte sind dekorativ: ohne JavaScript bleibt die Seite vollständig lesbar, `prefers-reduced-motion` schaltet sie ab.
+
 ### Scripts
 
 - `scripts/device-mockup.mjs` — generates landing device mockup image.

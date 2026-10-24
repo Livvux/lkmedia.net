@@ -1,5 +1,6 @@
 ---
 import '../styles/global.css';
+import '../styles/react-bits.css';
 import Seo from '../components/Seo.astro';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
@@ -7,6 +8,10 @@ import { organization } from '../lib/schema';
 import type { SeoProps } from '../lib/seo';
 import Umami from '../components/Umami.astro';
 import { publicUmamiPath } from '../lib/umami';
+// Schriften werden per CSS geladen – ohne Preload wartet der Text auf dem Mobilfunk
+// erst auf das Stylesheet und dann auf die Font-Datei. Preload zieht sie vor.
+import dmSansUrl from '@fontsource-variable/dm-sans/files/dm-sans-latin-wght-normal.woff2?url';
+import monoUrl from '@fontsource/jetbrains-mono/files/jetbrains-mono-latin-400-normal.woff2?url';
 
 // analytics={false} auf Seiten mit session_id in der URL (Zugangsschlüssel): kein Plausible,
 // Referrer nur same-origin – sonst landet der Link bei Dritten. Nicht no-referrer: dann schickt der
@@ -26,6 +31,8 @@ const publicPath = analytics && !seo.noindex ? publicUmamiPath(seo.canonical) : 
     <meta name="theme-color" content="#09090b" />
     <link rel="icon" href="/favicon.ico" sizes="any" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="preload" as="font" type="font/woff2" href={dmSansUrl} crossorigin />
+    <link rel="preload" as="font" type="font/woff2" href={monoUrl} crossorigin />
     <Seo {...seo} />
     <script type="application/ld+json" set:html={JSON.stringify(allLd)} />
     {analytics ? (
@@ -55,6 +62,19 @@ const publicPath = analytics && !seo.noindex ? publicUmamiPath(seo.canonical) : 
           { rootMargin: '0px 0px -10% 0px' },
         );
         targets.forEach((el) => io.observe(el));
+      }
+    </script>
+    <script>
+      // Spotlight-Karten (react-bits) folgen dem Zeiger. Rein dekorativ, ohne JS ohne Licht.
+      if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        const cards = document.querySelectorAll<HTMLElement>('[data-spot]');
+        for (const card of cards) {
+          card.addEventListener('pointermove', (event) => {
+            const rect = card.getBoundingClientRect();
+            card.style.setProperty('--mx', `${event.clientX - rect.left}px`);
+            card.style.setProperty('--my', `${event.clientY - rect.top}px`);
+          });
+        }
       }
     </script>
   </body>

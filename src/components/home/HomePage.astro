@@ -1,11 +1,16 @@
 ---
+import { getCollection } from 'astro:content';
 import type { Lang } from '../../lib/i18n';
 import { homeContent } from '../../lib/home-content';
 import HomeHero from './HomeHero.astro';
-import WorkGrid from './WorkGrid.astro';
+import TrustMarquee from './TrustMarquee.astro';
+import MetricBand from './MetricBand.astro';
 import SectionHead from './SectionHead.astro';
 import OfferTabs from './OfferTabs';
+import WorkGrid from './WorkGrid.astro';
+import ExpectGrid from './ExpectGrid.astro';
 import SearchPreview from './SearchPreview.astro';
+import ProcessFlow from '../reactbits/ProcessFlow.tsx';
 import LatestPosts from './LatestPosts.astro';
 import AboutLucas from './AboutLucas.astro';
 import FinalCta from './FinalCta.astro';
@@ -13,20 +18,26 @@ import FinalCta from './FinalCta.astro';
 interface Props { lang: Lang }
 const { lang } = Astro.props;
 const c = homeContent[lang];
+
+// Kennzahlen aus den echten Inhalten, nicht aus Marketingzahlen.
+const cases = await getCollection('cases');
+const articles = await getCollection(
+  'posts',
+  (p) => p.data.lang === 'de' && !p.data.draft && !p.data.noindex,
+);
+const metrics = [
+  { value: new Date().getFullYear() - 2015, caption: c.metrics.items[0].caption },
+  { value: cases.length, caption: c.metrics.items[1].caption },
+  { value: articles.length, caption: c.metrics.items[2].caption },
+];
 ---
+
 <div class="home">
   <HomeHero hero={c.hero} />
 
-  <section class="wrap" aria-label={c.stats.title}>
-    <dl class="stats">
-      {c.stats.figures.map((f, i) => (
-        <div data-reveal style={`--d:${i * 70}ms`}>
-          <dt class="stat-caption">{f.caption}</dt>
-          <dd class="stat-value">{f.value}</dd>
-        </div>
-      ))}
-    </dl>
-  </section>
+  <TrustMarquee label={c.marquee.label} items={c.marquee.items} />
+
+  <MetricBand title={c.metrics.title} figures={metrics} />
 
   <section class="wrap" aria-labelledby="offer-models">
     <SectionHead n="01" id="offer-models" title={c.offers.title} sub={c.offers.sub} />
@@ -35,10 +46,13 @@ const c = homeContent[lang];
 
   <WorkGrid proof={c.proof} />
 
+  <ExpectGrid stats={c.stats} />
+
   <SearchPreview search={c.search} />
 
   <section class="wrap" aria-labelledby="seo-rastatt">
     <div class="seo" data-reveal>
+      <span class="seo-n" aria-hidden="true">05</span>
       <h2 id="seo-rastatt" class="seo-title">Suchmaschinenoptimierung aus Rastatt.</h2>
       <div class="seo-body">
         <p>Sie möchten wissen, warum Ihre bestehende Website kaum passende Anfragen erhält? Im Erstgespräch klären wir Zielgruppe, Angebot und die verfügbaren Suchdaten. Daraus lässt sich entscheiden, ob technische SEO, bessere Leistungsseiten oder eine klarere Nutzerführung zuerst sinnvoll sind.</p>
@@ -48,18 +62,13 @@ const c = homeContent[lang];
     </div>
   </section>
 
-  <section id="ablauf" class="wrap" aria-labelledby="process-title">
-    <SectionHead n="04" id="process-title" title={c.process.title} sub={c.process.sub} />
-    <ol class="steps">
-      {c.process.steps.map((s, i) => (
-        <li data-reveal style={`--d:${i * 80}ms`}>
-          <span class="step-n">{s.n}</span>
-          <h3 class="step-title">{s.title}</h3>
-          <p class="step-body">{s.body}</p>
-        </li>
-      ))}
-    </ol>
-  </section>
+  <ProcessFlow
+    client:visible
+    id="ablauf"
+    title={c.process.title}
+    sub={c.process.sub}
+    steps={c.process.steps}
+  />
 
   <LatestPosts journal={c.journal} />
   <AboutLucas about={c.about} />
@@ -73,36 +82,8 @@ const c = homeContent[lang];
     flex-direction: column;
     gap: clamp(96px, 12vw, 160px);
   }
-  .stats {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    border-top: 1px solid var(--border);
-  }
-  .stats > div {
-    display: flex;
-    flex-direction: column-reverse;
-    justify-content: flex-end;
-    gap: 10px;
-    padding: 28px 28px 0 0;
-  }
-  .stats > div + div {
-    padding-left: 28px;
-    border-left: 1px solid var(--border);
-  }
-  .stat-value {
-    font-size: clamp(36px, 4vw, 56px);
-    font-weight: 600;
-    letter-spacing: -0.045em;
-    line-height: 1;
-    font-variant-numeric: tabular-nums;
-  }
-  .stat-caption {
-    max-width: 30ch;
-    color: var(--fg-dim);
-    font-size: 14px;
-    line-height: 1.5;
-  }
   .seo {
+    position: relative;
     display: grid;
     grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
     gap: 24px 48px;
@@ -110,6 +91,30 @@ const c = homeContent[lang];
     border: 1px solid var(--border);
     border-radius: 14px;
     background: var(--bg-elev);
+    overflow: hidden;
+  }
+  .seo::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: radial-gradient(60% 90% at 12% 0%, oklch(0.68 0.17 250 / 0.1), transparent 70%);
+  }
+  .seo-n {
+    position: absolute;
+    top: clamp(28px, 4vw, 48px);
+    right: clamp(28px, 4vw, 48px);
+    display: inline-grid;
+    place-items: center;
+    min-width: 30px;
+    height: 22px;
+    padding: 0 8px;
+    border: 1px solid var(--border-strong);
+    border-radius: 999px;
+    color: var(--accent);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.06em;
   }
   .seo-title {
     font-size: clamp(24px, 2.4vw, 32px);
@@ -125,55 +130,13 @@ const c = homeContent[lang];
     color: var(--fg-muted);
     line-height: 1.65;
   }
-  .steps {
-    display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 20px;
-    margin-top: 48px;
-  }
-  .steps li {
-    display: grid;
-    align-content: start;
-    gap: 10px;
-    padding-top: 20px;
-    border-top: 1px solid var(--border-strong);
-  }
-  .step-n {
-    color: var(--accent);
-    font-family: var(--font-mono);
-    font-size: 12px;
-  }
-  .step-title {
-    font-size: 19px;
-    font-weight: 550;
-    letter-spacing: -0.02em;
-    line-height: 1.3;
-  }
-  .step-body {
-    color: var(--fg-muted);
-    font-size: 15px;
-  }
   @media (max-width: 900px) {
-    .stats {
-      grid-template-columns: 1fr;
-    }
-    .stats > div,
-    .stats > div + div {
-      padding: 24px 0;
-      border-left: 0;
-      border-bottom: 1px solid var(--border);
-    }
     .seo {
       grid-template-columns: 1fr;
     }
-    .steps {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 32px 20px;
-    }
-  }
-  @media (max-width: 560px) {
-    .steps {
-      grid-template-columns: 1fr;
+
+    .seo-n {
+      display: none;
     }
   }
 </style>

@@ -1,0 +1,21 @@
+---
+/**
+ * GradientText (react-bits "GradientText"): Text mit wanderndem Farbverlauf.
+ * Fällt der Verlauf aus, bleibt der Text in --fg lesbar.
+ */
+interface Props {
+  text: string;
+  class?: string;
+  angle?: number;
+  colors?: string[];
+}
+
+const {
+  text,
+  class: className = '',
+  angle = 100,
+  colors = ['oklch(0.80 0.16 250)', 'oklch(0.88 0.11 205)', 'oklch(0.74 0.18 300)'],
+} = Astro.props;
+---
+
+<span class:list={['gradient-text', className]} style={`--gt-gradient: linear-gradient(${angle}deg, ${colors.join(', ')})`}>{text}</span>

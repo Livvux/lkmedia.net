@@ -1,21 +1,28 @@
 ---
 import type { HomeContent } from '../../lib/home-content';
+import GradientText from '../reactbits/GradientText.astro';
+import Magnet from '../reactbits/Magnet.tsx';
 interface Props { cta: HomeContent['cta'] }
 const { cta } = Astro.props;
 ---
+
 <section class="final">
   <div class="grid-bg" aria-hidden="true"></div>
   <div class="final-glow" aria-hidden="true"></div>
+  <div class="final-orb" aria-hidden="true"></div>
   <div class="wrap final-inner" data-reveal>
+    <p class="eyebrow">Nächster Schritt</p>
     <h2 class="display final-title">
-      {cta.lines[0]}<br /><span class="text-[var(--fg-dim)]">{cta.lines[1]}</span>
+      {cta.lines[0]}<br /><span class="final-title-dim"><GradientText text={cta.lines[1]} /></span>
     </h2>
     <p class="section-sub final-sub">{cta.sub}</p>
     <div class="final-actions">
-      <a href={cta.primary.href} class="btn btn-primary btn-lg">
-        {cta.primary.label}
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </a>
+      <Magnet client:visible strength={0.24} radius={80}>
+        <a href={cta.primary.href} class="btn btn-primary btn-lg">
+          {cta.primary.label}
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+      </Magnet>
       <a href={cta.secondary.href} class="btn btn-ghost btn-lg">{cta.secondary.label}</a>
     </div>
   </div>
@@ -42,13 +49,31 @@ const { cta } = Astro.props;
     transform: translateX(-50%);
     background: radial-gradient(closest-side, oklch(0.68 0.17 250 / 0.18), transparent);
   }
+  .final-orb {
+    pointer-events: none;
+    position: absolute;
+    top: -180px;
+    left: 50%;
+    width: 760px;
+    height: 420px;
+    transform: translateX(-50%);
+    border-radius: 50%;
+    background: radial-gradient(closest-side, oklch(0.72 0.16 300 / 0.16), transparent);
+    animation: orb-drift 16s ease-in-out infinite alternate;
+  }
   .final-inner {
     position: relative;
+  }
+  .final-inner .eyebrow {
+    margin-bottom: 22px;
   }
   .final-title {
     max-width: 20ch;
     margin: 0 auto;
     font-size: clamp(36px, 5vw, 68px);
+  }
+  .final-title-dim {
+    color: var(--fg-dim);
   }
   .final-sub {
     max-width: 540px;
@@ -57,7 +82,23 @@ const { cta } = Astro.props;
   .final-actions {
     display: flex;
     flex-wrap: wrap;
+    align-items: center;
     justify-content: center;
     gap: 12px;
+  }
+  @keyframes orb-drift {
+    from {
+      transform: translateX(-54%) translateY(0);
+      opacity: 0.7;
+    }
+    to {
+      transform: translateX(-46%) translateY(26px);
+      opacity: 1;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .final-orb {
+      animation: none;
+    }
   }
 </style>

@@ -8,7 +8,7 @@ type Props = { tabs: HomeContent["offers"]["tabs"] };
 export default function OfferTabs({ tabs }: Props) {
   return (
     <Tabs.Root defaultValue={tabs[0]?.value} className="mt-12">
-      <Tabs.List className="relative z-0 inline-flex max-w-full gap-1 overflow-x-auto rounded-full border border-border bg-white/[0.03] p-1">
+      <Tabs.List className="relative z-0 inline-flex max-w-full gap-1 overflow-x-auto rounded-full border border-border bg-white/[0.03] p-1 backdrop-blur-sm">
         {tabs.map((t) => (
           <Tabs.Tab
             key={t.value}
@@ -46,6 +46,7 @@ export default function OfferTabs({ tabs }: Props) {
               >
                 <a
                   href={item.href}
+                  data-spot
                   className="group flex h-full flex-col gap-3 bg-[var(--bg)] p-6 transition-colors hover:bg-[var(--bg-card)]"
                 >
                   <span className="flex items-start justify-between gap-4">

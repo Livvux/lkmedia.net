@@ -1,0 +1,69 @@
+---
+/**
+ * Marquee (react-bits "InfiniteMenu"/"Marquee"): Projektnamen laufen endlos durch.
+ * Dekorativ – die Namen stehen ausgeschrieben in der Sektion "Arbeiten".
+ */
+interface Props {
+  label: string;
+  items: string[];
+  /** Dauer eines Durchlaufs in Sekunden. */
+  duration?: number;
+}
+
+const { label, items, duration = 44 } = Astro.props;
+const groups = [0, 1];
+---
+
+<section class="trust" aria-label={label}>
+  <div class="wrap trust__head">
+    <p class="eyebrow">{label}</p>
+    <span class="trust__rule" aria-hidden="true"></span>
+  </div>
+  <div class="trust__viewport">
+    <div class="marquee" style={`--marquee-duration:${duration}s`} aria-hidden="true">
+      {
+        groups.map(() => (
+          <div class="marquee__group">
+            {items.map((item) => (
+              <span class="marquee__item">
+                <span class="marquee__mark" />
+                {item}
+              </span>
+            ))}
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .trust {
+    padding-top: clamp(8px, 1.4vw, 16px);
+  }
+  .trust__head {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+  .trust__rule {
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, var(--border-strong), transparent);
+  }
+  .trust__viewport {
+    margin-top: 22px;
+    overflow: hidden;
+    mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+  }
+  .marquee__group {
+    display: flex;
+  }
+  .marquee__mark {
+    width: 5px;
+    height: 5px;
+    border-radius: 999px;
+    background: var(--accent);
+    opacity: 0.75;
+  }
+</style>

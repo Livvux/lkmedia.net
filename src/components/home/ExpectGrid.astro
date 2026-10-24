@@ -1,0 +1,89 @@
+---
+import { ClipboardCheck, LifeBuoy, UserCheck } from 'lucide-react';
+import type { HomeContent } from '../../lib/home-content';
+import SectionHead from './SectionHead.astro';
+import Spotlight from '../reactbits/Spotlight.tsx';
+
+interface Props { stats: HomeContent['stats'] }
+const { stats } = Astro.props;
+const icons = [UserCheck, ClipboardCheck, LifeBuoy];
+---
+
+<section class="wrap expect" aria-labelledby="expect-title">
+  <SectionHead n="03" id="expect-title" title={stats.title} />
+  <ul class="expect__grid">
+    {
+      stats.figures.map((f, i) => {
+        const Icon = icons[i] ?? UserCheck;
+        return (
+          <li class="expect__cell" data-reveal style={`--d:${i * 90}ms`}>
+            <Spotlight client:visible className="rb-spotlight--fill" size={300} intensity={0.13}>
+              <div class="expect__card">
+                <span class="expect__icon" aria-hidden="true">
+                  <Icon size={17} strokeWidth={1.7} />
+                </span>
+                <span class="expect__value">{f.value}</span>
+                <span class="expect__caption">{f.caption}</span>
+              </div>
+            </Spotlight>
+          </li>
+        );
+      })
+    }
+  </ul>
+</section>
+
+<style>
+  .expect__grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+    margin-top: 44px;
+  }
+  .expect__cell {
+    min-width: 0;
+  }
+  .expect__card {
+    display: grid;
+    align-content: start;
+    gap: 14px;
+    height: 100%;
+    padding: 28px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    background: var(--bg-card);
+    transition:
+      border-color 0.3s ease,
+      transform 0.4s var(--ease-out);
+  }
+  .expect__cell:hover .expect__card {
+    border-color: var(--border-strong);
+    transform: translateY(-3px);
+  }
+  .expect__icon {
+    display: grid;
+    place-items: center;
+    width: 38px;
+    height: 38px;
+    border: 1px solid var(--border-strong);
+    border-radius: 12px;
+    background: var(--accent-dim);
+    color: var(--accent);
+  }
+  .expect__value {
+    font-size: clamp(22px, 2.2vw, 30px);
+    font-weight: 550;
+    letter-spacing: -0.035em;
+    line-height: 1.15;
+  }
+  .expect__caption {
+    color: var(--fg-muted);
+    font-size: 15px;
+    line-height: 1.6;
+  }
+  @media (max-width: 900px) {
+    .expect__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

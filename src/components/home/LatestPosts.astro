@@ -16,11 +16,11 @@ const urlFor = (p: (typeof posts)[number]) => {
 const day = new Intl.DateTimeFormat('de-DE', { day: '2-digit', month: 'short', year: 'numeric' });
 ---
 <section class="journal wrap" aria-labelledby="journal-title">
-  <SectionHead n="05" id="journal-title" title={journal.title} sub={journal.sub} link={journal.all} />
+  <SectionHead n="06" id="journal-title" title={journal.title} sub={journal.sub} link={journal.all} />
   <ul class="posts">
     {posts.map((p, i) => (
       <li data-reveal style={`--d:${i * 70}ms`}>
-        <a class="post" href={urlFor(p)}>
+        <a class="post" href={urlFor(p)} data-spot>
           <time class="date" datetime={p.data.pubDate.toISOString()}>{day.format(p.data.pubDate)}</time>
           <span class="title">{p.data.title}</span>
           <span class="desc">{p.data.description}</span>

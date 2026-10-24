@@ -1,0 +1,14 @@
+---
+/**
+ * ShinyText (react-bits "ShinyText"): ein Lichtstreifen läuft über den Text.
+ * Rein dekorativ, rein per CSS animiert.
+ */
+interface Props {
+  text: string;
+  class?: string;
+}
+
+const { text, class: className = '' } = Astro.props;
+---
+
+<span class:list={['shiny-text', className]}>{text}</span>
