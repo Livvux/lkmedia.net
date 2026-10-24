@@ -8,7 +8,6 @@ const { hero } = Astro.props;
 <header class="hero">
   <SoftAurora />
   <div class="wrap hero-inner">
-    <p class="eyebrow hero-eyebrow"><span class="dot" aria-hidden="true"></span>{hero.eyebrow}</p>
     <h1 class="hero-title">
       <span class="line">{hero.title}</span>
     </h1>
@@ -66,25 +65,7 @@ const { hero } = Astro.props;
     display: grid;
     justify-items: start;
   }
-  .hero-eyebrow {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    padding: 6px 12px;
-    border: 1px solid var(--border);
-    border-radius: 999px;
-    background: #ffffff05;
-    color: var(--fg-muted);
-  }
-  .dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 999px;
-    background: var(--accent);
-    box-shadow: 0 0 0 3px var(--accent-dim);
-  }
   .hero-title {
-    margin-top: 28px;
     max-width: 20ch;
     font-size: clamp(42px, 6.2vw, 84px);
     font-weight: 600;

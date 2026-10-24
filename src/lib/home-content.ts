@@ -26,7 +26,6 @@ export interface Offer {
 
 export interface HomeContent {
   hero: {
-    eyebrow: string;
     title: string;
     subtitle: string;
     lead: string;
@@ -128,7 +127,6 @@ const shotsDe: Shot[] = [
 
 const de: HomeContent = {
   hero: {
-    eyebrow: "Webdesign & SEO · Rastatt & remote",
     title: "lk media.",
     subtitle: "Klar für Ihre Kunden. Betreut von Lucas.",
     lead: "Ich plane und entwickle Ihre Website, strukturiere Leistungen und Kontaktwege und übernehme die technische Betreuung. Für Praxen, Fahrschulen und Handwerksbetriebe gibt es feste Pakete; besondere Anforderungen besprechen wir individuell.",
