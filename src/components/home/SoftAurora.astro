@@ -1,0 +1,74 @@
+---
+/**
+ * Soft Aurora – animierter WebGL2-Hintergrund (react-bits/soft-aurora).
+ * Dekorativ: aria-hidden, keine Interaktion, kein Text im Canvas.
+ * Ohne WebGL2 (sehr alte Geräte) greift die CSS-Variante `.is-fallback`.
+ */
+---
+
+<div class="soft-aurora" data-soft-aurora aria-hidden="true">
+  <canvas class="soft-aurora__canvas"></canvas>
+</div>
+
+<style>
+  .soft-aurora {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+    pointer-events: none;
+    contain: paint;
+    /* Nach unten ausblenden, damit der Screenshot unten auf dunklem Grund steht. */
+    mask-image: linear-gradient(
+      to bottom,
+      #000 0%,
+      #000 40%,
+      rgb(0 0 0 / 0.35) 66%,
+      transparent 88%
+    );
+  }
+
+  .soft-aurora__canvas {
+    position: absolute;
+    inset: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  /* Fallback ohne WebGL2: weiche Farbwolken per Radialgradient, kein Blur-Filter. */
+  .soft-aurora.is-fallback::before {
+    content: '';
+    position: absolute;
+    inset: -15% -10% 20%;
+    background:
+      radial-gradient(55% 38% at 22% 30%, rgb(77 108 255 / 0.26), transparent 70%),
+      radial-gradient(45% 32% at 68% 20%, rgb(160 110 255 / 0.2), transparent 70%),
+      radial-gradient(70% 45% at 48% 42%, rgb(96 180 255 / 0.15), transparent 72%);
+    animation: soft-aurora-drift 26s ease-in-out infinite alternate;
+  }
+
+  @keyframes soft-aurora-drift {
+    from {
+      transform: translate3d(-2%, 0, 0) scale(1);
+    }
+    to {
+      transform: translate3d(3%, 2%, 0) scale(1.08);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .soft-aurora.is-fallback::before {
+      animation: none;
+    }
+  }
+</style>
+
+<script>
+  import { mountSoftAurora } from '../../lib/soft-aurora';
+
+  const roots = document.querySelectorAll<HTMLElement>('[data-soft-aurora]');
+  for (const root of roots) {
+    mountSoftAurora(root);
+  }
+</script>
