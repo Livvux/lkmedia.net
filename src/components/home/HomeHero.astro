@@ -21,7 +21,9 @@ const chips = ['Kein Cookie-Banner', 'Statisch & schnell', 'SEO von Anfang an'];
 
   <div class="wrap hero-inner">
     <Spotlight client:idle className="hero-copy" size={560} intensity={0.12}>
-      <p class="hero-eyebrow"><span class="hero-pulse" aria-hidden="true"></span>{hero.eyebrow}</p>
+      {hero.eyebrow && (
+        <p class="hero-eyebrow"><span class="hero-pulse" aria-hidden="true"></span>{hero.eyebrow}</p>
+      )}
       <h1 class="hero-title">
         <span class="hero-brand">{hero.title}</span>
         <span class="hero-claim">

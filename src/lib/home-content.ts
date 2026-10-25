@@ -26,7 +26,7 @@ export interface Offer {
 
 export interface HomeContent {
   hero: {
-    eyebrow: string;
+    eyebrow?: string;
     title: string;
     claim: string;
     subtitle: string;
@@ -130,7 +130,6 @@ const shotsDe: Shot[] = [
 
 const de: HomeContent = {
   hero: {
-    eyebrow: "Webdesign · SEO · Hosting aus Rastatt",
     title: "lk media.",
     claim: "Klar, schnell, auffindbar.",
     subtitle: "seit 2015",
