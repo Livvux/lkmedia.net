@@ -4,6 +4,7 @@ import SoftAurora from './SoftAurora.astro';
 import TiltedCard from '../reactbits/TiltedCard.tsx';
 import Magnet from '../reactbits/Magnet.tsx';
 import Spotlight from '../reactbits/Spotlight.tsx';
+import TechText from '../reactbits/TechText.tsx';
 
 interface Props { hero: HomeContent['hero'] }
 const { hero } = Astro.props;
@@ -25,7 +26,22 @@ const chips = ['Kein Cookie-Banner', 'Statisch & schnell', 'SEO von Anfang an'];
         <p class="hero-eyebrow"><span class="hero-pulse" aria-hidden="true"></span>{hero.eyebrow}</p>
       )}
       <h1 class="hero-title">
-        <span class="hero-brand">{hero.title}</span>
+        <span class="hero-brand">
+          <span class="hero-brand__text rb-tech-fallback">{hero.title}</span>
+          <TechText
+            client:idle
+            className="rb-tech-text--overlay"
+            text={hero.title}
+            align="left"
+            edgeMargin={0}
+            fontSize={150}
+            fontWeight={600}
+            letterSpacing={-0.007}
+            color="currentColor"
+            accentColor="var(--accent)"
+            decorative
+          />
+        </span>
         <span class="hero-claim">
           {claimPlain && <span class="hero-claim-plain">{claimPlain}</span>}
           {claimPlain && ' '}
@@ -124,6 +140,11 @@ const chips = ['Kein Cookie-Banner', 'Statisch & schnell', 'SEO von Anfang an'];
     animation: hero-pulse 2.6s var(--ease-out) infinite;
   }
   .hero-title {
+    --brand-size: clamp(44px, 8.6vw, 132px);
+    /* Das Canvas leitet die Schriftgröße aus 66 % der Boxhöhe und der Tintenhöhe
+       der Schrift (0,7369) ab. Der Faktor 1,116 hält die Wortmarke auf --brand-size. */
+    --brand-box: calc(var(--brand-size) * 1.116);
+    justify-self: stretch;
     max-width: 100%;
     font-weight: 600;
     letter-spacing: -0.055em;
@@ -131,13 +152,38 @@ const chips = ['Kein Cookie-Banner', 'Statisch & schnell', 'SEO von Anfang an'];
     text-wrap: balance;
   }
   .hero-brand {
+    position: relative;
     display: block;
-    max-width: 100%;
-    white-space: nowrap;
+    width: 100%;
+    height: var(--brand-box);
+    /* Die Box ist 19,6 % höher als die alte Zeilenhöhe – das holt der negative
+       Abstand wieder heraus, damit der Claim stehen bleibt wie vorher. */
+    margin-bottom: calc(var(--brand-size) * -0.196);
     color: var(--fg);
-    font-size: clamp(44px, 8.6vw, 132px);
-    line-height: 0.92;
     animation: hero-line 0.95s 0.05s var(--ease-out) both;
+  }
+  /* Klartext bleibt im Markup: ohne JavaScript sichtbar, mit Canvas nur für Screenreader. */
+  .hero-brand__text {
+    display: flex;
+    align-items: center;
+    height: 100%;
+    /* Das Canvas setzt die Glyphen bündig an den Boxrand, der Klartext hat dort
+       noch den linken Rand des „l“ – der negative Versatz gleicht das aus. */
+    margin-left: -0.065em;
+    font-size: var(--brand-size);
+    letter-spacing: -0.007em;
+    line-height: 1;
+    white-space: nowrap;
+    transform: translateY(calc(var(--brand-size) * -0.1));
+  }
+  /* Sobald das Canvas gezeichnet hat, blendet die globale Regel
+     (.rb-tech-fallback) den Klartext aus – er bleibt nur für Screenreader.
+     Das Canvas sitzt 10 % über der Box, damit die Glyphen auf der Höhe des
+     Klartexts landen. */
+  :global(.hero-brand .rb-tech-text--overlay) {
+    top: calc(var(--brand-size) * -0.1);
+    bottom: auto;
+    height: var(--brand-box);
   }
   .hero-claim {
     display: block;

@@ -140,6 +140,44 @@
   opacity: 1;
 }
 
+/* ---------- TechText (react-bits "TechText") ---------- */
+
+.rb-tech-text {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  touch-action: pan-y;
+  user-select: none;
+}
+
+.rb-tech-text__canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* Variante, die über dem Klartext im Markup liegt. */
+.rb-tech-text--overlay {
+  position: absolute;
+  inset: 0;
+}
+
+/* Der Klartext im Markup (`.rb-tech-fallback`) bleibt neben dem Canvas stehen,
+   solange das Canvas noch nicht gezeichnet hat. Danach ist er nur noch für
+   Screenreader und Crawler da. Die Regel steht bewusst global: Astro kann
+   :global() innerhalb von :has() nicht auflösen. */
+:has(.rb-tech-text[data-rb-tech-ready]) > .rb-tech-fallback {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
 /* ---------- BlurText ---------- */
 
 .blur-text {
