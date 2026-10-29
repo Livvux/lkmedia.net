@@ -16,6 +16,7 @@ export const ui = {
 export const routes = {
   home: "/",
   services: "/leistungen",
+  seo: "/seo-rastatt",
   cases: "/cases",
   blog: "/blog",
   about: "/ueber",

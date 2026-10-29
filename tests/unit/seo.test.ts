@@ -32,6 +32,7 @@ describe('SEO metadata', () => {
 describe('lead source privacy', () => {
   it('retains only known public landing paths', () => {
     expect(leadSource('/anwaelte/')).toBe('/anwaelte');
+    expect(leadSource('/seo-rastatt/')).toBe('/seo-rastatt');
     expect(leadSource('/')).toBe('/');
     for (const value of ['/api/contact', '/anwaelte?email=private', 'https://lkmedia.net/anwaelte', '/aenderung/private', '/arbitrary-private-name']) {
       expect(leadSource(value)).toBe('/kontakt');

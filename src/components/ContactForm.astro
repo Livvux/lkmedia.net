@@ -1,12 +1,16 @@
 ---
 import type { Lang } from '../lib/i18n';
 import { DISCOVERY_CHANNELS } from '../lib/lead-source';
-interface Props { lang: Lang }
+interface Props { lang: Lang; source?: string; messageHelp?: string }
+const {
+  source = '/kontakt',
+  messageHelp = 'Hilfreich sind Ihre Branche, die Website-Adresse und die wichtigste gewünschte Änderung.',
+} = Astro.props;
 const turnstileKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY;
 const placeholders = { name: 'Name', email: 'E-Mail', company: 'Firma', budget: 'Budget', message: 'Nachricht' };
 ---
 <form method="POST" action="/api/contact" class="space-y-4 max-w-xl">
-  <input type="hidden" name="source" value="/kontakt" />
+  <input type="hidden" name="source" value={source} />
   <input type="text" name="website" tabindex="-1" autocomplete="off" class="hidden" aria-hidden="true" />
   <label class="block">
     <span class="text-sm text-black/60 dark:text-white/60">{placeholders.name}</span>
@@ -35,7 +39,7 @@ const placeholders = { name: 'Name', email: 'E-Mail', company: 'Firma', budget: 
     <span class="text-sm text-black/60 dark:text-white/60">{placeholders.message}</span>
     <textarea required name="message" rows="5" aria-describedby="message-help" class="mt-1 w-full p-4 rounded-xl bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10"></textarea>
   </label>
-  <p id="message-help" class="text-sm text-black/60 dark:text-white/60">Hilfreich sind Ihre Branche, die Website-Adresse und die wichtigste gewünschte Änderung.</p>
+  <p id="message-help" class="text-sm text-black/60 dark:text-white/60">{messageHelp}</p>
   <label class="block">
     <span class="text-sm text-black/60 dark:text-white/60">Wie haben Sie uns gefunden? (optional)</span>
     <select name="discovery" class="mt-1 w-full h-12 px-4 rounded-xl bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10">
@@ -49,7 +53,7 @@ const placeholders = { name: 'Name', email: 'E-Mail', company: 'Firma', budget: 
 <script>
   import { leadSource } from '../lib/lead-source';
   const source = document.querySelector<HTMLInputElement>('input[name="source"]');
-  if (source && document.referrer) {
+  if (source?.value === '/kontakt' && document.referrer) {
     try {
       const referrer = new URL(document.referrer);
       if (referrer.origin === location.origin) source.value = leadSource(referrer.pathname);
