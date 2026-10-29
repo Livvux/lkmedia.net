@@ -8,6 +8,7 @@ const pages = [
   ['/docweb', 'Website für Ihre Arztpraxis erstellen lassen'],
   ['/handwerk', 'Website für Handwerker erstellen lassen'],
   ['/fahrschule-webdesign', 'Fahrschul-Website erstellen lassen'],
+  ['/seo-rastatt', 'Suchmaschinenoptimierung für Unternehmen in Rastatt'],
   ['/blog', 'SEO, Webdesign & Marketing'],
   ['/cases', 'Webdesign-Referenzen & SEO-Ergebnisse'],
 ] as const;
@@ -50,7 +51,7 @@ test('homepage separates illustrative search examples from actual recommendation
   await preview.getByLabel('Ihr Betrieb').fill('Beispielbetrieb');
   await expect(preview.locator('.answer')).toContainText('Beispielbetrieb');
   await expect(preview.locator('.answer')).not.toContainText('wird häufig');
-  await expect(page.getByRole('link', { name: 'SEO-Erstgespräch vereinbaren →' })).toHaveAttribute('href', '/kontakt#termin');
+  await expect(page.getByRole('link', { name: 'SEO für Ihre bestehende Website ansehen →' })).toHaveAttribute('href', '/seo-rastatt');
 });
 
 

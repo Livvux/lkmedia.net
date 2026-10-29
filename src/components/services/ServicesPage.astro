@@ -114,6 +114,11 @@ const steps = [
     <ol>{steps.map(([title, body], index) => <li><span class="step-number">0{index + 1}</span><h3>{title}</h3><p>{body}</p></li>)}</ol>
   </section>
 
+  <section class="custom wrap" aria-labelledby="seo-heading">
+    <div><p class="eyebrow">Bestehende Website</p><h2 id="seo-heading">SEO auch ohne neue Website.</h2><p class="section-sub">Ich analysiere Suchdaten, Inhalte und technische Hindernisse Ihrer bestehenden Website und setze vereinbarte Verbesserungen um. Auch für Websites anderer Anbieter. Analyse und Umsetzung werden separat angeboten.</p></div>
+    <a class="btn btn-ghost" href={routeFor('seo', lang)}>SEO-Angebot ansehen →</a>
+  </section>
+
   <section class="custom wrap" aria-labelledby="custom-heading">
     <div><p class="eyebrow">Individuelles Projekt</p><h2 id="custom-heading">Ihre Branche ist nicht dabei?</h2><p class="section-sub">Für andere Branchen oder besondere Anforderungen entwickeln wir eine individuelle Website. Auch SEO, Inhalte und Conversion besprechen wir passend zu Ihrem Projekt.</p></div>
     <a class="btn btn-ghost" href={routeFor('contact', lang)}>Projekt anfragen →</a>

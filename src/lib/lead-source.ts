@@ -7,6 +7,7 @@ const SOURCES = new Set([
   "/handwerk",
   "/fahrschule-webdesign",
   "/leistungen",
+  "/seo-rastatt",
   "/blog",
 ]);
 

@@ -7,6 +7,7 @@ const body = `# lkmedia
 ## Key Pages
 - [Home](https://lkmedia.net/)
 - [Leistungen und Paketpreise](https://lkmedia.net/leistungen): Aktuelle Angebote, Leistungen und Preise vergleichen.
+- [SEO in Rastatt](https://lkmedia.net/seo-rastatt): Analyse und Optimierung bestehender Websites, auch anderer Anbieter.
 - [Anwälte](https://lkmedia.net/anwaelte)
 - [Luxus-Immobilien](https://lkmedia.net/luxus-immobilien)
 - [Privatkliniken](https://lkmedia.net/privatkliniken)
