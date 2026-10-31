@@ -2,7 +2,6 @@
 import { ClipboardCheck, LifeBuoy, UserCheck } from 'lucide-react';
 import type { HomeContent } from '../../lib/home-content';
 import SectionHead from './SectionHead.astro';
-import Spotlight from '../reactbits/Spotlight.tsx';
 
 interface Props { stats: HomeContent['stats'] }
 const { stats } = Astro.props;
@@ -17,15 +16,13 @@ const icons = [UserCheck, ClipboardCheck, LifeBuoy];
         const Icon = icons[i] ?? UserCheck;
         return (
           <li class="expect__cell" data-reveal style={`--d:${i * 90}ms`}>
-            <Spotlight client:visible className="rb-spotlight--fill" size={300} intensity={0.13}>
-              <div class="expect__card">
-                <span class="expect__icon" aria-hidden="true">
-                  <Icon size={17} strokeWidth={1.7} />
-                </span>
-                <span class="expect__value">{f.value}</span>
-                <span class="expect__caption">{f.caption}</span>
-              </div>
-            </Spotlight>
+            <div class="expect__card">
+              <span class="expect__icon" aria-hidden="true">
+                <Icon size={17} strokeWidth={1.7} />
+              </span>
+              <span class="expect__value">{f.value}</span>
+              <span class="expect__caption">{f.caption}</span>
+            </div>
           </li>
         );
       })

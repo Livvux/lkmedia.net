@@ -21,15 +21,6 @@ const { tone, priceText } = Astro.props;
 </div>
 
 <script>
-  // Spotlight-Position für .bento
-  document.querySelectorAll<HTMLElement>('.bento').forEach((el) => {
-    el.addEventListener('pointermove', (e) => {
-      const r = el.getBoundingClientRect();
-      el.style.setProperty('--mx', `${e.clientX - r.left}px`);
-      el.style.setProperty('--my', `${e.clientY - r.top}px`);
-    });
-  });
-
   // Mobile Leiste: sichtbar, wenn Hero und Preis nicht im Bild sind
   const bar = document.getElementById('sticky-cta');
   const hero = document.querySelector('[data-hero]');

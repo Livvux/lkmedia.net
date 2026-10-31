@@ -11,20 +11,32 @@ const seo = {
 const calLink = import.meta.env.PUBLIC_CAL_LINK ?? 'lucas-lkmedia/15min';
 ---
 <Base seo={seo}>
-  <section class="py-32 px-6 max-w-3xl mx-auto">
-    <h1 class="text-5xl md:text-7xl font-semibold tracking-tight">Kontakt.</h1>
-    <p class="mt-6 text-xl text-black/70 dark:text-white/70">Erzählen Sie kurz, was Ihre Website leisten soll. Wir besprechen eine neue Website oder die SEO-Optimierung Ihres bestehenden Auftritts, auch wenn ihn ein anderer Anbieter erstellt hat.</p>
-    <p class="mt-4 text-black/70 dark:text-white/70">Die <a href="/leistungen" class="underline underline-offset-4">Branchenpakete mit Leistungen und Gesamtkosten</a> können Sie vorab vergleichen. Individuelle Website-Projekte beginnen bei 25.000 €. Für <a href="/seo-rastatt" class="underline underline-offset-4">SEO-Analysen und Optimierungen bestehender Websites</a> vereinbaren wir Umfang und Preis separat. Die Website-Preisuntergrenze gilt dafür nicht.</p>
-    <div class="mt-16 grid md:grid-cols-2 gap-12">
-      <div>
+  <section class="contact-page wrap">
+    <p class="eyebrow">Ihr nächster Schritt</p>
+    <h1 class="contact-title">Kontakt.</h1>
+    <p class="contact-lead">Erzählen Sie kurz, was Ihre Website leisten soll. Wir besprechen eine neue Website oder die SEO-Optimierung Ihres bestehenden Auftritts, auch wenn ihn ein anderer Anbieter erstellt hat.</p>
+    <p class="contact-context">Die <a href="/leistungen" class="underline underline-offset-4">Branchenpakete mit Leistungen und Gesamtkosten</a> können Sie vorab vergleichen. Individuelle Website-Projekte beginnen bei 25.000 €. Für <a href="/seo-rastatt" class="underline underline-offset-4">SEO-Analysen und Optimierungen bestehender Websites</a> vereinbaren wir Umfang und Preis separat. Die Website-Preisuntergrenze gilt dafür nicht.</p>
+    <div class="contact-options">
+      <div class="contact-form">
         <h2 class="text-2xl font-medium">Projektanfrage</h2>
         <div class="mt-6"><ContactForm lang="de" /></div>
       </div>
-      <div id="termin">
+      <aside id="termin" class="contact-calendar">
         <h2 class="text-2xl font-medium">15-Minuten-Call</h2>
         <p class="mt-3 text-sm text-black/60 dark:text-white/60">Das Erstgespräch ist kostenlos. Darin klären wir Ihr Anliegen und ob eine Zusammenarbeit passt.</p>
         <CalEmbed calLink={calLink} label="Call buchen" />
-      </div>
+      </aside>
     </div>
   </section>
 </Base>
+
+<style>
+  .contact-page { padding-block: clamp(64px, 8vw, 112px) 112px; }
+  .contact-title { margin-top: 20px; font-size: clamp(48px, 7vw, 88px); font-weight: 600; letter-spacing: -0.06em; line-height: 1.05; }
+  .contact-lead { max-width: 48ch; margin-top: 28px; color: var(--fg-muted); font-size: clamp(19px, 2vw, 24px); line-height: 1.55; }
+  .contact-context { max-width: 80ch; margin-top: 24px; color: var(--fg-muted); font-size: 15px; line-height: 1.8; }
+  .contact-options { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); align-items: start; gap: 48px; margin-top: 56px; }
+  .contact-form { padding-top: 32px; border-top: 1px solid var(--border-strong); }
+  .contact-calendar { padding: 32px; border: 1px solid var(--border); border-radius: 24px; background: var(--bg-card); scroll-margin-top: 100px; }
+  @media (max-width: 760px) { .contact-options { grid-template-columns: 1fr; gap: 40px; } .contact-calendar { padding: 24px; } }
+</style>

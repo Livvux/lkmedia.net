@@ -34,6 +34,9 @@ export const blogPosting = (post: {
 }) => ({
   "@context": "https://schema.org",
   "@type": "BlogPosting",
+  "@id": `${new URL(post.url, "https://lkmedia.net").href}#article`,
+  url: new URL(post.url, "https://lkmedia.net").href,
+  inLanguage: "de-DE",
   headline: post.title,
   description: post.description,
   datePublished: post.pubDate.toISOString(),
@@ -41,7 +44,7 @@ export const blogPosting = (post: {
   author: { "@type": "Person", name: post.author },
   image: post.image ? new URL(post.image, "https://lkmedia.net").href : undefined,
   publisher: { "@id": "https://lkmedia.net/#organization" },
-  mainEntityOfPage: post.url,
+  mainEntityOfPage: new URL(post.url, "https://lkmedia.net").href,
 });
 
 export const faqPage = (items: { q: string; a: string }[]) => ({
@@ -61,6 +64,6 @@ export const breadcrumbs = (crumbs: { name: string; url: string }[]) => ({
     "@type": "ListItem",
     position: i + 1,
     name: c.name,
-    item: c.url,
+    item: new URL(c.url, "https://lkmedia.net").href,
   })),
 });

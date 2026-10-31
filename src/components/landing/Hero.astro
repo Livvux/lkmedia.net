@@ -17,7 +17,7 @@ const { headline, sub, ctaHref, ctaLabel, secondaryHref, secondaryLabel, deviceI
   { value: 'Premium', label: 'Exklusives Design' },
 ] } = Astro.props;
 ---
-<section class="relative min-h-[92vh] flex items-center overflow-hidden px-6">
+<section class="relative min-h-[min(800px,90svh)] py-20 md:py-28 flex items-center overflow-hidden px-6">
   <div class="max-w-7xl mx-auto w-full grid md:grid-cols-2 gap-12 items-center">
 
     <!-- Text column -->
@@ -26,7 +26,7 @@ const { headline, sub, ctaHref, ctaLabel, secondaryHref, secondaryLabel, deviceI
         Web Design &amp; SEO
       </span>
 
-      <h1 class="text-[clamp(2.2rem,5vw,4.5rem)] font-semibold tracking-tight leading-[1.05] text-left">
+      <h1 class="text-[clamp(2.4rem,5vw,4.5rem)] font-semibold tracking-tight leading-[1.05] text-left">
         {headline}
       </h1>
 

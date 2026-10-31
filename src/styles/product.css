@@ -5,7 +5,7 @@
   isolation: isolate;
   overflow: hidden;
   border: 1px solid var(--border);
-  border-radius: 20px;
+  border-radius: 28px;
   background: var(--bg-card);
   padding: 24px;
   transition: border-color 0.25s;
@@ -15,25 +15,8 @@
     padding: 32px;
   }
 }
-/* Spotlight (Aceternity-Stil): folgt dem Mauszeiger, Position setzt das Script in ProductShell */
-.bento::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  background: radial-gradient(
-    380px circle at var(--mx, 50%) var(--my, 0%),
-    color-mix(in oklab, var(--tone) 16%, transparent),
-    transparent 65%
-  );
-  opacity: 0;
-  transition: opacity 0.3s;
-}
 .bento:hover {
-  border-color: color-mix(in oklab, var(--tone) 35%, var(--border-strong));
-}
-.bento:hover::before {
-  opacity: 1;
+  border-color: color-mix(in oklab, var(--tone) 30%, var(--border-strong));
 }
 
 .dot-grid {
@@ -71,19 +54,6 @@
       transform: scaleX(1);
     }
   }
-}
-
-@keyframes pulse-dot {
-  0%,
-  100% {
-    box-shadow: 0 0 0 0 color-mix(in oklab, var(--tone) 55%, transparent);
-  }
-  50% {
-    box-shadow: 0 0 0 6px transparent;
-  }
-}
-.pulse-dot {
-  animation: pulse-dot 2.4s ease-out infinite;
 }
 
 @media (prefers-reduced-motion: reduce) {

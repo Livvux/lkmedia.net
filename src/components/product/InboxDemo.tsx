@@ -1,6 +1,6 @@
 import { FileText, UserPlus } from "lucide-react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 // Beispiel-Einträge, keine echten Kunden: zeigen, welche Angaben in der Mail ankommen.
 const ITEMS = [
@@ -31,17 +31,10 @@ const ITEMS = [
 ] as const;
 
 const VISIBLE = 3;
-const INTERVAL_MS = 3400;
 
 export default function InboxDemo() {
   const [tick, setTick] = useState(VISIBLE - 1);
   const reduce = useReducedMotion();
-
-  useEffect(() => {
-    if (reduce) return;
-    const id = setInterval(() => setTick((t) => t + 1), INTERVAL_MS);
-    return () => clearInterval(id);
-  }, [reduce]);
 
   // Neuester Eintrag oben; Schlüssel = Position in ITEMS, damit motion die Karten wiedererkennt.
   const shown = Array.from({ length: VISIBLE }, (_, i) => {
@@ -53,7 +46,7 @@ export default function InboxDemo() {
     <div className="w-full max-w-sm rounded-2xl border border-border bg-[#0c0c0e]/95 p-3 shadow-2xl shadow-black/60 backdrop-blur-sm">
       <div className="flex items-center justify-between px-2 pb-3 pt-1 font-mono text-[11px] text-muted-foreground">
         <span className="flex items-center gap-2">
-          <span className="pulse-dot size-1.5 rounded-full bg-tone" aria-hidden="true" />
+          <span className="size-1.5 rounded-full bg-tone" aria-hidden="true" />
           Posteingang · Beispiel
         </span>
         <span>info@ihr-betrieb.de</span>
@@ -63,14 +56,14 @@ export default function InboxDemo() {
         aria-label="Beispiele eingehender Anfragen und Bewerbungen"
       >
         <AnimatePresence initial={false} mode="popLayout">
-          {shown.map(({ n, item }, i) => (
+          {shown.map(({ n, item }) => (
             <motion.li
               key={n}
               layout
-              initial={{ opacity: 0, y: -18, scale: 0.97 }}
-              animate={{ opacity: 1 - i * 0.18, y: 0, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.96 }}
-              transition={{ type: "spring", stiffness: 320, damping: 34 }}
+              initial={reduce ? false : { opacity: 0, y: -12 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={reduce ? { opacity: 0 } : { opacity: 0, y: 8 }}
+              transition={reduce ? { duration: 0 } : { duration: 0.22 }}
               className="flex gap-3 rounded-xl border border-border bg-card p-3"
             >
               <span className="grid size-9 shrink-0 place-items-center rounded-lg bg-tone/15 text-tone">
@@ -89,6 +82,13 @@ export default function InboxDemo() {
           ))}
         </AnimatePresence>
       </ul>
+      <button
+        type="button"
+        onClick={() => setTick((value) => value + 1)}
+        className="mt-2 min-h-11 w-full rounded-lg text-sm font-medium text-foreground transition-colors hover:bg-secondary"
+      >
+        Nächstes Beispiel <span aria-hidden="true">→</span>
+      </button>
     </div>
   );
 }

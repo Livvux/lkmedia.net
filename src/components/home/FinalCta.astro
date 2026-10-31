@@ -1,14 +1,11 @@
 ---
 import type { HomeContent } from '../../lib/home-content';
-import Magnet from '../reactbits/Magnet.tsx';
+
 interface Props { cta: HomeContent['cta'] }
 const { cta } = Astro.props;
 ---
 
 <section class="final">
-  <div class="grid-bg" aria-hidden="true"></div>
-  <div class="final-glow" aria-hidden="true"></div>
-  <div class="final-orb" aria-hidden="true"></div>
   <div class="wrap final-inner" data-reveal>
     <p class="eyebrow">Nächster Schritt</p>
     <h2 class="display final-title">
@@ -16,12 +13,10 @@ const { cta } = Astro.props;
     </h2>
     <p class="section-sub final-sub">{cta.sub}</p>
     <div class="final-actions">
-      <Magnet client:visible strength={0.24} radius={80}>
-        <a href={cta.primary.href} class="btn btn-primary btn-lg">
+      <a href={cta.primary.href} class="btn btn-primary btn-lg">
           {cta.primary.label}
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </a>
-      </Magnet>
+      </a>
       <a href={cta.secondary.href} class="btn btn-ghost btn-lg">{cta.secondary.label}</a>
     </div>
   </div>
@@ -31,34 +26,10 @@ const { cta } = Astro.props;
   .final {
     position: relative;
     overflow: hidden;
-    padding: 160px 0 168px;
+    padding: clamp(72px, 10vw, 144px) 0;
+    background: var(--bg-elev);
     border-top: 1px solid var(--border);
     text-align: center;
-  }
-  .final .grid-bg {
-    mask-image: radial-gradient(60% 70% at 50% 50%, #000 30%, transparent 100%);
-  }
-  .final-glow {
-    pointer-events: none;
-    position: absolute;
-    left: 50%;
-    bottom: -200px;
-    width: 900px;
-    height: 400px;
-    transform: translateX(-50%);
-    background: radial-gradient(closest-side, oklch(0.68 0.17 250 / 0.18), transparent);
-  }
-  .final-orb {
-    pointer-events: none;
-    position: absolute;
-    top: -180px;
-    left: 50%;
-    width: 760px;
-    height: 420px;
-    transform: translateX(-50%);
-    border-radius: 50%;
-    background: radial-gradient(closest-side, oklch(0.68 0.17 250 / 0.14), transparent);
-    animation: orb-drift 16s ease-in-out infinite alternate;
   }
   .final-inner {
     position: relative;
@@ -84,20 +55,5 @@ const { cta } = Astro.props;
     align-items: center;
     justify-content: center;
     gap: 12px;
-  }
-  @keyframes orb-drift {
-    from {
-      transform: translateX(-54%) translateY(0);
-      opacity: 0.7;
-    }
-    to {
-      transform: translateX(-46%) translateY(26px);
-      opacity: 1;
-    }
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .final-orb {
-      animation: none;
-    }
   }
 </style>

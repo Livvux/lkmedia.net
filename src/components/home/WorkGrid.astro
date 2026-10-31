@@ -20,9 +20,9 @@ const src = (s: (typeof shots)[number]) => s.image ?? `/landing/shots/${s.slug}-
     {shots.map((shot, i) => (
       <li class:list={['cell', { big: i < 2 }]} data-reveal style={`--d:${(i % 3) * 70}ms`}>
         <a class="tile" href={`${routeFor('cases', 'de')}/${shot.slug}`}>
-          <span class="frame" data-frame>
+          <span class="frame">
             {shot.slug === 'eichhoernchenberger' ? (
-              <video data-preview data-src="/cases/eichhoernchenberger/walkthrough.mp4" poster="/cases/eichhoernchenberger/desktop.webp" muted loop playsinline autoplay preload="none" aria-label={`Rundgang durch ${shot.domain}`}></video>
+              <video id={`preview-${shot.slug}`} data-preview data-src="/cases/eichhoernchenberger/walkthrough.mp4" poster="/cases/eichhoernchenberger/desktop.webp" muted loop playsinline preload="none" aria-label={`Rundgang durch ${shot.domain}`}></video>
             ) : (
               <img src={src(shot)} width="1440" height="900" alt={`Website von ${shot.client}`} loading="lazy" decoding="async" />
             )}
@@ -34,34 +34,55 @@ const src = (s: (typeof shots)[number]) => s.image ?? `/landing/shots/${s.slug}-
           <span class="scope">{shot.scope}</span>
           {i < 2 && <span class="result">{shot.result}</span>}
         </a>
+        {shot.slug === 'eichhoernchenberger' && <button type="button" class="preview-control" data-preview-toggle aria-controls={`preview-${shot.slug}`} hidden>Vorschau pausieren</button>}
       </li>
     ))}
   </ul>
 </section>
 
 <script>
-  if (!matchMedia('(prefers-reduced-motion: reduce)').matches && 'IntersectionObserver' in window) {
+  const motion = matchMedia('(prefers-reduced-motion: reduce)');
+  const videos = document.querySelectorAll<HTMLVideoElement>('video[data-preview]');
+  const visible = new Set<HTMLVideoElement>();
+  const pausedByUser = new Set<HTMLVideoElement>();
+  const controls = new Map<HTMLVideoElement, HTMLButtonElement>();
+  for (const video of videos) {
+    const control = video.closest('li')?.querySelector<HTMLButtonElement>('[data-preview-toggle]');
+    if (!control) continue;
+    controls.set(video, control);
+    control.addEventListener('click', () => {
+      if (pausedByUser.has(video)) pausedByUser.delete(video);
+      else pausedByUser.add(video);
+      update();
+    });
+  }
+  const update = () => {
+    for (const video of videos) {
+      const control = controls.get(video);
+      if (control) {
+        control.hidden = motion.matches;
+        control.textContent = pausedByUser.has(video) ? 'Vorschau abspielen' : 'Vorschau pausieren';
+      }
+      if (motion.matches || document.hidden || !visible.has(video) || pausedByUser.has(video)) {
+        video.pause();
+        continue;
+      }
+      if (!video.getAttribute('src') && video.dataset.src) video.src = video.dataset.src;
+      void video.play().catch(() => {});
+    }
+  };
+  if ('IntersectionObserver' in window) {
     const observer = new IntersectionObserver((entries) => {
       for (const entry of entries) {
-        if (!entry.isIntersecting || !(entry.target instanceof HTMLVideoElement)) continue;
-        const video = entry.target;
-        if (video.dataset.src) video.src = video.dataset.src;
-        void video.play().catch(() => {});
-        observer.unobserve(video);
+        if (!(entry.target instanceof HTMLVideoElement)) continue;
+        if (entry.isIntersecting) visible.add(entry.target);
+        else visible.delete(entry.target);
       }
+      update();
     }, { rootMargin: '200px' });
-    document.querySelectorAll<HTMLVideoElement>('video[data-preview]').forEach((video) => observer.observe(video));
-  }
-
-  // Lichtfleck auf den Vorschaubildern (react-bits Spotlight, ohne eigenes Island pro Bild).
-  if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    for (const frame of document.querySelectorAll<HTMLElement>('[data-frame]')) {
-      frame.addEventListener('pointermove', (event) => {
-        const rect = frame.getBoundingClientRect();
-        frame.style.setProperty('--mx', `${event.clientX - rect.left}px`);
-        frame.style.setProperty('--my', `${event.clientY - rect.top}px`);
-      });
-    }
+    videos.forEach((video) => observer.observe(video));
+    motion.addEventListener('change', update);
+    document.addEventListener('visibilitychange', update);
   }
 </script>
 
@@ -73,8 +94,23 @@ const src = (s: (typeof shots)[number]) => s.image ?? `/landing/shots/${s.slug}-
     margin-top: 48px;
   }
   .cell {
+    position: relative;
     grid-column: span 2;
   }
+  .preview-control {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    min-height: 44px;
+    padding: 10px 16px;
+    border: 1px solid var(--border-strong);
+    border-radius: 999px;
+    background: var(--bg);
+    color: var(--fg);
+    font-size: 12px;
+    font-weight: 500;
+  }
+  .preview-control[hidden] { display: none; }
   .cell.big {
     grid-column: span 3;
   }
@@ -89,25 +125,11 @@ const src = (s: (typeof shots)[number]) => s.image ?? `/landing/shots/${s.slug}-
     aspect-ratio: 16 / 10;
     margin-bottom: 10px;
     border: 1px solid var(--border);
-    border-radius: 12px;
+    border-radius: 20px;
     background: var(--bg-card);
     transition:
       border-color 0.25s ease,
       box-shadow 0.35s var(--ease-out);
-  }
-  .frame::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    z-index: 2;
-    opacity: 0;
-    pointer-events: none;
-    background: radial-gradient(
-      340px circle at var(--mx, 50%) var(--my, 50%),
-      rgb(255 255 255 / 0.13),
-      transparent 62%
-    );
-    transition: opacity 0.35s ease;
   }
   .frame img,
   .frame video {
@@ -155,11 +177,7 @@ const src = (s: (typeof shots)[number]) => s.image ?? `/landing/shots/${s.slug}-
   }
   .tile:hover .frame,
   .tile:focus-visible .frame {
-    border-color: oklch(0.68 0.17 250 / 0.5);
-    box-shadow: 0 28px 70px -38px oklch(0.68 0.17 250 / 0.55);
-  }
-  .tile:hover .frame::after {
-    opacity: 1;
+    border-color: var(--border-strong);
   }
   .tile:hover img,
   .tile:hover video {
@@ -168,12 +186,6 @@ const src = (s: (typeof shots)[number]) => s.image ?? `/landing/shots/${s.slug}-
   .tile:hover .arrow {
     color: var(--fg);
     transform: translate(2px, -2px);
-  }
-  .grid:has(.tile:hover) .tile:not(:hover) {
-    opacity: 0.6;
-  }
-  .tile {
-    transition: opacity 0.25s ease;
   }
   @media (max-width: 900px) {
     .grid {

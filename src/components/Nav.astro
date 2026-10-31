@@ -12,9 +12,12 @@ const items = [
 const contactHref = routeFor('contact', lang);
 const menuLabel = 'Menü';
 const closeLabel = 'Menü schließen';
+const currentPath = Astro.url.pathname.replace(/\/$/, '') || '/';
+const isCurrent = (href: string) => currentPath === href || (href !== '/' && currentPath.startsWith(`${href}/`));
 ---
+<a class="skip-link" href="#main-content">Zum Inhalt springen</a>
 <header class="nav" data-site-header>
-  <nav class="nav-inner wrap">
+  <nav class="nav-inner wrap" aria-label="Hauptnavigation">
     <a href={routeFor('home', lang)} aria-label="lkmedia – Startseite" class="nav-brand">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 836.36 873.35" fill="currentColor" class="h-[18px] w-auto" aria-hidden="true">
         <path d="M712.53,695.46l122.93,170.26c.99,1.38,1.2,4.24.44,5.12s-3.14,2.24-4.67,2.24l-179.68.26c-21.41.03-39.95-8.79-52.65-26.03l-187.57-257.86h-3.74s-.07,277.39-.07,277.39c0,3.08-2.27,5.48-5.17,5.48l-146.83-.08c-3.32,0-5.1-2-5.1-5.47V4.47c0-2.42,4.19-4.42,6.05-4.42l94.76.1c29.85,2.3,53.4,24.25,56.17,54.03l.3,454.32,154.92-197.1,77-99.1c10.11-14.56,25.73-25.63,44.15-25.66l144.2-.24c1.21,0,3.55.95,4.04,1.81.59,1.03.09,3.29-.68,5.06l-216.59,267.94-37.9,46.25,135.69,188Z"/>
@@ -24,11 +27,11 @@ const closeLabel = 'Menü schließen';
     </a>
 
     <ul class="nav-links">
-      {items.map((i) => <li><a href={i.href} class="nav-link">{i.label}</a></li>)}
+      {items.map((i) => <li><a href={i.href} class="nav-link" aria-current={isCurrent(i.href) ? 'page' : undefined}>{i.label}</a></li>)}
     </ul>
 
     <div class="nav-right">
-      <a href={contactHref} class="btn btn-primary nav-cta">{t('cta.start')}</a>
+      <a href={contactHref} class="btn btn-primary nav-cta" aria-current={isCurrent(contactHref) ? 'page' : undefined}>{t('cta.start')}</a>
       <button
         type="button"
         class="nav-toggle"
@@ -48,61 +51,75 @@ const closeLabel = 'Menü schließen';
   </nav>
 </header>
 
-<div id="mobile-menu" class="mobile-menu" data-menu-panel aria-hidden="true" inert>
-  <ul class="flex flex-col px-5 pt-4 pb-8">
-    {[...items, { href: contactHref, label: t('nav.contact') }].map((i, idx) => (
-      <li class="mobile-item" style={`--d:${80 + idx * 50}ms`} data-menu-item>
-        <a href={i.href} class="block py-4 text-3xl font-semibold tracking-[-0.03em] text-[var(--fg)]">{i.label}</a>
-      </li>
-    ))}
-  </ul>
-</div>
+<nav id="mobile-menu" class="mobile-menu" data-menu-panel aria-label="Mobile Navigation" aria-hidden="true" inert hidden>
+  <div class="mobile-menu-inner wrap">
+    <p class="mobile-caption">Entdecken Sie lkmedia.</p>
+    <ul>
+      {[...items, { href: contactHref, label: t('nav.contact') }].map((i) => (
+        <li class="mobile-item">
+          <a href={i.href} aria-current={isCurrent(i.href) ? 'page' : undefined}>
+            <span>{i.label}</span><span class="mobile-arrow" aria-hidden="true">↗</span>
+          </a>
+        </li>
+      ))}
+    </ul>
+    <p class="mobile-note">Webdesign & SEO aus Rastatt.</p>
+  </div>
+</nav>
 
 <style>
   .nav {
     position: sticky;
     top: 0;
     z-index: 50;
-    background: color-mix(in srgb, var(--bg) 75%, transparent);
-    backdrop-filter: blur(18px);
-    -webkit-backdrop-filter: blur(18px);
-    border-bottom: 1px solid transparent;
-    transition: border-color 0.3s;
-  }
-  .nav.is-scrolled {
-    border-bottom-color: var(--border);
+    border-bottom: 1px solid var(--border);
+    background: color-mix(in srgb, var(--bg) 88%, transparent);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
   }
   .nav-inner {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 24px;
-    height: 60px;
+    flex-wrap: wrap;
+    gap: 12px 24px;
+    min-height: 72px;
+    padding-block: 8px;
   }
   .nav-brand {
     display: inline-flex;
     align-items: center;
-    gap: 9px;
+    gap: 10px;
+    min-height: 44px;
     color: var(--fg);
+    border-radius: 6px;
   }
   .nav-brand-name {
-    font-size: 16px;
+    font-size: 18px;
     font-weight: 650;
-    letter-spacing: -0.03em;
+    letter-spacing: -0.04em;
     line-height: 1;
   }
   .nav-links {
-    display: none;
-    gap: 4px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2px;
   }
   .nav-link {
-    padding: 6px 12px;
-    font-size: 14px;
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
     color: var(--fg-muted);
     letter-spacing: -0.01em;
-    transition: color 0.18s;
+    transition: color 180ms, background 180ms;
   }
-  .nav-link:hover {
+  .nav-link:hover,
+  .nav-link[aria-current='page'] {
+    background: #ffffff08;
     color: var(--fg);
   }
   .nav-right {
@@ -112,106 +129,155 @@ const closeLabel = 'Menü schließen';
   }
   .nav-cta {
     display: none;
-    height: 36px;
-    padding: 0 16px;
-    font-size: 14px;
+    min-height: 40px;
+    padding: 10px 18px;
+    font-size: 13px;
   }
   .nav-toggle {
     position: relative;
-    z-index: 60;
-    width: 40px;
-    height: 40px;
-    margin-right: -8px;
-    display: inline-flex;
+    display: none;
     align-items: center;
     justify-content: center;
-    color: var(--fg-muted);
-    border-radius: 8px;
+    width: 44px;
+    height: 44px;
+    margin-right: -8px;
+    border-radius: 50%;
+    color: var(--fg);
+    transition: background 180ms;
   }
-  @media (min-width: 768px) {
-    .nav-links {
-      display: flex;
-    }
-    .nav-cta {
-      display: inline-flex;
-    }
-    .nav-toggle {
-      display: none;
-    }
+  .nav-toggle:hover {
+    background: #ffffff0a;
+  }
+  :global(.js) .nav-toggle {
+    display: inline-flex;
+  }
+  :global(.js) .nav-links {
+    display: none;
   }
   .mobile-menu {
     position: fixed;
-    inset: 60px 0 0 0;
+    inset: 72px 0 0;
     z-index: 40;
-    background: color-mix(in srgb, var(--bg) 96%, transparent);
-    backdrop-filter: blur(24px);
-    -webkit-backdrop-filter: blur(24px);
-    clip-path: inset(0 0 100% 0);
-    pointer-events: none;
-    transition: clip-path 350ms cubic-bezier(0.4, 0, 0.2, 1);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    background: var(--bg-elev);
+    animation: menu-enter 220ms var(--ease-out);
   }
-  .mobile-menu.is-open {
-    clip-path: inset(0 0 0 0);
-    pointer-events: auto;
+  .mobile-menu[hidden] {
+    display: none;
+  }
+  .mobile-menu-inner {
+    padding-top: 32px;
+    padding-bottom: max(32px, env(safe-area-inset-bottom));
+  }
+  .mobile-caption,
+  .mobile-note {
+    font-size: 13px;
+    color: var(--fg-muted);
+  }
+  .mobile-caption {
+    margin-bottom: 20px;
+  }
+  .mobile-note {
+    margin-top: 32px;
   }
   .mobile-item {
     border-bottom: 1px solid var(--border);
-    opacity: 0;
-    transform: translateY(8px);
-    transition:
-      opacity 0.3s ease-out,
-      transform 0.3s ease-out;
-    transition-delay: var(--d);
   }
-  .mobile-menu.is-open .mobile-item {
-    opacity: 1;
-    transform: none;
+  .mobile-item a {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding-block: 18px;
+    font-size: clamp(25px, 6vw, 36px);
+    font-weight: 500;
+    letter-spacing: -0.04em;
+    line-height: 1.3;
+    color: var(--fg-muted);
+    transition: color 180ms;
+  }
+  .mobile-item a:hover,
+  .mobile-item a[aria-current='page'] {
+    color: var(--fg);
+  }
+  .mobile-arrow {
+    font-size: 20px;
+    font-weight: 400;
+    color: var(--fg-dim);
+  }
+  @keyframes menu-enter {
+    from { opacity: 0; transform: translateY(-8px); }
+    to { opacity: 1; transform: none; }
   }
   @media (min-width: 768px) {
-    .mobile-menu {
-      display: none;
-    }
+    .nav-inner { flex-wrap: nowrap; }
+    .nav-links,
+    :global(.js) .nav-links { display: flex; }
+    .nav-cta { display: inline-flex; }
+    .nav-toggle,
+    :global(.js) .nav-toggle,
+    .mobile-menu { display: none; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .mobile-menu { animation: none; }
   }
 </style>
 
 <script>
   const header = document.querySelector<HTMLElement>('[data-site-header]');
-  if (header) {
-    const onScroll = () => header.classList.toggle('is-scrolled', window.scrollY > 8);
-    onScroll();
-    window.addEventListener('scroll', onScroll, { passive: true });
-
-    const toggle = header.querySelector<HTMLButtonElement>('[data-menu-toggle]');
-    const panel = document.querySelector<HTMLElement>('[data-menu-panel]');
+  const toggle = header?.querySelector<HTMLButtonElement>('[data-menu-toggle]');
+  const panel = document.querySelector<HTMLElement>('[data-menu-panel]');
+  if (header && toggle && panel) {
     const barTop = header.querySelector<HTMLElement>('[data-bar="top"]');
     const barBottom = header.querySelector<HTMLElement>('[data-bar="bottom"]');
-    const openLabel = toggle?.dataset.openLabel ?? 'Menü';
-    const closeLabel = toggle?.dataset.closeLabel ?? 'Menü schließen';
+    const background = document.querySelectorAll<HTMLElement>('main, body > footer');
+    const openLabel = toggle.dataset.openLabel ?? 'Menü';
+    const closeLabel = toggle.dataset.closeLabel ?? 'Menü schließen';
+    const isOpen = () => toggle.getAttribute('aria-expanded') === 'true';
 
-    const setOpen = (open: boolean) => {
-      if (!toggle || !panel) return;
+    const setOpen = (open: boolean, restoreFocus = false) => {
       toggle.setAttribute('aria-expanded', String(open));
       toggle.setAttribute('aria-label', open ? closeLabel : openLabel);
       panel.setAttribute('aria-hidden', String(!open));
-      panel.toggleAttribute('inert', !open);
-      panel.classList.toggle('is-open', open);
+      panel.inert = !open;
+      panel.hidden = !open;
+      background.forEach((element) => { element.inert = open; });
       document.documentElement.classList.toggle('overflow-hidden', open);
       if (barTop && barBottom) {
         barTop.style.transform = open ? 'translateY(7px) rotate(45deg)' : '';
         barBottom.style.transform = open ? 'translateY(-6px) rotate(-45deg)' : '';
       }
+      if (open) panel.querySelector<HTMLAnchorElement>('a')?.focus();
+      else if (restoreFocus) toggle.focus();
     };
 
-    toggle?.addEventListener('click', () => setOpen(toggle.getAttribute('aria-expanded') !== 'true'));
-    panel?.querySelectorAll('a').forEach((l) => l.addEventListener('click', () => setOpen(false)));
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && toggle?.getAttribute('aria-expanded') === 'true') {
-        setOpen(false);
-        toggle.focus();
+    toggle.addEventListener('click', () => setOpen(!isOpen()));
+    panel.querySelectorAll('a').forEach((link) => link.addEventListener('click', () => setOpen(false)));
+    panel.addEventListener('click', (event) => {
+      if (event.target === panel) setOpen(false, true);
+    });
+    document.addEventListener('keydown', (event) => {
+      if (!isOpen()) return;
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        setOpen(false, true);
+      }
+      if (event.key === 'Tab') {
+        const links = Array.from(panel.querySelectorAll<HTMLAnchorElement>('a'));
+        const controls = [toggle, ...links];
+        const index = controls.findIndex((control) => control === document.activeElement);
+        if (event.shiftKey && index <= 0) {
+          event.preventDefault();
+          controls.at(-1)?.focus();
+        } else if (!event.shiftKey && (index === controls.length - 1 || index < 0)) {
+          event.preventDefault();
+          toggle.focus();
+        }
       }
     });
-    window.matchMedia('(min-width: 768px)').addEventListener('change', (e) => {
-      if (e.matches) setOpen(false);
+    window.matchMedia('(min-width: 768px)').addEventListener('change', (event) => {
+      if (event.matches) setOpen(false);
     });
   }
 </script>

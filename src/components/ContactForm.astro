@@ -14,15 +14,15 @@ const placeholders = { name: 'Name', email: 'E-Mail', company: 'Firma', budget: 
   <input type="text" name="website" tabindex="-1" autocomplete="off" class="hidden" aria-hidden="true" />
   <label class="block">
     <span class="text-sm text-black/60 dark:text-white/60">{placeholders.name}</span>
-    <input required name="name" class="mt-1 w-full h-12 px-4 rounded-xl bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 focus:border-black dark:focus:border-white focus:outline-none" />
+    <input required name="name" autocomplete="name" class="mt-1 w-full h-12 px-4 rounded-xl bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 focus:border-black dark:focus:border-white focus:outline-none" />
   </label>
   <label class="block">
     <span class="text-sm text-black/60 dark:text-white/60">{placeholders.email}</span>
-    <input required type="email" name="email" class="mt-1 w-full h-12 px-4 rounded-xl bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 focus:border-black dark:focus:border-white focus:outline-none" />
+    <input required type="email" name="email" autocomplete="email" class="mt-1 w-full h-12 px-4 rounded-xl bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 focus:border-black dark:focus:border-white focus:outline-none" />
   </label>
   <label class="block">
     <span class="text-sm text-black/60 dark:text-white/60">{placeholders.company}</span>
-    <input name="company" class="mt-1 w-full h-12 px-4 rounded-xl bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 focus:border-black dark:focus:border-white focus:outline-none" />
+    <input name="company" autocomplete="organization" class="mt-1 w-full h-12 px-4 rounded-xl bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 focus:border-black dark:focus:border-white focus:outline-none" />
   </label>
   <label class="block">
     <span id="budget-label" class="text-sm text-black/60 dark:text-white/60">{placeholders.budget}</span>
@@ -47,7 +47,7 @@ const placeholders = { name: 'Name', email: 'E-Mail', company: 'Firma', budget: 
     </select>
   </label>
   {turnstileKey && <div class="cf-turnstile" data-sitekey={turnstileKey}></div>}
-  <button id="contact-submit" class="h-12 px-6 rounded-full bg-black text-white dark:bg-white dark:text-black font-medium disabled:opacity-50">Projektanfrage senden</button>
+  <button id="contact-submit" class="btn btn-primary mt-2 min-h-12 disabled:opacity-50">Projektanfrage senden</button>
 </form>
 {turnstileKey && <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>}
 <script>
@@ -61,7 +61,13 @@ const placeholders = { name: 'Name', email: 'E-Mail', company: 'Firma', budget: 
   }
   const form = document.querySelector<HTMLFormElement>('form[action="/api/contact"]');
   const btn = document.getElementById('contact-submit') as HTMLButtonElement | null;
+  window.addEventListener('pageshow', () => {
+    if (!btn) return;
+    btn.disabled = false;
+    btn.textContent = 'Projektanfrage senden';
+    btn.removeAttribute('aria-busy');
+  });
   form?.addEventListener('submit', () => {
-    if (btn) { btn.disabled = true; btn.textContent = '…'; }
+    if (btn) { btn.disabled = true; btn.textContent = 'Anfrage wird gesendet …'; btn.setAttribute('aria-busy', 'true'); }
   });
 </script>

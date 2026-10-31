@@ -1,6 +1,5 @@
 ---
 import '../styles/global.css';
-import '../styles/react-bits.css';
 import Seo from '../components/Seo.astro';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
@@ -28,7 +27,7 @@ const publicPath = analytics && !seo.noindex ? publicUmamiPath(seo.canonical) : 
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <script is:inline>document.documentElement.classList.add('js')</script>
-    <meta name="theme-color" content="#09090b" />
+    <meta name="theme-color" content="#0b0b0d" />
     <link rel="icon" href="/favicon.ico" sizes="any" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="preload" as="font" type="font/woff2" href={dmSansUrl} crossorigin />
@@ -44,11 +43,11 @@ const publicPath = analytics && !seo.noindex ? publicUmamiPath(seo.canonical) : 
   </head>
   <body class="min-h-screen flex flex-col">
     <Nav lang={seo.lang} />
-    <main class="flex-1"><slot /></main>
+    <main id="main-content" tabindex="-1" class="flex-1"><slot /></main>
     <Footer lang={seo.lang} />
     <script>
       const targets = document.querySelectorAll<HTMLElement>('[data-reveal]');
-      if (!('IntersectionObserver' in window)) {
+      if (matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window)) {
         targets.forEach((el) => el.classList.add('is-visible'));
       } else {
         const io = new IntersectionObserver(
@@ -61,21 +60,10 @@ const publicPath = analytics && !seo.noindex ? publicUmamiPath(seo.canonical) : 
           },
           { rootMargin: '0px 0px -10% 0px' },
         );
+        document.documentElement.classList.add('reveal-ready');
         targets.forEach((el) => io.observe(el));
       }
     </script>
-    <script>
-      // Spotlight-Karten (react-bits) folgen dem Zeiger. Rein dekorativ, ohne JS ohne Licht.
-      if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
-        const cards = document.querySelectorAll<HTMLElement>('[data-spot]');
-        for (const card of cards) {
-          card.addEventListener('pointermove', (event) => {
-            const rect = card.getBoundingClientRect();
-            card.style.setProperty('--mx', `${event.clientX - rect.left}px`);
-            card.style.setProperty('--my', `${event.clientY - rect.top}px`);
-          });
-        }
-      }
-    </script>
+
   </body>
 </html>

@@ -13,15 +13,11 @@ export default function OfferTabs({ tabs }: Props) {
           <Tabs.Tab
             key={t.value}
             value={t.value}
-            className="h-9 whitespace-nowrap rounded-full px-4 text-sm font-medium text-muted-foreground outline-none transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring data-[active]:text-background"
+            className="min-h-11 whitespace-nowrap rounded-full px-4 text-sm font-medium text-muted-foreground outline-none transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring data-[active]:bg-foreground data-[active]:text-background"
           >
             {t.label}
           </Tabs.Tab>
         ))}
-        <Tabs.Indicator
-          renderBeforeHydration
-          className="absolute top-1/2 left-0 -z-10 h-[var(--active-tab-height)] w-[var(--active-tab-width)] translate-x-[var(--active-tab-left)] -translate-y-1/2 rounded-full bg-foreground transition-[translate,width] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none"
-        />
       </Tabs.List>
 
       {tabs.map((t) => (
@@ -46,7 +42,6 @@ export default function OfferTabs({ tabs }: Props) {
               >
                 <a
                   href={item.href}
-                  data-spot
                   className="group flex h-full flex-col gap-3 bg-[var(--bg)] p-6 transition-colors hover:bg-[var(--bg-card)]"
                 >
                   <span className="flex items-start justify-between gap-4">

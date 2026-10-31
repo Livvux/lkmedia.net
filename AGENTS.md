@@ -57,7 +57,7 @@ Dynamic routes: `src/pages/[slug].astro` (root-level posts), `src/pages/blog/`, 
 
 ### Landing page
 
-`src/components/home/` baut die Startseite in `src/lib/home-content.ts` (Copy + Links). Animationen stammen aus React-Bits-Ports in `src/components/reactbits/` (Spotlight, Magnet, Counter, TiltedCard, ProcessFlow) plus CSS-Varianten (BlurText, Marquee) mit Styles in `src/styles/react-bits.css`. Die Startseite ist bewusst **ohne Farbverläufe**: Text, Zahlen und Linien sind einfarbig, die Aurora läuft einfarbig (`spectrum: 0`). Alle Effekte sind dekorativ: ohne JavaScript bleibt die Seite vollständig lesbar, `prefers-reduced-motion` schaltet sie ab.
+`src/components/home/` baut die Startseite mit Inhalten aus `src/lib/home-content.ts`. Hero, Kennzahlen, Projektleiste und Prozess sind statisches HTML; keine Canvas-/WebGL-Effekte oder dekorativen React-Inseln ergänzen. `OfferTabs.tsx` nutzt Base UI, interaktive Produktdemos nutzen Motion. Die Startseite bleibt monochrom und ohne Farbverläufe. Scroll-Reveals sind progressive Verbesserung: Inhalte bleiben ohne JavaScript sichtbar; `prefers-reduced-motion` schaltet Bewegung ab.
 
 ### Scripts
 

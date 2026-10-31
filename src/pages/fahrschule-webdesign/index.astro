@@ -330,7 +330,7 @@ const crumbs = breadcrumbs([
           <li class={`serp-item ${r.primary ? 'is-primary' : ''}`}>
             <span class="serp-pos" aria-hidden="true">•</span>
             <div class="min-w-0">
-              <div class="serp-url">{r.domain} <span class="text-[var(--fg-faint)]">{r.path}</span></div>
+              <div class="serp-url">{r.domain} <span class="text-[var(--fg-dim)]">{r.path}</span></div>
               <div class="serp-title">{r.title}</div>
               <p class="serp-desc">{r.desc}</p>
             </div>
@@ -730,7 +730,6 @@ const crumbs = breadcrumbs([
     gap: 14px;
     padding: 16px;
     border-radius: var(--radius);
-    opacity: 0.45;
   }
   .serp-item.is-primary {
     opacity: 1;

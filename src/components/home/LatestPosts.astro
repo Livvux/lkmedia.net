@@ -20,7 +20,7 @@ const day = new Intl.DateTimeFormat('de-DE', { day: '2-digit', month: 'short', y
   <ul class="posts">
     {posts.map((p, i) => (
       <li data-reveal style={`--d:${i * 70}ms`}>
-        <a class="post" href={urlFor(p)} data-spot>
+        <a class="post" href={urlFor(p)}>
           <time class="date" datetime={p.data.pubDate.toISOString()}>{day.format(p.data.pubDate)}</time>
           <span class="title">{p.data.title}</span>
           <span class="desc">{p.data.description}</span>
@@ -39,7 +39,7 @@ const day = new Intl.DateTimeFormat('de-DE', { day: '2-digit', month: 'short', y
     margin-top: 48px;
     overflow: hidden;
     border: 1px solid var(--border);
-    border-radius: 14px;
+    border-radius: 24px;
     background: var(--border);
   }
   .post {
@@ -61,7 +61,7 @@ const day = new Intl.DateTimeFormat('de-DE', { day: '2-digit', month: 'short', y
     font-size: 12px;
   }
   .title {
-    font-size: 19px;
+    font-size: 22px;
     font-weight: 550;
     letter-spacing: -0.02em;
     line-height: 1.3;
