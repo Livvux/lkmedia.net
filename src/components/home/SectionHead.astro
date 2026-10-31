@@ -1,5 +1,5 @@
 ---
-import BlurText from '../reactbits/BlurText.astro';
+
 
 // Swiss-Kopfzeile: Nummer links, Titel und Unterzeile, optionaler Link rechts.
 interface Props { n: string; id: string; title: string; sub?: string; link?: { label: string; href: string } }
@@ -8,7 +8,7 @@ const { n, id, title, sub, link } = Astro.props;
 <div class="head" data-reveal>
   <span class="n" aria-hidden="true">{n}</span>
   <div>
-    <h2 id={id} class="section-title"><BlurText text={title} /></h2>
+    <h2 id={id} class="section-title">{title}</h2>
     {sub && <p class="section-sub mt-3">{sub}</p>}
   </div>
   {link && <a class="mono-link more" href={link.href}>{link.label} <span aria-hidden="true">→</span></a>}
@@ -17,10 +17,10 @@ const { n, id, title, sub, link } = Astro.props;
 <style>
   .head {
     display: grid;
-    grid-template-columns: 80px minmax(0, 1fr) auto;
+    grid-template-columns: 40px minmax(0, 1fr) auto;
     align-items: end;
     gap: 16px 24px;
-    padding-top: 20px;
+    padding-top: 28px;
     border-top: 1px solid var(--border);
   }
   .n {
@@ -30,7 +30,7 @@ const { n, id, title, sub, link } = Astro.props;
     min-width: 30px;
     height: 22px;
     padding: 0 8px;
-    border: 1px solid var(--border-strong);
+    border: 0;
     border-radius: 999px;
     color: var(--accent);
     font-family: var(--font-mono);

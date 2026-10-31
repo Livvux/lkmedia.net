@@ -27,88 +27,126 @@ const columns = [
       { href: routeFor('drivingSchools', lang), label: 'Fahrschulen' },
     ],
   },
-  {
-    title: 'Rechtliches',
-    links: [
-      { href: routeFor('imprint', lang), label: 'Impressum' },
-      { href: routeFor('privacy', lang), label: 'Datenschutz' },
-      { href: routeFor('contact', lang), label: t('nav.contact') },
-    ],
-  },
 ];
 ---
 <footer class="footer">
-  <div class="wrap footer-inner">
-    <div class="footer-brand">
-      <div class="footer-name">lkmedia</div>
-      <p class="footer-tag">
-        {'Webdesign & SEO aus Rastatt.'}
-      </p>
-      <p class="footer-meta">© {year} lkmedia · Lucas Kleipoedszus</p>
+  <div class="wrap">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <a class="footer-name" href={routeFor('home', lang)} aria-label="lkmedia – Startseite">lkmedia</a>
+        <p class="footer-tag">Webdesign & SEO<br />aus Rastatt.</p>
+        <a class="footer-contact" href={routeFor('contact', lang)}>Über Ihr Projekt sprechen <span aria-hidden="true">↗</span></a>
+      </div>
+      <nav class="footer-cols" aria-label="Weiterführende Seiten">
+        {columns.map((col) => (
+          <div>
+            <h2 class="footer-title">{col.title}</h2>
+            <ul>
+              {col.links.map((link) => <li><a href={link.href} class="footer-link">{link.label}</a></li>)}
+            </ul>
+          </div>
+        ))}
+      </nav>
     </div>
-    <div class="footer-cols">
-      {columns.map((col) => (
-        <div>
-          <h2 class="footer-title">{col.title}</h2>
-          <ul class="space-y-2.5">
-            {col.links.map((l) => <li><a href={l.href} class="footer-link">{l.label}</a></li>)}
-          </ul>
-        </div>
-      ))}
+    <div class="footer-bottom">
+      <p>© {year} lkmedia · Lucas Kleipoedszus</p>
+      <nav class="footer-legal" aria-label="Rechtliches und Kontakt">
+        <a href={routeFor('imprint', lang)}>Impressum</a>
+        <a href={routeFor('privacy', lang)}>Datenschutz</a>
+        <a href={routeFor('contact', lang)}>{t('nav.contact')}</a>
+      </nav>
     </div>
   </div>
 </footer>
 
 <style>
   .footer {
+    border-top: 1px solid var(--border);
     background: var(--bg-elev);
-    font-size: 15px;
-  }
-  .footer-title {
-    margin-bottom: 16px;
-    font-weight: 600;
-    color: var(--fg);
+    font-size: 14px;
   }
   .footer-inner {
     display: grid;
     gap: 48px;
-    padding-top: 64px;
-    padding-bottom: 64px;
-  }
-  @media (min-width: 768px) {
-    .footer-inner {
-      grid-template-columns: 1fr 1.4fr;
-    }
+    padding-block: clamp(56px, 7vw, 88px);
   }
   .footer-name {
-    font-size: 18px;
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    font-size: 25px;
     font-weight: 650;
-    letter-spacing: -0.03em;
+    letter-spacing: -0.05em;
+    line-height: 1;
   }
   .footer-tag {
-    margin-top: 8px;
+    margin-top: 18px;
+    font-size: 18px;
+    letter-spacing: -0.02em;
+    line-height: 1.5;
     color: var(--fg-muted);
   }
-  .footer-meta {
+  .footer-contact {
+    display: inline-flex;
+    align-items: center;
+    gap: 18px;
+    min-height: 44px;
     margin-top: 24px;
-    font-size: 14px;
-    color: var(--fg-muted);
+    color: var(--fg);
+    text-decoration: underline;
+    text-decoration-color: var(--border-strong);
+    text-underline-offset: 6px;
+    transition: text-decoration-color 180ms;
   }
+  .footer-contact:hover { text-decoration-color: currentColor; }
   .footer-cols {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 32px;
+    gap: 24px;
   }
-  @media (min-width: 640px) {
-    .footer-cols {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
+  .footer-title {
+    min-height: 44px;
+    margin-bottom: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--fg);
   }
   .footer-link {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding-block: 8px;
+    line-height: 1.5;
     color: var(--fg-muted);
-    transition: color 0.18s;
+    transition: color 180ms;
   }
-  .footer-link:hover {
-    color: var(--fg);
+  .footer-link:hover,
+  .footer-legal a:hover { color: var(--fg); }
+  .footer-bottom {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px 24px;
+    padding-block: 20px;
+    border-top: 1px solid var(--border);
+    font-size: 12px;
+    color: var(--fg-muted);
+  }
+  .footer-bottom > p { padding-block: 12px; }
+  .footer-legal {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 24px;
+  }
+  .footer-legal a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    transition: color 180ms;
+  }
+  @media (min-width: 768px) {
+    .footer-inner { grid-template-columns: 1fr 1fr; gap: 64px; }
+    .footer-cols { gap: 40px; }
   }
 </style>

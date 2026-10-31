@@ -29,6 +29,7 @@ export default function PrepChecklist({ items, ctaHref }: Props) {
     <div>
       <div className="mb-6 flex items-center gap-4" role="status" aria-live="polite">
         <Progress
+          aria-label="Vorbereitung Ihrer Website"
           value={(done.size / items.length) * 100}
           className="h-2 flex-1 bg-secondary [&>div]:bg-tone"
         />

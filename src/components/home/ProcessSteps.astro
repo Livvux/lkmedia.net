@@ -3,10 +3,10 @@ import type { HomeContent } from '../../lib/home-content';
 interface Props { process: HomeContent['process'] }
 const { process } = Astro.props;
 ---
-<section class="process">
+<section id="ablauf" class="process" aria-labelledby="process-title">
   <div class="wrap">
     <div class="text-center max-w-2xl mx-auto" data-reveal>
-      <h2 class="section-title">{process.title}</h2>
+      <h2 id="process-title" class="section-title">{process.title}</h2>
       <p class="section-sub mt-5">{process.sub}</p>
     </div>
     <ol class="steps">
@@ -26,7 +26,7 @@ const { process } = Astro.props;
 
 <style>
   .process {
-    padding: 112px 0;
+    padding: clamp(48px, 6vw, 80px) 0;
     border-top: 1px solid var(--border);
   }
   .steps {
@@ -60,7 +60,7 @@ const { process } = Astro.props;
   .step-line {
     flex: 1;
     height: 1px;
-    background: linear-gradient(90deg, var(--border-strong), transparent);
+    background: var(--border-strong);
   }
   .step:last-child .step-line {
     display: none;

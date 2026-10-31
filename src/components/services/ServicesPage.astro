@@ -49,11 +49,11 @@ const steps = [
 
   <section id="branchen" class="wrap industries" aria-label="Website-Pakete nach Branche">
     <div class="offers">
-      {offers.map((offer) => (
+      {offers.map((offer, index) => (
         <article class="offer">
-          <a class="preview" href={offer.href} aria-label={`${offer.title}: Angebot ansehen`}>
+          <a class="preview" href={offer.href}>
             <div class="preview-bar"><span aria-hidden="true">● ● ●</span><span>{offer.name}</span><span aria-hidden="true">↗</span></div>
-            <img src={offer.image} alt={`Website-Beispiel für ${offer.title}`} width="1440" height="900" loading="lazy" decoding="async" />
+            <img src={offer.image} alt={`Website-Beispiel für ${offer.title}`} width="1440" height="900" loading={index === 0 ? "eager" : "lazy"} fetchpriority={index === 0 ? "high" : "auto"} decoding="async" />
           </a>
           <div class="offer-content">
             <p class="eyebrow">{offer.name}</p>
@@ -128,18 +128,18 @@ const steps = [
 
 <style>
   .services-page { --fg-dim: #a1a1aa; }
-  .industry-hero { padding-block: 48px 32px; text-align: center; }
+  .industry-hero { padding-block: clamp(64px, 8vw, 112px) 56px; text-align: center; }
   .industry-hero h1 { margin-top: 16px; font-size: clamp(42px, 5vw, 64px); }
   .industry-hero h1 span { color: var(--fg-muted); }
   .industry-hero .section-sub { max-width: 650px; margin: 20px auto 0; }
   .industries { scroll-margin-top: 100px; }
   .offers { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; }
-  .offer { display: flex; flex-direction: column; overflow: hidden; border: 1px solid var(--border-strong); border-radius: 16px; background: var(--bg-card); }
+  .offer { display: flex; flex-direction: column; overflow: hidden; border: 1px solid var(--border); border-radius: 24px; background: var(--bg-card); }
   .preview { display: block; border-bottom: 1px solid var(--border-strong); }
   .preview-bar { display: flex; align-items: center; justify-content: space-between; padding: 10px 16px; font-family: var(--font-mono); font-size: 11px; color: var(--fg-muted); }
   .preview-bar > span:first-child { color: var(--fg-faint); font-size: 8px; }
   .preview img { display: block; width: 100%; aspect-ratio: 1.6; object-fit: cover; object-position: top; }
-  .offer-content { display: flex; flex-direction: column; flex: 1; padding: 28px; }
+  .offer-content { display: flex; flex-direction: column; flex: 1; padding: 32px; }
   .offer h2 { margin-top: 10px; font-size: clamp(24px, 2.2vw, 30px); font-weight: 600; letter-spacing: -0.03em; line-height: 1.2; }
   .audience { margin-top: 10px; font-size: 12px; color: var(--fg-muted); }
   .offer-body { margin-top: 22px; font-size: 15px; line-height: 1.65; color: var(--fg-muted); }
