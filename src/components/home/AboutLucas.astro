@@ -39,7 +39,7 @@ const { about } = Astro.props;
     position: relative;
     overflow: hidden;
     border: 1px solid var(--border);
-    border-radius: 24px;
+    border-radius: 2px;
     background: var(--bg-card);
   }
   .photo img {
@@ -49,6 +49,7 @@ const { about } = Astro.props;
     aspect-ratio: 1;
     object-fit: cover;
     object-position: 55% 20%;
+    filter: grayscale(1);
   }
   .photo-tag {
     position: absolute;
@@ -74,8 +75,8 @@ const { about } = Astro.props;
     background: var(--accent);
   }
   .lead {
-    font-size: clamp(22px, 2vw, 28px);
-    font-weight: 500;
+    font-size: clamp(25px, 3vw, 42px);
+    font-weight: 450;
     letter-spacing: -0.025em;
     line-height: 1.35;
     text-wrap: pretty;
@@ -103,7 +104,7 @@ const { about } = Astro.props;
   }
   dd {
     margin-top: 4px;
-    font-weight: 500;
+    font-weight: 450;
   }
   .about-link { margin-top: 28px; }
   @media (max-width: 900px) {

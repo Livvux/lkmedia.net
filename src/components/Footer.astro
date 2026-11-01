@@ -33,7 +33,7 @@ const columns = [
   <div class="wrap">
     <div class="footer-inner">
       <div class="footer-brand">
-        <a class="footer-name" href={routeFor('home', lang)} aria-label="lkmedia – Startseite">lkmedia</a>
+        <a class="footer-name" href={routeFor('home', lang)} aria-label="lkmedia – Startseite">lk media<span aria-hidden="true">↗</span></a>
         <p class="footer-tag">Webdesign & SEO<br />aus Rastatt.</p>
         <a class="footer-contact" href={routeFor('contact', lang)}>Über Ihr Projekt sprechen <span aria-hidden="true">↗</span></a>
       </div>
@@ -74,8 +74,9 @@ const columns = [
     display: inline-flex;
     align-items: center;
     min-height: 44px;
-    font-size: 25px;
-    font-weight: 650;
+    gap: 32px;
+    font-size: clamp(48px, 7vw, 96px);
+    font-weight: 450;
     letter-spacing: -0.05em;
     line-height: 1;
   }

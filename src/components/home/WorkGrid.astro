@@ -89,13 +89,13 @@ const src = (s: (typeof shots)[number]) => s.image ?? `/landing/shots/${s.slug}-
 <style>
   .grid {
     display: grid;
-    grid-template-columns: repeat(6, minmax(0, 1fr));
-    gap: 40px 20px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 64px 32px;
     margin-top: 48px;
   }
   .cell {
     position: relative;
-    grid-column: span 2;
+    grid-column: span 1;
   }
   .preview-control {
     position: absolute;
@@ -112,8 +112,12 @@ const src = (s: (typeof shots)[number]) => s.image ?? `/landing/shots/${s.slug}-
   }
   .preview-control[hidden] { display: none; }
   .cell.big {
-    grid-column: span 3;
+    grid-column: 1 / -1;
   }
+  .big .frame { aspect-ratio: 16 / 9; }
+  .big .client { font-size: clamp(26px, 3.5vw, 48px); letter-spacing: -.045em; }
+  .big .scope { margin-top: 8px; }
+  .big .result { max-width: 54ch; font-size: 16px; }
   .tile {
     display: grid;
     gap: 6px;
@@ -125,7 +129,7 @@ const src = (s: (typeof shots)[number]) => s.image ?? `/landing/shots/${s.slug}-
     aspect-ratio: 16 / 10;
     margin-bottom: 10px;
     border: 1px solid var(--border);
-    border-radius: 20px;
+    border-radius: 2px;
     background: var(--bg-card);
     transition:
       border-color 0.25s ease,
@@ -150,7 +154,7 @@ const src = (s: (typeof shots)[number]) => s.image ?? `/landing/shots/${s.slug}-
     display: inline-flex;
     gap: 6px;
     font-size: 16px;
-    font-weight: 550;
+    font-weight: 450;
     letter-spacing: -0.01em;
   }
   .arrow {
@@ -201,6 +205,8 @@ const src = (s: (typeof shots)[number]) => s.image ?? `/landing/shots/${s.slug}-
     }
   }
   @media (max-width: 560px) {
+    .big .frame { aspect-ratio: 4 / 3; }
+    .meta { flex-wrap: wrap; gap: 4px 16px; }
     .grid {
       grid-template-columns: 1fr;
     }

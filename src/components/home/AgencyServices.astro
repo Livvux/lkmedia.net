@@ -1,0 +1,43 @@
+---
+const services = [
+  { title: 'Webdesign mit Charakter.', body: 'Ein Auftritt, der zu Ihrem Unternehmen passt. Mit klarer Struktur, eigener Gestaltung und Kontaktwegen, die Ihre Besucher verstehen.', href: '/leistungen', label: 'Webdesign entdecken' },
+  { title: 'Technik, die mitdenkt.', body: 'Schnelle Websites, saubere Entwicklung und Funktionen, die im Alltag helfen. Vom ersten Entwurf bis zur fertigen Website.', href: '/cases', label: 'Umsetzungen ansehen' },
+  { title: 'Lokal sichtbar werden.', body: 'Suchmaschinenoptimierung aus Rastatt: Ich prüfe Suchdaten, Inhalte und technische Hindernisse und setze die vereinbarten Verbesserungen um. Auch für bestehende Websites.', href: '/seo-rastatt', label: 'SEO in Rastatt' },
+  { title: 'Auch nach dem Launch da.', body: 'Hosting, technische Pflege und vereinbarte Inhaltsänderungen. Mit einem festen Ansprechpartner und einem klar definierten Leistungsumfang.', href: '/kontakt', label: 'Betreuung besprechen' },
+];
+---
+<section class="services wrap" aria-labelledby="agency-services-title">
+  <div class="services-heading" data-reveal>
+    <p class="eyebrow">Was ich für Sie tue</p>
+    <h2 id="agency-services-title">Gute Gestaltung.<br />Starke Umsetzung.</h2>
+    <a class="mono-link" href="/leistungen">Alle Leistungen <span aria-hidden="true">↗</span></a>
+  </div>
+  <ol>
+    {services.map((service, i) => <li data-reveal>
+      <span class="number" aria-hidden="true">[0{i + 1}]</span>
+      <h3><a href={service.href}>{service.title}<span class="sr-only"> – {service.label}</span></a></h3>
+      <p>{service.body}</p>
+      <span class="arrow" aria-hidden="true">↗</span>
+    </li>)}
+  </ol>
+</section>
+<style>
+  .services-heading { display: grid; grid-template-columns: 1fr auto; align-items: end; gap: 26px; margin-bottom: 72px; }
+  .services-heading .eyebrow { grid-column: 1/-1; }
+  h2 { font-size: clamp(40px,6vw,84px); font-weight: 450; letter-spacing: -.06em; line-height: 1.08; }
+  li { position: relative; display: grid; grid-template-columns: 64px minmax(0,1.2fr) minmax(0,1fr) 32px; gap: 28px; align-items: start; padding-block: 42px; border-top: 1px solid var(--border-strong); }
+  li:last-child { border-bottom: 1px solid var(--border-strong); }
+  .number { font-family: var(--font-mono); font-size: 11px; padding-top: 11px; color: var(--fg-muted); }
+  h3 { font-size: clamp(25px,3vw,40px); line-height: 1.2; letter-spacing: -.045em; font-weight: 450; }
+  h3 a::after { content: ''; position: absolute; inset: 0; }
+  p { max-width: 43ch; font-size: 16px; line-height: 1.7; color: var(--fg-muted); }
+  .arrow { font-size: 28px; transition: transform 250ms; }
+  li:hover .arrow { transform: translate(3px,-3px); }
+  @media(max-width: 760px) {
+    .services-heading { grid-template-columns: 1fr; gap: 24px; margin-bottom: 40px; }
+    li { grid-template-columns: 36px minmax(0,1fr) 24px; gap: 16px; padding-block: 30px; }
+    li p { grid-column: 2; font-size: 15px; }
+    .arrow { grid-column: 3; grid-row: 1; }
+    .number { padding-top: 5px; }
+  }
+</style>

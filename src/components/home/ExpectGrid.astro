@@ -34,7 +34,7 @@ const icons = [UserCheck, ClipboardCheck, LifeBuoy];
   .expect__grid {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 16px;
+    gap: 32px;
     margin-top: 44px;
   }
   .expect__cell {
@@ -45,10 +45,10 @@ const icons = [UserCheck, ClipboardCheck, LifeBuoy];
     align-content: start;
     gap: 14px;
     height: 100%;
-    padding: 28px;
-    border: 1px solid var(--border);
-    border-radius: var(--radius-lg);
-    background: var(--bg-card);
+    padding: 28px 0;
+    border-top: 1px solid var(--border-strong);
+    border-radius: 0;
+    background: transparent;
     transition:
       border-color 0.3s ease,
       transform 0.4s var(--ease-out);

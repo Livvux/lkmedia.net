@@ -1,7 +1,7 @@
 import { expect, test } from '@playwright/test';
 
 const pages = [
-  ['/', 'lk media.'],
+  ['/', 'Design, Technik &'],
   ['/anwaelte', 'Webdesign für Anwaltskanzleien'],
   ['/privatkliniken', 'Webdesign für Privatkliniken'],
   ['/luxus-immobilien', 'Webdesign für Luxus-Immobilien'],
@@ -51,7 +51,7 @@ test('homepage separates illustrative search examples from actual recommendation
   await preview.getByLabel('Ihr Betrieb').fill('Beispielbetrieb');
   await expect(preview.locator('.answer')).toContainText('Beispielbetrieb');
   await expect(preview.locator('.answer')).not.toContainText('wird häufig');
-  await expect(page.getByRole('link', { name: 'SEO für Ihre bestehende Website ansehen →' })).toHaveAttribute('href', '/seo-rastatt');
+  await expect(page.getByRole('link', { name: 'SEO für Ihre bestehende Website ansehen' })).toHaveAttribute('href', '/seo-rastatt');
 });
 
 
@@ -60,7 +60,9 @@ test('homepage hero renders without waiting for deferred scripts', async ({ page
   await page.goto('/');
   await expect(page.locator('h1')).toBeVisible();
   await expect(page.locator('main header.hero [data-reveal]')).toHaveCount(0);
-  expect(await page.locator('main header.hero .shot').evaluate(el => getComputedStyle(el).opacity)).toBe('1');
+  const image = page.locator('main header.hero .hero-image');
+  await expect(image).toBeVisible();
+  expect(await image.evaluate((el: HTMLImageElement) => el.complete && el.naturalWidth > 0)).toBe(true);
 });
 
 

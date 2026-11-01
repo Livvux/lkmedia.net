@@ -14,6 +14,7 @@ import ProcessSteps from './ProcessSteps.astro';
 import LatestPosts from './LatestPosts.astro';
 import AboutLucas from './AboutLucas.astro';
 import FinalCta from './FinalCta.astro';
+import AgencyServices from './AgencyServices.astro';
 
 interface Props { lang: Lang }
 const { lang } = Astro.props;
@@ -35,95 +36,67 @@ const metrics = [
 <div class="home">
   <HomeHero hero={c.hero} />
 
-  <TrustMarquee label={c.marquee.label} items={c.marquee.items} />
-
-  <MetricBand title={c.metrics.title} figures={metrics} />
-
-  <section class="wrap" aria-labelledby="offer-models">
-    <SectionHead n="01" id="offer-models" title={c.offers.title} sub={c.offers.sub} />
-    <OfferTabs tabs={c.offers.tabs} client:visible />
-  </section>
-
-  <WorkGrid proof={c.proof} />
-
-  <ExpectGrid stats={c.stats} />
-
-  <SearchPreview search={c.search} />
-
-  <section class="wrap" aria-labelledby="seo-rastatt">
-    <div class="seo" data-reveal>
-      <span class="seo-n" aria-hidden="true">05</span>
-      <h2 id="seo-rastatt" class="seo-title">Suchmaschinenoptimierung aus Rastatt.</h2>
-      <div class="seo-body">
-        <p>Ihre Website bekommt kaum passende Besucher oder Anfragen? Ich prüfe Suchdaten, Leistungsseiten und technische Hindernisse und setze die vereinbarten Verbesserungen direkt um. Das ist auch für bestehende Websites anderer Anbieter möglich.</p>
-        <p>Im kostenlosen Erstgespräch klären wir Ihre wichtigsten Leistungen und Ihr Einzugsgebiet. Analyse, Umsetzung und eine mögliche weitere Betreuung werden anschließend separat angeboten.</p>
-        <a class="mono-link" href="/seo-rastatt">SEO für Ihre bestehende Website ansehen →</a>
+  <div id="entdecken" class="paper intro-block">
+    <section class="intro wrap" aria-labelledby="intro-title">
+      <p class="eyebrow">lk media · seit 2015</p>
+      <div>
+        <h2 id="intro-title">Ein guter Auftritt ist kein Zufall.</h2>
+        <p class="intro-statement">Ich verbinde Gestaltung und Entwicklung zu Websites, die zu Ihrem Unternehmen passen. Klar im Design. Schnell im Alltag. Und dort sichtbar, wo Ihre Kunden suchen.</p>
+        <a class="mono-link" href="/ueber">Lernen wir uns kennen <span aria-hidden="true">↗</span></a>
       </div>
-    </div>
-  </section>
+    </section>
+    <MetricBand title={c.metrics.title} figures={metrics} />
+    <ProcessSteps process={c.process} />
+  </div>
 
-  <ProcessSteps process={c.process} />
+  <div class="work-block">
+    <WorkGrid proof={c.proof} />
+    <TrustMarquee label={c.marquee.label} items={c.marquee.items} />
+  </div>
 
-  <LatestPosts journal={c.journal} />
-  <AboutLucas about={c.about} />
+  <div class="paper services-block">
+    <AgencyServices />
+    <section class="wrap offers" aria-labelledby="offer-models">
+      <SectionHead n="02" id="offer-models" title={c.offers.title} sub={c.offers.sub} />
+      <OfferTabs tabs={c.offers.tabs} client:visible />
+    </section>
+    <SearchPreview search={c.search} />
+    <div class="wrap seo-link"><a class="mono-link" href="/seo-rastatt">SEO für Ihre bestehende Website ansehen <span aria-hidden="true">↗</span></a></div>
+  </div>
+
+  <div class="studio-block">
+    <AboutLucas about={c.about} />
+    <ExpectGrid stats={c.stats} />
+    <LatestPosts journal={c.journal} />
+  </div>
   <FinalCta cta={c.cta} />
 </div>
 
 <style>
-  /* Startseite: ein Raster, Haarlinien statt Flächen, Farbe nur als Akzent. */
-  .home {
-    display: flex;
-    flex-direction: column;
-    gap: clamp(96px, 12vw, 160px);
+  .home { --section-space: clamp(88px, 11vw, 160px); }
+  .paper {
+    --bg: #eeede9;
+    --bg-elev: #e7e6e2;
+    --bg-card: #e5e4df;
+    --fg: #1d1d1b;
+    --fg-muted: #555550;
+    --fg-dim: #62625c;
+    --fg-faint: #666660;
+    --border: #1d1d1b20;
+    --border-strong: #1d1d1b40;
+    --accent: #1d1d1b;
+    --accent-dim: #1d1d1b12;
+    color-scheme: light;
+    background: var(--bg);
+    color: var(--fg);
   }
-  .seo {
-    position: relative;
-    display: grid;
-    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
-    gap: 24px 48px;
-    padding: clamp(28px, 4vw, 48px);
-    border: 1px solid var(--border);
-    border-radius: 24px;
-    background: var(--bg-elev);
-    overflow: hidden;
-  }
-  .seo-n {
-    position: absolute;
-    top: clamp(28px, 4vw, 48px);
-    right: clamp(28px, 4vw, 48px);
-    display: inline-grid;
-    place-items: center;
-    min-width: 30px;
-    height: 22px;
-    padding: 0 8px;
-    border: 1px solid var(--border-strong);
-    border-radius: 999px;
-    color: var(--accent);
-    font-family: var(--font-mono);
-    font-size: 11px;
-    letter-spacing: 0.06em;
-  }
-  .seo-title {
-    font-size: clamp(24px, 2.4vw, 32px);
-    font-weight: 600;
-    letter-spacing: -0.035em;
-    line-height: 1.15;
-    text-wrap: balance;
-  }
-  .seo-body {
-    display: grid;
-    gap: 16px;
-    justify-items: start;
-    color: var(--fg-muted);
-    line-height: 1.65;
-  }
-  @media (max-width: 900px) {
-    .seo {
-      grid-template-columns: 1fr;
-    }
-
-    .seo-n {
-      display: none;
-    }
-  }
+  .intro-block { grid-template-columns: minmax(0, 1fr); display: grid; gap: 88px; padding-top: var(--section-space); }
+  .intro { display: grid; grid-template-columns: 1fr 3fr; gap: 32px; }
+  .intro > .eyebrow { padding-top: 12px; }
+  .intro h2 { max-width: 18ch; font-size: clamp(40px, 5.5vw, 76px); font-weight: 450; line-height: 1.1; letter-spacing: -.055em; }
+  .intro-statement { max-width: 36ch; margin-block: 32px; color: var(--fg-muted); font-size: clamp(23px, 2.7vw, 38px); line-height: 1.4; letter-spacing: -.035em; }
+  .work-block, .services-block, .studio-block { grid-template-columns: minmax(0, 1fr); display: grid; gap: var(--section-space); padding-block: var(--section-space); }
+  .services-block { gap: clamp(72px,9vw,128px); }
+  .seo-link { margin-top: -50px; }
+  @media(max-width: 760px) { .intro { grid-template-columns: 1fr; } .intro-block { gap: 56px; } .seo-link { margin-top: -30px; } }
 </style>

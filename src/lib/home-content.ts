@@ -26,11 +26,9 @@ export interface Offer {
 
 export interface HomeContent {
   hero: {
-    eyebrow?: string;
+    eyebrow: string;
     title: string;
     claim: string;
-    subtitle: string;
-    lead: string;
     primary: Link;
     secondary: Link;
   };
@@ -130,10 +128,9 @@ const shotsDe: Shot[] = [
 
 const de: HomeContent = {
   hero: {
-    title: "lk media.",
-    claim: "Klar, schnell, auffindbar.",
-    subtitle: "seit 2015",
-    lead: "Ich plane und entwickle Ihre Website, strukturiere Leistungen und Kontaktwege und übernehme die technische Betreuung. Für Praxen, Fahrschulen und Handwerksbetriebe gibt es feste Pakete; besondere Anforderungen besprechen wir individuell.",
+    eyebrow: "lk media · Digitales Handwerk aus Rastatt",
+    title: "Design, Technik &",
+    claim: "ein klarer Auftritt.",
     primary: { label: "Website-Pakete vergleichen", href: routeFor("services", "de") },
     secondary: {
       label: "Individuelles Projekt besprechen",

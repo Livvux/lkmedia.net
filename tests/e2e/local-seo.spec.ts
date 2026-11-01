@@ -14,7 +14,7 @@ for (const width of [320, 390, 1280]) {
     });
     await page.setViewportSize({ width, height: 844 });
     await page.goto('/');
-    await page.getByRole('link', { name: 'SEO für Ihre bestehende Website ansehen →' }).click();
+    await page.getByRole('link', { name: 'SEO für Ihre bestehende Website ansehen' }).click();
     await expect(page).toHaveURL(/\/seo-rastatt$/);
     await expect(page.getByRole('heading', { level: 1 })).toContainText('Suchmaschinenoptimierung für Unternehmen in Rastatt');
     await expect(page.getByRole('link', { name: 'SEO-Erstgespräch vereinbaren', exact: true })).toHaveAttribute('href', '/kontakt#termin');
