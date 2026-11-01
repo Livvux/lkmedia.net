@@ -1,6 +1,7 @@
 ---
 import { getCollection, render } from 'astro:content';
 import Post from '../../layouts/Post.astro';
+import OfferCta from '../../components/OfferCta.astro';
 
 export async function getStaticPaths() {
   const posts = await getCollection(
@@ -16,4 +17,4 @@ export async function getStaticPaths() {
 const { entry } = Astro.props;
 const { Content } = await render(entry);
 ---
-<Post entry={entry} lang="de"><Content /></Post>
+<Post entry={entry} lang="de"><Content components={{ OfferCta }} /></Post>
