@@ -2,7 +2,7 @@ import { expect, test } from '@playwright/test';
 
 test.use({ contextOptions: { reducedMotion: 'reduce' } });
 
-test('home separates packages from individual projects before the portfolio', async ({ page }) => {
+test('home connects packages, individual projects and portfolio evidence', async ({ page }) => {
   await page.goto('/');
   const hero = page.locator('main header');
   await hero.getByRole('link', { name: 'Website-Pakete vergleichen' }).click();
@@ -10,7 +10,8 @@ test('home separates packages from individual projects before the portfolio', as
   await expect(page.locator('main')).toContainText('2.498 €');
   await page.goto('/');
   await expect(hero.getByRole('link', { name: 'Individuelles Projekt besprechen' })).toHaveAttribute('href', '/kontakt#termin');
-  expect(await page.locator('#offer-models').evaluate(el => el.compareDocumentPosition(document.querySelector('#arbeiten')!) & Node.DOCUMENT_POSITION_FOLLOWING)).toBeTruthy();
+  await expect(page.locator('#offer-models')).toHaveText('Zwei Wege zu Ihrer Website');
+  await expect(page.locator('#arbeiten a[href^="/cases/"]')).toHaveCount(8);
   for (const path of ['/', '/cases/klavierbau-milde']) {
     await page.goto(path);
     await expect(page.locator('main')).not.toContainText(/Position 1–2|Klickrate über 16|0,7 s|Lighthouse 100/);

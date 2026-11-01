@@ -1,7 +1,7 @@
 ---
 
 
-// Swiss-Kopfzeile: Nummer links, Titel und Unterzeile, optionaler Link rechts.
+// Gemeinsame Abschnittsüberschrift mit optionalem weiterführenden Link.
 interface Props { n: string; id: string; title: string; sub?: string; link?: { label: string; href: string } }
 const { n, id, title, sub, link } = Astro.props;
 ---
@@ -20,9 +20,10 @@ const { n, id, title, sub, link } = Astro.props;
     grid-template-columns: 40px minmax(0, 1fr) auto;
     align-items: end;
     gap: 16px 24px;
-    padding-top: 28px;
-    border-top: 1px solid var(--border);
+    padding-top: 0;
   }
+  .head h2 { font-size: clamp(36px, 5vw, 72px); font-weight: 450; letter-spacing: -.055em; line-height: 1.1; }
+  .head :global(.section-sub) { max-width: 48ch; }
   .n {
     align-self: start;
     display: inline-grid;
@@ -31,7 +32,7 @@ const { n, id, title, sub, link } = Astro.props;
     height: 22px;
     padding: 0 8px;
     border: 0;
-    border-radius: 999px;
+    border-radius: 0;
     color: var(--accent);
     font-family: var(--font-mono);
     font-size: 11px;
