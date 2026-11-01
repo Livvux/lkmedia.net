@@ -31,8 +31,8 @@ test('updated articles expose the editorial date to readers and machines', async
   const published = page.locator('article time').first();
   await expect(published).toHaveAttribute('datetime', '2025-12-18T00:00:00.000Z');
   const updated = page.locator('article time').nth(1);
-  await expect(updated).toHaveText('2026-10-16');
-  await expect(updated).toHaveAttribute('datetime', '2026-10-16T00:00:00.000Z');
+  await expect(updated).toHaveText('2026-11-01');
+  await expect(updated).toHaveAttribute('datetime', '2026-11-01T00:00:00.000Z');
   await expect(updated).toBeVisible();
   await expect(updated.locator('..')).toContainText('Aktualisiert:');
 });

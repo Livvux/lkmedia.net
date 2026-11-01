@@ -1,0 +1,91 @@
+---
+title: "Online-Terminbuchung auf der Praxis-Website einbinden"
+description: "Terminlink oder eingebettetes Widget? Was Arztpraxen bei Doctolib, samedi und anderen Anbietern zu Datenfluss, Buchungsweg und Mobil-Test beachten sollten."
+pubDate: 2026-11-01
+lang: de
+topic: arztpraxen
+tags: [arztpraxis, terminbuchung, docweb]
+ogImage: /posts/online-terminbuchung-praxis-website.svg
+---
+
+**Der einfachste Weg zur Online-Terminbuchung ist ein gut sichtbarer Button „Termin buchen“, der direkt zum Kalender Ihrer Praxis beim Terminanbieter führt.** Ein eingebettetes Buchungs-Widget hält Patienten auf der eigenen Website, stellt aber schon beim Seitenaufruf eine Verbindung zum Anbieter her und braucht deshalb mehr Abstimmung. Für beide Wege gilt: Der Link muss zur richtigen Praxis führen, auf dem Smartphone funktionieren und Telefon sowie E-Mail als Alternative sichtbar lassen.
+
+Dieser Beitrag behandelt die technische und praktische Seite. Datenschutz und Verträge mit dem Terminanbieter klärt die Praxis mit ihrer Datenschutzberatung.
+
+![Schematischer Ablauf vom Termin-Button der Praxis-Website bis zum Kalender der Praxis beim Anbieter](/posts/online-terminbuchung-praxis-website.svg)
+
+*Eigene schematische Grafik. Die Darstellung zeigt einen Prüfablauf, keine reale Praxis und keinen echten Kalender.*
+
+## Link oder eingebettetes Widget: Was passt zur Praxis?
+
+Beide Varianten sind verbreitet. samedi beschreibt in seiner [Anleitung zum Buchungswidget](https://www.samedi.com/assets/samedi-Individuelles_Buchungswidget.pdf), dass Praxen das Widget direkt auf der Website einbauen oder den Link teilen können. Die Unterschiede liegen vor allem im Datenfluss:
+
+| Kriterium | Direkter Link | Eingebettetes Widget |
+| --- | --- | --- |
+| Technik | Normaler Link oder Button | Code oder iframe des Anbieters auf der eigenen Seite |
+| Verbindung zum Anbieter | Erst nach dem Klick | Schon beim Laden der Seite |
+| Abstimmung mit der Datenschutzberatung | Überschaubar | Umfangreicher, oft mit Zwei-Klick-Lösung umgesetzt |
+| Pflege | Link austauschen | Code, Darstellung und Datenschutzerklärung prüfen |
+| Erlebnis für Patienten | Wechsel auf die Seite des Anbieters | Buchung innerhalb der Praxisseite |
+
+Achten Sie bei vorgefertigten Buttons darauf, ob Grafiken vom Server des Anbieters geladen werden. Der Website-Button, den Doctolib in seiner [Community](https://community.doctolib.de/t/aktualisieren-sie-ihren-website-button/45322) veröffentlicht hat, bindet in der dort gezeigten Fassung ein Logo von einer Doctolib-Domain ein. Damit entsteht bereits beim Seitenaufruf eine Verbindung zum Anbieter. Ein Button, dessen Grafik auf Ihrem eigenen Server liegt, vermeidet das.
+
+## Was passiert technisch, wenn ein Buchungs-Widget lädt?
+
+Ein eingebettetes Widget lädt Code vom Server des Anbieters, sobald die Seite aufgerufen wird. Der Anbieter erhält dabei mindestens die IP-Adresse der Besucher. Je nach Umsetzung legt das Widget außerdem Cookies an oder nutzt den lokalen Speicher des Browsers. Bei einer Arztpraxis kann schon der Aufruf einer Buchungsseite für eine bestimmte Fachrichtung etwas über die Besucher aussagen.
+
+Was ein Widget beim Laden tatsächlich tut, sehen Sie in den Entwicklerwerkzeugen des Browsers unter „Netzwerk“ und „Speicher“. Diese Übersicht ist die Grundlage für das Gespräch mit Ihrer Datenschutzberatung, die über Einwilligung und Rechtsgrundlage entscheidet. Technisch verbreitet ist die Zwei-Klick-Einbindung: Das Widget lädt erst, wenn Patienten aktiv auf „Terminbuchung laden“ tippen und vorher erfahren, dass dabei Daten an den Anbieter gehen.
+
+[docweb](/docweb) setzt auf den direkten Link. Der Button „Termin buchen“ öffnet den Kalender Ihrer Praxis bei Doctolib, samedi oder einem anderen Kalender-Dienst. Die Website selbst bindet keine Statistik- oder Kartendienste ein.
+
+## Was klärt die Praxis vor dem Start mit dem Terminanbieter?
+
+Bei der Online-Terminbuchung verarbeitet der Anbieter Daten Ihrer Patientinnen und Patienten. Die vertragliche und datenschutzrechtliche Einordnung übernimmt Ihre Datenschutzberatung. Praktisch sollten vor dem Start diese Fragen beantwortet sein:
+
+- welche Verträge mit dem Anbieter bestehen und ob Ihre Datenschutzberatung sie geprüft hat,
+- wo die Daten gespeichert werden und welche Unterauftragnehmer beteiligt sind,
+- welche Angaben Patienten bei der Buchung machen müssen; fragen Sie nur ab, was für den Termin nötig ist,
+- welche Gebühren anfallen und wer sie zahlt.
+
+Ob die Datenschutzerklärung der Website angepasst werden muss, klären Sie ebenfalls mit Ihrer Datenschutzberatung. Bei docweb sind die Gebühren des Kalender-Dienstes nicht enthalten; Sie zahlen sie direkt an den Anbieter.
+
+<OfferCta topic="arztpraxen" />
+
+## Wohin muss der Button „Termin buchen“ führen?
+
+Zum Kalender Ihrer Praxis. Ein Link auf die Startseite von Doctolib oder samedi zwingt Patienten, die Praxis dort erneut zu suchen. Bei ähnlichen Praxisnamen in derselben Stadt kann das zu Verwechslungen führen.
+
+Den richtigen Link finden Sie im Profil Ihrer Praxis. Doctolib erklärt in der oben verlinkten Community-Anleitung, dass Sie Ihr Profil öffnen, „Termin buchen“ wählen und die Adresse aus der Browserzeile kopieren. Im docweb-Onboarding prüft das Formular, ob ein eingetragener Doctolib- oder samedi-Link nur zur Startseite des Anbieters führt, und weist dann darauf hin.
+
+Arbeiten in der Praxis mehrere Ärztinnen und Ärzte oder gibt es mehrere Standorte, entscheiden Sie bewusst zwischen einem gemeinsamen Praxislink und einzelnen Kalenderlinks. Beschriften Sie Buttons dann eindeutig, etwa „Termin bei Dr. Muster buchen“.
+
+## Wie testen Sie die Terminbuchung auf dem Smartphone?
+
+1. Öffnen Sie die Website auf einem Smartphone im Mobilfunknetz, nicht nur am Praxisrechner.
+2. Tippen Sie auf „Termin buchen“ und prüfen Sie, ob die richtige Praxis mit freien Terminen erscheint.
+3. Prüfen Sie bei einem Widget, ob es ohne seitliches Scrollen bedienbar ist und die Eingabefelder sichtbar bleiben, wenn die Tastatur erscheint.
+4. Kontrollieren Sie, ob der Weg zurück zur Website verständlich ist.
+5. Legen Sie in Absprache mit dem Praxisteam einen Testtermin an und stornieren Sie ihn wieder, sofern Ihr Anbieter das vorsieht.
+6. Wiederholen Sie den Test nach jeder Änderung an Website oder Kalender.
+
+Dieser Test ersetzt nicht die Prüfung der Verträge und Datenflüsse, zeigt aber schnell, ob Patienten an ihr Ziel kommen.
+
+## Was gilt, wenn die Praxis keine Online-Termine anbietet?
+
+Viele Praxen vergeben Termine bewusst telefonisch, etwa nach einer kurzen Ersteinschätzung. Dann sollte die Website das klar sagen: Telefonnummer als antippbarer Link, Telefonzeiten, E-Mail-Adresse und ein Hinweis, dass dringende Anliegen nicht per E-Mail gestellt werden sollten. Auch in docweb lässt sich statt eines Kalenderlinks Telefon oder E-Mail als Terminweg festlegen.
+
+Nennen Sie außerdem die 112 für Notfälle und den ärztlichen Bereitschaftsdienst unter 116117 für dringende Fälle außerhalb der Sprechzeiten. Bietet die Praxis Online-Termine an, bleiben Telefon und E-Mail trotzdem sichtbar: für Patienten ohne Smartphone und für den Fall, dass der Kalender-Dienst gerade nicht erreichbar ist.
+
+## Checkliste vor dem Start
+
+- Der Terminlink führt zum Kalender der Praxis, nicht zur Startseite des Anbieters.
+- Der Button ist auf jeder Seite sichtbar und auf dem Smartphone gut antippbar.
+- Bei einem Widget ist das Ladeverhalten dokumentiert und mit der Datenschutzberatung abgestimmt.
+- Verträge, Speicherorte und Datenschutzerklärung sind mit der Datenschutzberatung geklärt.
+- Telefon, Telefonzeiten und E-Mail bleiben sichtbar.
+- Hinweise auf 112 und 116117 sind vorhanden.
+- Der mobile Test ist dokumentiert, und eine Person ist für spätere Linkänderungen zuständig.
+
+Welche Inhalte eine Praxiswebsite außerdem braucht, erklärt [Arztpraxis-Website erstellen lassen](/blog/arztpraxis-website-erstellen-lassen/). Wie der Terminlink auch im [Google-Unternehmensprofil der Praxis](/blog/google-unternehmensprofil-arztpraxis/) richtig hinterlegt wird, steht im Beitrag zum Profil.
+
+**Nächster Schritt:** [Praxis-Website mit direktem Terminlink ansehen](/docweb) oder [Ihren Buchungsweg besprechen](/kontakt).

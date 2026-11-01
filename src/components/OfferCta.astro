@@ -1,0 +1,28 @@
+---
+import { blogTopics, type BlogTopicId } from '../lib/blog-topics';
+import { DOCWEB } from '../lib/docweb';
+import { FAHRSCHULWEB } from '../lib/fahrschulweb';
+import { HANDWERKWEB } from '../lib/handwerkweb';
+
+interface Props { topic: BlogTopicId }
+const { topic } = Astro.props;
+
+// Prices come from the product constants so the article never drifts from checkout.
+const pitches: Partial<Record<BlogTopicId, string>> = {
+  kanzleien: 'Individuelles Webdesign für Kanzleien: klare Rechtsgebiete, Standort und Mandatsanfrage.',
+  fahrschulen: `Fahrschul-Website mit Online-Anmeldung: ${FAHRSCHULWEB.setupPrice} Einrichtung, ${FAHRSCHULWEB.monthlyPrice} monatlich.`,
+  arztpraxen: `Praxis-Website mit Terminlink: ${DOCWEB.setupPrice} Einrichtung, ${DOCWEB.monthlyPrice} monatlich.`,
+  handwerk: `Handwerker-Website mit Projektanfrage und Bewerbung: ${HANDWERKWEB.setupPrice} Einrichtung, ${HANDWERKWEB.monthlyPrice} monatlich.`,
+};
+const offer = blogTopics[topic]?.offer;
+// Non-breaking space keeps "49 €" together on narrow screens.
+const pitch = pitches[topic]?.replace(/ €/g, "\u00a0€");
+---
+{offer && pitch && (
+  <aside class="not-prose my-12 border border-white/15 px-6 py-5" aria-label="Passendes Angebot">
+    <p class="leading-relaxed text-white/80">{pitch}</p>
+    <a href={offer.href} class="mt-3 inline-block font-medium underline decoration-white/30 underline-offset-4 hover:decoration-white">
+      {offer.label} ansehen →
+    </a>
+  </aside>
+)}

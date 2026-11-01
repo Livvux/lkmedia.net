@@ -36,3 +36,14 @@ test('the Kanzlei service hub links back to its supporting guides', async ({ pag
   await expect(guides.locator('a[href="/kanzlei-marketing-2026-anwaelte-google/"]')).toHaveCount(1);
   await expect(guides.locator('a[href="/local-seo-anwaelte-google-maps/"]')).toHaveCount(1);
 });
+
+test('topic articles show one offer box mid-article with current package prices', async ({ page }) => {
+  await page.goto('/blog/online-terminbuchung-praxis-website/');
+  const offer = page.locator('article aside[aria-label="Passendes Angebot"]');
+  await expect(offer).toHaveCount(1);
+  await expect(offer).toContainText('1.490 €');
+  await expect(offer.locator('a[href="/docweb"]')).toHaveCount(1);
+
+  await page.goto('/blog/rankmath-einstellungen-2025/');
+  await expect(page.locator('article aside[aria-label="Passendes Angebot"]')).toHaveCount(0);
+});

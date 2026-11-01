@@ -21,6 +21,8 @@ const noindexRoutes = [
   /^\/aenderung(?:\/|$)/,
   /\/(?:onboarding|danke)$/,
   /^\/blog\/real-debrid-review-multi-hoster-downloader$/,
+  /^\/blog\/ki-coding-modelle-ranking-swe-bench-2025$/,
+  /^\/e-mails-schreiben-mit-chatgpt$/,
 ];
 
 // Note: Astro v5+ removed `output: 'hybrid'`. `output: 'static'` now supports

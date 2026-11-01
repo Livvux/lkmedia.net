@@ -4,16 +4,20 @@ const publishedPosts = [
   '/blog/agent-browser-vs-ego-lite-benchmark/',
   '/blog/arztpraxis-website-erstellen-lassen/',
   '/case-study-patricks-fahrschule-local-seo/',
-  '/e-mails-schreiben-mit-chatgpt/',
   '/blog/fahrschul-website-kosten-funktionen/',
   '/blog/how-its-built-website-technologien-erkennen/',
   '/kanzlei-marketing-2026-anwaelte-google/',
   '/blog/kanzlei-website-kosten/',
-  '/blog/ki-coding-modelle-ranking-swe-bench-2025/',
   '/local-seo-anwaelte-google-maps/',
   '/marketing-ideen-fahrschule/',
   '/blog/rankmath-einstellungen-2025/',
   '/blog/webdesign-fuer-handwerker/',
+  '/blog/google-unternehmensprofil-arztpraxis/',
+  '/blog/online-terminbuchung-praxis-website/',
+  '/blog/website-psychotherapie-praxis/',
+  '/blog/google-bewertungen-handwerker/',
+  '/blog/karriereseite-handwerksbetrieb/',
+  '/blog/local-seo-handwerker-einsatzgebiet/',
 ];
 
 const editorialIllustrations = [
@@ -24,6 +28,12 @@ const editorialIllustrations = [
   'patricks-fahrschule-struktur.svg',
   'kanzlei-marketing-audit.svg',
   'fahrschule-marketing-ablauf.svg',
+  'google-unternehmensprofil-arztpraxis.svg',
+  'online-terminbuchung-praxis-website.svg',
+  'website-psychotherapie-praxis.svg',
+  'google-bewertungen-handwerker.svg',
+  'karriereseite-handwerksbetrieb.svg',
+  'local-seo-handwerker-einsatzgebiet.svg',
 ];
 
 test('every indexable article has an accessible visible image with a working source', async ({ page, request }) => {

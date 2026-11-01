@@ -1,8 +1,8 @@
 ---
-title: "Rank Math Einstellungen: Setup, Sitemap und Metadaten"
-description: "Die optimalen Rank Math Einstellungen fuer WordPress SEO 2026. Anleitung mit Einstellungs-Schemata: Sitemap, Schema, Redirects und mehr korrekt konfigurieren."
+title: "Rank Math Einstellungen: Setup, Sitemap, Schema und Metadaten"
+description: "Rank Math für WordPress einrichten: Module, Titel, Sitemap, strukturierte Daten (Schema), Weiterleitungen und Messung. Mit Prüfschritten nach dem Setup."
 pubDate: 2025-12-18
-updatedDate: 2026-10-16
+updatedDate: 2026-11-01
 lang: de
 topic: seo-technik
 author: "Lucas Kleipoedszus"
@@ -54,13 +54,25 @@ Die [Rank-Math-Anleitung zur Sitemap](https://rankmath.com/kb/configure-sitemaps
 
 Öffnen Sie einzelne URLs zusätzlich mit der URL-Prüfung der Search Console. Prüfen Sie insbesondere Canonical, Indexierungsstatus und mögliche Abruffehler.
 
-## 5. Strukturierte Daten passend zum Inhalt
+## 5. Strukturierte Daten (Schema) in Rank Math einrichten
 
 Ein Artikel kann als Article beziehungsweise BlogPosting beschrieben werden. Ein tatsächliches Angebot braucht passende Angebotsdaten. Unternehmensangaben müssen mit der sichtbaren Website übereinstimmen.
 
 ![Einstellungs-Schema: Datentyp und belegbare Angaben abstimmen](/posts/rankmath/rankmath-schema-settings.svg)
 
 Fügen Sie keine erfundenen Bewertungen, Qualifikationen oder Ergebnisse hinzu. Prüfen Sie außerdem, ob Theme, andere Plugins oder individuell eingebauter Code bereits Schema erzeugen. Die Ausgabe sollte nicht mehrere widersprüchliche Beschreibungen derselben Organisation enthalten.
+
+Rank Math verteilt die Einstellungen für strukturierte Daten auf drei Stellen. Die Menünamen können je nach Version und Sprache leicht abweichen:
+
+| Ebene | Wo in Rank Math | Was Sie dort festlegen |
+| --- | --- | --- |
+| Standard je Inhaltstyp | **Rank Math SEO → Titel & Meta**, Reiter des Inhaltstyps (z. B. Beiträge), Option **Schema-Typ** | Welcher Typ neuen Beiträgen oder Seiten automatisch zugewiesen wird, etwa Article für Beiträge |
+| Einzelner Beitrag | Im Editor das Rank-Math-Panel, Reiter **Schema**, dann **Schema Generator** | Typ für genau diese URL ändern, Felder ergänzen, mit „Für diesen Beitrag speichern“ sichern |
+| Website und Organisation | Modul **Local SEO** aktivieren, dann **Titel & Meta → Local SEO** | Person oder Organisation, Name, Logo und Website-Name für das WebSite-Markup |
+
+Einige Funktionen gibt es [laut Rank-Math-Dokumentation](https://rankmath.com/kb/rich-snippets/) nur in der PRO-Version, darunter Schema-Vorlagen mit Anzeigebedingungen, der Import vorhandener Schemata und mehrere Schema-Typen auf einer Seite. FAQ- und HowTo-Markup erzeugt die kostenlose Version über die eigenen Rank-Math-Blöcke.
+
+**Prüfablauf:** Öffnen Sie einen veröffentlichten Beitrag im [Test für Rich-Suchergebnisse](https://search.google.com/test/rich-results) und kontrollieren Sie, ob genau ein Article-Markup mit korrektem Autor und Datum erscheint. Taucht derselbe Typ doppelt auf, erzeugt meist zusätzlich das Theme oder ein weiteres Plugin Schema.
 
 Die [Dokumentation zu strukturierten Daten von Google](https://developers.google.com/search/docs/appearance/structured-data/intro-structured-data) erklärt die Grundlagen. Korrektes Markup garantiert keine besondere Darstellung in den Suchergebnissen.
 
