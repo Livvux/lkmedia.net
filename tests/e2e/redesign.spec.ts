@@ -36,7 +36,7 @@ for (const width of [320, 390, 1440]) {
       await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), path).toBe(true);
       // Reduced motion must also cancel JavaScript-driven decoration.
-      expect(await page.evaluate(() => document.getAnimations().filter((animation) => animation.playState === 'running').length), path).toBe(0);
+      await expect.poll(() => page.evaluate(() => document.getAnimations().filter((animation) => animation.playState === 'running').length), { message: path }).toBe(0);
     }
     expect(errors).toEqual([]);
   });

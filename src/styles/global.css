@@ -327,7 +327,7 @@ img {
 }
 
 /* Scroll reveal: toggled by the observer in Base.astro; ohne JS bleibt alles sichtbar */
-.reveal-ready [data-reveal] {
+.reveal-ready [data-reveal]:not(.home [data-reveal]) {
   opacity: 0;
   transform: translateY(8px);
   transition:
