@@ -1,0 +1,118 @@
+.home .motion-word-mask {
+  display: inline-block;
+  overflow: clip;
+  vertical-align: top;
+  padding-bottom: 0.15em;
+  margin-bottom: -0.15em;
+}
+
+.home .motion-word {
+  display: inline-block;
+  transform-origin: left bottom;
+}
+
+.home .intro-statement {
+  color: var(--fg);
+}
+
+.home .final-watermark {
+  position: absolute;
+  bottom: -0.28em;
+  left: 0;
+  width: max-content;
+  font-size: clamp(120px, 24vw, 420px);
+  font-weight: 500;
+  letter-spacing: -0.07em;
+  line-height: 1;
+  color: transparent;
+  -webkit-text-stroke: 1px #ffffff16;
+  pointer-events: none;
+}
+
+.home .final-orbit {
+  gap: 32px;
+  min-height: 76px;
+  padding-inline: 32px;
+}
+
+.home .final-orbit svg {
+  width: 24px;
+  height: 24px;
+  rotate: -35deg;
+}
+
+@media (min-width: 900px) {
+  .home .services-heading {
+    position: sticky;
+    top: 120px;
+    align-self: start;
+    grid-template-columns: 1fr;
+  }
+
+  .home .services {
+    display: grid;
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.25fr);
+    gap: clamp(48px, 7vw, 110px);
+    align-items: start;
+  }
+
+  .home .services h2 {
+    font-size: clamp(48px, 4.7vw, 72px);
+  }
+
+  .home .services li {
+    grid-template-columns: 40px minmax(0, 1fr) 28px;
+    gap: 20px;
+    padding-block: 36px;
+  }
+
+  .home .services li p {
+    grid-column: 2;
+  }
+
+  .home .services .arrow {
+    grid-column: 3;
+    grid-row: 1;
+  }
+
+  .home .work .cell:not(.big):nth-child(even) {
+    margin-top: 100px;
+  }
+
+  .home .work .cell:not(.big):nth-child(odd) {
+    margin-bottom: 100px;
+  }
+}
+
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .home .services li {
+    transition: background-color 350ms;
+  }
+
+  .home .services li:hover {
+    background: #1d1d1b07;
+  }
+
+  .home .mono-link span,
+  .home .hero-bottom a span {
+    transition: transform 350ms var(--ease-out);
+  }
+
+  .home .mono-link:hover span {
+    transform: translate(3px, -3px);
+  }
+
+  .home .hero-bottom a:hover span {
+    transform: translateY(5px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home .motion-word,
+  .home [data-motion-image] img,
+  .home [data-motion-image] video,
+  .home .final-watermark {
+    transform: none !important;
+    opacity: 1 !important;
+  }
+}

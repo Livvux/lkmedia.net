@@ -15,6 +15,7 @@ import LatestPosts from './LatestPosts.astro';
 import AboutLucas from './AboutLucas.astro';
 import FinalCta from './FinalCta.astro';
 import AgencyServices from './AgencyServices.astro';
+import '../../styles/home-motion.css';
 
 interface Props { lang: Lang }
 const { lang } = Astro.props;
@@ -71,6 +72,10 @@ const metrics = [
   </div>
   <FinalCta cta={c.cta} />
 </div>
+
+<script>
+  import '../../scripts/home-motion';
+</script>
 
 <style>
   .home { --section-space: clamp(88px, 11vw, 160px); }

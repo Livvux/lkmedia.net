@@ -20,7 +20,7 @@ const src = (s: (typeof shots)[number]) => s.image ?? `/landing/shots/${s.slug}-
     {shots.map((shot, i) => (
       <li class:list={['cell', { big: i < 2 }]} data-reveal style={`--d:${(i % 3) * 70}ms`}>
         <a class="tile" href={`${routeFor('cases', 'de')}/${shot.slug}`}>
-          <span class="frame">
+          <span class="frame" data-motion-image>
             {shot.slug === 'eichhoernchenberger' ? (
               <video id={`preview-${shot.slug}`} data-preview data-src="/cases/eichhoernchenberger/walkthrough.mp4" poster="/cases/eichhoernchenberger/desktop.webp" muted loop playsinline preload="none" aria-label={`Rundgang durch ${shot.domain}`}></video>
             ) : (
