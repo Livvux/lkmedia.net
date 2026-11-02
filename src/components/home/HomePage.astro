@@ -51,6 +51,10 @@ const metrics = [
   </div>
 
   <div class="work-block">
+    <div class="scroll-band" aria-hidden="true">
+      <p data-band-row>{'Webdesign · Entwicklung · SEO · '.repeat(4)}</p>
+      <p data-band-row class="outline">{'Klar · Schnell · Sichtbar · '.repeat(4)}</p>
+    </div>
     <WorkGrid proof={c.proof} />
     <TrustMarquee label={c.marquee.label} items={c.marquee.items} />
   </div>
@@ -103,5 +107,8 @@ const metrics = [
   .work-block, .services-block, .studio-block { grid-template-columns: minmax(0, 1fr); display: grid; gap: var(--section-space); padding-block: var(--section-space); }
   .services-block { gap: clamp(72px,9vw,128px); }
   .seo-link { margin-top: -50px; }
+  .scroll-band { overflow: clip; display: grid; gap: .04em; font-size: clamp(64px, 13vw, 210px); font-weight: 450; line-height: 1.05; letter-spacing: -.06em; white-space: nowrap; user-select: none; }
+  .scroll-band p { width: max-content; }
+  .scroll-band .outline { color: transparent; -webkit-text-stroke: 1px #f4f3ef55; }
   @media(max-width: 760px) { .intro { grid-template-columns: 1fr; } .intro-block { gap: 56px; } .seo-link { margin-top: -30px; } }
 </style>
