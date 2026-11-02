@@ -326,20 +326,29 @@ img {
   animation-delay: var(--d, 0ms);
 }
 
-/* Scroll reveal: toggled by the observer in Base.astro; ohne JS bleibt alles sichtbar */
-.reveal-ready [data-reveal]:not(.home [data-reveal]) {
-  opacity: 0;
-  transform: translateY(8px);
-  transition:
-    opacity 0.4s var(--ease-out),
-    transform 0.4s var(--ease-out);
-  transition-delay: var(--d, 0ms);
+/* Wortmasken und Lesefortschritt aus src/scripts/split-words.ts / site-motion.ts */
+.motion-word-mask {
+  display: inline-block;
+  overflow: clip;
+  vertical-align: top;
+  padding-bottom: 0.15em;
+  margin-bottom: -0.15em;
 }
 
-[data-reveal].is-visible,
-.reveal-ready [data-reveal].is-visible {
-  opacity: 1;
-  transform: none;
+.motion-word {
+  display: inline-block;
+  transform-origin: left bottom;
+}
+
+.read-progress {
+  position: fixed;
+  z-index: 60;
+  inset: 0 0 auto;
+  height: 2px;
+  background: var(--fg);
+  transform: scaleX(0);
+  transform-origin: left;
+  pointer-events: none;
 }
 
 @media (prefers-reduced-motion: reduce) {

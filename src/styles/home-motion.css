@@ -1,16 +1,3 @@
-.home .motion-word-mask {
-  display: inline-block;
-  overflow: clip;
-  vertical-align: top;
-  padding-bottom: 0.15em;
-  margin-bottom: -0.15em;
-}
-
-.home .motion-word {
-  display: inline-block;
-  transform-origin: left bottom;
-}
-
 .home .intro-statement {
   color: var(--fg);
 }
@@ -108,7 +95,6 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .home .motion-word,
   .home [data-motion-image] img,
   .home [data-motion-image] video,
   .home .final-watermark {
