@@ -9,9 +9,9 @@ const { process } = Astro.props;
       <h2 id="process-title" class="section-title">{process.title}</h2>
       <p class="section-sub mt-5">{process.sub}</p>
     </div>
-    <ol class="steps">
+    <ol class="steps" data-steps style={`--n:${process.steps.length}`}>
       {process.steps.map((s, i) => (
-        <li class="step" data-reveal style={`--d:${i * 90}ms`}>
+        <li class="step" data-reveal style={`--d:${i * 90}ms;--i:${i}`}>
           <div class="step-head">
             <span class="step-n">{s.n}</span>
             <span class="step-line" aria-hidden="true"></span>
@@ -59,11 +59,23 @@ const { process } = Astro.props;
     font-size: 12px;
     color: var(--fg-muted);
   }
+  /* --p (0–1) setzt home-motion.ts beim Scrollen; ohne JS bleibt alles sichtbar. */
+  .steps { --p: 1; }
+  .step { --on: clamp(0, calc(var(--p) * var(--n) - var(--i)), 1); }
   .step-line {
     flex: 1;
     height: 1px;
-    background: var(--border-strong);
+    background: var(--border);
+    background-image: linear-gradient(var(--fg), var(--fg));
+    background-repeat: no-repeat;
+    background-size: calc(var(--on) * 100%) 100%;
   }
+  .step-n {
+    --lit: min(1, calc(var(--on) * 4));
+    background: color-mix(in srgb, var(--fg) calc(var(--lit) * 100%), var(--bg-card));
+    color: color-mix(in srgb, var(--bg) calc(var(--lit) * 100%), var(--fg-muted));
+  }
+  .step-title, .step-body { opacity: clamp(.3, calc(var(--on) * 3), 1); }
   .step:last-child .step-line {
     display: none;
   }

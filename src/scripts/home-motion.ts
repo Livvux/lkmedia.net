@@ -125,6 +125,100 @@ function enhanceHome(root: HTMLElement) {
     );
   }
 
+  // Helle Abschnitte öffnen sich beim Hereinscrollen von einer abgerundeten Karte zur vollen Breite.
+  for (const block of root.querySelectorAll<HTMLElement>(".paper")) {
+    const expand = animate(
+      block,
+      { clipPath: ["inset(0% 5% 0% 5% round 48px)", "inset(0% 0% 0% 0% round 0px)"] },
+      { ease: "linear" },
+    );
+    animations.push(expand);
+    cleanups.push(scroll(expand, { target: block, offset: ["start end", "start 20%"] }));
+  }
+
+  root.querySelectorAll<HTMLElement>("[data-band-row]").forEach((row, index) => {
+    const drift = animate(
+      row,
+      {
+        transform:
+          index % 2
+            ? ["translateX(-30%)", "translateX(0%)"]
+            : ["translateX(0%)", "translateX(-30%)"],
+      },
+      { ease: "linear" },
+    );
+    animations.push(drift);
+    cleanups.push(
+      scroll(drift, { target: row.parentElement ?? row, offset: ["start end", "end start"] }),
+    );
+  });
+
+  const steps = root.querySelector<HTMLElement>("[data-steps]");
+  if (steps) {
+    cleanups.push(
+      scroll((progress: number) => steps.style.setProperty("--p", progress.toFixed(3)), {
+        target: steps,
+        offset: ["start 85%", "end 55%"],
+      }),
+    );
+    cleanups.push(() => steps.style.removeProperty("--p"));
+  }
+
+  for (const frame of root.querySelectorAll<HTMLElement>(".work .frame")) {
+    const wipe = animate(
+      frame,
+      { clipPath: ["inset(100% 0% 0% 0%)", "inset(0% 0% 0% 0%)"] },
+      { duration: 1.2, ease, autoplay: false },
+    );
+    animations.push(wipe);
+    // Kachel beobachten: Chrome zählt das clip-path des Ziels mit, das leere Bild wäre nie „sichtbar“.
+    cleanups.push(
+      inView(
+        frame.closest("li") ?? frame,
+        () => {
+          wipe.play();
+        },
+        { margin: "0px 0px -8% 0px" },
+      ),
+    );
+  }
+
+  for (const value of root.querySelectorAll<HTMLElement>(".metric__value")) {
+    const original = value.textContent ?? "";
+    const target = Number.parseInt(original, 10);
+    if (!Number.isFinite(target)) continue;
+    let counted = false;
+    cleanups.push(
+      inView(value, () => {
+        if (counted) return;
+        counted = true;
+        animations.push(
+          animate(0, target, {
+            duration: 1.6,
+            ease,
+            onUpdate: (latest) => {
+              value.textContent = String(Math.round(latest));
+            },
+          }),
+        );
+      }),
+    );
+    cleanups.push(() => {
+      value.textContent = original;
+    });
+  }
+
+  const portrait = root.querySelector<HTMLElement>(".photo img");
+  if (portrait) {
+    const color = animate(
+      portrait,
+      { filter: ["grayscale(1)", "grayscale(0)"] },
+      { ease: "linear" },
+    );
+    animations.push(color);
+    cleanups.push(scroll(color, { target: portrait, offset: ["start 75%", "center 45%"] }));
+  }
+
   let stopScene = () => {};
   const setupScene = () => {
     stopScene();
@@ -163,6 +257,20 @@ function enhanceHome(root: HTMLElement) {
       sceneAnimations.push(flight);
       stops.push(scroll(flight, { target: scene, offset: ["start start", "end end"] }));
     });
+    const image = scene.querySelector<HTMLElement>(".hero-image");
+    const copy = scene.querySelector<HTMLElement>(".hero-copy");
+    if (image && copy) {
+      const zoom = animate(image, { transform: ["scale(1)", "scale(1.2)"] }, { ease: "linear" });
+      const exit = animate(
+        copy,
+        { opacity: [1, 1, 0], transform: ["scale(1)", "scale(1)", "scale(0.9) translateY(-6%)"] },
+        { ease: "linear", times: [0, 0.62, 1] },
+      );
+      sceneAnimations.push(zoom, exit);
+      for (const animation of [zoom, exit]) {
+        stops.push(scroll(animation, { target: scene, offset: ["start start", "end end"] }));
+      }
+    }
     stopScene = () => {
       for (const stop of stops) stop();
       for (const animation of sceneAnimations) animation.cancel();
