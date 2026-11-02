@@ -293,13 +293,13 @@ const crumbs = breadcrumbs([
   <!-- Pains -->
   <section class="block">
     <div class="wrap">
-      <div class="max-w-2xl" data-reveal>
+      <div class="max-w-2xl">
         <div class="eyebrow">Das Problem</div>
         <h2 class="section-title mt-4">Was Interessenten auf einer Fahrschul-Website brauchen.</h2>
       </div>
       <ul class="pain-grid">
         {pains.map((p, i) => (
-          <li class="card pain" data-reveal style={`--d:${i * 80}ms`}>
+          <li class="card pain">
             <span class="pain-n">{p.n}</span>
             <h3 class="card-title">{p.title}</h3>
             <p class="card-body">{p.body}</p>
@@ -343,14 +343,14 @@ const crumbs = breadcrumbs([
   <!-- Features -->
   <section class="block">
     <div class="wrap">
-      <div class="max-w-2xl" data-reveal>
+      <div class="max-w-2xl">
         <div class="eyebrow">Leistungsumfang</div>
         <h2 class="section-title mt-4">Was eine Fahrschul-Website heute können muss.</h2>
         <p class="section-sub mt-5">Kein Baukasten-Template mit Stockfoto vom Lenkrad. Sondern eine Website, die die Fragen Ihrer Fahrschüler beantwortet und Anmeldungen einsammelt.</p>
       </div>
       <ul class="feature-grid">
         {features.map((f, i) => (
-          <li class="feature" data-reveal style={`--d:${(i % 3) * 70}ms`}>
+          <li class="feature">
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
             <h3 class="card-title">{f.title}</h3>
             <p class="card-body">{f.body}</p>
@@ -389,7 +389,7 @@ const crumbs = breadcrumbs([
   <!-- Case -->
   <section class="block">
     <div class="wrap">
-      <a href={caseStudy} class="case card" data-reveal>
+      <a href={caseStudy} class="case card">
         <div class="case-img">
           <img src="/cases/patricks-fahrschule.webp" alt="Website von Patricks Fahrschule im Raum Rastatt" loading="lazy" decoding="async" />
         </div>
@@ -415,14 +415,14 @@ const crumbs = breadcrumbs([
   <!-- Vorbereitung -->
   <section id="vorbereitung" aria-labelledby="vorbereitung-title" class="block scroll-mt-20">
     <div class="wrap">
-      <div class="max-w-2xl" data-reveal>
+      <div class="max-w-2xl">
         <div class="eyebrow">Checkliste</div>
         <h2 id="vorbereitung-title" class="section-title mt-4">Das brauchen wir von Ihnen.</h2>
         <p class="section-sub mt-5">Nach dem Kauf tragen Sie alles in ein kurzes Formular ein. Der Zeitraum bis zur Vorschau beginnt, sobald alle Inhalte vorliegen.</p>
       </div>
       <ul class="pain-grid prep-grid">
         {preparation.map((p, i) => (
-          <li class="card pain" data-reveal style={`--d:${i * 70}ms`}>
+          <li class="card pain">
             <h3 class="card-title">{p.title}</h3>
             <p class="card-body">{p.body}</p>
           </li>
@@ -434,7 +434,7 @@ const crumbs = breadcrumbs([
   <!-- Preis -->
   <section id="preis" aria-labelledby="preis-title" class="block scroll-mt-20">
     <div class="wrap price-grid">
-      <div data-reveal>
+      <div>
         <div class="eyebrow">Fahrschul-Paket</div>
         <h2 id="preis-title" class="section-title mt-4">Ein Paket. Ein Preis. Direkt online bestellen.</h2>
         <p class="section-sub mt-5">
@@ -448,7 +448,7 @@ const crumbs = breadcrumbs([
         </p>
         <a href="#vorbereitung" class="mono-link mt-6">Checkliste für Ihre Bestellung →</a>
       </div>
-      <div class="card price" data-reveal style="--d:80ms">
+      <div class="card price">
         <div class="stat-label">FAHRSCHUL-KOMPLETTPAKET</div>
         <div class="price-main"><span>{FAHRSCHULWEB.setupPrice}</span> <small>einmalig</small></div>
         <div class="price-monthly"><strong>+ {FAHRSCHULWEB.monthlyPrice}</strong> <small>/ Monat</small></div>
@@ -483,7 +483,7 @@ const crumbs = breadcrumbs([
 
   <!-- FAQ -->
   <section class="block">
-    <div class="wrap text-center" data-reveal>
+    <div class="wrap text-center">
       <div class="eyebrow">FAQ</div>
       <h2 class="section-title mt-4">Häufige Fragen zum Fahrschul-Webdesign.</h2>
     </div>

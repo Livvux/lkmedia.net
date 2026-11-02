@@ -1,4 +1,5 @@
 import { animate, inView, scroll, stagger } from "motion";
+import { splitWords } from "./split-words";
 
 const home = document.querySelector<HTMLElement>(".home");
 const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)");
@@ -11,30 +12,7 @@ function enhanceHome(root: HTMLElement) {
   const headings = root.querySelectorAll<HTMLElement>("h2:not(.sr-only), .intro-statement, .lead");
 
   for (const heading of headings) {
-    const original = heading.innerHTML;
-    const walker = document.createTreeWalker(heading, NodeFilter.SHOW_TEXT);
-    const nodes: Text[] = [];
-    while (walker.nextNode()) {
-      if (walker.currentNode.textContent?.trim()) nodes.push(walker.currentNode as Text);
-    }
-    for (const node of nodes) {
-      const fragment = document.createDocumentFragment();
-      for (const word of (node.textContent ?? "").split(/(\s+)/)) {
-        if (!word.trim()) {
-          fragment.append(document.createTextNode(word));
-          continue;
-        }
-        const mask = document.createElement("span");
-        mask.className = "motion-word-mask";
-        const inner = document.createElement("span");
-        inner.className = "motion-word";
-        inner.textContent = word;
-        mask.append(inner);
-        fragment.append(mask);
-      }
-      node.replaceWith(fragment);
-    }
-    const words = heading.querySelectorAll<HTMLElement>(".motion-word");
+    const { words, restore } = splitWords(heading);
     const entrance = animate(
       words,
       {
@@ -53,9 +31,7 @@ function enhanceHome(root: HTMLElement) {
         { margin: "0px 0px -6% 0px" },
       ),
     );
-    cleanups.push(() => {
-      heading.innerHTML = original;
-    });
+    cleanups.push(restore);
   }
 
   const reveals = root.querySelectorAll<HTMLElement>(
