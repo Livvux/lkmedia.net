@@ -31,6 +31,9 @@ const noindexRoutes = [
 export default defineConfig({
   site: 'https://lkmedia.net',
   output: 'static',
+  // Astro 7 defaults this to 'jsx' and drops spaces between inline elements.
+  // Keep the Astro 6 HTML whitespace rules.
+  compressHTML: true,
   adapter: node({ mode: 'standalone' }),
   integrations: [
     mdx(),
