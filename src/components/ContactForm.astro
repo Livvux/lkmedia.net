@@ -92,13 +92,13 @@ const placeholders = { name: 'Name', email: 'E-Mail', company: 'Firma', budget: 
     try {
       // urlencoded wie der native POST ohne JS.
       const body = new URLSearchParams([...new FormData(form)].map(([k, v]) => [k, String(v)]));
-      const res = await fetch(form.action, { method: 'POST', body });
+      const res = await fetch(form.action, { method: 'POST', body, signal: AbortSignal.timeout(20_000) });
       if (res.redirected) return location.assign(res.url);
       // Nur eigene Klartext-Meldungen zeigen, keine HTML-Fehlerseiten.
       const text = res.headers.get('content-type')?.startsWith('text/plain') ? await res.text() : '';
       render({ phase: 'error', text: text || 'Das Absenden hat nicht geklappt. Bitte versuchen Sie es noch einmal.' });
     } catch {
-      render({ phase: 'error', text: 'Keine Verbindung. Bitte prüfen Sie Ihr Internet und senden Sie noch einmal.' });
+      render({ phase: 'error', text: 'Keine Antwort vom Server. Bitte prüfen Sie Ihre Verbindung und senden Sie noch einmal.' });
     }
     // Turnstile-Token gilt nur einmal: für den nächsten Versuch neu ausstellen.
     (window as { turnstile?: { reset: () => void } }).turnstile?.reset();
