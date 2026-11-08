@@ -20,7 +20,22 @@ export const organization = () => ({
 export const professionalService = () => ({
   ...organization(),
   "@type": "ProfessionalService",
-  areaServed: ["Rastatt", "Baden-Württemberg", "Deutschland"],
+  // Vor Ort: Mittelbaden und Südpfalz; Website-Pakete bundesweit.
+  areaServed: [
+    { "@type": "City", name: "Rastatt" },
+    { "@type": "City", name: "Baden-Baden" },
+    { "@type": "City", name: "Karlsruhe" },
+    { "@type": "City", name: "Gaggenau" },
+    { "@type": "City", name: "Bühl" },
+    { "@type": "City", name: "Ettlingen" },
+    { "@type": "City", name: "Durmersheim" },
+    { "@type": "City", name: "Wörth am Rhein" },
+    { "@type": "City", name: "Germersheim" },
+    { "@type": "City", name: "Landau in der Pfalz" },
+    { "@type": "State", name: "Baden-Württemberg" },
+    { "@type": "State", name: "Rheinland-Pfalz" },
+    { "@type": "Country", name: "Deutschland" },
+  ],
 });
 
 export const blogPosting = (post: {

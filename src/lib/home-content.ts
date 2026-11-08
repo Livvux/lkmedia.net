@@ -271,7 +271,7 @@ const de: HomeContent = {
       "Handgeschriebener Code statt 40 Plugins, datensparsame Analytics statt Cookie-Banner, Kontraste und Tastaturbedienung für alle Besucher.",
     facts: [
       { label: "Standort", value: "Rastatt" },
-      { label: "Arbeitsweise", value: "Vor Ort & remote" },
+      { label: "Vor Ort", value: "Baden & Südpfalz" },
       { label: "Technik", value: "Astro, statisch" },
       { label: "Analytics", value: "Selbst gehostet" },
     ],
