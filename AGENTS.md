@@ -53,11 +53,19 @@ Dynamic routes: `src/pages/[slug].astro` (root-level posts), `src/pages/blog/`, 
 
 `src/pages/api/docweb-onboarding.ts` / `handwerk-onboarding.ts` — Onboarding nach Stripe-Checkout (Payment-Link-Check in `src/lib/stripe.ts`).
 
-`src/pages/api/handwerk/[siteId]/[form].ts` — Formular-Endpoint für handwerkweb-Kunden-Websites (Projektanfrage, Bewerbung). Empfänger/Origins nur aus `src/lib/handwerk-sites.ts`; Versand per SMTP (`src/lib/mailer.ts`, Env `SMTP_*`). Astros `security.checkOrigin` ist aus; CSRF prüft `src/lib/csrf.ts` in der Middleware.
+`src/pages/api/handwerk/[siteId]/[form].ts` / `api/fahrschule/[siteId]/[form].ts` — Formular-Endpoints für Kunden-Websites (handwerkweb: Projektanfrage, Bewerbung; fahrschulweb: Anmeldung). Empfänger/Origins nur aus dem Kunden-Register `src/lib/kunden.ts` (lädt `kunden.yaml` aus dem privaten Repo `Livvux/kunden` via `GITHUB_KUNDEN_TOKEN`, 5 Min. Cache). Versand per SMTP (`src/lib/mailer.ts`, Env `SMTP_*`). Astros `security.checkOrigin` ist aus; CSRF prüft `src/lib/csrf.ts` in der Middleware.
 
 ### Landing page
 
 `src/components/home/` baut die Startseite mit Inhalten aus `src/lib/home-content.ts`. Hero, Kennzahlen, Projektleiste und Prozess sind statisches HTML; keine Canvas-/WebGL-Effekte oder dekorativen React-Inseln ergänzen. `OfferTabs.tsx` nutzt Base UI, interaktive Produktdemos nutzen Motion. Die Startseite bleibt monochrom und ohne Farbverläufe. Scroll-Reveals sind progressive Verbesserung: Inhalte bleiben ohne JavaScript sichtbar; `prefers-reduced-motion` schaltet Bewegung ab.
+
+### Zustände
+
+Zustände sind an je einer Stelle definiert; neue Übergänge dort ergänzen, nicht daneben:
+- Auftragsstatus auf `/aenderung`: aus GitHub-Labels abgeleitet, `statusOf()` in `src/lib/pipeline.ts` (Vorrang: geschlossen > Rückfrage > Prüfung > in Arbeit > eingegangen). Labels in `LABELS`.
+- Kundenstatus: `status` in `kunden.yaml` (`onboarding | vorschau | live | gekuendigt`), Schema in `src/lib/kunden-schema.ts`.
+- Kontaktformular: `idle | sending | error` in `src/components/ContactForm.astro`. Mit JS per `fetch`, Fehler inline mit erhaltenen Eingaben; ohne JS normaler POST. `/api/contact` antwortet bei Fehlern mit deutschem `text/plain`, bei Erfolg und Honeypot mit 303 auf `/danke`.
+- Onboarding-/Upload-Formulare: `idle | preparing | queued | sending` in `src/scripts/onboarding-form.ts`; aus `sending` führt nur die Zurück-Taste (bfcache).
 
 ### Scripts
 
@@ -68,4 +76,4 @@ Dynamic routes: `src/pages/[slug].astro` (root-level posts), `src/pages/blog/`, 
 
 - Biome (`biome.json`) for lint + format, 2-space indent, 100 line width, targets `src/**/*.{ts,tsx,js,mjs}`.
 - Lighthouse CI config: `lighthouserc.json`.
-- Analytics: self-hosted Plausible at `analytics.vertexmods.com`.
+- Analytics: Plausible (`analytics.rpcrate.com`, eingebunden in `src/layouts/Base.astro`) und Umami für Conversion-Events (`src/lib/umami.ts`, `src/components/Umami.astro`).
