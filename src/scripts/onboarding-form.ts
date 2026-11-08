@@ -189,20 +189,27 @@ for (const form of document.querySelectorAll<HTMLFormElement>(
     form.addEventListener("change", () => save(form, key));
   }
 
+  // Knopf-Zustand: idle → preparing (Bilder werden verkleinert) → queued (Absenden wartet darauf)
+  // → sending. Aus sending führt nur die Zurück-Taste (bfcache) heraus.
+  type Phase = "idle" | "preparing" | "queued" | "sending";
   const button = form.querySelector<HTMLButtonElement>("button[type=submit]");
   const label = button?.textContent ?? "";
+  let phase: Phase = "idle";
   let busy = 0;
-  let resubmit = false;
+  const render = (next: Phase) => {
+    phase = next;
+    if (!button) return;
+    button.disabled = phase !== "idle";
+    button.textContent = phase === "sending" ? SEND_TEXT : phase === "idle" ? label : BUSY_TEXT;
+  };
   const setBusy = (delta: number) => {
     busy += delta;
-    if (button) {
-      button.disabled = busy > 0;
-      button.textContent = busy > 0 ? BUSY_TEXT : label;
-    }
-    if (!busy && resubmit) {
-      resubmit = false;
+    if (phase === "sending") return;
+    if (busy) render(phase === "queued" ? "queued" : "preparing");
+    else if (phase === "queued") {
+      render("idle");
       form.requestSubmit();
-    }
+    } else render("idle");
   };
   for (const input of fileInputs(form)) {
     input.addEventListener("change", () => {
@@ -213,10 +220,14 @@ for (const form of document.querySelectorAll<HTMLFormElement>(
 
   form.addEventListener("submit", (e) => {
     if (key) save(form, key);
+    if (phase === "sending") {
+      e.preventDefault();
+      return;
+    }
     if (busy) {
       // Verkleinerung läuft noch (z. B. Enter im Textfeld): einmal danach erneut absenden.
       e.preventDefault();
-      resubmit = true;
+      render("queued");
       return;
     }
     const bad = checkAll(form);
@@ -225,18 +236,12 @@ for (const form of document.querySelectorAll<HTMLFormElement>(
       bad.focus();
       return;
     }
-    // Gegen Doppelklick: nach gültigem Absenden sperren (der Server erkennt Doppelte zusätzlich).
-    if (button) {
-      button.disabled = true;
-      button.textContent = SEND_TEXT;
-    }
+    // Gegen Doppelklick (der Server erkennt Doppelte zusätzlich).
+    render("sending");
   });
   // Zurück-Taste (bfcache): Knopf wieder freigeben.
   window.addEventListener("pageshow", (e) => {
-    if (e.persisted && button && !busy) {
-      button.disabled = false;
-      button.textContent = label;
-    }
+    if (e.persisted) render(busy ? "preparing" : "idle");
   });
 }
 

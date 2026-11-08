@@ -61,4 +61,29 @@ describe("contact", () => {
     expect(fetchFn.mock.calls[0]?.[1]?.body).toBeInstanceOf(URLSearchParams);
     expect(String(fetchFn.mock.calls[0]?.[1]?.body)).toContain("remoteip=203.0.113.1");
   });
+  it.each([
+    ["captcha", { name: "Test", email: "test@example.test", message: "Hallo" }, /Sicherheitsprüfung/],
+    ["missing fields", { name: "Test", email: "", message: "", "cf-turnstile-response": "token" }, /Name, E-Mail und Nachricht/],
+  ])("explains %s errors in German plain text for the inline form error", async (_case, fields, text) => {
+    send.mockClear();
+    vi.stubEnv("RESEND_API_KEY", "runtime-key");
+    vi.stubEnv("TURNSTILE_SECRET_KEY", "turnstile-runtime-key");
+    vi.stubGlobal("fetch", vi.fn(async () => Response.json({ success: true })));
+    const { POST } = await import("../../src/pages/api/contact");
+    const r = await POST({ request: new Request("https://lkmedia.net/api/contact", { method: "POST", body: new URLSearchParams(fields) }), clientAddress: "10.0.0.1" } as Parameters<typeof POST>[0]);
+    expect(r.status).toBe(400);
+    expect(r.headers.get("content-type")).toMatch(/^text\/plain/);
+    expect(await r.text()).toMatch(text);
+    expect(send).not.toHaveBeenCalled();
+  });
+  it("sends honeypot hits to the same thank-you page without mailing", async () => {
+    send.mockClear();
+    vi.stubEnv("RESEND_API_KEY", "runtime-key");
+    const { POST } = await import("../../src/pages/api/contact");
+    const body = new URLSearchParams({ website: "spam", name: "Bot", email: "bot@example.test", message: "x" });
+    const r = await POST({ request: new Request("https://lkmedia.net/api/contact", { method: "POST", body }), clientAddress: "10.0.0.1" } as Parameters<typeof POST>[0]);
+    expect(r.status).toBe(303);
+    expect(r.headers.get("location")).toBe("/danke");
+    expect(send).not.toHaveBeenCalled();
+  });
 });

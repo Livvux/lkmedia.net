@@ -31,7 +31,7 @@ German only. Public pages have no locale prefix. Old `/en/` URLs redirect perman
 
 `src/middleware.ts` runs on every request:
 1. Exact-path redirects from `src/lib/redirects.ts` (301).
-2. 404 fallback → 301 to `/blog` (except paths matching `SKIP_PREFIXES` / `SKIP_SUFFIXES`, which pass through).
+2. Unknown URLs retain HTTP 404. Never redirect missing pages or assets to generic destinations.
 3. Uses `x-forwarded-host` / `x-forwarded-proto` to build absolute redirect URLs — required because app runs behind Traefik. Don't use `ctx.url.origin` for redirects.
 
 ### Content collections
@@ -57,6 +57,14 @@ Dynamic routes: `src/pages/[slug].astro` (root-level posts), `src/pages/blog/`, 
 
 Kundenpipeline: `src/lib/site-submit.ts` (Formular-Verarbeitung), `src/lib/pipeline.ts` (Onboarding/Änderung → GitHub-Issue, Backup-Mail bei Fehler), `src/lib/github.ts` (GitHub-API), `src/lib/uploads.ts` (Bild-Uploads, Typ per Magic Bytes). Seiten `/aenderung?session_id=…` (Status aller Aufträge, Rückfragen beantworten, Bilder hochladen, ohne Passwort) und `/aenderung/link` (verlorenen Link per E-Mail anfordern). Env: `GITHUB_KUNDEN_TOKEN` (fine-grained, Contents+Issues RW auf `Livvux/*`), `STRIPE_SECRET_KEY`, `SMTP_*`.
 
+### Zustände
+
+Zustände sind an je einer Stelle definiert; neue Übergänge dort ergänzen, nicht daneben:
+- Auftragsstatus auf `/aenderung`: aus GitHub-Labels abgeleitet, `statusOf()` in `src/lib/pipeline.ts` (Vorrang: geschlossen > Rückfrage > Prüfung > in Arbeit > eingegangen). Labels in `LABELS`.
+- Kundenstatus: `status` in `kunden.yaml` (`onboarding | vorschau | live | gekuendigt`), Schema in `src/lib/kunden-schema.ts`.
+- Kontaktformular: `idle | sending | error` in `src/components/ContactForm.astro`. Mit JS per `fetch`, Fehler inline mit erhaltenen Eingaben; ohne JS normaler POST. `/api/contact` antwortet bei Fehlern mit deutschem `text/plain`, bei Erfolg und Honeypot mit 303 auf `/danke`.
+- Onboarding-/Upload-Formulare: `idle | preparing | queued | sending` in `src/scripts/onboarding-form.ts`; aus `sending` führt nur die Zurück-Taste (bfcache).
+
 ### Scripts
 
 - `scripts/device-mockup.mjs` — generates landing device mockup image.
@@ -66,4 +74,4 @@ Kundenpipeline: `src/lib/site-submit.ts` (Formular-Verarbeitung), `src/lib/pipel
 
 - Biome (`biome.json`) for lint + format, 2-space indent, 100 line width, targets `src/**/*.{ts,tsx,js,mjs}`.
 - Lighthouse CI config: `lighthouserc.json`.
-- Analytics: self-hosted Plausible at `analytics.vertexmods.com`.
+- Analytics: Plausible (`analytics.rpcrate.com`, eingebunden in `src/layouts/Base.astro`) und Umami für Conversion-Events (`src/lib/umami.ts`, `src/components/Umami.astro`).

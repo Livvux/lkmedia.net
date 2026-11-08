@@ -9,6 +9,7 @@ const RESEND_KEY = process.env.RESEND_API_KEY;
 const TURNSTILE_SECRET = process.env.TURNSTILE_SECRET_KEY;
 const TO = "lucas@lkmedia.net";
 const FROM = "lkmedia.net <no-reply@lkmedia.net>";
+const UNGUELTIG = "Das Absenden hat nicht geklappt. Bitte versuchen Sie es noch einmal.";
 
 async function verifyTurnstile(token: string | null, ip: string | null): Promise<boolean> {
   if (!TURNSTILE_SECRET) return true; // dev fallback
@@ -23,11 +24,17 @@ async function verifyTurnstile(token: string | null, ip: string | null): Promise
 
 export const POST: APIRoute = async ({ request, clientAddress }) => {
   const form = await request.formData().catch(() => null);
-  if (!form) return new Response("invalid body", { status: 400 });
-  if (form.get("website")) return new Response("ok", { status: 200 }); // honeypot
+  if (!form) return new Response(UNGUELTIG, { status: 400 });
+  // Honeypot: Bots sehen dieselbe Weiterleitung wie echte Anfragen.
+  if (form.get("website")) {
+    return new Response(null, { status: 303, headers: { Location: "/danke" } });
+  }
   const token = form.get("cf-turnstile-response")?.toString() ?? null;
   if (!(await verifyTurnstile(token, clientIp(request, clientAddress)))) {
-    return new Response("captcha failed", { status: 400 });
+    return new Response(
+      "Die Sicherheitsprüfung hat nicht geklappt. Bitte bestätigen Sie sie erneut und senden Sie noch einmal.",
+      { status: 400 },
+    );
   }
   const name = String(form.get("name") ?? "")
     .slice(0, 120)
@@ -44,7 +51,9 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
   const message = String(form.get("message") ?? "")
     .slice(0, 5000)
     .trim();
-  if (!name || !email || !message) return new Response("missing fields", { status: 400 });
+  if (!name || !email || !message) {
+    return new Response("Bitte füllen Sie Name, E-Mail und Nachricht aus.", { status: 400 });
+  }
 
   if (!RESEND_KEY) {
     console.warn("[contact] RESEND_API_KEY unset");

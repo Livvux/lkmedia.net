@@ -47,6 +47,7 @@ const placeholders = { name: 'Name', email: 'E-Mail', company: 'Firma', budget: 
     </select>
   </label>
   {turnstileKey && <div class="cf-turnstile" data-sitekey={turnstileKey}></div>}
+  <p id="contact-error" role="alert" tabindex="-1" class="rounded-xl border border-red-500/40 bg-red-500/10 p-4 text-sm" hidden></p>
   <button id="contact-submit" class="btn btn-primary mt-2 min-h-12 disabled:opacity-50">Projektanfrage senden</button>
 </form>
 {turnstileKey && <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>}
@@ -59,15 +60,47 @@ const placeholders = { name: 'Name', email: 'E-Mail', company: 'Firma', budget: 
       if (referrer.origin === location.origin) source.value = leadSource(referrer.pathname);
     } catch { /* No usable referrer means a direct inquiry. */ }
   }
+  // Ohne JS sendet das Formular normal; mit JS bleiben die Eingaben bei einem Fehler erhalten.
+  type State = { phase: 'idle' } | { phase: 'sending' } | { phase: 'error'; text: string };
+  const LABEL = 'Projektanfrage senden';
+  const KONTAKT = 'Ihre Eingaben bleiben erhalten. Sie erreichen mich auch direkt unter lucas@lkmedia.net.';
   const form = document.querySelector<HTMLFormElement>('form[action="/api/contact"]');
   const btn = document.getElementById('contact-submit') as HTMLButtonElement | null;
-  window.addEventListener('pageshow', () => {
-    if (!btn) return;
-    btn.disabled = false;
-    btn.textContent = 'Projektanfrage senden';
-    btn.removeAttribute('aria-busy');
-  });
-  form?.addEventListener('submit', () => {
-    if (btn) { btn.disabled = true; btn.textContent = 'Anfrage wird gesendet …'; btn.setAttribute('aria-busy', 'true'); }
+  const error = document.getElementById('contact-error');
+  let state: State = { phase: 'idle' };
+
+  function render(next: State) {
+    state = next;
+    if (btn) {
+      btn.disabled = state.phase === 'sending';
+      btn.textContent = state.phase === 'sending' ? 'Anfrage wird gesendet …' : LABEL;
+      btn.toggleAttribute('aria-busy', state.phase === 'sending');
+    }
+    if (error) {
+      error.hidden = state.phase !== 'error';
+      error.textContent = state.phase === 'error' ? `${state.text} ${KONTAKT}` : '';
+      if (state.phase === 'error') error.focus();
+    }
+  }
+
+  // Zurück-Taste (bfcache): nicht im Sende-Zustand hängen bleiben.
+  window.addEventListener('pageshow', () => render({ phase: 'idle' }));
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (state.phase === 'sending') return;
+    render({ phase: 'sending' });
+    try {
+      // urlencoded wie der native POST ohne JS.
+      const body = new URLSearchParams([...new FormData(form)].map(([k, v]) => [k, String(v)]));
+      const res = await fetch(form.action, { method: 'POST', body, signal: AbortSignal.timeout(20_000) });
+      if (res.redirected) return location.assign(res.url);
+      // Nur eigene Klartext-Meldungen zeigen, keine HTML-Fehlerseiten.
+      const text = res.headers.get('content-type')?.startsWith('text/plain') ? await res.text() : '';
+      render({ phase: 'error', text: text || 'Das Absenden hat nicht geklappt. Bitte versuchen Sie es noch einmal.' });
+    } catch {
+      render({ phase: 'error', text: 'Keine Antwort vom Server. Bitte prüfen Sie Ihre Verbindung und senden Sie noch einmal.' });
+    }
+    // Turnstile-Token gilt nur einmal: für den nächsten Versuch neu ausstellen.
+    (window as { turnstile?: { reset: () => void } }).turnstile?.reset();
   });
 </script>
