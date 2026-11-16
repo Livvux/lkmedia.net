@@ -5,39 +5,67 @@ const { lang } = Astro.props;
 const t = useTranslations(lang);
 const year = new Date().getFullYear();
 
-const columns = [
-  {
-    title: 'Agentur',
-    links: [
-      { href: routeFor('services', lang), label: t('nav.services') },
-      { href: routeFor('seo', lang), label: 'SEO in Rastatt' },
-      { href: routeFor('cases', lang), label: t('nav.cases') },
-      { href: routeFor('about', lang), label: t('nav.about') },
-      { href: routeFor('blog', lang), label: t('nav.blog') },
-    ],
-  },
-  {
-    title: 'Branchen',
-    links: [
-      { href: routeFor('lawFirms', lang), label: 'Kanzleien' },
-      { href: routeFor('realEstate', lang), label: 'Luxus-Immobilien' },
-      { href: routeFor('clinics', lang), label: 'Privatkliniken' },
-      { href: routeFor('doctors', lang), label: 'Arztpraxen (docweb)' },
-      { href: routeFor('craftsmen', lang), label: 'Handwerk (handwerkweb)' },
-      { href: routeFor('drivingSchools', lang), label: 'Fahrschulen' },
-    ],
-  },
+const en = lang === 'en';
+const serviceLinks = [
+  { href: routeFor('wordpress', lang), label: t('nav.wordpress') },
+  { href: routeFor('ai', lang), label: t('nav.ai') },
+  { href: routeFor('development', lang), label: t('nav.development') },
 ];
+const columns = en
+  ? [
+      { title: 'Services', links: [...serviceLinks, { href: routeFor('grokBot', lang), label: 'Grok Bot for WordPress' }] },
+      {
+        title: 'In German',
+        links: [
+          { href: routeFor('cases', lang), label: 'Work' },
+          { href: routeFor('blog', lang), label: 'Insights' },
+          { href: routeFor('about', lang), label: 'About' },
+        ],
+      },
+    ]
+  : [
+      {
+        title: 'Leistungen',
+        links: [
+          ...serviceLinks,
+          { href: routeFor('services', lang), label: 'Website-Pakete' },
+          { href: routeFor('seo', lang), label: 'SEO in Rastatt' },
+        ],
+      },
+      {
+        title: 'Studio',
+        links: [
+          { href: routeFor('cases', lang), label: t('nav.cases') },
+          { href: routeFor('blog', lang), label: t('nav.blog') },
+          { href: routeFor('about', lang), label: t('nav.about') },
+          { href: routeFor('grokBot', lang), label: 'Grok Bot for WordPress (EN)' },
+        ],
+      },
+      {
+        title: 'Branchen',
+        links: [
+          { href: routeFor('lawFirms', lang), label: 'Kanzleien' },
+          { href: routeFor('realEstate', lang), label: 'Luxus-Immobilien' },
+          { href: routeFor('clinics', lang), label: 'Privatkliniken' },
+          { href: routeFor('doctors', lang), label: 'Arztpraxen (docweb)' },
+          { href: routeFor('craftsmen', lang), label: 'Handwerk (handwerkweb)' },
+          { href: routeFor('drivingSchools', lang), label: 'Fahrschulen' },
+        ],
+      },
+    ];
+const copy = en
+  ? { home: 'lk media – home', tag: 'Websites, WordPress and AI systems. Built in Rastatt, Germany.', contact: 'Talk about your project', more: 'More pages', legal: 'Legal and contact', imprint: 'Imprint (German)', privacy: 'Privacy (German)' }
+  : { home: 'lk media – Startseite', tag: 'Websites, WordPress und KI-Systeme. Gebaut in Rastatt.', contact: 'Über Ihr Projekt sprechen', more: 'Weiterführende Seiten', legal: 'Rechtliches und Kontakt', imprint: 'Impressum', privacy: 'Datenschutz' };
 ---
 <footer class="footer">
   <div class="wrap">
     <div class="footer-inner">
       <div class="footer-brand">
-        <a class="footer-name" href={routeFor('home', lang)} aria-label="lk media – Startseite">lk media<span aria-hidden="true">↗</span></a>
-        <p class="footer-tag">Webdesign & SEO<br />aus Rastatt.</p>
-        <a class="footer-contact" href={routeFor('contact', lang)}>Über Ihr Projekt sprechen <span aria-hidden="true">↗</span></a>
+        <a class="footer-name" href={routeFor('home', lang)} aria-label={copy.home}>lk media<span aria-hidden="true">↗</span></a>
+        <p class="footer-tag">{copy.tag}</p>
+        <a class="footer-contact" href={routeFor('contact', lang)}>{copy.contact} <span aria-hidden="true">↗</span></a>
       </div>
-      <nav class="footer-cols" aria-label="Weiterführende Seiten">
+      <nav class="footer-cols" aria-label={copy.more}>
         {columns.map((col) => (
           <div>
             <h2 class="footer-title">{col.title}</h2>
@@ -50,9 +78,9 @@ const columns = [
     </div>
     <div class="footer-bottom">
       <p>© {year} lkmedia · Lucas Kleipoedszus</p>
-      <nav class="footer-legal" aria-label="Rechtliches und Kontakt">
-        <a href={routeFor('imprint', lang)}>Impressum</a>
-        <a href={routeFor('privacy', lang)}>Datenschutz</a>
+      <nav class="footer-legal" aria-label={copy.legal}>
+        <a href={routeFor('imprint', lang)}>{copy.imprint}</a>
+        <a href={routeFor('privacy', lang)}>{copy.privacy}</a>
         <a href={routeFor('contact', lang)}>{t('nav.contact')}</a>
       </nav>
     </div>
@@ -81,6 +109,7 @@ const columns = [
     line-height: 1;
   }
   .footer-tag {
+    max-width: 30ch;
     margin-top: 18px;
     font-size: 18px;
     letter-spacing: -0.02em;
@@ -102,15 +131,18 @@ const columns = [
   .footer-contact:hover { text-decoration-color: currentColor; }
   .footer-cols {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
     gap: 24px;
   }
   .footer-title {
     min-height: 44px;
     margin-bottom: 8px;
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--fg);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--fg-dim);
   }
   .footer-link {
     display: inline-flex;
@@ -147,7 +179,7 @@ const columns = [
     transition: color 180ms;
   }
   @media (min-width: 768px) {
-    .footer-inner { grid-template-columns: 1fr 1fr; gap: 64px; }
+    .footer-inner { grid-template-columns: 1fr 1.4fr; gap: 64px; }
     .footer-cols { gap: 40px; }
   }
 </style>

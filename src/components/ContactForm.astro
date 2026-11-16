@@ -1,71 +1,116 @@
 ---
 import type { Lang } from '../lib/i18n';
-import { DISCOVERY_CHANNELS } from '../lib/lead-source';
-interface Props { lang: Lang; source?: string; messageHelp?: string }
-const {
-  source = '/kontakt',
-  messageHelp = 'Hilfreich sind Ihre Branche, die Website-Adresse und die wichtigste gewünschte Änderung.',
-} = Astro.props;
+import { DISCOVERY_CHANNELS, SERVICES } from '../lib/lead-source';
+// `service` wählt das Anliegen vor, z. B. auf einer Leistungsseite.
+interface Props { lang: Lang; source?: string; messageHelp?: string; service?: keyof typeof SERVICES }
+const { lang, source = lang === 'en' ? '/en/contact' : '/kontakt', messageHelp, service } = Astro.props;
+const preselected = service ?? 'unknown';
 const turnstileKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY;
-const placeholders = { name: 'Name', email: 'E-Mail', company: 'Firma', budget: 'Budget', message: 'Nachricht' };
+const c = lang === 'en'
+  ? {
+      name: 'Name', email: 'Email', company: 'Company', service: 'What do you need?', budget: 'Budget', budgetPick: '— Select a budget —', unclear: 'not sure yet',
+      message: 'Message', help: 'Helpful: your website address, the system you use today and the outcome you want.',
+      discovery: 'How did you find us? (optional)', submit: 'Send project inquiry', sending: 'Sending your inquiry …',
+      keep: 'Your entries are kept. You can also reach me directly at lucas@lkmedia.net.',
+      failed: 'Sending did not work. Please try again.', offline: 'No response from the server. Please check your connection and send again.',
+    }
+  : {
+      name: 'Name', email: 'E-Mail', company: 'Firma', service: 'Worum geht es?', budget: 'Budget', budgetPick: '— Budget wählen —', unclear: 'unklar',
+      message: 'Nachricht', help: 'Hilfreich sind Ihre Branche, die Website-Adresse und die wichtigste gewünschte Änderung.',
+      discovery: 'Wie haben Sie uns gefunden? (optional)', submit: 'Projektanfrage senden', sending: 'Anfrage wird gesendet …',
+      keep: 'Ihre Eingaben bleiben erhalten. Sie erreichen mich auch direkt unter lucas@lkmedia.net.',
+      failed: 'Das Absenden hat nicht geklappt. Bitte versuchen Sie es noch einmal.', offline: 'Keine Antwort vom Server. Bitte prüfen Sie Ihre Verbindung und senden Sie noch einmal.',
+    };
+const discoveryEn: Record<keyof typeof DISCOVERY_CHANNELS, string> = {
+  unknown: 'Prefer not to say', google: 'Google', bing: 'Bing or another search engine', chatgpt: 'ChatGPT', perplexity: 'Perplexity',
+  other_ai: 'Another AI search', referral: 'Personal recommendation', social: 'Social media', other: 'Another way',
+};
 ---
-<form method="POST" action="/api/contact" class="space-y-4 max-w-xl">
+<form method="POST" action="/api/contact" class="contact-fields" data-sending={c.sending} data-keep={c.keep} data-failed={c.failed} data-offline={c.offline}>
   <input type="hidden" name="source" value={source} />
+  <input type="hidden" name="lang" value={lang} />
   <input type="text" name="website" tabindex="-1" autocomplete="off" class="hidden" aria-hidden="true" />
-  <label class="block">
-    <span class="text-sm text-black/60 dark:text-white/60">{placeholders.name}</span>
-    <input required name="name" autocomplete="name" class="mt-1 w-full h-12 px-4 rounded-xl bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 focus:border-black dark:focus:border-white focus:outline-none" />
+  <label>
+    <span>{c.name}</span>
+    <input required name="name" autocomplete="name" />
   </label>
-  <label class="block">
-    <span class="text-sm text-black/60 dark:text-white/60">{placeholders.email}</span>
-    <input required type="email" name="email" autocomplete="email" class="mt-1 w-full h-12 px-4 rounded-xl bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 focus:border-black dark:focus:border-white focus:outline-none" />
+  <label>
+    <span>{c.email}</span>
+    <input required type="email" name="email" autocomplete="email" />
   </label>
-  <label class="block">
-    <span class="text-sm text-black/60 dark:text-white/60">{placeholders.company}</span>
-    <input name="company" autocomplete="organization" class="mt-1 w-full h-12 px-4 rounded-xl bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 focus:border-black dark:focus:border-white focus:outline-none" />
+  <label>
+    <span>{c.company}</span>
+    <input name="company" autocomplete="organization" />
   </label>
-  <label class="block">
-    <span id="budget-label" class="text-sm text-black/60 dark:text-white/60">{placeholders.budget}</span>
-    <select name="budget" aria-labelledby="budget-label" class="mt-1 w-full h-12 px-4 rounded-xl bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 focus:border-black dark:focus:border-white focus:outline-none">
-      <option value="" disabled selected>{'— Budget wählen —'}</option>
+  <label>
+    <span>{c.service}</span>
+    <select name="service">
+      {Object.entries(SERVICES).map(([value, label]) => <option value={value} selected={value === preselected}>{label[lang]}</option>)}
+    </select>
+  </label>
+  <label>
+    <span id="budget-label">{c.budget}</span>
+    <select name="budget" aria-labelledby="budget-label">
+      <option value="" disabled selected>{c.budgetPick}</option>
       <option value="< 5k">&lt; 5k</option>
       <option value="5–15k">5–15k</option>
       <option value="15–30k">15–30k</option>
       <option value="30k+">30k+</option>
-      <option value="unklar">{'unklar'}</option>
+      <option value="unklar">{c.unclear}</option>
     </select>
   </label>
-  <label class="block">
-    <span class="text-sm text-black/60 dark:text-white/60">{placeholders.message}</span>
-    <textarea required name="message" rows="5" aria-describedby="message-help" class="mt-1 w-full p-4 rounded-xl bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10"></textarea>
+  <label class="wide">
+    <span>{c.message}</span>
+    <textarea required name="message" rows="5" aria-describedby="message-help"></textarea>
   </label>
-  <p id="message-help" class="text-sm text-black/60 dark:text-white/60">{messageHelp}</p>
-  <label class="block">
-    <span class="text-sm text-black/60 dark:text-white/60">Wie haben Sie uns gefunden? (optional)</span>
-    <select name="discovery" class="mt-1 w-full h-12 px-4 rounded-xl bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10">
-      {Object.entries(DISCOVERY_CHANNELS).map(([value, label]) => <option value={value}>{label}</option>)}
+  <p id="message-help" class="wide help">{messageHelp ?? c.help}</p>
+  <label class="wide">
+    <span>{c.discovery}</span>
+    <select name="discovery">
+      {Object.entries(DISCOVERY_CHANNELS).map(([value, label]) => <option value={value}>{lang === 'en' ? discoveryEn[value as keyof typeof DISCOVERY_CHANNELS] : label}</option>)}
     </select>
   </label>
-  {turnstileKey && <div class="cf-turnstile" data-sitekey={turnstileKey}></div>}
-  <p id="contact-error" role="alert" tabindex="-1" class="rounded-xl border border-red-500/40 bg-red-500/10 p-4 text-sm" hidden></p>
-  <button id="contact-submit" class="btn btn-primary mt-2 min-h-12 disabled:opacity-50">Projektanfrage senden</button>
+  {turnstileKey && <div class="cf-turnstile wide" data-sitekey={turnstileKey}></div>}
+  <p id="contact-error" role="alert" tabindex="-1" class="wide error" hidden></p>
+  <button id="contact-submit" class="btn btn-primary btn-lg wide">{c.submit}</button>
 </form>
 {turnstileKey && <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>}
+<style>
+  .contact-fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px 16px; max-width: 640px; }
+  .wide { grid-column: 1 / -1; }
+  label { display: block; min-width: 0; }
+  label > span { display: block; margin-bottom: 6px; font-size: 14px; color: var(--fg-muted); }
+  input:not([type='hidden']), select, textarea { width: 100%; min-height: 48px; padding: 0 14px; border: 1px solid var(--border-strong); border-radius: 10px; background: var(--bg-card); color: var(--fg); transition: border-color 150ms; }
+  textarea { padding: 12px 14px; line-height: 1.5; resize: vertical; }
+  input:hover, select:hover, textarea:hover { border-color: var(--fg-dim); }
+  input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 2px solid var(--signal); outline-offset: 1px; border-color: var(--signal); }
+  .help { margin-top: -8px; font-size: 14px; color: var(--fg-muted); }
+  .error { padding: 14px 16px; border: 1px solid #ef444466; border-radius: 10px; background: #ef44441a; font-size: 14px; }
+  .error[hidden] { display: none; }
+  button { justify-self: start; }
+  button:disabled { opacity: .55; }
+  @media (max-width: 560px) { .contact-fields { grid-template-columns: 1fr; } button { justify-self: stretch; } }
+</style>
 <script>
-  import { leadSource } from '../lib/lead-source';
+  import { leadSource, serviceInterest } from '../lib/lead-source';
+  // CTAs der Leistungsseiten wählen das Anliegen per ?service= vor.
+  const wanted = new URLSearchParams(location.search).get('service');
+  const select = document.querySelector<HTMLSelectElement>('select[name="service"]');
+  if (wanted && select) select.value = serviceInterest(wanted);
   const source = document.querySelector<HTMLInputElement>('input[name="source"]');
-  if (source?.value === '/kontakt' && document.referrer) {
+  if ((source?.value === '/kontakt' || source?.value === '/en/contact') && document.referrer) {
     try {
       const referrer = new URL(document.referrer);
-      if (referrer.origin === location.origin) source.value = leadSource(referrer.pathname);
+      if (referrer.origin === location.origin && leadSource(referrer.pathname) !== '/kontakt') source.value = leadSource(referrer.pathname);
     } catch { /* No usable referrer means a direct inquiry. */ }
   }
   // Ohne JS sendet das Formular normal; mit JS bleiben die Eingaben bei einem Fehler erhalten.
   type State = { phase: 'idle' } | { phase: 'sending' } | { phase: 'error'; text: string };
-  const LABEL = 'Projektanfrage senden';
-  const KONTAKT = 'Ihre Eingaben bleiben erhalten. Sie erreichen mich auch direkt unter lucas@lkmedia.net.';
   const form = document.querySelector<HTMLFormElement>('form[action="/api/contact"]');
   const btn = document.getElementById('contact-submit') as HTMLButtonElement | null;
+  const LABEL = btn?.textContent ?? '';
+  const copy = form?.dataset ?? {};
+  const KONTAKT = copy.keep ?? '';
   const error = document.getElementById('contact-error');
   let state: State = { phase: 'idle' };
 
@@ -73,7 +118,7 @@ const placeholders = { name: 'Name', email: 'E-Mail', company: 'Firma', budget: 
     state = next;
     if (btn) {
       btn.disabled = state.phase === 'sending';
-      btn.textContent = state.phase === 'sending' ? 'Anfrage wird gesendet …' : LABEL;
+      btn.textContent = state.phase === 'sending' ? (copy.sending ?? LABEL) : LABEL;
       btn.toggleAttribute('aria-busy', state.phase === 'sending');
     }
     if (error) {
@@ -96,9 +141,9 @@ const placeholders = { name: 'Name', email: 'E-Mail', company: 'Firma', budget: 
       if (res.redirected) return location.assign(res.url);
       // Nur eigene Klartext-Meldungen zeigen, keine HTML-Fehlerseiten.
       const text = res.headers.get('content-type')?.startsWith('text/plain') ? await res.text() : '';
-      render({ phase: 'error', text: text || 'Das Absenden hat nicht geklappt. Bitte versuchen Sie es noch einmal.' });
+      render({ phase: 'error', text: text || (copy.failed ?? '') });
     } catch {
-      render({ phase: 'error', text: 'Keine Antwort vom Server. Bitte prüfen Sie Ihre Verbindung und senden Sie noch einmal.' });
+      render({ phase: 'error', text: copy.offline ?? '' });
     }
     // Turnstile-Token gilt nur einmal: für den nächsten Versuch neu ausstellen.
     (window as { turnstile?: { reset: () => void } }).turnstile?.reset();

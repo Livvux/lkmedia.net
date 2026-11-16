@@ -1,7 +1,6 @@
 @import "tailwindcss";
-@import "@fontsource-variable/dm-sans";
-@import "@fontsource/jetbrains-mono/400.css";
-@import "@fontsource/jetbrains-mono/500.css";
+@import "@fontsource-variable/geist";
+@import "@fontsource-variable/geist-mono";
 @import "tw-animate-css";
 @plugin "@tailwindcss/typography";
 
@@ -53,8 +52,8 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
-  --font-sans: "DM Sans Variable", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
-  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, monospace;
+  --font-sans: "Geist Variable", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  --font-mono: "Geist Mono Variable", ui-monospace, SFMono-Regular, Menlo, Monaco, monospace;
   --color-black: #0b0b0d;
   --color-muted: #aaaab1;
   --color-accent: #e8e8ed;
@@ -73,12 +72,17 @@
   --accent: #eeede8;
   --accent-dim: #ffffff20;
   --tone: var(--accent); /* Unterseiten überschreiben --tone (handwerk: Signal-Orange, docweb: Mint) */
+  /* Der eine Akzent: Signalgrün. --signal trägt Text und Flächen, --signal-ink steht darauf. */
+  --signal: #45c79b;
+  --signal-ink: #0b1f18;
+  --signal-dim: #45c79b1f;
   --ok: oklch(72% 0.16 150);
   --warn: oklch(76% 0.15 75);
   --radius: 16px;
   --radius-sm: 8px;
   --radius-lg: 24px;
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --section-space: clamp(80px, 10vw, 136px);
 
   /* Legacy tokens used by older pages */
   --color-bg: var(--bg);
@@ -165,13 +169,13 @@ img {
 }
 
 ::selection {
-  background: var(--accent-dim);
+  background: var(--signal-dim);
   color: var(--fg);
 }
 
 :focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 5px;
+  outline: 2px solid var(--signal);
+  outline-offset: 4px;
 }
 
 /* ---------- Shared building blocks ---------- */
@@ -189,18 +193,44 @@ img {
   }
 }
 
+/* Helles Band auf dunkler Seite: dieselben Tokens, andere Werte. */
+.paper {
+  --bg: #eeede9;
+  --bg-elev: #e7e6e2;
+  --bg-card: #f6f5f1;
+  --fg: #1d1d1b;
+  --fg-muted: #555550;
+  --fg-dim: #62625c;
+  --fg-faint: #666660;
+  --border: #1d1d1b20;
+  --border-strong: #1d1d1b40;
+  --accent: #1d1d1b;
+  --accent-dim: #1d1d1b12;
+  --signal: #0d6e57;
+  --signal-ink: #f6f5f1;
+  --signal-dim: #0d6e5718;
+  color-scheme: light;
+  background: var(--bg);
+  color: var(--fg);
+}
+
+.section {
+  padding-block: var(--section-space);
+}
+
 .display {
-  font-weight: 600;
+  font-size: clamp(42px, 6.4vw, 88px);
+  font-weight: 500;
   letter-spacing: -0.045em;
-  line-height: 1.04;
+  line-height: 1;
   text-wrap: balance;
 }
 
 .section-title {
-  font-size: clamp(32px, 4.3vw, 60px);
-  font-weight: 600;
-  letter-spacing: -0.04em;
-  line-height: 1.1;
+  font-size: clamp(30px, 3.8vw, 52px);
+  font-weight: 500;
+  letter-spacing: -0.035em;
+  line-height: 1.08;
   text-wrap: balance;
 }
 
@@ -212,12 +242,50 @@ img {
 }
 
 .eyebrow {
-  font-family: var(--font-sans);
+  font-family: var(--font-mono);
   font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.12em;
+  font-weight: 500;
+  letter-spacing: 0.06em;
   color: var(--fg-dim);
   text-transform: uppercase;
+}
+
+/* Eyebrow mit Statuspunkt in der Akzentfarbe. */
+.label {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  color: var(--fg-muted);
+  text-transform: uppercase;
+}
+
+.label::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--signal);
+}
+
+.lede {
+  max-width: 56ch;
+  color: var(--fg-muted);
+  font-size: clamp(18px, 1.6vw, 21px);
+  line-height: 1.55;
+  letter-spacing: -0.01em;
+}
+
+/* Zweite Zeile einer Überschrift tritt zurück statt einer zweiten Farbe. */
+.quiet {
+  color: var(--fg-dim);
+}
+
+.text-signal {
+  color: var(--signal);
 }
 
 .btn {
@@ -241,24 +309,24 @@ img {
 }
 
 .btn-primary {
-  background: var(--fg);
-  color: var(--bg);
+  background: var(--signal);
+  color: var(--signal-ink);
 }
 
 .btn-primary:hover {
-  background: #fff;
+  background: color-mix(in srgb, var(--signal) 86%, var(--fg));
   transform: translateY(-1px);
 }
 
 .btn-ghost {
   border: 1px solid var(--border-strong);
-  background: #ffffff05;
+  background: transparent;
   color: var(--fg);
 }
 
 .btn-ghost:hover {
-  background: #ffffff0d;
-  border-color: #ffffff3d;
+  background: var(--accent-dim);
+  border-color: var(--fg-dim);
 }
 
 .btn:active {
@@ -345,7 +413,7 @@ img {
   z-index: 60;
   inset: 0 0 auto;
   height: 2px;
-  background: var(--fg);
+  background: var(--signal);
   transform: scaleX(0);
   transform-origin: left;
   pointer-events: none;
