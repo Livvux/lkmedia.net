@@ -2,81 +2,200 @@
 import type { HomeContent } from '../../lib/home-content';
 interface Props { hero: HomeContent['hero'] }
 const { hero } = Astro.props;
+const { visual } = hero;
+// Knoten des Signalpfads (M384 485 H470 V344 H384); y-Werte liegen auf dem Pfad.
+const nodes = [485, 415, 344].map((y, i) => ({ y, label: visual.nodes[i], note: visual.notes[i] }));
+const cards = [24, 148, 272];
+// Wörter mit Bindestrich („KI-Systeme“) nicht am Bindestrich umbrechen.
+const titleParts = hero.title.split(/(\S+-\S+)/);
 ---
-<div class="hero-scene" data-hero-scene>
 <header class="hero" aria-labelledby="hero-title">
-  <img class="hero-image" src="/home/goldener-mann.webp" width="1200" height="1200" alt="" fetchpriority="high" decoding="async" />
-  <div class="hero-shade" aria-hidden="true"></div>
-  <div class="hero-copy wrap">
-    <p class="hero-kicker">{hero.eyebrow}</p>
-    <h1 id="hero-title">
-      {hero.title.split(' ').map((word, i) => <Fragment><span class="hero-word-mask"><span class="hero-word" style={`--word-index:${i}`}>{word}</span></span>{' '}</Fragment>)}<br />
-      <span>{hero.claim.split(' ').map((word, i) => <Fragment><span class="hero-word-mask"><span class="hero-word" style={`--word-index:${i + hero.title.split(' ').length}`}>{word}</span></span>{' '}</Fragment>)}</span>
-    </h1>
-    <div class="hero-actions">
-      <a href={hero.secondary.href} class="hero-contact">{hero.secondary.label} <span aria-hidden="true">↗</span></a>
-      <a href={hero.primary.href} class="hero-packages">{hero.primary.label} <span aria-hidden="true">→</span></a>
+  <div class="grid-bg" aria-hidden="true"></div>
+  <div class="wrap hero-inner">
+    <div class="hero-copy">
+      <p class="label">{hero.label}</p>
+      <h1 id="hero-title" class="hero-title">{titleParts.map((part, i) => (i % 2 ? <span class="nowrap">{part}</span> : part))} <span class="quiet">{hero.quiet}</span></h1>
+      <p class="lede hero-lede">{hero.lede}</p>
+      <div class="hero-actions">
+        <a href={hero.primary.href} class="btn btn-primary btn-lg">
+          {hero.primary.label}
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
+        </a>
+        <a href={hero.secondary.href} class="btn btn-ghost btn-lg">{hero.secondary.label}</a>
+      </div>
     </div>
+
+    <figure class="schnitt" aria-hidden="true">
+      <svg viewBox="0 0 560 520" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Seite als Drahtgitter -->
+        <rect class="s-frame" x="8.5" y="8.5" width="391" height="503" rx="6" />
+        <line class="s-rule" x1="9" y1="36.5" x2="399" y2="36.5" />
+        <text class="s-mono" x="24" y="26.5">{visual.url}</text>
+        <circle class="s-line" cx="384" cy="22.5" r="3.5" />
+        <rect class="s-mid" x="24" y="56" width="30" height="10" rx="2" />
+        <rect class="s-dim" x="252" y="60" width="28" height="2" />
+        <rect class="s-dim" x="292" y="60" width="28" height="2" />
+        <rect class="s-dim" x="332" y="60" width="52" height="2" />
+        <line class="s-rule" x1="9" y1="80.5" x2="399" y2="80.5" />
+
+        <rect class="s-ink" x="24" y="100" width="224" height="15" rx="2" />
+        <rect class="s-mid" x="24" y="123" width="164" height="15" rx="2" />
+        <rect class="s-dim" x="24" y="152" width="200" height="4" rx="2" />
+        <rect class="s-dim" x="24" y="162" width="152" height="4" rx="2" />
+        <rect class="s-line" x="24.5" y="180.5" width="72" height="19" rx="9.5" />
+        <rect class="s-line" x="272.5" y="100.5" width="111" height="99" rx="3" />
+        <path class="s-rule" d="M273 101L383 199M383 101L273 199" />
+
+        {cards.map((x) => (
+          <g>
+            <rect class="s-line" x={x + 0.5} y="224.5" width="111" height="75" rx="3" />
+            <rect class="s-mid" x={x + 12} y="237" width="12" height="12" rx="2" />
+            <rect class="s-mid" x={x + 12} y="266" width="64" height="4" rx="2" />
+            <rect class="s-dim" x={x + 12} y="276" width="84" height="3" rx="1.5" />
+            <rect class="s-dim" x={x + 12} y="284" width="56" height="3" rx="1.5" />
+          </g>
+        ))}
+
+        <!-- Platz für den neuen Block; der Block selbst kommt am Ende des Pfads an. -->
+        <rect class="s-slot" x="24.5" y="316.5" width="359" height="55" rx="3" />
+        <g class="s-result">
+          <rect class="s-result-box" x="24.5" y="316.5" width="359" height="55" rx="3" />
+          <text class="s-mono s-signal" x="38" y="335">{visual.result}</text>
+          <rect class="s-mid" x="38" y="345" width="180" height="4" rx="2" />
+          <rect class="s-dim" x="38" y="355" width="132" height="4" rx="2" />
+        </g>
+
+        <text class="s-mono" x="24" y="401">{visual.form}</text>
+        <rect class="s-line" x="24.5" y="410.5" width="170" height="17" rx="3" />
+        <rect class="s-line" x="204.5" y="410.5" width="179" height="17" rx="3" />
+        <rect class="s-line" x="24.5" y="436.5" width="359" height="29" rx="3" />
+        <rect class="s-submit" x="304" y="476" width="80" height="18" rx="9" />
+
+        <!-- Signal: aus dem Formular durch drei Stationen zurück in die Seite -->
+        <path class="s-track" d="M384 485H470V344H384" />
+        <path class="s-signal-path" d="M384 485H470V344H384" pathLength="1" />
+        {nodes.map((node, i) => (
+          <g class:list={['s-node', `s-node-${i + 1}`]}>
+            <circle class="s-node-ring" cx="470" cy={node.y} r="7.5" />
+            <circle class="s-node-dot" cx="470" cy={node.y} r="2.75" />
+            <text class="s-mono s-node-label" x="488" y={node.y - 1}>{node.label}</text>
+            <text class="s-mono s-node-note" x="488" y={node.y + 11}>{node.note}</text>
+          </g>
+        ))}
+        <path class="s-check" d="M466 344.5l2.75 2.75 5.25-5.5" pathLength="1" />
+      </svg>
+    </figure>
   </div>
-  <div class="hero-projects" aria-hidden="true">
-    <div class="hero-project hero-project--one" data-hero-project><img src="/landing/shots/patricks-fahrschule-1440.webp" width="1440" height="900" alt="" loading="lazy" /><span>Patrick’s Fahrschule · Webdesign</span></div>
-    <div class="hero-project hero-project--two" data-hero-project><img src="/cases/eichhoernchenberger/desktop.webp" width="1440" height="900" alt="" loading="lazy" /><span>Eichhörnchen Berger · Entwicklung</span></div>
-    <div class="hero-project hero-project--three" data-hero-project><img src="/landing/shots/cleo-coaching-1440.webp" width="1440" height="900" alt="" loading="lazy" /><span>Cleo Coaching · Webdesign</span></div>
-    <div class="hero-project hero-project--four" data-hero-project><img src="/landing/shots/lorenz-logistik-1440.webp" width="1440" height="900" alt="" loading="lazy" /><span>Lorenz Logistik · Webdesign</span></div>
-  </div>
-  <div class="hero-bottom wrap">
-    <p>Webdesign <span aria-hidden="true">/</span> Entwicklung <span aria-hidden="true">/</span> SEO</p>
-    <a href="#entdecken">Weiter entdecken <span aria-hidden="true">↓</span></a>
+
+  <div class="wrap">
+    <ul class="hero-facts">
+      {hero.facts.map((fact) => <li>{fact}</li>)}
+    </ul>
   </div>
 </header>
-</div>
+
 <style>
-  .hero-scene { position: relative; }
-  .hero { position: relative; isolation: isolate; display: flex; flex-direction: column; justify-content: center; min-height: min(100svh, 1100px); padding-top: 110px; overflow: hidden; background: #101010; }
-  .hero-image { position: absolute; z-index: 0; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 48%; filter: grayscale(1) brightness(.38); }
-  .hero-shade { position: absolute; z-index: 1; inset: 0; background: #09090938; }
-  .hero-copy { position: relative; z-index: 2; padding-block: 110px 150px; text-align: center; }
-  .hero-kicker { margin-bottom: 34px; color: #deded9; font-family: var(--font-mono); font-size: 11px; text-transform: uppercase; letter-spacing: .08em; }
-  h1 { font-size: clamp(52px, 7.5vw, 116px); font-weight: 450; line-height: 1.05; letter-spacing: -.065em; color: #f4f3ef; }
-  h1 span { color: #e2e1dc; }
-  .hero-word-mask { display: inline-block; overflow: clip; vertical-align: top; padding-bottom: .15em; margin-bottom: -.15em; }
-  .hero-word { display: inline-block; }
-  @keyframes hero-word-in { from { transform: translateY(22%) rotate(2deg); } to { transform: none; } }
-  @media(min-width: 900px) and (prefers-reduced-motion: no-preference) {
-    .hero-word { animation: hero-word-in .8s var(--ease-out) both; animation-delay: calc(var(--word-index) * 45ms); }
+  .hero {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    padding-top: clamp(56px, 8vw, 112px);
   }
-  .hero-actions { display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 16px 40px; margin-top: 38px; }
-  .hero-packages { display: inline-flex; align-items: center; gap: 16px; min-height: 48px; font-size: 14px; color: #deded9; text-underline-offset: 6px; }
-  .hero-packages:hover { text-decoration: underline; }
-  .hero-contact { display: inline-flex; gap: 32px; align-items: center; min-height: 48px; padding-bottom: 6px; border-bottom: 1px solid #ffffff70; font-size: 15px; }
-  .hero-contact span { font-size: 24px; transition: transform 250ms; }
-  .hero-contact:hover span { transform: translate(3px,-3px); }
-  .hero-bottom { position: absolute; z-index: 2; bottom: 28px; display: flex; justify-content: space-between; align-items: center; gap: 24px; left: 0; right: 0; color: #e1e0db; font-family: var(--font-mono); font-size: 10px; text-transform: uppercase; letter-spacing: .04em; }
-  .hero-bottom p { display: flex; gap: 18px; }
-  .hero-bottom a { display: inline-flex; align-items: center; min-height: 44px; gap: 20px; }
-  .hero-bottom a span { font-size: 22px; }
-  .hero-projects { display: none; position: absolute; inset: 0; z-index: 1; pointer-events: none; }
-  .hero-project { position: absolute; width: clamp(180px, 24vw, 390px); padding: 6px; background: #e9e8e3; color: #22221f; box-shadow: 0 24px 70px #0005; }
-  .hero-project img { display: block; width: 100%; height: 100%; aspect-ratio: 4 / 3; object-fit: cover; object-position: top; }
-  .hero-project span { display: block; padding: 10px 6px 6px; font-family: var(--font-mono); font-size: 10px; }
-  .hero-project--one { left: 4%; top: 6%; }
-  .hero-project--two { right: 2%; top: 9%; }
-  .hero-project--three { left: 9%; bottom: 7%; width: clamp(170px, 20vw, 320px); }
-  .hero-project--four { right: 7%; bottom: 5%; width: clamp(170px, 21vw, 340px); }
-  @media(min-width: 900px) and (min-height: 600px) and (prefers-reduced-motion: no-preference) {
-    .hero-scene.is-motion { height: 240svh; }
-    .is-motion .hero { position: sticky; top: 0; height: 100svh; min-height: 600px; }
-    .is-motion .hero-projects { display: block; }
+  .hero .grid-bg { z-index: -1; mask-image: radial-gradient(70% 70% at 70% 40%, #000 30%, transparent 100%); }
+  .hero-inner {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: center;
+    gap: clamp(40px, 5vw, 80px);
   }
-  @media(min-width: 1600px) { .hero-copy { max-width: 1600px; } }
-  @media(max-width: 600px) {
-    .hero { min-height: 780px; min-height: max(720px, 100svh); padding-top: 88px; }
-    .hero-copy { position: relative; z-index: 2; padding-block: 100px 170px; text-align: left; }
-    .hero-actions { justify-content: flex-start; gap: 12px; }
-    .hero-kicker { max-width: 24ch; margin-bottom: 30px; line-height: 1.8; }
-    h1 { font-size: clamp(44px, 9.7vw, 60px); line-height: 1.12; letter-spacing: -.06em; }
-    .hero-bottom { flex-wrap: wrap; gap: 4px; bottom: 22px; }
-    .hero-bottom p { width: 100%; gap: 12px; font-size: 9px; }
-    .hero-image { object-position: 51% center; }
+  .hero-title {
+    margin-top: 28px;
+    font-size: clamp(40px, 4.7vw, 72px);
+    font-weight: 500;
+    letter-spacing: -0.045em;
+    line-height: 1.02;
+  }
+  .nowrap { white-space: nowrap; }
+  .hero-lede { margin-top: 28px; max-width: 50ch; }
+  .hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 40px;
+  }
+  .hero-facts {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 20px;
+    margin-top: clamp(56px, 8vw, 104px);
+    border-top: 1px solid var(--border);
+  }
+  .hero-facts li {
+    padding: 18px 0 22px;
+    color: var(--fg-dim);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .hero-facts li:nth-child(n + 3) { border-top: 1px solid var(--border); }
+  @media (min-width: 641px) {
+    .hero-facts { grid-template-columns: repeat(4, minmax(0, 1fr)); column-gap: 0; }
+    .hero-facts li:nth-child(n + 3) { border-top: 0; }
+    .hero-facts li + li { padding-left: 20px; border-left: 1px solid var(--border); }
+  }
+
+  /* Schnittbild: Ruhezustand ist das fertige Bild; die Animation spielt nur einmal davor. */
+  .schnitt { margin: 0; }
+  .schnitt svg { display: block; width: 100%; height: auto; overflow: visible; }
+  .s-frame { fill: var(--bg-elev); stroke: var(--border-strong); }
+  .s-rule { stroke: var(--border); }
+  .s-line, .s-slot { stroke: var(--border-strong); }
+  .s-slot { stroke-dasharray: 3 4; }
+  .s-ink { fill: var(--fg); opacity: 0.82; }
+  .s-mid { fill: var(--fg-dim); opacity: 0.55; }
+  .s-dim { fill: var(--fg-dim); opacity: 0.28; }
+  .s-mono {
+    fill: var(--fg-dim);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .s-signal { fill: var(--signal); }
+  .s-submit { fill: var(--signal); opacity: 0.9; }
+  .s-result-box { fill: var(--signal-dim); stroke: var(--signal); }
+  .s-track { stroke: var(--border-strong); stroke-dasharray: 2 4; }
+  .s-signal-path { stroke: var(--signal); stroke-width: 1.5; stroke-dasharray: 1; }
+  .s-node-ring { fill: var(--bg); stroke: var(--signal); }
+  .s-node-dot { fill: var(--signal); }
+  .s-node-label { fill: var(--fg); }
+  .s-node-3 .s-node-ring { fill: var(--signal); }
+  .s-node-3 .s-node-dot { opacity: 0; }
+  .s-check { stroke: var(--signal-ink); stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 1; }
+
+  @media (prefers-reduced-motion: no-preference) {
+    :global(.js) .s-signal-path { animation: s-draw 1.6s linear 0.4s both; }
+    :global(.js) .s-node-1 .s-node-dot { animation: s-on 150ms ease-out 0.84s both; }
+    :global(.js) .s-node-2 .s-node-dot { animation: s-on 150ms ease-out 1.2s both; }
+    :global(.js) .s-node-3 .s-node-ring { animation: s-fill 200ms ease-out 1.56s both; }
+    :global(.js) .s-node-3 .s-node-dot { animation: s-off 200ms ease-out 1.56s both; }
+    :global(.js) .s-check { animation: s-draw 300ms var(--ease-out) 1.7s both; }
+    :global(.js) .s-result { animation: s-arrive 420ms var(--ease-out) 2s both; }
+  }
+  @keyframes s-draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+  @keyframes s-on { from { opacity: 0; } }
+  @keyframes s-off { from { opacity: 1; } }
+  @keyframes s-fill { from { fill: var(--bg); } }
+  @keyframes s-arrive { from { opacity: 0; transform: translateX(12px); } }
+
+  @media (max-width: 960px) {
+    .hero-inner { grid-template-columns: minmax(0, 1fr); }
+    .schnitt { max-width: 560px; }
+  }
+  @media (max-width: 640px) {
+    /* Klein: Notizen weg, Beschriftungen größer, damit sie lesbar bleiben. */
+    .s-node-note { display: none; }
+    .s-node-label { font-size: 13px; transform: translateY(4px); }
   }
 </style>

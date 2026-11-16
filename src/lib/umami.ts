@@ -62,7 +62,7 @@ interface UmamiPayload {
   url: string;
   title: string;
   referrer: string;
-  name?: "contact_click" | "checkout_click" | "demo_click";
+  name?: "contact_click" | "checkout_click" | "demo_click" | "ai_demo";
   data?: { target: string };
 }
 
@@ -150,6 +150,14 @@ export function startUmami(websiteId: string, expectedPath: string): void {
     if (conversion) void window.umami.track({ ...payload(), ...conversion }).catch(() => {});
   };
   document.addEventListener("click", click);
+  // Die KI-Demo meldet nur ihre zwei festen Schritte, nie Eingaben.
+  document.addEventListener("lkmedia:demo", (event) => {
+    const action = (event as CustomEvent<{ action?: string }>).detail?.action;
+    if (!allowed() || !window.umami || (action !== "generate" && action !== "approve")) return;
+    void window.umami
+      .track({ ...payload(), name: "ai_demo", data: { target: action } })
+      .catch(() => {});
+  });
   document.addEventListener("auxclick", click);
 
   let sent = false;

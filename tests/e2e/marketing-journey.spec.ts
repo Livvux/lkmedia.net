@@ -2,19 +2,23 @@ import { expect, test } from '@playwright/test';
 
 test.use({ contextOptions: { reducedMotion: 'reduce' } });
 
-test('home connects packages, individual projects and portfolio evidence', async ({ page }) => {
+test('home connects services, fixed-price packages and portfolio evidence', async ({ page }) => {
   await page.goto('/');
-  const hero = page.locator('main header');
-  await hero.getByRole('link', { name: 'Website-Pakete vergleichen' }).click();
+  const packages = page.locator('#leistungen aside');
+  await expect(packages).toContainText('Website-Pakete zum Festpreis');
+  for (const href of ['/docweb', '/handwerk', '/fahrschule-webdesign']) {
+    await expect(packages.locator(`a[href="${href}"]`)).toHaveCount(1);
+  }
+  await packages.getByRole('link', { name: 'Pakete vergleichen' }).click();
   await expect(page).toHaveURL(/\/leistungen$/);
   await expect(page.locator('main')).toContainText('2.498 €');
   await page.goto('/');
-  await expect(hero.getByRole('link', { name: 'Individuelles Projekt besprechen' })).toHaveAttribute('href', '/kontakt#termin');
-  await expect(page.locator('#offer-models')).toHaveText('Zwei Wege zu Ihrer Website');
+  await expect(page.locator('section[aria-labelledby="close-title"]').getByRole('link', { name: '15-Minuten-Call buchen' })).toHaveAttribute('href', '/kontakt#termin');
   await expect(page.locator('#arbeiten a[href^="/cases/"]')).toHaveCount(8);
+  await expect(page.locator('#arbeiten')).toContainText('Ergebnis');
   for (const path of ['/', '/cases/klavierbau-milde']) {
     await page.goto(path);
-    await expect(page.locator('main')).not.toContainText(/Position 1–2|Klickrate über 16|0,7 s|Lighthouse 100/);
+    await expect(page.locator('main')).not.toContainText(/Position 1–2|Klickrate über 16|0,7 s|Lighthouse 100|Handgeschriebener Code statt 40 Plugins/);
   }
 });
 
@@ -50,7 +54,7 @@ test('case video is playable on demand without an autoplaying third-party embed'
 for (const width of [390, 1280]) {
   test(`marketing paths remain usable at ${width}px`, async ({ page }) => {
     await page.setViewportSize({ width, height: 844 });
-    for (const path of ['/', '/fahrschule-webdesign', '/kontakt', '/case-study-patricks-fahrschule-local-seo/']) {
+    for (const path of ['/', '/en', '/fahrschule-webdesign', '/kontakt', '/case-study-patricks-fahrschule-local-seo/']) {
       const response = await page.goto(path);
       expect(response?.status(), path).toBe(200);
       await expect(page.getByRole('heading', { level: 1 })).toHaveCount(1);

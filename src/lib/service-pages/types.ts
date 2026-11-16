@@ -27,7 +27,7 @@ export interface ServicePage {
     title: string;
     intro: string;
     /** Nur echte Projekte aus src/content/cases; `href` ist die Case-Seite. */
-    items: { client: string; body: string; href: string; hrefLang?: Lang }[];
+    items: { client: string; body: string; href: string; hrefLang?: Lang; linkLabel?: string }[];
   };
   faq: { title: string; items: { q: string; a: string }[] };
   cta: { title: string; body: string; formTitle: string; next: string[] };

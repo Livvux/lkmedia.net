@@ -1,7 +1,8 @@
 import { expect, test } from '@playwright/test';
 
 const pages = [
-  ['/', 'Design, Technik &'],
+  ['/', 'Websites und KI-Systeme'],
+  ['/en', 'Websites and AI systems'],
   ['/anwaelte', 'Webdesign für Anwaltskanzleien'],
   ['/privatkliniken', 'Webdesign für Privatkliniken'],
   ['/luxus-immobilien', 'Webdesign für Luxus-Immobilien'],
@@ -43,15 +44,12 @@ test('articles have absolute social images and article metadata', async ({ page,
   expect(await (await request.get('/rss.xml')).text()).not.toContain('real-debrid-review');
 });
 
-test('homepage separates illustrative search examples from actual recommendations', async ({ page }) => {
+test('homepage names its local service area and links the Rastatt SEO page', async ({ page }) => {
   await page.goto('/');
-  const preview = page.locator('[data-search]');
-  await expect(preview).toContainText('Google – Layoutbeispiel');
-  await expect(preview).toContainText('keine Live-Suche oder nachgewiesene KI-Empfehlung');
-  await preview.getByLabel('Ihr Betrieb').fill('Beispielbetrieb');
-  await expect(preview.locator('.answer')).toContainText('Beispielbetrieb');
-  await expect(preview.locator('.answer')).not.toContainText('wird häufig');
-  await expect(page.getByRole('link', { name: 'SEO für Ihre bestehende Website ansehen' })).toHaveAttribute('href', '/seo-rastatt');
+  await expect(page.locator('main')).toContainText('Rastatt, Mittelbaden und der Südpfalz');
+  await expect(page.locator('#leistungen a[href="/seo-rastatt"]')).toHaveText('Optimierung & Wartung');
+  expect(await page.locator('script[type="application/ld+json"]').first().textContent()).toContain('ProfessionalService');
+  await expect(page.locator('meta[name="description"]')).toHaveAttribute('content', /WordPress.*KI-Automatisierung.*Rastatt/);
 });
 
 
@@ -60,21 +58,6 @@ test('homepage hero renders without waiting for deferred scripts', async ({ page
   await page.goto('/');
   await expect(page.locator('h1')).toBeVisible();
   await expect(page.locator('main header.hero [data-reveal]')).toHaveCount(0);
-  const image = page.locator('main header.hero .hero-image');
-  await expect(image).toBeVisible();
-  expect(await image.evaluate((el: HTMLImageElement) => el.complete && el.naturalWidth > 0)).toBe(true);
-});
-
-
-test('offscreen preview video loads only near the viewport', async ({ page }) => {
-  await page.setViewportSize({ width: 390, height: 844 });
-  await page.emulateMedia({ reducedMotion: 'no-preference' });
-  const videoRequests: string[] = [];
-  page.on('request', request => { if (request.url().includes('walkthrough.mp4')) videoRequests.push(request.url()); });
-  await page.goto('/');
-  const video = page.locator('video[data-preview]');
-  await expect(video).not.toHaveAttribute('src');
-  expect(videoRequests).toEqual([]);
-  await video.scrollIntoViewIfNeeded();
-  await expect(video).toHaveAttribute('src', '/cases/eichhoernchenberger/walkthrough.mp4');
+  // Das Schnittbild ist reines SVG/CSS: der Endzustand steht ohne Skripte.
+  await expect(page.locator('main header.hero .schnitt svg')).toBeVisible();
 });

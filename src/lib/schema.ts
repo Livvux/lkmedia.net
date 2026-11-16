@@ -39,7 +39,12 @@ export const professionalService = () => ({
 });
 
 /** Eine Leistungsseite als Service des Studios. */
-export const service = (s: { name: string; description: string; url: string; lang: "de" | "en" }) => ({
+export const service = (s: {
+  name: string;
+  description: string;
+  url: string;
+  lang: "de" | "en";
+}) => ({
   "@context": "https://schema.org",
   "@type": "Service",
   "@id": `${new URL(s.url, "https://lkmedia.net").href}#service`,

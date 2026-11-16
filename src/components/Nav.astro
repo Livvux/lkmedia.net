@@ -24,8 +24,8 @@ const menuLabel = copy.menu;
 const closeLabel = copy.close;
 const currentPath = Astro.url.pathname.replace(/\/$/, '') || '/';
 const other: Lang = lang === 'en' ? 'de' : 'en';
-// Sprachwechsel führt zur Fassung dieser Seite, sonst zur Startseite der anderen Sprache.
-const switchHref = alternatesFor(currentPath)[other] ?? routeFor('home', other);
+// Sprachwechsel nur, wo es diese Seite in der anderen Sprache wirklich gibt.
+const switchHref = alternatesFor(currentPath)[other];
 const homeHref = routeFor('home', lang);
 const isCurrent = (href: string) => currentPath === href || (href !== homeHref && currentPath.startsWith(`${href}/`));
 ---
@@ -45,7 +45,7 @@ const isCurrent = (href: string) => currentPath === href || (href !== homeHref &
     </ul>
 
     <div class="nav-right">
-      <a href={switchHref} class="nav-lang" hreflang={other} lang={other} aria-label={copy.switchLabel}>{copy.switchText}</a>
+      {switchHref && <a href={switchHref} class="nav-lang" hreflang={other} lang={other} aria-label={copy.switchLabel}>{copy.switchText}</a>}
       <a href={contactHref} class="btn btn-primary nav-cta" aria-current={isCurrent(contactHref) ? 'page' : undefined}>{t('cta.start')}</a>
       <button
         type="button"

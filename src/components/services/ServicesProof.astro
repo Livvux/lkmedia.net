@@ -1,8 +1,8 @@
 ---
 import { homeContent } from '../../lib/home-content';
-import { routeFor, type Lang } from '../../lib/i18n';
+import { routeFor } from '../../lib/i18n';
 import type { ServicesContent } from '../../lib/services-content';
-interface Props { proof: ServicesContent['proof']; lang: Lang }
+interface Props { proof: ServicesContent['proof']; lang: 'de' }
 const { proof, lang } = Astro.props;
 const projects = homeContent[lang].proof.shots.filter((shot) => shot.slug !== 'lorenz-logistik');
 ---
@@ -50,7 +50,7 @@ const projects = homeContent[lang].proof.shots.filter((shot) => shot.slug !== 'l
   .project-image { overflow: hidden; border: 1px solid var(--border-strong); border-radius: 12px; aspect-ratio: 1.6; background: var(--bg-elev); }
   .project-image img { width: 100%; height: 100%; object-fit: cover; object-position: top; transition: transform 400ms var(--ease-out); }
   .project-title { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 20px; }
-  .project-title h3 { font-size: 18px; font-weight: 600; letter-spacing: -0.02em; }
+  .project-title h3 { font-size: 18px; font-weight: 500; letter-spacing: -0.02em; }
   .project-title svg { flex-shrink: 0; color: var(--fg-muted); }
   .proof-project p { font-size: 13px; line-height: 1.6; color: var(--fg-muted); margin-top: 6px; }
   .proof-project:hover img { transform: scale(1.025); }

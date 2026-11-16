@@ -1,7 +1,6 @@
 ---
-import type { HomeContent } from '../../lib/home-content';
-
-interface Props { cta: HomeContent['cta'] }
+interface Link { label: string; href: string }
+interface Props { cta: { lines: [string, string]; sub: string; primary: Link; secondary: Link } }
 const { cta } = Astro.props;
 ---
 

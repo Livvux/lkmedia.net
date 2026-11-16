@@ -2,79 +2,66 @@
 import { getCollection } from 'astro:content';
 import type { Lang } from '../../lib/i18n';
 import { homeContent } from '../../lib/home-content';
+import BriefToDraft from '../showcase/BriefToDraft';
 import HomeHero from './HomeHero.astro';
-import TrustMarquee from './TrustMarquee.astro';
-import MetricBand from './MetricBand.astro';
+import ServiceIndex from './ServiceIndex.astro';
 import SectionHead from './SectionHead.astro';
-import OfferTabs from './OfferTabs';
 import WorkGrid from './WorkGrid.astro';
-import ExpectGrid from './ExpectGrid.astro';
-import SearchPreview from './SearchPreview.astro';
+import WhyList from './WhyList.astro';
 import ProcessSteps from './ProcessSteps.astro';
 import LatestPosts from './LatestPosts.astro';
 import AboutLucas from './AboutLucas.astro';
-import FinalCta from './FinalCta.astro';
-import AgencyServices from './AgencyServices.astro';
+import HomeClose from './HomeClose.astro';
 import '../../styles/home-motion.css';
 
 interface Props { lang: Lang }
 const { lang } = Astro.props;
 const c = homeContent[lang];
 
-// Kennzahlen aus den echten Inhalten, nicht aus Marketingzahlen.
+// Kennzahlen aus den echten Inhalten: Jahre seit 2015, veröffentlichte Cases, Artikel.
 const cases = await getCollection('cases');
 const articles = await getCollection(
   'posts',
   (p) => p.data.lang === 'de' && !p.data.draft && !p.data.noindex,
 );
-const metrics = [
-  { value: new Date().getFullYear() - 2015, caption: c.metrics.items[0].caption },
-  { value: cases.length, caption: c.metrics.items[1].caption },
-  { value: articles.length, caption: c.metrics.items[2].caption },
-];
+const figures = [new Date().getFullYear() - 2015, cases.length, articles.length];
 ---
 
 <div class="home">
   <HomeHero hero={c.hero} />
+  <ServiceIndex services={c.services} />
 
-  <div id="entdecken" class="paper intro-block">
-    <section class="intro wrap" aria-labelledby="intro-title">
-      <p class="eyebrow">lk media · seit 2015</p>
-      <div>
-        <h2 id="intro-title">Ein guter Auftritt ist kein Zufall.</h2>
-        <p class="intro-statement">Ich verbinde Gestaltung und Entwicklung zu Websites, die zu Ihrem Unternehmen passen. Klar im Design. Schnell im Alltag. Und dort sichtbar, wo Ihre Kunden suchen.</p>
-        <a class="mono-link" href="/ueber">Lernen wir uns kennen <span aria-hidden="true">↗</span></a>
+  <section class="paper showcase" aria-labelledby="showcase-title">
+    <div class="wrap">
+      <div class="showcase-head">
+        <SectionHead id="showcase-title" label={c.showcase.label} title={c.showcase.title} quiet={c.showcase.quiet} />
+        <div class="showcase-text" data-reveal>
+          {c.showcase.body.map((p) => <p>{p}</p>)}
+        </div>
       </div>
-    </section>
-    <MetricBand title={c.metrics.title} figures={metrics} />
+      <div class="showcase-stage">
+        <BriefToDraft lang={lang} client:visible />
+      </div>
+      <p class="showcase-evidence"><span class="label">{lang === 'en' ? 'Evidence' : 'Beleg'}</span>{c.showcase.evidence}</p>
+    </div>
+  </section>
+
+  <WorkGrid proof={c.proof} />
+
+  <div class="paper">
+    <WhyList why={c.why} figures={figures} figuresLabel={lang === 'en' ? 'Facts from this website' : 'Zahlen aus dieser Website'} />
+  </div>
+
+  <div class="process-band">
     <ProcessSteps process={c.process} />
   </div>
 
-  <div class="work-block">
-    <div class="scroll-band" aria-hidden="true">
-      <p data-band-row>{'Webdesign · Entwicklung · SEO · '.repeat(4)}</p>
-      <p data-band-row class="outline">{'Klar · Schnell · Sichtbar · '.repeat(4)}</p>
-    </div>
-    <WorkGrid proof={c.proof} />
-    <TrustMarquee label={c.marquee.label} items={c.marquee.items} />
-  </div>
-
-  <div class="paper services-block">
-    <AgencyServices />
-    <section class="wrap offers" aria-labelledby="offer-models">
-      <SectionHead n="02" id="offer-models" title={c.offers.title} sub={c.offers.sub} />
-      <OfferTabs tabs={c.offers.tabs} client:visible />
-    </section>
-    <SearchPreview search={c.search} />
-    <div class="wrap seo-link"><a class="mono-link" href="/seo-rastatt">SEO für Ihre bestehende Website ansehen <span aria-hidden="true">↗</span></a></div>
-  </div>
-
-  <div class="studio-block">
+  <div class="paper">
+    {c.journal && <LatestPosts journal={c.journal} />}
     <AboutLucas about={c.about} />
-    <ExpectGrid stats={c.stats} />
-    <LatestPosts journal={c.journal} />
   </div>
-  <FinalCta cta={c.cta} />
+
+  <HomeClose cta={c.cta} />
 </div>
 
 <script>
@@ -82,33 +69,28 @@ const metrics = [
 </script>
 
 <style>
-  .home { --section-space: clamp(88px, 11vw, 160px); }
-  .paper {
-    --bg: #eeede9;
-    --bg-elev: #e7e6e2;
-    --bg-card: #e5e4df;
-    --fg: #1d1d1b;
-    --fg-muted: #555550;
-    --fg-dim: #62625c;
-    --fg-faint: #666660;
-    --border: #1d1d1b20;
-    --border-strong: #1d1d1b40;
-    --accent: #1d1d1b;
-    --accent-dim: #1d1d1b12;
-    color-scheme: light;
-    background: var(--bg);
-    color: var(--fg);
+  .showcase { padding-block: var(--section-space); }
+  .showcase-head {
+    display: grid;
+    grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+    align-items: end;
+    gap: 32px clamp(40px, 6vw, 96px);
   }
-  .intro-block { grid-template-columns: minmax(0, 1fr); display: grid; gap: 88px; padding-top: var(--section-space); }
-  .intro { display: grid; grid-template-columns: 1fr 3fr; gap: 32px; }
-  .intro > .eyebrow { padding-top: 12px; }
-  .intro h2 { max-width: 18ch; font-size: clamp(40px, 5.5vw, 76px); font-weight: 450; line-height: 1.1; letter-spacing: -.055em; }
-  .intro-statement { max-width: 36ch; margin-block: 32px; color: var(--fg-muted); font-size: clamp(23px, 2.7vw, 38px); line-height: 1.4; letter-spacing: -.035em; }
-  .work-block, .services-block, .studio-block { grid-template-columns: minmax(0, 1fr); display: grid; gap: var(--section-space); padding-block: var(--section-space); }
-  .services-block { gap: clamp(72px,9vw,128px); }
-  .seo-link { margin-top: -50px; }
-  .scroll-band { overflow: clip; display: grid; gap: .04em; font-size: clamp(64px, 13vw, 210px); font-weight: 450; line-height: 1.05; letter-spacing: -.06em; white-space: nowrap; user-select: none; }
-  .scroll-band p { width: max-content; }
-  .scroll-band .outline { color: transparent; -webkit-text-stroke: 1px #f4f3ef55; }
-  @media(max-width: 760px) { .intro { grid-template-columns: 1fr; } .intro-block { gap: 56px; } .seo-link { margin-top: -30px; } }
+  .showcase-text { display: grid; gap: 14px; max-width: 48ch; color: var(--fg-muted); font-size: 17px; line-height: 1.6; }
+  .showcase-stage { margin-top: clamp(40px, 5vw, 64px); }
+  .showcase-evidence {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 8px 20px;
+    margin-top: 32px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+    color: var(--fg-muted);
+    font-size: 15px;
+  }
+  .process-band { padding-block: calc(var(--section-space) - 48px); }
+  @media (max-width: 900px) {
+    .showcase-head { grid-template-columns: 1fr; }
+  }
 </style>

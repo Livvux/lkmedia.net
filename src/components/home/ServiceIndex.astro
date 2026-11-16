@@ -1,0 +1,131 @@
+---
+import type { HomeContent } from '../../lib/home-content';
+import SectionHead from './SectionHead.astro';
+interface Props { services: HomeContent['services'] }
+const { services } = Astro.props;
+const { packages } = services;
+---
+<section id="leistungen" class="services wrap" aria-labelledby="services-title">
+  <SectionHead id="services-title" label={services.label} title={services.title} quiet={services.quiet} sub={services.sub} />
+  <ol class="rows">
+    {services.items.map((item, i) => (
+      <li class="row" data-reveal style={`--d:${i * 60}ms`}>
+        <span class="n" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+        <h3><a href={item.href}>{item.title}</a></h3>
+        <p class="outcome">{item.outcome}</p>
+        <ul class="keywords">
+          {item.keywords.map((k) => <li>{k}</li>)}
+        </ul>
+        <span class="arrow" aria-hidden="true">
+          <svg width="20" height="20" viewBox="0 0 16 16" fill="none"><path d="M4 12l8-8M5 4h7v7" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" /></svg>
+        </span>
+      </li>
+    ))}
+  </ol>
+
+  {packages && (
+    <aside class="packages" aria-labelledby="packages-title" data-reveal>
+      <div class="packages-head">
+        <h3 id="packages-title" class="label">{packages.label}</h3>
+        <p>{packages.title} <span class="quiet">{packages.quiet}</span></p>
+      </div>
+      <ul class="package-list">
+        {packages.items.map((p) => (
+          <li>
+            <a href={p.href}>
+              <span class="package-name">{p.name}</span>
+              <span class="package-audience">{p.audience}</span>
+              <span class="package-price">{p.price}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+      <a class="mono-link packages-all" href={packages.all.href}>{packages.all.label} <span aria-hidden="true">→</span></a>
+    </aside>
+  )}
+</section>
+
+<style>
+  .services { padding-block: var(--section-space); }
+  .rows {
+    margin-top: clamp(48px, 6vw, 80px);
+    border-top: 1px solid var(--border-strong);
+  }
+  .row {
+    position: relative;
+    display: grid;
+    grid-template-columns: 56px minmax(0, 0.9fr) minmax(0, 1.2fr) minmax(0, 0.9fr) 32px;
+    align-items: baseline;
+    gap: 24px;
+    padding: 32px 0;
+    border-bottom: 1px solid var(--border-strong);
+    transition: background-color 150ms ease-out;
+  }
+  .n { color: var(--fg-dim); font-family: var(--font-mono); font-size: 12px; }
+  .row h3 { font-size: clamp(24px, 2.4vw, 34px); font-weight: 500; letter-spacing: -0.035em; line-height: 1.15; }
+  /* Die ganze Zeile ist klickbar, der Link bleibt die Überschrift. */
+  .row h3 a::after { content: ''; position: absolute; inset: 0; }
+  .row h3 a:focus-visible { outline: none; }
+  .row:has(a:focus-visible) { outline: 2px solid var(--signal); outline-offset: 4px; }
+  .outcome { color: var(--fg-muted); font-size: 16px; line-height: 1.6; max-width: 44ch; }
+  .keywords { display: flex; flex-wrap: wrap; gap: 6px; }
+  .keywords li {
+    padding: 4px 10px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    color: var(--fg-dim);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+    transition: border-color 150ms ease-out, color 150ms ease-out;
+  }
+  .arrow { align-self: center; color: var(--fg-dim); transition: transform 150ms var(--ease-out), color 150ms ease-out; }
+  @media (hover: hover) {
+    .row:hover { background: color-mix(in srgb, var(--fg) 3%, transparent); }
+    .row:hover .arrow { color: var(--signal); transform: translate(3px, -3px); }
+    .row:hover .keywords li { border-color: var(--border-strong); color: var(--fg-muted); }
+  }
+
+  .packages {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 2fr) auto;
+    align-items: center;
+    gap: 24px 40px;
+    margin-top: clamp(48px, 6vw, 72px);
+    padding: 24px 28px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--bg-elev);
+  }
+  .packages-head p { margin-top: 10px; color: var(--fg-muted); font-size: 14px; line-height: 1.5; }
+  .package-list { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: 6px; overflow: hidden; }
+  .package-list a {
+    display: grid;
+    gap: 2px;
+    min-height: 44px;
+    height: 100%;
+    padding: 14px 16px;
+    background: var(--bg-elev);
+    transition: background-color 150ms ease-out;
+  }
+  .package-list a:hover { background: var(--bg-card); }
+  .package-name { font-weight: 500; letter-spacing: -0.01em; }
+  .package-audience { color: var(--fg-dim); font-size: 13px; }
+  .package-price { margin-top: 6px; color: var(--fg-muted); font-family: var(--font-mono); font-size: 12px; }
+  .packages-all { min-height: 44px; white-space: nowrap; }
+
+  @media (max-width: 1100px) {
+    .row { grid-template-columns: 48px minmax(0, 1fr) minmax(0, 1.4fr) 28px; }
+    .keywords { grid-column: 3; }
+    .arrow { grid-column: 4; grid-row: 1; }
+    .packages { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 760px) {
+    .row { grid-template-columns: 36px minmax(0, 1fr) 24px; gap: 12px 16px; padding: 26px 0; }
+    .outcome, .keywords { grid-column: 2; }
+    .arrow { grid-column: 3; grid-row: 1; }
+    .package-list { grid-template-columns: 1fr; }
+    .packages { padding: 20px; }
+  }
+</style>

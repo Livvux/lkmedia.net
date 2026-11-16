@@ -4,6 +4,11 @@
       "url": [
         "http://localhost:4321/",
         "http://localhost:4321/leistungen",
+        "http://localhost:4321/wordpress",
+        "http://localhost:4321/ki-automatisierung",
+        "http://localhost:4321/webentwicklung",
+        "http://localhost:4321/en",
+        "http://localhost:4321/en/grok-bot-wordpress",
         "http://localhost:4321/kontakt",
         "http://localhost:4321/anwaelte",
         "http://localhost:4321/privatkliniken",
