@@ -85,7 +85,8 @@ export function conversionLink(
   if (url.hostname === "cal.com" && url.pathname === "/lucas-lkmedia/15min") {
     return { name: "contact_click", data: { target: "appointment" } };
   }
-  if (PRODUCTION_HOSTS.has(url.hostname) && publicUmamiPath(url.pathname) === "/kontakt") {
+  const contactPaths: (string | null)[] = ["/kontakt", "/en/contact"];
+  if (PRODUCTION_HOSTS.has(url.hostname) && contactPaths.includes(publicUmamiPath(url.pathname))) {
     return {
       name: "contact_click",
       data: { target: url.hash === "#termin" ? "appointment" : "form" },

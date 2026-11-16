@@ -92,11 +92,11 @@ const discoveryEn: Record<keyof typeof DISCOVERY_CHANNELS, string> = {
   @media (max-width: 560px) { .contact-fields { grid-template-columns: 1fr; } button { justify-self: stretch; } }
 </style>
 <script>
-  import { leadSource, serviceInterest } from '../lib/lead-source';
+  import { leadSource, SERVICES } from '../lib/lead-source';
   // CTAs der Leistungsseiten wählen das Anliegen per ?service= vor.
   const wanted = new URLSearchParams(location.search).get('service');
   const select = document.querySelector<HTMLSelectElement>('select[name="service"]');
-  if (wanted && select) select.value = serviceInterest(wanted);
+  if (wanted && select && Object.hasOwn(SERVICES, wanted)) select.value = wanted;
   const source = document.querySelector<HTMLInputElement>('input[name="source"]');
   if ((source?.value === '/kontakt' || source?.value === '/en/contact') && document.referrer) {
     try {

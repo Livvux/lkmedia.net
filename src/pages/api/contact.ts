@@ -68,7 +68,11 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
   const company = String(form.get("company") ?? "")
     .slice(0, 120)
     .trim();
-  const budget = String(form.get("budget") ?? "").trim();
+  // Nur die Werte des Auswahlfelds; der Wert steht im Betreff.
+  const budgetValue = String(form.get("budget") ?? "");
+  const budget = ["< 5k", "5–15k", "15–30k", "30k+", "unklar"].includes(budgetValue)
+    ? budgetValue
+    : "";
   const source = leadSource(String(form.get("source") ?? "/kontakt"));
   const discovery = discoveryChannel(String(form.get("discovery") ?? "unknown"));
   const service = serviceInterest(String(form.get("service") ?? "unknown"));
@@ -89,7 +93,7 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
       from: FROM,
       to: TO,
       replyTo: email,
-      subject: `Projektanfrage: ${name} (${budget})`,
+      subject: `Projektanfrage: ${name.replace(/[\r\n]+/g, " ")} (${budget})`,
       text: `Angebotsseite: ${source}\nAnliegen: ${SERVICES[service].de}\nSprache: ${lang}\nHerkunft (Selbstauskunft): ${DISCOVERY_CHANNELS[discovery]}\nName: ${name}\nEmail: ${email}\nFirma: ${company}\nBudget: ${budget}\n\n${message}`,
     });
     if (error) throw new Error("Resend delivery failed");

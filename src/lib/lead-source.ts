@@ -13,6 +13,7 @@ const SOURCES = new Set([
   "/ki-automatisierung",
   "/webentwicklung",
   "/en",
+  "/en/contact",
   "/en/wordpress",
   "/en/ai-automation",
   "/en/web-development",

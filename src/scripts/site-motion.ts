@@ -45,7 +45,8 @@ function enhance(main: HTMLElement | null) {
   if (footerName) {
     const rise = animate(
       footerName,
-      { transform: ["translateY(45%)", "translateY(0%)"], opacity: [0.15, 1] },
+      // Ohne Opazität: der Name bleibt auch vor dem Hereinscrollen lesbar (Kontrast).
+      { transform: ["translateY(45%)", "translateY(0%)"] },
       { ease: "linear" },
     );
     animations.push(rise);

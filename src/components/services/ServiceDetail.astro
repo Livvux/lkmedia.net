@@ -9,7 +9,7 @@ interface Props { page: ServicePage; lang: Lang }
 const { page: p, lang } = Astro.props;
 const path = routeFor(p.route, lang);
 const seo = { ...p.seo, canonical: path, lang };
-const home = { name: lang === 'en' ? 'Home' : 'Start', url: routeFor('home', lang) };
+const home = { name: lang === 'en' ? 'Home' : 'Startseite', url: routeFor('home', lang) };
 const name = p.hero.title.join(' ');
 const jsonLd = [
   service({ name, description: p.seo.description, url: path, lang }),
@@ -121,7 +121,7 @@ const t = lang === 'en'
               <li>
                 <h3>{x.client}</h3>
                 <p>{x.body}</p>
-                <a class="mono-link" href={x.href} hreflang={x.hrefLang}>{x.linkLabel ?? t.case}{x.hrefLang && x.hrefLang !== lang && t.german ? ` (${t.german})` : ''} <span aria-hidden="true">↗</span></a>
+                <a class="mono-link" href={x.href} hreflang={x.hrefLang}>{x.linkLabel ?? t.case}<span class="sr-only">: {x.client}</span>{x.hrefLang && x.hrefLang !== lang && t.german ? ` (${t.german})` : ''} <span aria-hidden="true">↗</span></a>
               </li>
             ))}
           </ul>
