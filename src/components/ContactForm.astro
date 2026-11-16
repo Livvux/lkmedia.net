@@ -74,7 +74,15 @@ const discoveryEn: Record<keyof typeof DISCOVERY_CHANNELS, string> = {
   <p id="contact-error" role="alert" tabindex="-1" class="wide error" hidden></p>
   <button id="contact-submit" class="btn btn-primary btn-lg wide">{c.submit}</button>
 </form>
-{turnstileKey && <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>}
+{turnstileKey && (
+  <>
+    {/* Das Widget ist mindestens 300 px breit; auf schmalen Bildschirmen die kompakte Form. */}
+    <script is:inline>
+      if (innerWidth < 380) document.querySelector('.cf-turnstile')?.setAttribute('data-size', 'compact');
+    </script>
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+  </>
+)}
 <style>
   .contact-fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px 16px; max-width: 640px; }
   .wide { grid-column: 1 / -1; }

@@ -44,4 +44,4 @@ Schwere Checks und Playwright-Suites auf dem Webserver ausführen. Kauf-E2E verw
 
 `Dockerfile` baut `dist/`, entfernt Dev-Abhängigkeiten und startet `dist/server/entry.mjs` als Benutzer `node` auf Port 4321. Produktion benötigt die privaten Variablen als Container-Umgebung. `PUBLIC_TURNSTILE_SITE_KEY` und optional `PUBLIC_CAL_LINK` als öffentliche Docker-Build-Argumente setzen. Dokploy verwaltet Deployment und Routing; für Rollbacks das vorherige Image erhalten. In-Memory-Limits gelten pro Prozess; mehrere Replikate benötigen einen gemeinsamen Limiter.
 
-Öffentliche URLs sind deutsch ohne Sprachpräfix. Onboarding-, Danke-, Änderungsseiten und der bestehende noindex-Blogbeitrag sind aus der Sitemap ausgeschlossen.
+Deutsche URLs haben kein Sprachpräfix; englische Seiten liegen unter `/en/` und stehen in der Routentabelle `src/lib/i18n.ts`. Onboarding-, Danke-, Änderungsseiten und der bestehende noindex-Blogbeitrag sind aus der Sitemap ausgeschlossen.
