@@ -75,13 +75,29 @@ const discoveryEn: Record<keyof typeof DISCOVERY_CHANNELS, string> = {
   <button id="contact-submit" class="btn btn-primary btn-lg wide">{c.submit}</button>
 </form>
 {turnstileKey && (
-  <>
-    {/* Das Widget ist mindestens 300 px breit; auf schmalen Bildschirmen die kompakte Form. */}
-    <script is:inline>
-      if (innerWidth < 380) document.querySelector('.cf-turnstile')?.setAttribute('data-size', 'compact');
-    </script>
-    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
-  </>
+  // Fremdscript erst laden, wenn das Formular in die Nähe des Bildschirms kommt: auf den
+  // Leistungsseiten steht es ganz unten und bremste sonst den ersten Seitenaufbau.
+  <script is:inline>
+    (() => {
+      const widget = document.querySelector('.cf-turnstile');
+      if (!widget) return;
+      // Das Widget ist mindestens 300 px breit; auf schmalen Bildschirmen die kompakte Form.
+      if (innerWidth < 380) widget.setAttribute('data-size', 'compact');
+      const load = () => {
+        const script = document.createElement('script');
+        script.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js';
+        script.async = true;
+        document.head.append(script);
+      };
+      if (!('IntersectionObserver' in window)) return load();
+      const observer = new IntersectionObserver((entries) => {
+        if (!entries.some((entry) => entry.isIntersecting)) return;
+        observer.disconnect();
+        load();
+      }, { rootMargin: '800px' });
+      observer.observe(widget);
+    })();
+  </script>
 )}
 <style>
   .contact-fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px 16px; max-width: 640px; }
