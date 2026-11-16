@@ -1,19 +1,27 @@
 ---
 import Base from '../layouts/Base.astro';
+import { routeFor } from '../lib/i18n';
 
 const seo = {
   title: 'Über Lucas',
-  description: 'Lucas Kleipoedszus — Gründer von lkmedia. Premium-Websites für Kanzleien, Luxus-Immobilien und Privatkliniken.',
+  description: 'Lucas Kleipoedszus, Gründer von lkmedia in Rastatt: Websites, WordPress-Lösungen und KI-Systeme, die Unternehmen im Alltag weiterbringen.',
   canonical: '/ueber',
   lang: 'de' as const,
 };
 
 const credentials = [
   '10+ Jahre Webentwicklung',
+  'Websites, WordPress und KI-Systeme aus einer Hand',
+  'Werkzeug nach Aufgabe: WordPress, Astro, TypeScript',
   'SEO-Projekte mit Organic-Traffic-Wachstum',
-  'Schwerpunkt Premium-Nischen',
-  'Astro, TypeScript, Core Web Vitals',
-  'Schreibt selbst (kein AI-Slop)',
+  'Core Web Vitals und Barrierefreiheit im Blick',
+  'Code und Texte selbst geschrieben',
+];
+
+const services = [
+  { label: 'WordPress-Entwicklung', href: routeFor('wordpress', 'de') },
+  { label: 'KI & Automatisierung', href: routeFor('ai', 'de') },
+  { label: 'Webentwicklung', href: routeFor('development', 'de') },
 ];
 
 const person = {
@@ -25,7 +33,7 @@ const person = {
   email: 'lucas@lkmedia.net',
   image: 'https://lkmedia.net/ueber/portrait.webp',
   worksFor: { '@type': 'Organization', name: 'lkmedia' },
-  knowsAbout: ['Webentwicklung', 'SEO', 'Core Web Vitals', 'Astro', 'TypeScript'],
+  knowsAbout: ['Webentwicklung', 'WordPress', 'KI-Automatisierung', 'SEO', 'Core Web Vitals', 'TypeScript'],
   sameAs: ['https://github.com/livvux'],
 };
 ---
@@ -34,7 +42,7 @@ const person = {
     <p class="eyebrow mb-6">Entwicklung aus Rastatt</p>
     <h1 class="text-5xl md:text-7xl font-semibold tracking-tight mb-6">Ich bin Lucas.</h1>
     <p class="text-xl md:text-2xl text-black/70 dark:text-white/70 leading-relaxed max-w-2xl">
-      Ich baue Premium-Websites, die messbar Umsatz bringen.
+      Ich baue Websites, WordPress-Lösungen und praktische KI-Systeme, die Unternehmen im Alltag weiterbringen.
     </p>
   </section>
 
@@ -46,13 +54,13 @@ const person = {
 
   <section class="py-16 px-6 max-w-4xl mx-auto space-y-6 text-lg md:text-xl text-black/80 dark:text-white/80 leading-relaxed">
     <p>
-      Mein Name ist Lucas Kleipoedszus. Ich bin Full-Stack-Entwickler mit einem Hintergrund in SEO und Marketing — und seit über einem Jahrzehnt baue ich Websites, die nicht nur gut aussehen, sondern wirtschaftlich arbeiten.
+      Mein Name ist Lucas Kleipoedszus. Ich bin Full-Stack-Entwickler mit einem Hintergrund in SEO und Marketing und baue seit 2015 Websites. Mich interessiert, ob eine Website ihre Aufgabe im Geschäft erfüllt: Anfragen bringen, Abläufe vereinfachen, schnell laden.
     </p>
     <p>
-      Ich arbeite mit Kanzleien, Luxus-Immobilien-Maklern und Privatkliniken in Deutschland. Also mit Unternehmen, bei denen ein einzelner Neukunde fünf- oder sechsstellig zählt — und bei denen der digitale Auftritt das erste Signal für Vertrauen ist.
+      Ich arbeite mit Kanzleien, Immobilienmaklern und Kliniken ebenso wie mit Handwerksbetrieben, Fahrschulen und Vereinen. Das Werkzeug richtet sich nach der Aufgabe: WordPress, wenn Ihr Team Inhalte selbst pflegt. Astro und eigener Code, wenn es auf Ladezeit oder besondere Abläufe ankommt. KI und Automatisierung, wo sich wiederkehrende Arbeit abnehmen lässt, mit einem Menschen, der freigibt.
     </p>
     <p>
-      Ich schreibe den Code und die Texte selbst. Kein Outsourcing, kein Whitelabel-Team im Hintergrund, kein AI-Slop. Wenn Sie mit mir arbeiten, arbeiten Sie direkt mit dem Menschen, der Ihre Website baut.
+      Ich schreibe den Code und die Texte selbst. Kein Outsourcing, kein Whitelabel-Team im Hintergrund: Vom ersten Gespräch bis zum Launch sprechen Sie mit dem Menschen, der Ihr Projekt baut.
     </p>
   </section>
 
@@ -63,6 +71,19 @@ const person = {
         <li class="flex items-start gap-4 text-lg md:text-xl text-black/80 dark:text-white/80">
           <span class="text-black/60 dark:text-white/60 mt-1">—</span>
           <span>{c}</span>
+        </li>
+      ))}
+    </ul>
+  </section>
+
+  <section class="py-16 px-6 max-w-4xl mx-auto border-t border-black/10 dark:border-white/10" aria-labelledby="ueber-leistungen">
+    <h2 id="ueber-leistungen" class="text-3xl md:text-4xl font-semibold tracking-tight mb-10">Leistungen</h2>
+    <ul class="space-y-2">
+      {services.map((s) => (
+        <li>
+          <a href={s.href} class="inline-flex min-h-11 items-center gap-3 text-lg md:text-xl underline underline-offset-4">
+            {s.label} <span aria-hidden="true">→</span>
+          </a>
         </li>
       ))}
     </ul>

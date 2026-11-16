@@ -28,3 +28,28 @@ test('built contact form sends with runtime keys and redirects directly to /dank
   expect(state.mail).toContainEqual(expect.objectContaining({ text: expect.stringContaining('Herkunft (Selbstauskunft): ChatGPT') }));
   expect(errors).toEqual([]);
 });
+
+test('English service page preselects its service and lands on /en/thanks', async ({ page, request }) => {
+  const errors: string[] = [];
+  page.on('pageerror', error => errors.push(error.message));
+  await page.route('**/*', route => new URL(route.request().url()).origin === 'http://localhost:4327' ? route.continue() : route.abort());
+  await page.goto('/en/wordpress');
+  const form = page.locator('form[action="/api/contact"]');
+  await expect(form.locator('select[name="service"]')).toHaveValue('wordpress');
+  await form.locator('[name="name"]').fill('English fixture');
+  await form.locator('[name="email"]').fill('english@example.test');
+  await form.locator('[name="message"]').fill('English runtime delivery check');
+  await form.evaluate(element => {
+    const input = document.createElement('input');
+    input.type = 'hidden'; input.name = 'cf-turnstile-response'; input.value = 'local_captcha_token';
+    element.append(input);
+  });
+  const response = page.waitForResponse(r => r.url().endsWith('/api/contact'));
+  await page.locator('#contact-submit').click();
+  expect((await response).status()).toBe(303);
+  await expect(page).toHaveURL('http://localhost:4327/en/thanks');
+  const state = await (await request.get('http://localhost:4328/state')).json();
+  const mail = expect.objectContaining({ text: expect.stringMatching(/Angebotsseite: \/en\/wordpress\nAnliegen: WordPress\nSprache: en[\s\S]*English runtime delivery check/) });
+  expect(state.mail).toContainEqual(mail);
+  expect(errors).toEqual([]);
+});

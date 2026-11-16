@@ -1,0 +1,19 @@
+---
+import ServiceDetail from '../components/services/ServiceDetail.astro';
+import BriefToDraft from '../components/showcase/BriefToDraft';
+import { ai } from '../lib/service-pages/ai';
+---
+<ServiceDetail page={ai.de} lang="de">
+  <div id="demo" class="wrap demo" style="margin-top:clamp(64px,8vw,104px)">
+    <p class="label">Demo</p>
+    <h2 class="section-title">Vom Briefing zum Entwurf, mit Freigabe</h2>
+    <p class="lede">Probieren Sie aus, wie aus einem kurzen Content-Brief ein gegliederter WordPress-Entwurf wird, der erst nach Prüfung durch einen Menschen erscheint. Die Demo ist eine Simulation im Browser: Es läuft keine echte KI, und es werden keine Daten gesendet.</p>
+    <div class="demo-app"><BriefToDraft lang="de" client:visible /></div>
+  </div>
+</ServiceDetail>
+
+<style>
+  .demo { scroll-margin-top: 72px; }
+  .demo .lede { margin-top: 20px; }
+  .demo-app { margin-top: 40px; }
+</style>

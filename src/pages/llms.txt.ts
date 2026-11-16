@@ -2,11 +2,14 @@ import type { APIRoute } from "astro";
 
 const body = `# lkmedia
 
-> Webdesign und SEO aus Rastatt. Website-Pakete für Arztpraxen, Fahrschulen und Handwerksbetriebe sowie individuelle Websites für Kanzleien, Luxus-Immobilien und Privatkliniken.
+> Technologie-Studio aus Rastatt für Websites, WordPress-Lösungen und praxistaugliche KI-Systeme. Dazu Website-Pakete für Arztpraxen, Fahrschulen und Handwerksbetriebe.
 
 ## Key Pages
 - [Home](https://lkmedia.net/)
 - [Leistungen und Paketpreise](https://lkmedia.net/leistungen): Aktuelle Angebote, Leistungen und Preise vergleichen.
+- [WordPress](https://lkmedia.net/wordpress): Eigene Themes, WooCommerce, Plugins, Wartung, Migrationen und Schnittstellen.
+- [KI & Automatisierung](https://lkmedia.net/ki-automatisierung): KI-Funktionen und automatisierte Abläufe für Unternehmen.
+- [Webentwicklung](https://lkmedia.net/webentwicklung): Individuelle Websites und Web-Anwendungen.
 - [SEO in Rastatt](https://lkmedia.net/seo-rastatt): Analyse und Optimierung bestehender Websites, auch anderer Anbieter.
 - [Anwälte](https://lkmedia.net/anwaelte)
 - [Luxus-Immobilien](https://lkmedia.net/luxus-immobilien)
@@ -17,6 +20,13 @@ const body = `# lkmedia
 - [Kontakt](https://lkmedia.net/kontakt)
 - [Referenzen und Fallstudien](https://lkmedia.net/cases): Projektbeispiele und dokumentierte Ergebnisse.
 - [Über Lucas Kleipoedszus](https://lkmedia.net/ueber): Gründer, Entwickler und Autor.
+
+## English Pages
+- [Home (English)](https://lkmedia.net/en)
+- [WordPress development](https://lkmedia.net/en/wordpress)
+- [AI & automation](https://lkmedia.net/en/ai-automation)
+- [Web development](https://lkmedia.net/en/web-development)
+- [Grok bot for WordPress](https://lkmedia.net/en/grok-bot-wordpress)
 
 ## Contact
 - lucas@lkmedia.net

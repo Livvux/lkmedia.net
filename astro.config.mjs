@@ -19,7 +19,7 @@ const rootPostPaths = new Set(
 const noindexRoutes = [
   /^\/404$/,
   /^\/aenderung(?:\/|$)/,
-  /\/(?:onboarding|danke)$/,
+  /\/(?:onboarding|danke|thanks)$/,
   /^\/blog\/real-debrid-review-multi-hoster-downloader$/,
   /^\/blog\/ki-coding-modelle-ranking-swe-bench-2025$/,
   /^\/e-mails-schreiben-mit-chatgpt$/,

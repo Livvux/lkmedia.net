@@ -1,0 +1,512 @@
+---
+import Base from '../../layouts/Base.astro';
+import ContactForm from '../../components/ContactForm.astro';
+import { breadcrumbs, faqPage, service } from '../../lib/schema';
+import { routeFor } from '../../lib/i18n';
+
+const path = routeFor('grokBot', 'en');
+const seo = {
+  title: 'Grok Bot for WordPress: integration guide & service',
+  description:
+    'Connect xAI’s Grok Bot or the xAI API to WordPress: three routes compared, a draft-only workflow, limits, data protection questions and setup help.',
+  canonical: path,
+  lang: 'en' as const,
+};
+
+// Stand der Recherche; Belege in docs/seo/grok-bot-wordpress-sources.md
+const verified = { iso: '2026-11-16', label: '16 November 2026' };
+
+const docs = {
+  overview: 'https://docs.x.ai/grok-bot/overview',
+  apps: 'https://docs.x.ai/grok-bot/computer-and-apps',
+  approvals: 'https://docs.x.ai/grok-bot/approvals-security-and-privacy',
+  security: 'https://docs.x.ai/grok-bot/security',
+  faq: 'https://docs.x.ai/grok-bot/faq',
+  quickstart: 'https://docs.x.ai/developers/quickstart',
+  apiSecurity: 'https://docs.x.ai/developers/faq/security',
+  regions: 'https://docs.x.ai/developers/advanced-api-usage/regions',
+  structured: 'https://docs.x.ai/developers/model-capabilities/text/structured-outputs',
+  mcpAdapter: 'https://wordpress.org/plugins/mcp-adapter/',
+  mcpGuide:
+    'https://github.com/WordPress/mcp-adapter/blob/trunk/docs/getting-started/site-owners.md',
+  aiClient: 'https://make.wordpress.org/core/2026/03/24/introducing-the-ai-client-in-wordpress-7-0/',
+  restPosts: 'https://developer.wordpress.org/rest-api/reference/posts/',
+  restAuth: 'https://developer.wordpress.org/rest-api/using-the-rest-api/authentication/',
+  roles: 'https://wordpress.org/documentation/article/roles-and-capabilities/',
+};
+
+const routes = [
+  {
+    id: 'A',
+    name: 'Grok Bot agent via MCP',
+    get: 'Your Grok Bot works inside WordPress through tools: list content, create drafts, update fields, whatever the exposed abilities allow.',
+    status: 'Custom setup and testing',
+    statusNote:
+      'Both halves are documented: Grok Bot accepts custom MCP connectors, WordPress has the MCP Adapter plugin. The pairing is not documented by either side and needs testing per site.',
+    needs: 'A plan that includes Grok Bot, WordPress 6.9+, HTTPS, MCP Adapter, abilities marked public, a dedicated WordPress user with an application password.',
+    limits: 'MCP Adapter adds no actions on its own; useful abilities come from plugins or custom code. The agent can only do what its WordPress role allows.',
+  },
+  {
+    id: 'B',
+    name: 'WordPress plugin with an xAI provider',
+    get: 'Grok models inside wp-admin: chatbot, text generation or editing help, depending on the plugin.',
+    status: 'Supported by third-party plugins',
+    statusNote:
+      'Plugins such as AI Engine list a built-in xAI (Grok) connector. “AI Provider for Grok” and “AI Provider for xAI” plug into the WordPress AI Client. None of them is made by xAI.',
+    needs: 'An xAI API key with billing and a plugin you trust and keep updated. The AI Client providers state WordPress 6.9 as minimum; the AI Client itself ships with WordPress 7.0.',
+    limits: 'This uses the xAI API, not Grok Bot. Features, data flow and support depend on the plugin vendor.',
+  },
+  {
+    id: 'C',
+    name: 'Custom integration against the xAI API',
+    get: 'A workflow built for your site: server-side calls, answers grounded in your own content, structured output written into draft posts.',
+    status: 'Custom implementation',
+    statusNote:
+      'The xAI API documents function calling and JSON-schema structured outputs. Everything WordPress-specific is code we write and maintain.',
+    needs: 'An xAI API key stored on the server only, a small plugin or service, a WordPress user scoped to drafts, staging site.',
+    limits: 'You own the code and its maintenance. Model behaviour and API details change; tests and logging catch regressions.',
+  },
+];
+
+const faq = [
+  {
+    q: 'Is there an official Grok plugin for WordPress?',
+    a: `We found none. Our searches of the WordPress.org plugin directory for “grok” and “xai” on ${verified.label} returned only plugins by third-party authors. Third-party plugins such as AI Engine, AI Provider for Grok and AI Provider for xAI connect WordPress to Grok models through the xAI API. The official provider plugins for the WordPress 7.0 AI Client cover Anthropic, Google and OpenAI.`,
+  },
+  {
+    q: 'Can Grok Bot publish WordPress posts on its own?',
+    a: 'It can, if the tools and WordPress account you give it allow publishing. Grok Bot’s Auto Review lets most actions run without asking, and xAI describes it as model-based, so it should not be your only safeguard. A WordPress user with the Contributor role can create drafts but cannot publish. Connecting Grok Bot as such a user should keep publishing with your editors; we test this per site, because what an MCP ability does depends on how its plugin checks permissions, and the Bot’s browser can use any login you save there.',
+  },
+  {
+    q: 'Does Grok Bot work with WooCommerce?',
+    a: 'xAI documents no ready-made WooCommerce integration. WooCommerce has its own REST API, and shop functions can be exposed over MCP if a plugin or custom code registers them as abilities. Orders, prices and customer data carry real risk, so we start with read-only access and keep every change behind a human approval.',
+  },
+  {
+    q: 'Is a Grok WordPress integration GDPR compliant?',
+    a: 'We cannot promise that, and xAI’s documentation does not state it either. Grok Bot runs on Cursor accounts, its cloud computers run in the United States, and requests may go to third-party models on Cursor’s sub-processor list. The xAI API stores requests for 30 days by default, offers Zero Data Retention, and documents a US regional endpoint but no EU endpoint. If personal data is involved, have your data protection officer or lawyer review the contracts first.',
+  },
+  {
+    q: 'What does a Grok Bot WordPress integration cost?',
+    a: 'There are up to three cost blocks. Grok Bot is included in certain X Subscription, Grok and Cursor plans. The xAI API, needed for routes B and C, is billed per token. Check both in xAI’s current documentation. Our integration work is a fixed-price quote after a free 15-minute call and a short scoping step.',
+  },
+  {
+    q: 'Do I need the xAI API to use Grok Bot with WordPress?',
+    a: 'Not for Grok Bot itself: it comes with your plan and talks to WordPress as an MCP client. You need an xAI API key only when WordPress calls Grok models directly, as in a plugin with an xAI provider or a custom integration. That key belongs on the server, never in the browser.',
+  },
+  {
+    q: 'Does Grok know my website without any setup?',
+    a: 'Grok Bot can open public pages in its cloud browser like any visitor. It does not know your drafts, settings or internal content until you give it access through MCP abilities, the REST API or a retrieval setup over your own content.',
+  },
+];
+
+const jsonLd = [
+  service({
+    name: 'Grok Bot and xAI API integration for WordPress',
+    description:
+      'Scoped integration of xAI’s Grok Bot or the xAI API with WordPress: audit, staging pilot, rollout, monitoring and maintenance.',
+    url: path,
+    lang: 'en',
+  }),
+  faqPage(faq),
+  breadcrumbs([
+    { name: 'Home', url: routeFor('home', 'en') },
+    { name: 'AI automation', url: routeFor('ai', 'en') },
+    { name: 'Grok Bot for WordPress', url: path },
+  ]),
+];
+
+const curl = `curl -X POST https://example.com/wp-json/wp/v2/posts \\
+  --user "ai-drafts:xxxx xxxx xxxx xxxx xxxx xxxx" \\
+  -H "Content-Type: application/json" \\
+  -d '{
+    "title": "Spring opening hours",
+    "content": "<p>Text generated from the brief …</p>",
+    "status": "draft"
+  }'`;
+---
+<Base seo={seo} jsonLd={jsonLd}>
+  <section class="hero wrap" aria-labelledby="grok-title">
+    <p class="label">AI integration · WordPress</p>
+    <h1 id="grok-title" class="display">
+      Grok Bot for WordPress: <span class="quiet">what works, what needs custom work</span>
+    </h1>
+    <p class="lede">
+      xAI’s Grok Bot can work with any MCP server or API, and WordPress can expose itself as one.
+      This guide compares the three ways to connect them, shows a draft-only workflow and lists
+      the limits before you commit.
+    </p>
+    <div class="cta">
+      <a class="btn btn-primary btn-lg" href="#inquiry">Request an integration</a>
+      <a class="btn btn-ghost btn-lg" href="#routes">See the three routes</a>
+    </div>
+    <aside class="notice" aria-label="Independence notice">
+      <p>
+        <strong>Independent studio.</strong> lk media is not affiliated with, endorsed by or a
+        partner of xAI (documented as SpaceXSI) or Cursor. Grok and Grok Bot are products of xAI;
+        Grok Bot accounts run through Cursor. WordPress is a trademark of the WordPress Foundation.
+      </p>
+      <p class="verified">
+        Last verified: <time datetime={verified.iso}>{verified.label}</time> against xAI and
+        WordPress documentation.
+      </p>
+    </aside>
+  </section>
+
+  <section class="section paper" aria-labelledby="what-title">
+    <div class="wrap split">
+      <div>
+        <p class="eyebrow">01 · The product</p>
+        <h2 id="what-title" class="section-title">What Grok Bot actually is</h2>
+      </div>
+      <div class="prose">
+        <p>
+          Grok Bot is an agent from xAI. Each user’s Bots share a persistent cloud computer with a
+          browser, file system and terminal, so they can use websites and tools the way a person
+          would. You talk to it in chat, by voice, in Slack or on X.
+          (<a href={docs.overview} rel="noopener">xAI: Grok Bot overview</a>)
+        </p>
+        <p>
+          It connects to apps from a catalog and, according to xAI, “supports custom tooling, so it
+          can interact with any MCP or API”. A custom connector takes a remote HTTPS server URL with
+          optional headers, or a command that runs on the Bot’s computer.
+          (<a href={docs.apps} rel="noopener">xAI: computer and apps</a>)
+        </p>
+        <p>
+          Before an action, an automated Auto Review decides whether it runs or waits for your
+          approval card. xAI calls this check model-based and recommends least privilege on top.
+          (<a href={docs.approvals} rel="noopener">xAI: approvals, security and privacy</a>)
+        </p>
+        <p class="aside">
+          Grok Bot is not the xAI API. The API is a separate developer product with its own key
+          and per-token billing, used by routes B and C below.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section id="routes" class="section wrap" aria-labelledby="routes-title">
+    <p class="eyebrow">02 · Options</p>
+    <h2 id="routes-title" class="section-title">
+      Three routes to a Grok WordPress integration
+    </h2>
+    <p class="section-sub intro">
+      “Supported” below means a documented product or plugin covers it. “Custom” means someone
+      has to build, test and maintain the connection.
+    </p>
+    <div class="table-scroll" role="region" aria-labelledby="routes-caption" tabindex="0">
+      <table>
+        <caption id="routes-caption">Comparison of the three integration routes</caption>
+        <thead>
+          <tr>
+            <th scope="col">Route</th>
+            <th scope="col">What you get</th>
+            <th scope="col">Out of the box or custom</th>
+            <th scope="col">Setup requirements</th>
+            <th scope="col">Limits</th>
+          </tr>
+        </thead>
+        <tbody>
+          {routes.map((r) => (
+            <tr>
+              <th scope="row">
+                <span class="route-id">{r.id}</span>
+                {r.name}
+              </th>
+              <td>{r.get}</td>
+              <td>
+                <span class:list={['tag', r.status.startsWith('Supported') ? 'tag-ok' : 'tag-custom']}>
+                  {r.status}
+                </span>
+                <span class="note">{r.statusNote}</span>
+              </td>
+              <td>{r.needs}</td>
+              <td>{r.limits}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+    <p class="hint">On small screens, scroll the table sideways.</p>
+  </section>
+
+  <section class="section paper" aria-labelledby="example-title">
+    <div class="wrap">
+      <p class="eyebrow">03 · Worked example (route C)</p>
+      <h2 id="example-title" class="section-title">
+        Content brief → draft post <span class="quiet">awaiting review</span>
+      </h2>
+
+      <ol class="flow" aria-label="Workflow diagram">
+        <li><span class="flow-n">01</span><strong>Brief</strong><span>Topic, audience, sources from your team</span></li>
+        <li><span class="flow-n">02</span><strong>xAI API</strong><span>Structured output: title, text, excerpt as JSON</span></li>
+        <li><span class="flow-n">03</span><strong>WordPress REST</strong><span>New post with status “draft”</span></li>
+        <li><span class="flow-n">04</span><strong>Editor</strong><span>Checks facts, edits, publishes</span></li>
+      </ol>
+
+      <div class="example">
+        <ol class="steps">
+          <li><span>
+            Your team submits a brief through a form in wp-admin. A small plugin on the server
+            sends it to the xAI API, together with relevant passages from your existing pages.
+          </span></li>
+          <li><span>
+            The request asks for a JSON object that matches a fixed schema. xAI’s
+            <a href={docs.structured} rel="noopener">structured outputs</a> guarantee the shape for
+            supported schema features. The content still needs a human check.
+          </span></li>
+          <li><span>
+            The plugin creates the post through the WordPress REST API, signed in as a separate
+            user with the Contributor role. That role can write posts but
+            <a href={docs.roles} rel="noopener">cannot publish them</a>.
+          </span></li>
+          <li><span>
+            An editor reviews the draft in the block editor and publishes it, or sends it back.
+            Every run is logged with brief, response and post ID.
+          </span></li>
+        </ol>
+        <div class="code">
+          <p class="code-label">Step 3 as a plain REST request</p>
+          <pre tabindex="0" aria-label="Example REST request creating a draft post"><code>{curl}</code></pre>
+          <p class="code-note">
+            <code>POST /wp/v2/posts</code> accepts <code>status: "draft"</code>; the
+            <a href={docs.restAuth} rel="noopener">application password</a> is sent via Basic Auth
+            and only over HTTPS. Reference:
+            <a href={docs.restPosts} rel="noopener">WordPress REST API, posts</a>.
+          </p>
+        </div>
+      </div>
+      <p class="aside">
+        Route A can use the same safeguard in principle: connect Grok Bot through MCP Adapter as a
+        Contributor user. We have not tested that pairing in general; each site needs its own test,
+        because abilities enforce permissions in their own code.
+      </p>
+    </div>
+  </section>
+
+  <section class="section wrap" aria-labelledby="setup-title">
+    <div class="split">
+      <div>
+        <p class="eyebrow">04 · Before you start</p>
+        <h2 id="setup-title" class="section-title">Setup checklist</h2>
+      </div>
+      <ul class="checklist">
+        <li><strong>Accounts and plans.</strong> A plan that includes Grok Bot for route A; an xAI API key with billing for routes B and C.</li>
+        <li><strong>Keys stay on the server.</strong> API keys and application passwords live in server configuration or Grok Bot’s secret store, never in theme files, front-end code or chat messages.</li>
+        <li><strong>Least privilege.</strong> One WordPress user per integration, with the lowest role that does the job; revoke its application password when the project ends.</li>
+        <li><strong>Staging first.</strong> Every workflow runs on a copy of the site before it touches production.</li>
+        <li><strong>Backups.</strong> A tested restore point before the first write access.</li>
+        <li><strong>Logging.</strong> Each AI-triggered change is traceable: who asked, what was sent, what changed.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="section paper" aria-labelledby="limits-title">
+    <div class="wrap">
+      <p class="eyebrow">05 · Limits and risks</p>
+      <h2 id="limits-title" class="section-title">What can go wrong</h2>
+      <dl class="limits">
+        <div>
+          <dt>Confident mistakes</dt>
+          <dd>Language models invent facts, prices and quotes. Anything public needs a person who checks it.</dd>
+        </div>
+        <div>
+          <dt>No knowledge of your site</dt>
+          <dd>Without tools or retrieval over your content, Grok answers from general training data, not from your pages.</dd>
+        </div>
+        <div>
+          <dt>Agent actions are real</dt>
+          <dd>An approval card controls the next action; it does not reverse work already done, as xAI notes. Draft-only roles and backups limit the damage.</dd>
+        </div>
+        <div>
+          <dt>Data protection is open</dt>
+          <dd>
+            xAI’s Grok Bot docs say Bot computers run in the US, data settings follow Cursor’s terms
+            and requests may reach third-party models; they refer to Cursor’s privacy policy and
+            Data Processing Agreement, which we have not reviewed. The xAI API stores requests for
+            30 days unless Zero Data Retention is on, and documents no EU endpoint. Neither
+            documentation makes a GDPR statement. With personal data, get a legal review; we make no compliance
+            promises. (<a href={docs.security} rel="noopener">Grok Bot security</a>,
+            <a href={docs.apiSecurity} rel="noopener">xAI API security FAQ</a>,
+            <a href={docs.regions} rel="noopener">regional endpoints</a>)
+          </dd>
+        </div>
+        <div>
+          <dt>Products change</dt>
+          <dd>Grok Bot picks its models itself and they change over time. Plugins and APIs get new versions. Plan for maintenance.</dd>
+        </div>
+      </dl>
+    </div>
+  </section>
+
+  <section class="section wrap" aria-labelledby="service-title">
+    <p class="eyebrow">06 · How we help</p>
+    <h2 id="service-title" class="section-title">
+      What lk media does <span class="quiet">for your Grok WordPress integration</span>
+    </h2>
+    <ol class="phases">
+      <li><span class="flow-n">01</span><strong>Audit</strong><span>Your site, plugins, hosting, data and the job the AI should do. Result: the route that fits, or a clear no.</span></li>
+      <li><span class="flow-n">02</span><strong>Pilot on staging</strong><span>One workflow, a draft-only user, logging. You test it with real briefs.</span></li>
+      <li><span class="flow-n">03</span><strong>Rollout</strong><span>Production setup, permissions reviewed, backups and documentation handed over.</span></li>
+      <li><span class="flow-n">04</span><strong>Monitoring and maintenance</strong><span>Updates when plugins, APIs or Grok Bot change; logs checked.</span></li>
+    </ol>
+    <p class="pricing">
+      Pricing: a free 15-minute call, then a scoped fixed-price quote. Work starts only after your
+      written approval. More on <a href={routeFor('ai', 'en')}>AI automation</a> and
+      <a href={routeFor('wordpress', 'en')}>WordPress development</a>.
+    </p>
+  </section>
+
+  <section class="section paper" aria-labelledby="faq-title">
+    <div class="wrap split">
+      <div>
+        <p class="eyebrow">07 · FAQ</p>
+        <h2 id="faq-title" class="section-title">Grok Bot and WordPress: common questions</h2>
+      </div>
+      <div class="faq">
+        {faq.map((i) => (
+          <details>
+            <summary>{i.q}</summary>
+            <p>{i.a}</p>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section id="inquiry" class="section wrap" aria-labelledby="inquiry-title">
+    <div class="split">
+      <div>
+        <p class="eyebrow">08 · Next step</p>
+        <h2 id="inquiry-title" class="section-title">Request an integration</h2>
+        <ol class="next">
+          <li>Tell us your site, what Grok should do and which route you are considering.</li>
+          <li>You get an honest assessment, usually within one business day, often via a 15-minute call.</li>
+          <li>You get a fixed-price quote. Work starts after your written approval.</li>
+        </ol>
+      </div>
+      <ContactForm lang="en" source={path} service="ai" />
+    </div>
+  </section>
+
+  <section class="sources wrap" aria-labelledby="sources-title">
+    <h2 id="sources-title" class="eyebrow">Sources, checked {verified.label}</h2>
+    <ul>
+      <li><a href={docs.overview} rel="noopener">xAI: Grok Bot overview</a></li>
+      <li><a href={docs.apps} rel="noopener">xAI: Grok Bot computer and apps (custom connectors)</a></li>
+      <li><a href={docs.approvals} rel="noopener">xAI: approvals, security and privacy</a></li>
+      <li><a href={docs.security} rel="noopener">xAI: Grok Bot security and data residency</a></li>
+      <li><a href={docs.faq} rel="noopener">xAI: Grok Bot FAQ (plans, models)</a></li>
+      <li><a href={docs.quickstart} rel="noopener">xAI API quickstart</a></li>
+      <li><a href={docs.apiSecurity} rel="noopener">xAI API security FAQ (retention)</a></li>
+      <li><a href={docs.mcpAdapter} rel="noopener">WordPress.org: MCP Adapter plugin</a></li>
+      <li><a href={docs.mcpGuide} rel="noopener">MCP Adapter: connect an AI assistant</a></li>
+      <li><a href={docs.aiClient} rel="noopener">Make WordPress: AI Client in WordPress 7.0</a></li>
+      <li><a href={docs.restPosts} rel="noopener">WordPress REST API: posts</a></li>
+      <li><a href={docs.roles} rel="noopener">WordPress: roles and capabilities</a></li>
+    </ul>
+  </section>
+</Base>
+
+<style>
+  .hero { padding-block: clamp(56px, 8vw, 104px) clamp(48px, 6vw, 80px); }
+  .display { margin-top: 20px; max-width: 18ch; }
+  .lede { margin-top: 24px; }
+  .cta { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 36px; }
+  .notice {
+    display: grid; gap: 8px; margin-top: 48px; padding: 20px 0 0;
+    border-top: 1px solid var(--border-strong); max-width: 72ch;
+    color: var(--fg-muted); font-size: 15px; line-height: 1.6;
+  }
+  .notice strong { color: var(--fg); font-weight: 500; }
+  .verified { font-family: var(--font-mono); font-size: 12px; color: var(--fg-dim); }
+
+  .split { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: clamp(32px, 5vw, 80px); }
+  .eyebrow { margin-bottom: 16px; }
+  .prose { display: grid; gap: 18px; color: var(--fg-muted); font-size: 17px; line-height: 1.7; max-width: 64ch; }
+  a:not(.btn) { color: var(--fg); text-decoration: underline; text-decoration-color: var(--border-strong); text-underline-offset: 3px; }
+  a:not(.btn):hover { text-decoration-color: var(--signal); }
+  .aside { margin-top: 28px; padding-left: 16px; border-left: 2px solid var(--signal); color: var(--fg-muted); font-size: 15px; max-width: 64ch; }
+
+  .intro { margin-top: 20px; max-width: 64ch; }
+  .table-scroll { margin-top: 40px; overflow-x: auto; border-top: 1px solid var(--border-strong); }
+  table { width: 100%; min-width: 860px; border-collapse: collapse; font-size: 15px; line-height: 1.55; }
+  caption { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  th, td { padding: 20px 16px 20px 0; border-bottom: 1px solid var(--border); text-align: left; vertical-align: top; }
+  thead th { font-family: var(--font-mono); font-size: 12px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; color: var(--fg-dim); }
+  tbody th { width: 18%; font-weight: 500; color: var(--fg); }
+  td { color: var(--fg-muted); }
+  .route-id { display: block; margin-bottom: 6px; font-family: var(--font-mono); font-size: 12px; color: var(--signal); }
+  .tag { display: inline-block; padding: 2px 10px; border-radius: 999px; font-family: var(--font-mono); font-size: 12px; border: 1px solid var(--border-strong); color: var(--fg); }
+  .tag-ok { border-color: var(--signal); color: var(--signal); background: var(--signal-dim); }
+  .note { display: block; margin-top: 10px; font-size: 14px; }
+  .hint { display: none; margin-top: 12px; font-family: var(--font-mono); font-size: 12px; color: var(--fg-dim); }
+
+  .flow { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); margin-top: 48px; border-top: 1px solid var(--border-strong); }
+  .flow li { position: relative; display: grid; gap: 6px; align-content: start; padding: 24px 24px 24px 0; }
+  .flow li + li { padding-left: 24px; border-left: 1px solid var(--border); }
+  .flow li:not(:last-child)::after {
+    content: ""; position: absolute; top: -4px; right: -4px; width: 7px; height: 7px;
+    border-radius: 50%; background: var(--signal);
+  }
+  .flow strong, .phases strong { font-weight: 500; font-size: 18px; letter-spacing: -.01em; }
+  .flow span:not(.flow-n), .phases span:not(.flow-n) { color: var(--fg-muted); font-size: 15px; }
+  .flow-n { font-family: var(--font-mono); font-size: 12px; color: var(--signal); }
+
+  .example { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(32px, 4vw, 64px); margin-top: 56px; }
+  .steps { display: grid; gap: 18px; counter-reset: step; color: var(--fg-muted); font-size: 16px; line-height: 1.65; }
+  .steps li { display: grid; grid-template-columns: 32px 1fr; counter-increment: step; }
+  .steps li::before { content: "0" counter(step); font-family: var(--font-mono); font-size: 12px; color: var(--signal); line-height: 2.2; }
+  .code { min-width: 0; }
+  .code-label { margin-bottom: 10px; font-family: var(--font-mono); font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: var(--fg-dim); }
+  pre {
+    overflow-x: auto; padding: 20px; border-radius: var(--radius); background: #111110; color: #f2f1ed;
+    font-family: var(--font-mono); font-size: 13px; line-height: 1.6;
+  }
+  .code-note { margin-top: 14px; color: var(--fg-muted); font-size: 14px; line-height: 1.6; }
+  .code-note code { font-family: var(--font-mono); font-size: 13px; }
+
+  .checklist { display: grid; border-top: 1px solid var(--border-strong); }
+  .checklist li { padding: 18px 0 18px 28px; border-bottom: 1px solid var(--border); color: var(--fg-muted); line-height: 1.6; position: relative; }
+  .checklist li::before { content: ""; position: absolute; left: 2px; top: 27px; width: 10px; height: 6px; border-left: 1.5px solid var(--signal); border-bottom: 1.5px solid var(--signal); transform: rotate(-45deg); }
+  .checklist strong { color: var(--fg); font-weight: 500; }
+
+  .limits { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 clamp(32px, 4vw, 64px); margin-top: 40px; }
+  .limits div { padding: 22px 0; border-top: 1px solid var(--border-strong); }
+  .limits dt { font-weight: 500; font-size: 18px; }
+  .limits dd { margin-top: 8px; color: var(--fg-muted); line-height: 1.65; }
+
+  .phases { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0 24px; margin-top: 48px; }
+  .phases li { display: grid; gap: 8px; align-content: start; padding-top: 20px; border-top: 1px solid var(--border-strong); }
+  .pricing { margin-top: 40px; max-width: 64ch; color: var(--fg-muted); line-height: 1.7; }
+
+  .faq { border-top: 1px solid var(--border-strong); }
+  .faq details { border-bottom: 1px solid var(--border); }
+  .faq summary {
+    display: flex; justify-content: space-between; gap: 16px; min-height: 44px; padding: 18px 0;
+    cursor: pointer; font-size: 18px; font-weight: 500; letter-spacing: -.01em; list-style: none;
+  }
+  .faq summary::-webkit-details-marker { display: none; }
+  .faq summary::after { content: "+"; font-family: var(--font-mono); color: var(--signal); }
+  .faq details[open] summary::after { content: "−"; }
+  .faq p { padding-bottom: 20px; color: var(--fg-muted); line-height: 1.7; max-width: 64ch; }
+
+  .next { display: grid; gap: 12px; margin-top: 28px; counter-reset: next; color: var(--fg-muted); font-size: 15px; }
+  .next li { display: grid; grid-template-columns: 28px 1fr; counter-increment: next; }
+  .next li::before { content: "0" counter(next); font-family: var(--font-mono); font-size: 12px; color: var(--signal); line-height: 1.9; }
+  #inquiry { scroll-margin-top: 80px; }
+
+  .sources { padding-block: 0 var(--section-space); }
+  .sources ul { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px 32px; margin-top: 16px; font-size: 14px; }
+  .sources a { color: var(--fg-muted); }
+
+  @media (max-width: 900px) {
+    .split, .example, .limits { grid-template-columns: 1fr; }
+    .phases { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
+  }
+  @media (max-width: 640px) {
+    .flow, .phases, .sources ul { grid-template-columns: 1fr; }
+    .flow li, .flow li + li { padding: 20px 0 20px 24px; border-left: 1px solid var(--border); }
+    .flow li:not(:last-child)::after { top: auto; bottom: -4px; right: auto; left: -4px; }
+    .hint { display: block; }
+  }
+</style>

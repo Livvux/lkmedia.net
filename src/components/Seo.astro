@@ -7,6 +7,7 @@ const seo = buildSeo(props);
 <title>{seo.title}</title>
 <meta name="description" content={seo.description} />
 <link rel="canonical" href={seo.canonical} />
+{seo.alternates.map((a) => <link rel="alternate" hreflang={a.hreflang} href={a.href} />)}
 <link rel="describedby" href="https://lkmedia.net/llms.txt" type="text/plain" title="Site guide for AI assistants" />
 {seo.noindex && <meta name="robots" content="noindex,nofollow" />}
 <meta property="og:title" content={seo.title} />
@@ -17,7 +18,7 @@ const seo = buildSeo(props);
 {seo.ogImageHeight && <meta property="og:image:height" content={String(seo.ogImageHeight)} />}
 <meta property="og:url" content={seo.canonical} />
 <meta property="og:type" content={seo.type} />
-<meta property="og:locale" content="de_DE" />
+<meta property="og:locale" content={seo.locale} />
 <meta property="og:site_name" content="lkmedia" />
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content={seo.title} />

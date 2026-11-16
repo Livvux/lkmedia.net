@@ -21,11 +21,11 @@ Docker: multi-stage build in `Dockerfile` produces Node standalone server listen
 
 ## Architecture
 
-**Astro 6** site for lkmedia.net. `output: 'static'` with `@astrojs/node` standalone adapter — static by default, per-route SSR opt-in via `export const prerender = false`. Tailwind v4 via Vite plugin. MDX content. Single-language sitemap.
+**Astro 6** site for lkmedia.net. `output: 'static'` with `@astrojs/node` standalone adapter — static by default, per-route SSR opt-in via `export const prerender = false`. Tailwind v4 via Vite plugin. MDX content. Sitemap covers German and English pages.
 
 ### i18n
 
-German only. Public pages have no locale prefix. Old `/en/` URLs redirect permanently to their German equivalents; do not reintroduce English routes, hreflang or a language switcher. Route helpers in `src/lib/i18n.ts`.
+German is the default at `/` without a prefix. English exists selectively under `/en/`. `routes` in `src/lib/i18n.ts` is the one table: a page is English only if it has an `en` path there. Nav, hreflang (`buildSeo` → `Seo.astro`, German is `x-default`), the language switch (shown only where a counterpart exists) and the legacy redirects read it. Legacy `/en/*` URLs without an `en` route still redirect permanently to the German page (`englishRedirectPath`). No empty or machine-translated English pages: add the route and the real page together. Cases, blog and legal pages are German-only; English pages mark links to them as German.
 
 ### Routing & middleware
 
@@ -57,14 +57,22 @@ Dynamic routes: `src/pages/[slug].astro` (root-level posts), `src/pages/blog/`, 
 
 ### Landing page
 
-`src/components/home/` baut die Startseite mit Inhalten aus `src/lib/home-content.ts`. Hero, Kennzahlen, Projektleiste und Prozess sind statisches HTML; keine Canvas-/WebGL-Effekte oder dekorativen React-Inseln ergänzen. `OfferTabs.tsx` nutzt Base UI, interaktive Produktdemos nutzen Motion. Die Startseite bleibt monochrom und ohne Farbverläufe. Scroll-Reveals sind progressive Verbesserung: Inhalte bleiben ohne JavaScript sichtbar; `prefers-reduced-motion` schaltet Bewegung ab.
+`src/components/home/` builds the homepage for both languages from `src/lib/home-content.ts`. The hero is text (LCP) plus a pure SVG/CSS diagram that plays once; no canvas/WebGL. The only island is the simulated brief-to-draft demo (`src/components/showcase/`, `client:visible`), which must stay labelled as a simulation and send no data. Scroll reveals are progressive enhancement: content is visible without JavaScript; `prefers-reduced-motion` switches motion off.
+
+### Design system
+
+Tokens and shared classes live in `src/styles/global.css`: dark base, `.paper` light band, one accent `--signal` (green; `--signal-ink` is the text on it), Geist / Geist Mono. Use `.wrap`, `.section`, `.display`, `.section-title`, `.lede`, `.label`, `.quiet`, `.btn-*` instead of one-off styles. Product pages keep their own `--tone`.
+
+### Service pages
+
+`/wordpress`, `/ki-automatisierung`, `/webentwicklung` and their `/en/` versions render `src/components/services/ServiceDetail.astro` from typed content in `src/lib/service-pages/`. `/leistungen` is the services hub and keeps the Stripe package funnel. `/en/grok-bot-wordpress` is a hand-written guide; its claims are logged in `docs/seo/grok-bot-wordpress-sources.md` and need re-verification when xAI or WordPress change. Never state prices for WordPress/AI work, client numbers or results that the repo cannot prove.
 
 ### Zustände
 
 Zustände sind an je einer Stelle definiert; neue Übergänge dort ergänzen, nicht daneben:
 - Auftragsstatus auf `/aenderung`: aus GitHub-Labels abgeleitet, `statusOf()` in `src/lib/pipeline.ts` (Vorrang: geschlossen > Rückfrage > Prüfung > in Arbeit > eingegangen). Labels in `LABELS`.
 - Kundenstatus: `status` in `kunden.yaml` (`onboarding | vorschau | live | gekuendigt`), Schema in `src/lib/kunden-schema.ts`.
-- Kontaktformular: `idle | sending | error` in `src/components/ContactForm.astro`. Mit JS per `fetch`, Fehler inline mit erhaltenen Eingaben; ohne JS normaler POST. `/api/contact` antwortet bei Fehlern mit deutschem `text/plain`, bei Erfolg und Honeypot mit 303 auf `/danke`.
+- Kontaktformular (DE/EN, Feld `service` aus `SERVICES` in `src/lib/lead-source.ts`): `idle | sending | error` in `src/components/ContactForm.astro`. Mit JS per `fetch`, Fehler inline mit erhaltenen Eingaben; ohne JS normaler POST. `/api/contact` antwortet bei Fehlern mit deutschem `text/plain`, bei Erfolg und Honeypot mit 303 auf `/danke` bzw. `/en/thanks`; Fehlertexte in der Sprache des Formulars.
 - Onboarding-/Upload-Formulare: `idle | preparing | queued | sending` in `src/scripts/onboarding-form.ts`; aus `sending` führt nur die Zurück-Taste (bfcache).
 
 ### Scripts

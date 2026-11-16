@@ -1,0 +1,17 @@
+---
+import Base from '../../layouts/Base.astro';
+const seo = {
+  title: 'Thank you',
+  description: 'Inquiry received. You usually get a reply within one business day.',
+  canonical: '/en/thanks',
+  lang: 'en' as const,
+  noindex: true,
+};
+---
+<Base seo={seo}>
+  <section class="wrap section" style="text-align:center">
+    <h1 class="display">Thank you.</h1>
+    <p class="lede" style="margin:24px auto 40px">Your inquiry has arrived. You usually get a reply within one business day.</p>
+    <a href="/en" class="btn btn-ghost">Back to the homepage</a>
+  </section>
+</Base>

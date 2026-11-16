@@ -1,0 +1,50 @@
+---
+import Base from '../../layouts/Base.astro';
+import ContactForm from '../../components/ContactForm.astro';
+import CalEmbed from '../../components/CalEmbed.astro';
+const seo = {
+  title: 'Contact',
+  description: 'Tell us about your WordPress, AI or web development project. Send a short inquiry or book a free 15-minute call with Lucas.',
+  canonical: '/en/contact',
+  lang: 'en' as const,
+};
+const calLink = import.meta.env.PUBLIC_CAL_LINK ?? 'lucas-lkmedia/15min';
+---
+<Base seo={seo}>
+  <section class="contact-page wrap">
+    <p class="label">Your next step</p>
+    <h1 class="display">Start a project.</h1>
+    <p class="lede">Describe what you want to build or fix. You get an honest assessment and a clear next step, usually within one business day.</p>
+    <div class="contact-options">
+      <div class="contact-form">
+        <h2>Project inquiry</h2>
+        <ContactForm lang="en" />
+      </div>
+      <aside id="termin" class="contact-calendar">
+        <h2>15-minute call</h2>
+        <p>The first call is free. We clarify your goal and whether working together makes sense.</p>
+        <CalEmbed calLink={calLink} label="Book a call" />
+        <ol class="next">
+          <li>You send a short inquiry or book a call.</li>
+          <li>We agree on scope and you receive a fixed-price quote.</li>
+          <li>Work starts only after you approve it in writing.</li>
+        </ol>
+      </aside>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .contact-page { padding-block: clamp(56px, 8vw, 104px) var(--section-space); }
+  .display { margin-top: 20px; }
+  .lede { margin-top: 24px; }
+  .contact-options { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); align-items: start; gap: 48px; margin-top: 56px; }
+  h2 { margin-bottom: 20px; font-size: 22px; font-weight: 500; letter-spacing: -.02em; }
+  .contact-form { padding-top: 28px; border-top: 1px solid var(--border-strong); }
+  .contact-calendar { padding: 28px; border: 1px solid var(--border); border-radius: 20px; background: var(--bg-elev); scroll-margin-top: 100px; }
+  .contact-calendar p { color: var(--fg-muted); font-size: 15px; }
+  .next { display: grid; gap: 10px; margin-top: 28px; padding-top: 24px; border-top: 1px solid var(--border); counter-reset: next; font-size: 14px; color: var(--fg-muted); }
+  .next li { display: grid; grid-template-columns: 28px 1fr; counter-increment: next; }
+  .next li::before { content: "0" counter(next); font-family: var(--font-mono); font-size: 12px; color: var(--signal); line-height: 1.9; }
+  @media (max-width: 820px) { .contact-options { grid-template-columns: 1fr; gap: 40px; } }
+</style>

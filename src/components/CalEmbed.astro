@@ -1,14 +1,15 @@
 ---
 interface Props { calLink: string; label?: string }
 const { calLink, label = 'Terminkalender laden' } = Astro.props;
+const en = Astro.url.pathname.startsWith('/en');
 const [, eventSlug] = calLink.split('/');
 const elId = `cal-inline-${eventSlug}`;
 ---
-<p class="mt-4 text-sm text-black/60 dark:text-white/60">Zum Buchen laden Sie den Kalender von Cal.com. Dabei wird eine Verbindung zu diesem externen Dienst hergestellt.</p>
+<p class="mt-4 text-sm " style="color:var(--fg-muted)">{en ? "Booking loads the calendar from Cal.com, which connects your browser to that external service." : "Zum Buchen laden Sie den Kalender von Cal.com. Dabei wird eine Verbindung zu diesem externen Dienst hergestellt."}</p>
 <button type="button" id={`${elId}-load`} data-contact-calendar aria-controls={elId}
-  class="mt-6 min-h-12 px-6 py-3 rounded-full border border-black/30 dark:border-white/30">{label}</button>
-<p class="mt-4 text-sm"><a href={`https://cal.com/${calLink}`} target="_blank" rel="noopener noreferrer" class="underline">Kalender auf Cal.com öffnen ↗</a></p>
-<div id={elId} hidden tabindex="-1" style="width:100%;overflow:auto;min-height:600px" role="region" aria-label="Terminkalender"></div>
+  class="mt-6 min-h-12 px-6 py-3 rounded-full border" style="border-color:var(--border-strong)">{label}</button>
+<p class="mt-4 text-sm"><a href={`https://cal.com/${calLink}`} target="_blank" rel="noopener noreferrer" class="underline">{en ? "Open the calendar on Cal.com" : "Kalender auf Cal.com öffnen"} ↗</a></p>
+<div id={elId} hidden tabindex="-1" style="width:100%;overflow:auto;min-height:600px" role="region" aria-label={en ? "Booking calendar" : "Terminkalender"}></div>
 <script type="text/javascript" define:vars={{ calLink, elId, eventSlug }}>
   document.getElementById(elId + '-load')?.addEventListener('click', function () {
     this.hidden = true;

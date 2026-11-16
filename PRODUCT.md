@@ -8,24 +8,24 @@ web
 
 ## Product Purpose
 
-lkmedia.net presents Lucas Kleipoedszus’s web design, development, SEO, content and conversion services. The public website leads visitors to project inquiries and a 15-minute call.
+lkmedia.net presents lk media, the technology studio of Lucas Kleipoedszus in Rastatt: websites, WordPress solutions, AI integration and automation, and custom web development. The site exists to win qualified project inquiries and 15-minute calls; authority and organic growth come second.
 
 ## Users
 
-The existing site addresses law firms, private clinics, luxury real estate and local businesses. The public website is German-only.
+Businesses that need a website, a WordPress build or takeover, or a practical AI/automation workflow. German is the default language and the main market (Mittelbaden, Südpfalz, Germany-wide packages). Selected service pages exist in English under `/en/` for international WordPress and AI work.
 
 ## Capabilities and Constraints
 
-The existing stack is Astro 6, TypeScript and Tailwind CSS v4, with static pages and a Node adapter for selected API routes. Contact and booking use `/kontakt` and the anchor `#termin`. Legacy `/en/` URLs permanently redirect to German equivalents. Existing services, case studies and commercial terms remain the source of truth. Full projects are advertised from €25,000, with a fixed price based on scope. Do not invent customers, rankings, performance measurements or testimonials.
+Astro 6, TypeScript and Tailwind CSS v4, static pages with a Node adapter for API routes. Contact and booking use `/kontakt` (`/en/contact`) and the anchor `#termin`. Website packages (docweb, handwerkweb, fahrschulweb) are sold through Stripe from `/leistungen`. Individual website projects are advertised from €25,000. WordPress and AI work has no public price: free call, scope, fixed-price quote. Do not invent customers, rankings, measurements, testimonials or AI client projects; the AI pages say plainly what is proven.
 
 ## Brand Commitments
 
-The user explicitly likes the existing homepage and requested a similar structure for `/leistungen`. Preserve its dark identity, brand assets, typography and contact controls. The requested references are bencho.dev, libraries.dev, t3.codes, apple.com and ui.aceternity.com.
+Premium technology studio, not a generic agency or AI site builder. Dark base with light paper bands, Geist typography, one green signal accent, hairline grids, mono labels. Motion is short and purposeful. The AI demo is always labelled as a simulation.
 
 ## Evidence on Hand
 
-`src/lib/home-content.ts` and `src/content/cases/` contain the existing service claims, real projects and client accounts. `public/landing/shots/` contains real screenshots of Klavierbau Hans Milde, Patricks Fahrschule, Lorenz Logistik and CLEO Coaching.
+`src/content/cases/` holds the real projects (FiveRP and StreamerLoft are the WordPress proof). The studio's own customer pipeline (`src/lib/pipeline.ts`) is the automation proof; it uses fixed rules, no AI. `docs/seo/grok-bot-wordpress-sources.md` logs the sources behind the Grok Bot guide.
 
 ## Scope of This Record
 
-Recorded from the explicit redesign request and current repository evidence. No new business claims, pricing changes or audience changes were requested.
+Rewritten for the November 2026 relaunch, which replaced the earlier web-design-only positioning and the German-only rule.

@@ -23,24 +23,34 @@ test('legacy service URLs redirect directly to existing successors', async ({ re
   }
 });
 
-test('old English URLs point to the corresponding German pages', async ({ page }) => {
+test('real English pages are served and legacy English URLs point to German pages', async ({ page, request }) => {
+  for (const path of ['/en', '/en/contact']) {
+    const response = await request.get(path, { maxRedirects: 0 });
+    expect(response.status(), path).toBe(200);
+  }
   const cases = [
-    ['/en/', '/'],
     ['/en/blog/', '/blog/'],
     ['/en/about/', '/ueber/'],
-    ['/en/contact/', '/kontakt/'],
     ['/en/cases/eichhoernchenberger/', '/cases/eichhoernchenberger/'],
   ];
   for (const [from, to] of cases) {
+    const redirect = await request.get(from, { maxRedirects: 0 });
+    expect(redirect.status(), from).toBe(301);
     const response = await page.goto(from);
     expect(response?.status()).toBe(200);
     expect(new URL(page.url()).pathname).toBe(to);
   }
 });
 
-test('the public website no longer links to English pages or advertises English hreflang', async ({ page }) => {
-  await page.goto('/');
-  await expect(page.locator('header a[href^="/en"]')).toHaveCount(0);
-  await expect(page.locator('link[rel="alternate"][hreflang="en"]')).toHaveCount(0);
-  await expect(page.locator('html')).toHaveAttribute('lang', 'de');
+test('pages with both language versions link each other and advertise hreflang', async ({ page }) => {
+  for (const [path, lang, other] of [['/', 'de', '/en'], ['/en', 'en', '/']] as const) {
+    await page.goto(path);
+    await expect(page.locator('html')).toHaveAttribute('lang', lang);
+    await expect(page.locator(`header a.nav-lang[href="${other}"]`)).toHaveCount(1);
+    await expect(page.locator('link[rel="alternate"][hreflang="de"]')).toHaveAttribute('href', 'https://lkmedia.net/');
+    await expect(page.locator('link[rel="alternate"][hreflang="en"]')).toHaveAttribute('href', 'https://lkmedia.net/en');
+    await expect(page.locator('link[rel="alternate"][hreflang="x-default"]')).toHaveAttribute('href', 'https://lkmedia.net/');
+  }
+  await page.goto('/ueber');
+  await expect(page.locator('link[rel="alternate"][hreflang]')).toHaveCount(0);
 });

@@ -17,6 +17,16 @@ describe('SEO metadata', () => {
     const long = 'A'.repeat(55);
     expect(buildSeo({ ...base, title: long }).title).toBe(long);
   });
+  it('emits hreflang de/en/x-default only for pages with both language versions', () => {
+    const base = { title: 'Start', description: 'Beschreibung' };
+    expect(buildSeo({ ...base, canonical: '/en', lang: 'en' }).alternates).toEqual([
+      { hreflang: 'de', href: 'https://lkmedia.net/' },
+      { hreflang: 'en', href: 'https://lkmedia.net/en' },
+      { hreflang: 'x-default', href: 'https://lkmedia.net/' },
+    ]);
+    expect(buildSeo({ ...base, canonical: '/en', lang: 'en' }).locale).toBe('en_US');
+    expect(buildSeo({ ...base, canonical: '/ueber', lang: 'de' }).alternates).toEqual([]);
+  });
   it('uses absolute images in BlogPosting data', () => {
     const data = blogPosting({ title: 'Ratgeber', description: 'Text', pubDate: new Date('2026-10-16'), author: 'Lucas Kleipoedszus', image: '/posts/image.png', url: 'https://lkmedia.net/blog/ratgeber/' });
     expect(data.image).toBe('https://lkmedia.net/posts/image.png');

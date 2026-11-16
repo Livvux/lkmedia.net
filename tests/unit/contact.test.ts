@@ -46,7 +46,37 @@ describe("contact", () => {
     const log = vi.spyOn(console, "info").mockImplementation(() => {});
     expect((await submit("runtime-key", {}, input)).status).toBe(303);
     expect(send).toHaveBeenCalledWith(expect.objectContaining({ text: expect.stringContaining(`Herkunft (Selbstauskunft): ${label}`) }));
-    expect(log.mock.calls).toEqual([[`[seo] lead_received source=/kontakt discovery=${channel}`]]);
+    expect(log.mock.calls).toEqual([
+      [`[seo] lead_received source=/kontakt service=unknown discovery=${channel}`],
+    ]);
+  });
+  it("retains language and service and answers English enquiries with the English thanks page", async () => {
+    send.mockClear();
+    send.mockResolvedValue({ error: null });
+    vi.spyOn(console, "info").mockImplementation(() => {});
+    vi.stubEnv("RESEND_API_KEY", "runtime-key");
+    vi.stubEnv("TURNSTILE_SECRET_KEY", "");
+    const { POST } = await import("../../src/pages/api/contact");
+    const body = new URLSearchParams({ name: "Test", email: "test@example.test", message: "Hello", lang: "en", service: "ai", source: "/en" });
+    const r = await POST({ request: new Request("https://lkmedia.net/api/contact", { method: "POST", body }), clientAddress: "10.0.0.1" } as Parameters<typeof POST>[0]);
+    expect(r.status).toBe(303);
+    expect(r.headers.get("location")).toBe("/en/thanks");
+    const text = send.mock.calls[0]?.[0]?.text as string;
+    expect(text).toContain("Anliegen: KI & Automation");
+    expect(text).toContain("Sprache: en");
+    expect(text).toContain("Angebotsseite: /en");
+  });
+  it("falls back to German and an unknown service for unexpected values", async () => {
+    send.mockClear();
+    send.mockResolvedValue({ error: null });
+    vi.spyOn(console, "info").mockImplementation(() => {});
+    vi.stubEnv("RESEND_API_KEY", "runtime-key");
+    vi.stubEnv("TURNSTILE_SECRET_KEY", "");
+    const { POST } = await import("../../src/pages/api/contact");
+    const body = new URLSearchParams({ name: "Test", email: "test@example.test", message: "Hallo", lang: "fr", service: "__proto__" });
+    const r = await POST({ request: new Request("https://lkmedia.net/api/contact", { method: "POST", body }), clientAddress: "10.0.0.1" } as Parameters<typeof POST>[0]);
+    expect(r.headers.get("location")).toBe("/danke");
+    expect(send.mock.calls[0]?.[0]?.text).toContain("Anliegen: Noch offen\nSprache: de");
   });
   it("uses the visitor IP for Turnstile", async () => {
     vi.stubEnv("RESEND_API_KEY", "runtime-key");

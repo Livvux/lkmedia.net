@@ -1,3 +1,5 @@
+import { englishPaths } from "./i18n";
+
 export const exactRedirects: Record<string, string> = {
   "/impressum": "/imprint",
   "/impressum/": "/imprint",
@@ -12,19 +14,17 @@ export const exactRedirects: Record<string, string> = {
 };
 
 /**
- * Keep backlinks and indexed /en/ URLs functional after removing the English site.
- * Redirect equivalent German pages directly rather than allowing a 404 fallback.
+ * Keep backlinks and indexed legacy /en/ URLs functional: they redirect to the German equivalent.
+ * Real English pages (an `en` path in `routes`, src/lib/i18n.ts) are served and never redirected.
  */
 export function englishRedirectPath(path: string): string | null {
   const normalized = path.replace(/\/+$/, "") || "/";
   if (normalized !== "/en" && !normalized.startsWith("/en/")) return null;
+  if (englishPaths.has(normalized)) return null;
 
   const localPath = normalized.slice(3) || "/";
   const aliases: Record<string, string> = {
-    "/": "/",
     "/about": "/ueber",
-    "/contact": "/kontakt",
-    "/thanks": "/danke",
     "/help": "/help",
     "/phone-privacy": "/phone-privacy",
     "/leistungen": "/leistungen",

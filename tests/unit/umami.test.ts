@@ -61,6 +61,7 @@ describe('conversion destinations', () => {
   it('reports only fixed goal names and target labels', () => {
     expect(conversionLink('/kontakt?email=PRIVATE#PRIVATE', '/docweb')).toEqual({ name: 'contact_click', data: { target: 'form' } });
     expect(conversionLink('/kontakt#termin', '/')).toEqual({ name: 'contact_click', data: { target: 'appointment' } });
+    expect(conversionLink('/en/contact?service=ai', '/en/wordpress')).toEqual({ name: 'contact_click', data: { target: 'form' } });
     expect(conversionLink('https://cal.com/lucas-lkmedia/15min?email=PRIVATE', '/kontakt')).toEqual({ name: 'contact_click', data: { target: 'appointment' } });
     expect(conversionLink('mailto:lucas@lkmedia.net?body=PRIVATE', '/')).toEqual({ name: 'contact_click', data: { target: 'email' } });
     expect(conversionLink('https://buy.stripe.com/fixture?prefilled_email=PRIVATE', '/handwerk')).toEqual({ name: 'checkout_click', data: { target: 'handwerkweb' } });

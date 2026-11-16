@@ -9,7 +9,30 @@ const SOURCES = new Set([
   "/leistungen",
   "/seo-rastatt",
   "/blog",
+  "/wordpress",
+  "/ki-automatisierung",
+  "/webentwicklung",
+  "/en",
+  "/en/contact",
+  "/en/wordpress",
+  "/en/ai-automation",
+  "/en/web-development",
+  "/en/grok-bot-wordpress",
 ]);
+
+// Anliegen im Kontaktformular; der Schlüssel landet in der Anfrage-Mail, nie freier Text.
+export const SERVICES = {
+  unknown: { de: "Noch offen", en: "Not sure yet" },
+  wordpress: { de: "WordPress", en: "WordPress" },
+  ai: { de: "KI & Automation", en: "AI & automation" },
+  development: { de: "Website oder Web-Anwendung", en: "Website or web application" },
+  package: { de: "Website-Paket (Praxis, Handwerk, Fahrschule)", en: "Website package (Germany)" },
+  seo: { de: "SEO & Optimierung", en: "SEO & optimization" },
+} as const;
+
+export function serviceInterest(value: string): keyof typeof SERVICES {
+  return Object.hasOwn(SERVICES, value) ? (value as keyof typeof SERVICES) : "unknown";
+}
 
 /** Only a public offer path is retained, never an arbitrary URL, query or personal data. */
 export function leadSource(value: string): string {

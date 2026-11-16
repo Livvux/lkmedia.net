@@ -3,285 +3,558 @@ import { FAHRSCHULWEB } from "./fahrschulweb";
 import { HANDWERKWEB } from "./handwerkweb";
 import { type Lang, routeFor } from "./i18n";
 
-export interface Shot {
-  slug: string;
-  client: string;
-  domain: string;
-  result: string;
-  scope: string;
-  image?: string;
-}
-
 interface Link {
   label: string;
   href: string;
 }
 
-export interface Offer {
+/** Ein Projekt aus src/content/cases; Texte nur aus der jeweiligen Case-Datei. */
+export interface Shot {
+  slug: string;
+  client: string;
+  scope: string;
+  image?: string;
+  problem: string;
+  solution: string;
+  deliverable: string;
+}
+
+interface Head {
+  label: string;
   title: string;
-  body: string;
-  href: string;
-  price?: string;
+  quiet: string;
 }
 
 export interface HomeContent {
-  hero: {
-    eyebrow: string;
-    title: string;
-    claim: string;
+  hero: Head & {
+    lede: string;
     primary: Link;
     secondary: Link;
+    facts: string[];
+    visual: {
+      url: string;
+      form: string;
+      result: string;
+      nodes: [string, string, string];
+      notes: [string, string, string];
+    };
   };
-  marquee: { label: string; items: string[] };
-  metrics: { title: string; items: { key: string; caption: string }[] };
-  proof: { title: string; sub: string; all: Link; shots: Shot[] };
-  stats: { title: string; figures: { value: string; caption: string }[] };
-  search: {
-    title: string;
+  services: Head & {
     sub: string;
-    defaults: { service: string; place: string; business: string; domain: string };
-    note: string;
+    items: { title: string; outcome: string; keywords: [string, string, string]; href: string }[];
+    packages?: Head & {
+      all: Link;
+      items: { name: string; audience: string; price: string; href: string }[];
+    };
   };
-  offers: {
-    title: string;
-    sub: string;
-    tabs: { value: string; label: string; lead: string; link: Link; items: Offer[] }[];
+  showcase: Head & { body: [string, string]; evidence: string };
+  proof: Head & {
+    all: Link;
+    /** Hinweis an Case-Links, wenn die Case-Seiten nicht in der Seitensprache vorliegen. */
+    langNote?: string;
+    steps: [string, string, string];
+    shots: Shot[];
   };
-  process: {
-    title: string;
-    sub: string;
-    steps: { n: string; title: string; body: string }[];
+  why: Head & { items: { title: string; body: string }[]; metrics: string[] };
+  process: { title: string; sub: string; steps: { n: string; title: string; body: string }[] };
+  journal?: Head & { all: Link };
+  about: Head & {
+    lead: string;
+    body: string;
+    facts: { label: string; value: string }[];
+    link: Link & { hreflang?: Lang };
+    photoAlt: string;
   };
-  journal: { title: string; sub: string; all: Link };
-  about: { title: string; lead: string; craft: string; facts: { label: string; value: string }[] };
-  cta: {
-    lines: [string, string];
+  cta: Head & {
     sub: string;
+    promises: string[];
     primary: Link;
     secondary: Link;
+    email: string;
   };
 }
+
+const EMAIL = "lucas@lkmedia.net";
 
 // Reihenfolge = Reihenfolge auf der Startseite bei gleichem Case-Datum (neueste Cases zuerst).
 const shotsDe: Shot[] = [
   {
     slug: "eichhoernchenberger",
     client: "Eichhörnchen Berger",
-    domain: "eichhoernchenberger.de",
-    result: "Notfallhilfe und Einblicke in eine ehrenamtliche Auffangstation.",
     scope: "Website & Notfall-Kommunikation",
-    image: "https://eichhoernchenberger.de/_astro/jungtier-schlafend.DKAZgyRW_Z1KWXhE.jpg",
+    image: "/cases/eichhoernchenberger/desktop.webp",
+    problem: "Wer ein verletztes Tier findet, braucht sofort Orientierung und eine Telefonnummer.",
+    solution: "Notfallkontakt als erster Einstieg, Erste Hilfe in vier Schritten.",
+    deliverable: "Astro-Website mit Notfallseite, Tiergeschichten und Spendenwegen.",
   },
   {
     slug: "pfotenweb",
     client: "Pfotenweb",
-    domain: "pfotenweb.de",
-    result: "Vereinswebsite, Tierprofile und Verwaltung an einem Ort.",
     scope: "Tierschutz-Plattform & Produktentwicklung",
     image: "https://pfotenweb.de/images/demo/website.webp",
+    problem: "Ehrenamtliche Teams pflegen Website, Tiere und Anfragen an getrennten Orten.",
+    solution: "Vereinswebsite und Verwaltung in einer Plattform, auch mobil.",
+    deliverable: "Live-Produkt mit Tierprofilen, Postfach und Schutzverträgen.",
   },
   {
     slug: "five-rp",
     client: "FiveRP",
-    domain: "five-rp.de",
-    result: "Serverliste, GTA-RP-Guides und Ressourcen für Betreiber.",
-    scope: "Gaming-Portal & Content-Architektur",
+    scope: "WordPress-Portal & Content-Architektur",
     image: "https://five-rp.de/wp-content/uploads/2026/07/fiverp-open-graph.jpg",
+    problem: "Aus einem ehemaligen GTA-RP-Server sollte ein Portal für zwei Zielgruppen werden.",
+    solution: "Getrennte Einstiege für Spieler und Serverbetreiber.",
+    deliverable: "WordPress-Portal mit FiveM-Serverliste, Guides und Ressourcen.",
   },
   {
     slug: "streamerloft",
     client: "StreamerLoft",
-    domain: "streamerloft.com",
-    result: "Ein WordPress-Website-Kit für Streamer und ihre Community.",
     scope: "Creator-Produkt & WordPress",
     image: "https://streamerloft.com/og/streamerloft.png",
+    problem: "Streamer verteilen Livestream, Clips und Sendeplan auf viele Plattformen.",
+    solution: "Die Bausteine als WordPress-Website-Kit gebündelt.",
+    deliverable: "Website-Kit mit Demo, kostenlosem Einstieg und Erweiterungen.",
   },
   {
     slug: "klavierbau-milde",
     client: "Klavierbau Hans Milde",
-    domain: "klavierbau-milde.de",
-    result: "Leistungen, regionale Informationen und klare Kontaktwege für einen Klavierbauer.",
     scope: "Webdesign & Local SEO",
+    problem: "Ein Klavierbauer mit Empfehlungskundschaft war online kaum zu finden.",
+    solution: "Reduziertes Design und eine lokale SEO-Struktur.",
+    deliverable: "Website mit Leistungen, regionalen Informationen und Kontaktwegen.",
   },
   {
     slug: "patricks-fahrschule",
     client: "Patricks Fahrschule",
-    domain: "patricks-fahrschule.de",
-    result: "Standortseiten und rumänischsprachige Informationen für echte Filialen.",
     scope: "Local SEO & Mehrsprachigkeit",
+    problem: "Interessenten suchen nach einem konkreten Standort.",
+    solution: "Eigene Informationen je echter Filiale, dazu Inhalte auf Rumänisch.",
+    deliverable: "Standortseiten mit Anschrift, Zeiten und Anmeldung.",
   },
   {
     slug: "cleo-coaching",
     client: "CLEO Coaching",
-    domain: "cleo-coaching.de",
-    result: "SEO-Feintuning plus Workshop-Landingpage, die bucht.",
     scope: "SEO & Workshop-Landingpage",
+    problem: "Die bestehende Website wurde in der Suche kaum gefunden.",
+    solution: "Feintuning an Struktur, Inhalten, Meta-Daten und Verlinkung.",
+    deliverable: "Optimierte Website und eine neue Landingpage für Workshops.",
   },
   {
     slug: "lorenz-logistik",
     client: "Lorenz Logistik",
-    domain: "lorenz-logistik.de",
-    result: "Neugründung, die vom ersten Tag an Anfragen erzeugt.",
     scope: "Landingpage & Conversion",
+    problem: "Eine Neugründung ohne bekannte Marke braucht trotzdem Anfragen.",
+    solution: "Die Anfrage sitzt direkt im ersten Bildschirm.",
+    deliverable: "Landingpage für Umzüge und Transporte mit Schnellanfrage.",
   },
 ];
 
+const shotsEn: Shot[] = [
+  {
+    ...shotsDe[0],
+    scope: "Website & emergency guidance",
+    problem: "People who find an injured squirrel need a phone number and clear steps, fast.",
+    solution: "Emergency contact as the first entry point, first aid in four steps.",
+    deliverable: "Astro website with an emergency page, animal stories and ways to donate.",
+  },
+  {
+    ...shotsDe[1],
+    scope: "Animal-welfare platform & product development",
+    problem: "Volunteer teams kept their website, animals and enquiries in separate places.",
+    solution: "Club website and admin in one platform that also works on a phone.",
+    deliverable: "Live product with animal profiles, an inbox and adoption contracts.",
+  },
+  {
+    ...shotsDe[2],
+    scope: "WordPress portal & content architecture",
+    problem: "A former GTA roleplay server wanted to become a portal for two audiences.",
+    solution: "Separate entry points for players and server operators.",
+    deliverable: "WordPress portal with a FiveM server list, guides and resources.",
+  },
+  {
+    ...shotsDe[3],
+    scope: "Creator product & WordPress",
+    problem: "Streamers spread their stream, clips and schedule across many platforms.",
+    solution: "The building blocks packaged as a WordPress website kit.",
+    deliverable: "Website kit with a demo, a free tier and add-on packages.",
+  },
+  {
+    ...shotsDe[4],
+    scope: "Web design & local SEO",
+    problem: "A piano maker who lived on referrals was hard to find online.",
+    solution: "A restrained design and a local SEO structure.",
+    deliverable: "Website with services, regional information and clear contact options.",
+  },
+  {
+    ...shotsDe[5],
+    scope: "Local SEO & multilingual content",
+    problem: "Prospective students search for one specific branch.",
+    solution: "Separate information for each real branch, plus content in Romanian.",
+    deliverable: "Branch pages with address, opening hours and sign-up.",
+  },
+  {
+    ...shotsDe[6],
+    scope: "SEO & workshop landing page",
+    problem: "The existing website barely showed up in search.",
+    solution: "Fine-tuning of structure, content, metadata and internal links.",
+    deliverable: "Optimised website and a new landing page for workshops.",
+  },
+  {
+    ...shotsDe[7],
+    scope: "Landing page & conversion",
+    problem: "A new business without a known brand still needs enquiries.",
+    solution: "The enquiry form sits right in the first screen.",
+    deliverable: "Landing page for removals and transport with a quick enquiry.",
+  },
+];
+
+const contactDe = routeFor("contact", "de");
+const contactEn = routeFor("contact", "en");
+
 const de: HomeContent = {
   hero: {
-    eyebrow: "lk media · Digitales Handwerk aus Rastatt",
-    title: "Design, Technik &",
-    claim: "ein klarer Auftritt.",
-    primary: { label: "Website-Pakete vergleichen", href: routeFor("services", "de") },
-    secondary: {
-      label: "Individuelles Projekt besprechen",
-      href: `${routeFor("contact", "de")}#termin`,
+    label: "lk media · Technologie-Studio aus Rastatt",
+    title: "Websites und KI-Systeme,",
+    quiet: "die Ihr Unternehmen voranbringen.",
+    lede: "WordPress-Websites, die Ihr Team selbst pflegt, KI-Automatisierung für wiederkehrende Abläufe und individuelle Webentwicklung. Geplant, gebaut und betreut von einem Ansprechpartner.",
+    primary: { label: "Projekt starten", href: contactDe },
+    secondary: { label: "Arbeiten ansehen", href: "#arbeiten" },
+    facts: ["WordPress", "KI-Automatisierung", "Webentwicklung", "Rastatt · seit 2015"],
+    visual: {
+      url: "ihre-website.de",
+      form: "Formular",
+      result: "Neu · freigegeben",
+      nodes: ["Eingang", "KI-Entwurf", "Freigabe"],
+      notes: ["Anfrage", "strukturiert", "durch Sie"],
     },
   },
-  marquee: {
-    label: "Ausgewählte Projekte",
+  services: {
+    label: "Leistungen",
+    title: "Vier Leistungen,",
+    quiet: "ein Ansprechpartner.",
+    sub: "Das Werkzeug folgt der Aufgabe: WordPress, wo Ihr Team Inhalte selbst pflegt. Astro oder eigener Code, wo Tempo und Kontrolle zählen.",
     items: [
-      "Eichhörnchen Berger",
-      "Pfotenweb",
-      "FiveRP",
-      "StreamerLoft",
-      "Klavierbau Hans Milde",
-      "Patricks Fahrschule",
-      "CLEO Coaching",
-      "Lorenz Logistik",
+      {
+        title: "WordPress",
+        outcome: "Websites, die Ihr Team ohne Entwickler pflegt und die trotzdem schnell bleiben.",
+        keywords: ["Eigene Themes", "Gutenberg-Blöcke", "Migration"],
+        href: routeFor("wordpress", "de"),
+      },
+      {
+        title: "KI-Automatisierung",
+        outcome: "Wiederkehrende Abläufe, die ein System vorbereitet und ein Mensch freigibt.",
+        keywords: ["Formulare zu Tickets", "Entwürfe mit KI", "Freigabe-Schritte"],
+        href: routeFor("ai", "de"),
+      },
+      {
+        title: "Webentwicklung",
+        outcome: "Websites und Web-Anwendungen nach Maß, wenn ein Baukasten nicht mehr reicht.",
+        keywords: ["Astro & TypeScript", "Schnittstellen", "Web-Apps"],
+        href: routeFor("development", "de"),
+      },
+      {
+        title: "Optimierung & Wartung",
+        outcome:
+          "Bestehende Websites, die schneller laden, besser gefunden werden und sicher laufen.",
+        keywords: ["Local SEO Rastatt", "Ladezeit", "Updates"],
+        href: routeFor("seo", "de"),
+      },
     ],
+    packages: {
+      label: "Website-Pakete zum Festpreis",
+      title: "Für Praxen, Handwerk und Fahrschulen:",
+      quiet: "feste Leistung, fester Monatspreis.",
+      all: { label: "Pakete vergleichen", href: routeFor("services", "de") },
+      items: [
+        {
+          name: "docweb",
+          audience: "Arztpraxen",
+          price: `${DOCWEB.setupPrice} + ${DOCWEB.monthlyPrice}/Monat`,
+          href: routeFor("doctors", "de"),
+        },
+        {
+          name: "handwerkweb",
+          audience: "Handwerk",
+          price: `${HANDWERKWEB.setupPrice} + ${HANDWERKWEB.monthlyPrice}/Monat`,
+          href: routeFor("craftsmen", "de"),
+        },
+        {
+          name: "fahrschulweb",
+          audience: "Fahrschulen",
+          price: `${FAHRSCHULWEB.setupPrice} + ${FAHRSCHULWEB.monthlyPrice}/Monat`,
+          href: routeFor("drivingSchools", "de"),
+        },
+      ],
+    },
   },
-  metrics: {
-    title: "Zahlen, die sich nachprüfen lassen",
-    items: [
-      { key: "years", caption: "Jahre Websites aus Rastatt und Umgebung" },
-      { key: "projects", caption: "veröffentlichte Projekte" },
-      { key: "articles", caption: "Artikel zu SEO, Webdesign und Marketing" },
+  showcase: {
+    label: "KI in der Praxis",
+    title: "Aus dem Briefing wird ein Entwurf.",
+    quiet: "Veröffentlicht wird erst nach Ihrer Freigabe.",
+    body: [
+      "Probieren Sie es aus: Aus ein paar Stichpunkten entsteht ein gegliederter WordPress-Entwurf mit Titel, Meta-Beschreibung und Fragen zur Prüfung.",
+      "So setzen wir KI ein: als Vorarbeit in festen Schritten, mit einem Menschen am Ende.",
     ],
+    evidence:
+      "Im eigenen Betrieb: Änderungswünsche aus dem Kundenformular werden zu Tickets. Den Stand sehen Kunden auf einer eigenen Statusseite.",
   },
   proof: {
-    title: "Arbeiten",
-    sub: "Neueste Projekte zuerst: Plattformen, Portale und lokale Websites.",
-    all: { label: "Alle Cases", href: routeFor("cases", "de") },
+    label: "Arbeiten",
+    title: "Ausgewählte Projekte",
+    quiet: "und was dabei herauskam.",
+    all: { label: "Alle Projekte", href: routeFor("cases", "de") },
+    steps: ["Ausgangslage", "Lösung", "Ergebnis"],
     shots: shotsDe,
   },
-  stats: {
-    title: "Was Sie von der Zusammenarbeit erwarten können",
-    figures: [
-      { value: "Persönlich", caption: "Konzept, Gestaltung und Entwicklung direkt mit Lucas" },
+  why: {
+    label: "Warum lk media",
+    title: "Was Sie bekommen",
+    quiet: "und woran Sie es prüfen können.",
+    items: [
       {
-        value: "Definiert",
-        caption: "Paketleistungen, laufende Kosten und Mindestlaufzeit vor der Bestellung",
+        title: "Saubere Technik",
+        body: "Typisierter Code und automatische Tests, auch für diese Website. Die Tests prüfen Formulare, Weiterleitungen und Barrierefreiheit.",
       },
       {
-        value: "Betreut",
-        caption: "Hosting und vereinbarte Inhaltsänderungen in den Branchenpaketen",
-      },
-    ],
-  },
-  search: {
-    title: "Wo Ihre Kunden suchen",
-    sub: "Tragen Sie Ihre Leistung und Ihren Ort ein. Die Beispiele zeigen, wie verständliche Informationen aussehen können; sie rufen keine Suchergebnisse ab.",
-    defaults: {
-      service: "Klavierstimmer",
-      place: "Karlsruhe",
-      business: "Klavierbau Hans Milde",
-      domain: "klavierbau-milde.de",
-    },
-    note: "Klare Antworten und passende strukturierte Daten helfen bei der Einordnung Ihrer Inhalte. llms.txt bietet zusätzliche Orientierung; Rankings und KI-Zitationen lassen sich damit nicht garantieren.",
-  },
-  offers: {
-    title: "Zwei Wege zu Ihrer Website",
-    sub: "Ein Festpreis-Paket für typische Branchen oder ein individuelles Projekt mit eigenem Konzept.",
-    tabs: [
-      {
-        value: "pakete",
-        label: "Branchenpakete",
-        lead: "Bewährte Seitenstruktur, definierte Funktionen und laufende Betreuung. Einrichtung ab 1.490 € plus Monatspreis, inkl. USt., 12 Monate Mindestlaufzeit und zusätzliche Domainkosten laut Angebot.",
-        link: { label: "Pakete und Gesamtkosten vergleichen", href: routeFor("services", "de") },
-        items: [
-          {
-            title: "Arztpraxen mit docweb",
-            body: "Für Arzt-, Psychotherapie- und Zahnarztpraxen. Vorschau in der Regel nach 7 Werktagen.",
-            href: routeFor("doctors", "de"),
-            price: `${DOCWEB.setupPrice} + ${DOCWEB.monthlyPrice} im Monat`,
-          },
-          {
-            title: "Handwerk mit handwerkweb",
-            body: "Für Handwerksbetriebe, mit Formularen für Projektanfragen und Bewerbungen.",
-            href: routeFor("craftsmen", "de"),
-            price: `${HANDWERKWEB.setupPrice} + ${HANDWERKWEB.monthlyPrice} im Monat`,
-          },
-          {
-            title: "Fahrschulen mit fahrschulweb",
-            body: "Für Fahrschulen, mit Online-Anmeldung direkt auf der Seite.",
-            href: routeFor("drivingSchools", "de"),
-            price: `${FAHRSCHULWEB.setupPrice} + ${FAHRSCHULWEB.monthlyPrice} im Monat`,
-          },
-        ],
+        title: "Technische Tiefe",
+        body: "Von WordPress bis zur eigenen Anwendung: Die Website-Pakete hier laufen mit Stripe-Bestellung und Auftragsverwaltung über GitHub.",
       },
       {
-        value: "individuell",
-        label: "Individuelles Projekt",
-        lead: "Für umfangreiche Kanzlei-, Klinik- und Immobilienprojekte. Konzept, Design und Entwicklung richten sich nach Ihren Anforderungen. Schnittstellen, Inhalte und Betreuung werden im Angebot festgelegt.",
-        link: { label: "Individuelles Projekt besprechen", href: routeFor("contact", "de") },
-        items: [
-          {
-            title: "Kanzleien",
-            body: "Seriöse Auftritte, die Mandanten aus der Region gewinnen, berufsrechtskonform.",
-            href: routeFor("lawFirms", "de"),
-          },
-          {
-            title: "Luxus-Immobilien",
-            body: "Exposés mit Wirkung und Websites, die Käufer und Eigentümer überzeugen.",
-            href: routeFor("realEstate", "de"),
-          },
-          {
-            title: "Privatkliniken",
-            body: "Vertrauen auf den ersten Blick und Terminanfragen, die ohne Umwege ankommen.",
-            href: routeFor("clinics", "de"),
-          },
-          {
-            title: "Lokale Unternehmen",
-            body: "Dienstleister und Betriebe aus der Region, mit Local SEO von Anfang an.",
-            href: routeFor("services", "de"),
-          },
-        ],
+        title: "Performance",
+        body: "Diese Seite wird statisch ausgeliefert und kommt ohne Cookie-Banner aus, weil die Besucheranalyse selbst gehostet und cookiefrei läuft.",
+      },
+      {
+        title: "Wartbarkeit",
+        body: "Inhalte getrennt vom Code, jede Änderung versioniert in Git. Ihre Website bleibt auch in Jahren nachvollziehbar.",
+      },
+      {
+        title: "KI mit Augenmaß",
+        body: "KI bereitet vor, ein Mensch gibt frei. Im eigenen Kundenprozess entsteht aus jedem Änderungswunsch ein Ticket mit sichtbarem Status.",
+      },
+      {
+        title: "Persönliche Zusammenarbeit",
+        body: `Ein Ansprechpartner vom ersten Gespräch bis zum Launch: Lucas Kleipoedszus, erreichbar unter ${EMAIL}.`,
       },
     ],
+    metrics: ["Jahre Websites aus Rastatt", "veröffentlichte Projekte", "Fachartikel im Blog"],
   },
   process: {
-    title: "Ihr Auftrag",
-    sub: "Ein klarer Ablauf, ein Ansprechpartner, keine Überraschungen.",
+    title: "So läuft ein Projekt",
+    sub: "Vier Schritte, feste Freigaben, ein Ansprechpartner.",
     steps: [
-      { n: "01", title: "Zuerst reden wir 15 Minuten.", body: "Ziele, Zielgruppe und Kennzahlen" },
-      { n: "02", title: "Dann sehen Sie das Konzept.", body: "Prototyp und Texte, die verkaufen" },
-      { n: "03", title: "Dann baue ich es von Hand.", body: "Astro, auf Tempo und SEO gebaut" },
-      { n: "04", title: "Am Ende geht es live.", body: "Search Console, Monitoring, Feinschliff" },
+      {
+        n: "01",
+        title: "Verstehen",
+        body: "15 Minuten Gespräch, dann Ziele, Umfang und ein Angebot zum Festpreis.",
+      },
+      {
+        n: "02",
+        title: "Entwerfen",
+        body: "Struktur, Texte und Gestaltung als Prototyp, den Sie freigeben.",
+      },
+      {
+        n: "03",
+        title: "Bauen",
+        body: "WordPress, Astro oder eigener Code, je nach Aufgabe. Sie prüfen jeden Zwischenstand.",
+      },
+      {
+        n: "04",
+        title: "Launch & Weiterentwickeln",
+        body: "Livegang, Messung und Verbesserungen auf Basis echter Daten.",
+      },
     ],
   },
   journal: {
-    title: "Aus dem Blog",
-    sub: "Praxiswissen zu Webdesign, lokalem SEO und Marketing.",
+    label: "Insights",
+    title: "Neu im Blog.",
+    quiet: "Webdesign, SEO und Marketing aus der Praxis.",
     all: { label: "Alle Artikel", href: routeFor("blog", "de") },
   },
   about: {
-    title: "Wer dahintersteht",
-    lead: "Ich bin Lucas Kleipoedszus und baue jede Website selbst, aus Rastatt oder remote. Vom ersten Call bis zum Launch sprechen Sie mit derselben Person.",
-    craft:
-      "Handgeschriebener Code statt 40 Plugins, datensparsame Analytics statt Cookie-Banner, Kontraste und Tastaturbedienung für alle Besucher.",
+    label: "Wer dahintersteht",
+    title: "Lucas Kleipoedszus,",
+    quiet: "Rastatt.",
+    lead: "Ich plane, gestalte und entwickle jedes Projekt selbst. Vom ersten Gespräch bis zum Launch sprechen Sie mit derselben Person.",
+    body: "Seit 2015 baue ich Websites für Unternehmen in Rastatt, Mittelbaden und der Südpfalz, vor Ort oder remote.",
     facts: [
       { label: "Standort", value: "Rastatt" },
-      { label: "Vor Ort", value: "Baden & Südpfalz" },
-      { label: "Technik", value: "Astro, statisch" },
-      { label: "Analytics", value: "Selbst gehostet" },
+      { label: "Region", value: "Mittelbaden & Südpfalz" },
     ],
+    link: { label: "Mehr über Lucas", href: routeFor("about", "de") },
+    photoAlt:
+      "Lucas Kleipoedszus lächelt am Schreibtisch, im Hintergrund ein zweiter Bildschirm mit Code",
   },
   cta: {
-    lines: ["Lassen Sie sich", "finden."],
-    sub: "Erzählen Sie kurz von Ihrem Projekt. Sie bekommen eine ehrliche Einschätzung, kein Verkaufsgespräch.",
-    primary: { label: "Projekt starten", href: routeFor("contact", "de") },
-    secondary: { label: "15-Minuten-Call buchen", href: `${routeFor("contact", "de")}#termin` },
+    label: "Kontakt",
+    title: "Erzählen Sie von Ihrem Projekt.",
+    quiet: "Sie bekommen eine ehrliche Einschätzung.",
+    sub: "Ein paar Sätze genügen: was Sie vorhaben, bis wann und was es schon gibt.",
+    promises: [
+      "Antwort innerhalb eines Werktags",
+      "Kostenloses 15-Minuten-Gespräch",
+      "Angebot zum Festpreis",
+      "Start erst nach Ihrer schriftlichen Freigabe",
+    ],
+    primary: { label: "Projekt starten", href: contactDe },
+    secondary: { label: "15-Minuten-Call buchen", href: `${contactDe}#termin` },
+    email: EMAIL,
   },
 };
 
-export const homeContent: Record<Lang, HomeContent> = { de };
+const en: HomeContent = {
+  hero: {
+    label: "lk media · Technology studio, Rastatt, Germany",
+    title: "Websites and AI systems",
+    quiet: "that move your business forward.",
+    lede: "WordPress websites your team can update itself, AI automation for repetitive work, and custom web development. Planned, built and looked after by one contact person.",
+    primary: { label: "Start a project", href: contactEn },
+    secondary: { label: "Explore our work", href: "#arbeiten" },
+    facts: ["WordPress", "AI automation", "Web development", "Rastatt · since 2015"],
+    visual: {
+      url: "your-site.com",
+      form: "Form",
+      result: "New · approved",
+      nodes: ["Intake", "AI draft", "Approval"],
+      notes: ["request", "structured", "by you"],
+    },
+  },
+  services: {
+    label: "Services",
+    title: "Four services,",
+    quiet: "one contact person.",
+    sub: "The tool follows the job: WordPress where your team edits content itself. Astro or custom code where speed and control matter.",
+    items: [
+      {
+        title: "WordPress",
+        outcome: "Websites your team can run without a developer, and that stay fast.",
+        keywords: ["Custom themes", "Gutenberg blocks", "Migration"],
+        href: routeFor("wordpress", "en"),
+      },
+      {
+        title: "AI automation",
+        outcome: "Repetitive workflows that a system prepares and a person approves.",
+        keywords: ["Forms to tickets", "AI drafts", "Approval steps"],
+        href: routeFor("ai", "en"),
+      },
+      {
+        title: "Web development",
+        outcome: "Custom websites and web apps for when a site builder no longer fits.",
+        keywords: ["Astro & TypeScript", "APIs", "Web apps"],
+        href: routeFor("development", "en"),
+      },
+      {
+        title: "Care & optimisation",
+        outcome: "Your existing WordPress site, kept fast, up to date and secure.",
+        keywords: ["Updates", "Load time", "Security"],
+        href: routeFor("wordpress", "en"),
+      },
+    ],
+  },
+  showcase: {
+    label: "AI in practice",
+    title: "A brief becomes a draft.",
+    quiet: "Nothing goes live until you approve it.",
+    body: [
+      "Try it: a few bullet points turn into a structured WordPress draft with a title, a meta description and questions for review.",
+      "That is how we use AI: as groundwork in fixed steps, with a person at the end.",
+    ],
+    evidence:
+      "In our own business: change requests from the client form become tickets, and clients follow their status on a dedicated page.",
+  },
+  proof: {
+    label: "Work",
+    title: "Selected projects",
+    quiet: "and what they delivered.",
+    all: { label: "All projects (in German)", href: routeFor("cases", "en") },
+    langNote: "(in German)",
+    steps: ["Problem", "Solution", "Delivered"],
+    shots: shotsEn,
+  },
+  why: {
+    label: "Why lk media",
+    title: "What you get",
+    quiet: "and how you can check it.",
+    items: [
+      {
+        title: "Engineering quality",
+        body: "Typed code and automated tests, including for this website: they check forms, redirects and accessibility.",
+      },
+      {
+        title: "Technical depth",
+        body: "From WordPress to custom applications: the website packages on this site run on Stripe checkout and GitHub-based order handling.",
+      },
+      {
+        title: "Performance",
+        body: "This site is served as static pages and needs no cookie banner, because visitor analytics are self-hosted and cookieless.",
+      },
+      {
+        title: "Maintainability",
+        body: "Content kept apart from code, every change versioned in Git. Your website stays understandable years from now.",
+      },
+      {
+        title: "Practical AI",
+        body: "AI prepares, a person approves. In our own client process every change request becomes a ticket with a visible status.",
+      },
+      {
+        title: "Personal collaboration",
+        body: `One contact person from the first call to launch: Lucas Kleipoedszus, at ${EMAIL}.`,
+      },
+    ],
+    metrics: ["years building websites", "published case studies", "articles (in German)"],
+  },
+  process: {
+    title: "How a project runs",
+    sub: "Four steps, clear approvals, one contact person.",
+    steps: [
+      {
+        n: "01",
+        title: "Discover",
+        body: "A 15-minute call, then goals, scope and a fixed-price quote.",
+      },
+      {
+        n: "02",
+        title: "Design",
+        body: "Structure, copy and design as a prototype for you to approve.",
+      },
+      {
+        n: "03",
+        title: "Build",
+        body: "WordPress, Astro or custom code, depending on the job. You review every stage.",
+      },
+      {
+        n: "04",
+        title: "Launch & improve",
+        body: "Go live, measure, and improve based on real data.",
+      },
+    ],
+  },
+  about: {
+    label: "Who is behind it",
+    title: "Lucas Kleipoedszus,",
+    quiet: "Rastatt, Germany.",
+    lead: "I plan, design and build every project myself. From the first call to launch you talk to the same person.",
+    body: "Building websites since 2015 for businesses in and around Rastatt, on site or remotely.",
+    facts: [
+      { label: "Based in", value: "Rastatt, Germany" },
+      { label: "Languages", value: "German, English" },
+    ],
+    link: { label: "About Lucas (in German)", href: routeFor("about", "en"), hreflang: "de" },
+    photoAlt: "Lucas Kleipoedszus smiling at his desk, a second screen with code behind him",
+  },
+  cta: {
+    label: "Contact",
+    title: "Tell us about your project.",
+    quiet: "You get an honest assessment.",
+    sub: "A few sentences are enough: what you have in mind, by when, and what already exists.",
+    promises: [
+      "Reply within one business day",
+      "Free 15-minute call",
+      "Fixed-price quote",
+      "Work starts only after your written approval",
+    ],
+    primary: { label: "Start a project", href: contactEn },
+    secondary: { label: "Book a 15-min call", href: `${contactEn}#termin` },
+    email: EMAIL,
+  },
+};
+
+export const homeContent: Record<Lang, HomeContent> = { de, en };

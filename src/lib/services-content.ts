@@ -1,10 +1,9 @@
-import type { Lang } from "./i18n";
-
 export interface ServicesContent {
   proof: { title: string; body: string; linkLabel: string };
 }
 
-export const servicesContent: Record<Lang, ServicesContent> = {
+// /leistungen gibt es nur auf Deutsch.
+export const servicesContent: Record<"de", ServicesContent> = {
   de: {
     proof: {
       title: "So sieht das in der Praxis aus.",

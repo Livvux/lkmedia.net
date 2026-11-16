@@ -30,7 +30,7 @@ for (const width of [320, 390, 1440]) {
     });
     await page.setViewportSize({ width, height: 900 });
     await page.emulateMedia({ reducedMotion: 'reduce' });
-    for (const path of ['/', '/leistungen', '/cases', '/kontakt', '/docweb', '/handwerk', '/fahrschule-webdesign', '/blog']) {
+    for (const path of ['/', '/en', '/leistungen', '/cases', '/kontakt', '/docweb', '/handwerk', '/fahrschule-webdesign', '/blog']) {
       expect((await page.goto(path))?.status(), path).toBe(200);
       await expect(page.getByRole('main')).toHaveCount(1);
       await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
@@ -123,6 +123,8 @@ test.describe('progressive enhancement', () => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto('/');
     await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
+    // Die Festpreis-Pakete bleiben ohne JavaScript von der Startseite aus erreichbar.
+    await expect(page.locator('main a[href="/docweb"]').first()).toBeVisible();
     const offers = page.locator('main a[href="/leistungen"]').first();
     await expect(offers).toBeVisible();
     await offers.click();
@@ -152,23 +154,6 @@ test('navigation remains usable when deferred assets fail to load', async ({ pag
   await expect(page).toHaveURL(/\/leistungen$/);
 });
 
-test('project preview stops when reduced motion changes during a visit', async ({ page }) => {
-  await page.setViewportSize({ width: 390, height: 844 });
-  await page.emulateMedia({ reducedMotion: 'no-preference' });
-  await page.goto('/');
-  const video = page.locator('video[data-preview]');
-  await video.scrollIntoViewIfNeeded();
-  await expect(video).toHaveAttribute('src', '/cases/eichhoernchenberger/walkthrough.mp4');
-  await expect.poll(() => video.evaluate((element: HTMLVideoElement) => element.paused)).toBe(false);
-  await page.getByRole('button', { name: 'Vorschau pausieren' }).click();
-  await expect.poll(() => video.evaluate((element: HTMLVideoElement) => element.paused)).toBe(true);
-  await page.getByRole('button', { name: 'Vorschau abspielen' }).click();
-  await expect.poll(() => video.evaluate((element: HTMLVideoElement) => element.paused)).toBe(false);
-  await page.emulateMedia({ reducedMotion: 'reduce' });
-  await expect.poll(() => video.evaluate((element: HTMLVideoElement) => element.paused)).toBe(true);
-});
-
-
 test('preparation progress exposes its value and inbox examples advance on request', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.goto('/docweb');
@@ -194,7 +179,7 @@ test('marketing pages have no WCAG accessibility violations', async ({ page }) =
   const axePath = require.resolve('axe-core/axe.min.js');
   await page.setViewportSize({ width: 390, height: 844 });
   await page.emulateMedia({ reducedMotion: 'reduce' });
-  for (const path of ['/', '/leistungen', '/ueber', '/fahrschule-webdesign', '/docweb', '/handwerk']) {
+  for (const path of ['/', '/en', '/leistungen', '/ueber', '/fahrschule-webdesign', '/docweb', '/handwerk']) {
     await page.goto(path);
     await page.addScriptTag({ path: axePath });
     const violations = await page.evaluate(async () => {

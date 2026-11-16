@@ -1,7 +1,7 @@
 import { getCollection } from "astro:content";
 import { defineMiddleware } from "astro:middleware";
 import { isBlockedCrossSitePost } from "./lib/csrf";
-import { routes } from "./lib/i18n";
+import { germanPaths } from "./lib/i18n";
 import { englishRedirectPath, exactRedirects } from "./lib/redirects";
 
 function externalOrigin(request: Request, fallback: URL): string {
@@ -34,8 +34,7 @@ export const onRequest = defineMiddleware(async (ctx, next) => {
       getCollection("cases"),
     ]);
     const knownTargets = new Set<string>([
-      ...Object.values(routes),
-      "/danke",
+      ...germanPaths,
       "/help",
       "/phone-privacy",
       "/rss.xml",

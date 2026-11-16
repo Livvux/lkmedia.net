@@ -38,6 +38,23 @@ export const professionalService = () => ({
   ],
 });
 
+/** Eine Leistungsseite als Service des Studios. */
+export const service = (s: {
+  name: string;
+  description: string;
+  url: string;
+  lang: "de" | "en";
+}) => ({
+  "@context": "https://schema.org",
+  "@type": "Service",
+  "@id": `${new URL(s.url, "https://lkmedia.net").href}#service`,
+  name: s.name,
+  description: s.description,
+  url: new URL(s.url, "https://lkmedia.net").href,
+  inLanguage: s.lang === "en" ? "en" : "de-DE",
+  provider: { "@id": "https://lkmedia.net/#organization" },
+});
+
 export const blogPosting = (post: {
   title: string;
   description: string;

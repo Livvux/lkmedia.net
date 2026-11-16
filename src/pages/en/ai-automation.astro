@@ -1,0 +1,19 @@
+---
+import ServiceDetail from '../../components/services/ServiceDetail.astro';
+import BriefToDraft from '../../components/showcase/BriefToDraft';
+import { ai } from '../../lib/service-pages/ai';
+---
+<ServiceDetail page={ai.en} lang="en">
+  <div id="demo" class="wrap demo" style="margin-top:clamp(64px,8vw,104px)">
+    <p class="label">Demo</p>
+    <h2 class="section-title">From brief to draft, with approval</h2>
+    <p class="lede">Try how a short content brief turns into a structured WordPress draft that is published only after a person reviews it. The demo is a simulation in your browser: no real AI runs and no data is sent.</p>
+    <div class="demo-app"><BriefToDraft lang="en" client:visible /></div>
+  </div>
+</ServiceDetail>
+
+<style>
+  .demo { scroll-margin-top: 72px; }
+  .demo .lede { margin-top: 20px; }
+  .demo-app { margin-top: 40px; }
+</style>

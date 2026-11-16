@@ -1,0 +1,15 @@
+---
+import Base from '../../layouts/Base.astro';
+import HomePage from '../../components/home/HomePage.astro';
+import { professionalService } from '../../lib/schema';
+
+const seo = {
+  title: 'Websites, WordPress & AI systems for growing businesses',
+  description: 'lk media builds websites, WordPress solutions and practical AI automation for growing businesses. One contact person in Rastatt, Germany, fixed-price quotes.',
+  canonical: '/en',
+  lang: 'en' as const,
+};
+---
+<Base seo={seo} jsonLd={[professionalService()]}>
+  <HomePage lang="en" />
+</Base>

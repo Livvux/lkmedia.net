@@ -1,49 +1,48 @@
 ---
-
-
-// Gemeinsame Abschnittsüberschrift mit optionalem weiterführenden Link.
-interface Props { n: string; id: string; title: string; sub?: string; link?: { label: string; href: string } }
-const { n, id, title, sub, link } = Astro.props;
+// Abschnittskopf der Startseite: Mono-Label, zweistufige Überschrift, optional Text und Link.
+interface Props {
+  id: string;
+  label: string;
+  title: string;
+  quiet?: string;
+  sub?: string;
+  link?: { label: string; href: string; hreflang?: string };
+}
+const { id, label, title, quiet, sub, link } = Astro.props;
 ---
 <div class="head" data-reveal>
-  <span class="n" aria-hidden="true">{n}</span>
-  <div>
-    <h2 id={id} class="section-title">{title}</h2>
-    {sub && <p class="section-sub mt-3">{sub}</p>}
-  </div>
-  {link && <a class="mono-link more" href={link.href}>{link.label} <span aria-hidden="true">→</span></a>}
+  <p class="label">{label}</p>
+  <h2 id={id} class="section-title">{title}{quiet && <> <span class="quiet">{quiet}</span></>}</h2>
+  {sub && <p class="sub">{sub}</p>}
+  {link && <a class="mono-link more" href={link.href} hreflang={link.hreflang}>{link.label} <span aria-hidden="true">→</span></a>}
 </div>
 
 <style>
   .head {
     display: grid;
-    grid-template-columns: 40px minmax(0, 1fr) auto;
+    grid-template-columns: minmax(0, 1fr) auto;
     align-items: end;
-    gap: 16px 24px;
-    padding-top: 0;
+    gap: 20px 48px;
   }
-  .head h2 { font-size: clamp(36px, 5vw, 72px); font-weight: 450; letter-spacing: -.055em; line-height: 1.1; }
-  .head :global(.section-sub) { max-width: 48ch; }
-  .n {
-    align-self: start;
-    display: inline-grid;
-    place-items: center;
-    min-width: 30px;
-    height: 22px;
-    padding: 0 8px;
-    border: 0;
-    border-radius: 0;
-    color: var(--accent);
-    font-family: var(--font-mono);
-    font-size: 11px;
-    letter-spacing: 0.06em;
+  .label { grid-column: 1 / -1; }
+  h2 { max-width: 20ch; }
+  .sub {
+    grid-column: 1;
+    max-width: 56ch;
+    color: var(--fg-muted);
+    font-size: clamp(16px, 1.3vw, 18px);
+    line-height: 1.65;
   }
   .more {
+    grid-column: 2;
+    grid-row: 2;
+    min-height: 44px;
     white-space: nowrap;
   }
+  .more span { transition: transform 150ms var(--ease-out); }
+  .more:hover span { transform: translateX(3px); }
   @media (max-width: 760px) {
-    .head {
-      grid-template-columns: 1fr;
-    }
+    .head { grid-template-columns: 1fr; }
+    .more { grid-column: 1; grid-row: auto; }
   }
 </style>
