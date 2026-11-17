@@ -1,6 +1,7 @@
 import { test, expect, type Page } from '@playwright/test';
 
 const PATH = '/en/grok-bot-wordpress';
+const PATH_DE = '/grok-bot-wordpress';
 
 test.beforeEach(async ({ page, baseURL }) => {
   if (!baseURL) throw new Error('Grok page tests require a local baseURL.');
@@ -22,7 +23,7 @@ async function jsonLdTypes(page: Page): Promise<string[]> {
   });
 }
 
-test('grok page serves English SEO basics without hreflang', async ({ page }) => {
+test('grok page serves English SEO basics and a German hreflang', async ({ page }) => {
   const response = await page.goto(PATH);
   expect(response?.status()).toBe(200);
   await expect(page.locator('html')).toHaveAttribute('lang', 'en');
@@ -34,7 +35,44 @@ test('grok page serves English SEO basics without hreflang', async ({ page }) =>
     'href',
     'https://lkmedia.net/en/grok-bot-wordpress',
   );
-  await expect(page.locator('link[rel="alternate"][hreflang]')).toHaveCount(0);
+  await expect(page.locator('link[rel="alternate"][hreflang="de"]')).toHaveAttribute(
+    'href',
+    'https://lkmedia.net/grok-bot-wordpress',
+  );
+});
+
+test('grok pages link the Add Grok Bot invite in both languages', async ({ page }) => {
+  const invite = 'https://x.ai/bot/0LStaAgvBFXULZi3OuifT';
+  for (const [path, label] of [
+    [PATH, 'Add Grok Bot'],
+    [PATH_DE, 'Grok Bot hinzufügen'],
+  ]) {
+    await page.goto(path);
+    const button = page.getByRole('link', { name: label });
+    await expect(button).toHaveAttribute('href', invite);
+    await expect(button).toHaveAttribute('target', '_blank');
+    await expect(button).toHaveAttribute('rel', /noopener/);
+  }
+});
+
+test('german grok page serves SEO basics, JSON-LD and the AI inquiry', async ({ page }) => {
+  const response = await page.goto(PATH_DE);
+  expect(response?.status()).toBe(200);
+  await expect(page.locator('html')).toHaveAttribute('lang', 'de');
+  await expect(page.locator('h1')).toHaveCount(1);
+  await expect(page.locator('h1')).toContainText('Grok Bot für WordPress');
+  await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
+    'href',
+    'https://lkmedia.net/grok-bot-wordpress',
+  );
+  await expect(page.locator('link[rel="alternate"][hreflang="en"]')).toHaveAttribute(
+    'href',
+    'https://lkmedia.net/en/grok-bot-wordpress',
+  );
+  const types = await jsonLdTypes(page);
+  for (const type of ['Service', 'FAQPage', 'BreadcrumbList']) expect(types).toContain(type);
+  await expect(page.locator('#anfrage select[name="service"]')).toHaveValue('ai');
+  await expect(page.locator('#anfrage input[name="source"]')).toHaveValue(PATH_DE);
 });
 
 test('grok page ships Service, FAQPage and BreadcrumbList JSON-LD', async ({ page }) => {
@@ -53,10 +91,10 @@ test('grok page states independence from xAI and offers the AI inquiry', async (
   await expect(page.locator('#inquiry input[name="source"]')).toHaveValue(PATH);
 });
 
-for (const width of [390, 1440]) {
-  test(`grok page has no horizontal overflow at ${width}px`, async ({ page }) => {
+for (const [width, path] of [[390, PATH], [1440, PATH], [390, PATH_DE], [1440, PATH_DE]] as const) {
+  test(`grok page ${path} has no horizontal overflow at ${width}px`, async ({ page }) => {
     await page.setViewportSize({ width, height: 900 });
-    await page.goto(PATH);
+    await page.goto(path);
     const overflow = await page.evaluate(
       () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
     );

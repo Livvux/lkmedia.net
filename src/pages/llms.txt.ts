@@ -17,6 +17,7 @@ const body = `# lkmedia
 - [Website für Arztpraxen (docweb)](https://lkmedia.net/docweb)
 - [Fahrschule Webdesign](https://lkmedia.net/fahrschule-webdesign)
 - [Websites für Handwerker (handwerkweb)](https://lkmedia.net/handwerk)
+- [Grok Bot für WordPress](https://lkmedia.net/grok-bot-wordpress)
 - [Kontakt](https://lkmedia.net/kontakt)
 - [Referenzen und Fallstudien](https://lkmedia.net/cases): Projektbeispiele und dokumentierte Ergebnisse.
 - [Über Lucas Kleipoedszus](https://lkmedia.net/ueber): Gründer, Entwickler und Autor.

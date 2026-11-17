@@ -15,6 +15,7 @@ const seo = {
 
 // Stand der Recherche; Belege in docs/seo/grok-bot-wordpress-sources.md
 const verified = { iso: '2026-11-16', label: '16 November 2026' };
+const addBotUrl = 'https://x.ai/bot/0LStaAgvBFXULZi3OuifT';
 
 const docs = {
   overview: 'https://docs.x.ai/grok-bot/overview',
@@ -137,6 +138,7 @@ const curl = `curl -X POST https://example.com/wp-json/wp/v2/posts \\
     </p>
     <div class="cta">
       <a class="btn btn-primary btn-lg" href="#inquiry">Request an integration</a>
+      <a class="btn btn-ghost btn-lg" href={addBotUrl} target="_blank" rel="noopener">Add Grok Bot</a>
       <a class="btn btn-ghost btn-lg" href="#routes">See the three routes</a>
     </div>
     <aside class="notice" aria-label="Independence notice">
