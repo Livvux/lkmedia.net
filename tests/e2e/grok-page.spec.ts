@@ -127,7 +127,7 @@ test('grok page states independence from xAI and offers the AI inquiry', async (
   await expect(page.locator('#inquiry input[name="source"]')).toHaveValue(PATH);
 });
 
-for (const [width, path] of [[390, PATH], [1440, PATH], [390, PATH_DE], [1440, PATH_DE]] as const) {
+for (const [width, path] of [[320, PATH], [390, PATH], [768, PATH], [1440, PATH], [320, PATH_DE], [390, PATH_DE], [768, PATH_DE], [1440, PATH_DE]] as const) {
   test(`grok page ${path} has no horizontal overflow at ${width}px`, async ({ page }) => {
     await page.setViewportSize({ width, height: 900 });
     await page.goto(path);
@@ -135,5 +135,12 @@ for (const [width, path] of [[390, PATH], [1440, PATH], [390, PATH_DE], [1440, P
       () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
     );
     expect(overflow).toBeLessThanOrEqual(0);
+    const hero = await page.locator('.hero').boundingBox();
+    const bot = await page.locator('[data-grok-hero]').boundingBox();
+    expect(hero).not.toBeNull();
+    expect(bot).not.toBeNull();
+    if (!hero || !bot) throw new Error('Hero and bot must be rendered.');
+    expect(bot.x).toBeGreaterThanOrEqual(hero.x);
+    expect(bot.x + bot.width).toBeLessThanOrEqual(hero.x + hero.width);
   });
 }
