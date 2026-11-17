@@ -1,0 +1,70 @@
+<div class="grok-hero" data-grok-hero aria-hidden="true">
+  <svg viewBox="0 0 64 64" fill="none">
+    <path d="M32 3C48 3 60 16 60 32C60 49 48 61 32 61C15 61 4 49 4 33C4 17 16 3 32 3Z" fill="#fff" />
+    <g data-grok-eyes>
+      <g fill="#191919" transform="rotate(-32 38 23)">
+        <rect x="29" y="15" width="7" height="15" rx="3.5" />
+        <rect x="43" y="15" width="6" height="14" rx="3" />
+      </g>
+    </g>
+  </svg>
+</div>
+
+<script>
+  const bot = document.querySelector<HTMLElement>('[data-grok-hero]');
+  const allowed = window.matchMedia(
+    '(hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)',
+  );
+
+  if (bot) {
+    const eyes = bot.querySelector<SVGGElement>('[data-grok-eyes]');
+    let frame = 0;
+    let pointerX = 0;
+    let pointerY = 0;
+
+    const reset = () => {
+      cancelAnimationFrame(frame);
+      frame = 0;
+      eyes?.removeAttribute('transform');
+    };
+
+    window.addEventListener('pointermove', (event) => {
+      if (!allowed.matches || event.pointerType !== 'mouse') return;
+      pointerX = event.clientX;
+      pointerY = event.clientY;
+      if (frame) return;
+      frame = requestAnimationFrame(() => {
+        const rect = bot.getBoundingClientRect();
+        const dx = (pointerX - (rect.left + rect.width * 0.6)) / rect.width;
+        const dy = (pointerY - (rect.top + rect.height * 0.35)) / rect.height;
+        const distance = Math.max(1, Math.hypot(dx, dy));
+        eyes?.setAttribute('transform', `translate(${dx / distance * 5} ${dy / distance * 5})`);
+        frame = 0;
+      });
+    }, { passive: true });
+    document.documentElement.addEventListener('pointerleave', reset);
+    window.addEventListener('blur', reset);
+    window.addEventListener('resize', reset);
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) reset();
+    });
+    allowed.addEventListener('change', reset);
+  }
+</script>
+
+<style>
+  .grok-hero {
+    position: absolute;
+    top: 100px;
+    right: -40px;
+    width: clamp(300px, 42vw, 560px);
+    aspect-ratio: 1;
+    z-index: -1;
+    opacity: 0.14;
+    pointer-events: none;
+  }
+  .grok-hero svg { display: block; width: 100%; height: 100%; }
+  @media (max-width: 640px) {
+    .grok-hero { top: 40px; right: -70px; width: 280px; opacity: 0.09; }
+  }
+</style>

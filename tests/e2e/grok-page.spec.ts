@@ -3,6 +3,42 @@ import { test, expect, type Page } from '@playwright/test';
 const PATH = '/en/grok-bot-wordpress';
 const PATH_DE = '/grok-bot-wordpress';
 
+for (const path of [PATH, PATH_DE]) {
+  test(`hero bot stays fixed while its eyes follow the mouse on ${path}`, async ({ page }) => {
+    const errors: string[] = [];
+    page.on('pageerror', (error) => errors.push(error.message));
+    await page.goto(path);
+    const bot = page.locator('[data-grok-hero]');
+    const eyes = bot.locator('[data-grok-eyes]');
+    await expect(bot).toBeVisible();
+    const initial = await bot.boundingBox();
+    await page.mouse.move(100, 300);
+    await expect(eyes).toHaveAttribute('transform', /translate/);
+    const left = await eyes.getAttribute('transform');
+    await page.mouse.move(1200, 300);
+    await expect.poll(() => eyes.getAttribute('transform')).not.toBe(left);
+    expect(await bot.boundingBox()).toEqual(initial);
+    expect(await bot.evaluate((el) => getComputedStyle(el).pointerEvents)).toBe('none');
+    const section = path === PATH_DE ? '#wege' : '#routes';
+    await page.locator(`.hero a[href="${section}"]`).click();
+    await expect(page).toHaveURL(new RegExp(`${section}$`));
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await page.mouse.move(400, 400);
+    await expect(eyes).not.toHaveAttribute('transform');
+    expect(errors).toEqual([]);
+  });
+}
+
+test.describe('touch hero', () => {
+  test.use({ isMobile: true, hasTouch: true, viewport: { width: 390, height: 844 } });
+  test('shows a static bot for touch input', async ({ page }) => {
+    await page.goto(PATH_DE);
+    await page.touchscreen.tap(200, 300);
+    await expect(page.locator('[data-grok-hero]')).toBeVisible();
+    await expect(page.locator('[data-grok-eyes]')).not.toHaveAttribute('transform');
+  });
+});
+
 test.beforeEach(async ({ page, baseURL }) => {
   if (!baseURL) throw new Error('Grok page tests require a local baseURL.');
   const origin = new URL(baseURL).origin;

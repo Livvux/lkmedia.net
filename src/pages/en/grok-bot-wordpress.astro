@@ -1,5 +1,6 @@
 ---
 import Base from '../../layouts/Base.astro';
+import GrokHero from '../../components/GrokHero.astro';
 import ContactForm from '../../components/ContactForm.astro';
 import { breadcrumbs, faqPage, service } from '../../lib/schema';
 import { routeFor } from '../../lib/i18n';
@@ -127,6 +128,7 @@ const curl = `curl -X POST https://example.com/wp-json/wp/v2/posts \\
 ---
 <Base seo={seo} jsonLd={jsonLd}>
   <section class="hero wrap" aria-labelledby="grok-title">
+    <GrokHero />
     <p class="label">AI integration · WordPress</p>
     <h1 id="grok-title" class="display">
       Grok Bot for WordPress: <span class="quiet">what works, what needs custom work</span>
@@ -410,7 +412,7 @@ const curl = `curl -X POST https://example.com/wp-json/wp/v2/posts \\
 </Base>
 
 <style>
-  .hero { padding-block: clamp(56px, 8vw, 104px) clamp(48px, 6vw, 80px); }
+  .hero { position: relative; isolation: isolate; overflow: hidden; padding-block: clamp(56px, 8vw, 104px) clamp(48px, 6vw, 80px); }
   .display { margin-top: 20px; max-width: 18ch; }
   .lede { margin-top: 24px; }
   .cta { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 36px; }
