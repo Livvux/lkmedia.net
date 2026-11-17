@@ -40,7 +40,7 @@ export const routes = {
   development: { de: "/webentwicklung", en: "/en/web-development" },
   contact: { de: "/kontakt", en: "/en/contact" },
   thanks: { de: "/danke", en: "/en/thanks" },
-  grokBot: { en: "/en/grok-bot-wordpress" },
+  grokBot: { de: "/grok-bot-wordpress", en: "/en/grok-bot-wordpress" },
   services: { de: "/leistungen" },
   seo: { de: "/seo-rastatt" },
   cases: { de: "/cases" },

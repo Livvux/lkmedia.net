@@ -11,6 +11,7 @@ const SOURCES = new Set([
   "/blog",
   "/wordpress",
   "/ki-automatisierung",
+  "/grok-bot-wordpress",
   "/webentwicklung",
   "/en",
   "/en/contact",
