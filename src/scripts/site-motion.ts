@@ -137,11 +137,23 @@ function enhance(main: HTMLElement | null) {
       bar.className = "read-progress";
       bar.setAttribute("aria-hidden", "true");
       document.body.append(bar);
-      const progress = animate(bar, { transform: ["scaleX(0)", "scaleX(1)"] }, { ease: "linear" });
-      animations.push(progress);
-      cleanups.push(scroll(progress, { target: article, offset: ["start start", "end end"] }), () =>
-        bar.remove(),
-      );
+      // Native CSS keeps scroll tracking off the main thread. Motion supports older browsers.
+      if (
+        CSS.supports("animation-timeline", "view()") &&
+        CSS.supports("timeline-scope", "--reading")
+      ) {
+        article.classList.add("read-progress-source");
+        cleanups.push(() => article.classList.remove("read-progress-source"));
+      } else {
+        const progress = animate(
+          bar,
+          { transform: ["scaleX(0)", "scaleX(1)"] },
+          { ease: "linear" },
+        );
+        animations.push(progress);
+        cleanups.push(scroll(progress, { target: article, offset: ["start start", "end end"] }));
+      }
+      cleanups.push(() => bar.remove());
     }
   }
 

@@ -59,3 +59,37 @@ test('sections below the fold reveal on scroll and settle fully visible', async 
   await expect.poll(() => row.evaluate((el) => getComputedStyle(el).opacity)).toBe('1');
   expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBe(390);
 });
+
+for (const native of [true, false]) {
+  test(`article progress tracks its bounds with ${native ? 'native CSS' : 'the fallback'}`, async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.emulateMedia({ reducedMotion: 'no-preference' });
+    if (!native) {
+      await page.addInitScript(() => {
+        const supports = CSS.supports.bind(CSS);
+        CSS.supports = (property: string, value?: string) =>
+          property === 'timeline-scope' ? false : value === undefined ? supports(property) : supports(property, value);
+      });
+    }
+    await page.goto('/blog/kanzlei-website-kosten/');
+    const bar = page.locator('.read-progress');
+    await expect(bar).toBeAttached();
+    await expect(page.locator('.read-progress-source')).toHaveCount(native ? 1 : 0);
+    for (const fraction of [0, 0.5, 1]) {
+      await page.locator('article').evaluate((article, progress) => {
+        const top = article.getBoundingClientRect().top + window.scrollY;
+        const distance = article.getBoundingClientRect().height - window.innerHeight;
+        window.scrollTo({ top: top + distance * progress, behavior: 'instant' });
+      }, fraction);
+      await expect.poll(() => bar.evaluate((element) =>
+        new DOMMatrix(getComputedStyle(element).transform).a,
+      )).toBeCloseTo(fraction, 2);
+    }
+    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBe(390);
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await expect(bar).toHaveCount(0);
+    await expect(page.locator('.read-progress-source')).toHaveCount(0);
+    await page.emulateMedia({ reducedMotion: 'no-preference' });
+    await expect(bar).toHaveCount(1);
+  });
+}
