@@ -2,4 +2,9 @@ allowBuilds:
   esbuild: true
   sharp: true
 overrides:
-  vite: 7.3.2
+  # Astro 7 uses Vite 8, so the previous Vite 7.3.2 pin cannot stay.
+  # Keep only the patched transitive versions that parent ranges still allow.
+  "proxy-addr@>=2 <2.0.8": "2.0.8"
+  "fast-uri@>=3 <3.1.9": "3.1.9"
+  "devalue@>=5 <5.9.3": ">=5.9.3 <6"
+  "postcss@>=8 <8.5.23": ">=8.5.23 <9"
