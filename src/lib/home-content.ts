@@ -30,7 +30,6 @@ export interface HomeContent {
     lede: string;
     primary: Link;
     secondary: Link;
-    caption: string;
   };
   services: Head & {
     sub: string;
@@ -205,13 +204,12 @@ const contactEn = routeFor("contact", "en");
 
 const de: HomeContent = {
   hero: {
-    label: "Unabhängiges Studio in Rastatt",
-    title: "WordPress & KI.",
-    quiet: "Direkt vom Entwickler.",
-    lede: "Ich entwickle Websites, die Ihr Team selbst pflegen kann, und binde KI dort ein, wo sie Ihnen im Alltag Arbeit abnimmt.",
-    primary: { label: "Projekt starten", href: `${contactDe}#anfrage` },
-    secondary: { label: "Arbeiten ansehen", href: "#arbeiten" },
-    caption: "Entwicklung · Rastatt",
+    label: "WordPress & KI-Entwicklung · Rastatt",
+    title: "Vom ersten Klick",
+    quiet: "zur Anfrage.",
+    lede: "Ich entwickle Websites, die Kunden zum richtigen Angebot führen, und KI-Abläufe, die Ihrem Team Arbeit abnehmen.",
+    primary: { label: "Mein Vorhaben besprechen", href: "#vorhaben" },
+    secondary: { label: "Projekt ansehen", href: "#arbeit" },
   },
   services: {
     label: "Leistungen",
@@ -388,13 +386,12 @@ const de: HomeContent = {
 
 const en: HomeContent = {
   hero: {
-    label: "Independent studio in Rastatt, Germany",
-    title: "WordPress & AI.",
-    quiet: "Built with you.",
-    lede: "I build websites your team can edit and integrate AI into the repetitive work that takes up your day.",
-    primary: { label: "Start a project", href: `${contactEn}#anfrage` },
-    secondary: { label: "Explore our work", href: "#arbeiten" },
-    caption: "Development · Rastatt",
+    label: "WordPress & AI development · Rastatt, Germany",
+    title: "From the first click",
+    quiet: "to an enquiry.",
+    lede: "I build websites that guide customers to the right offer and AI workflows that take repetitive work off your team’s hands.",
+    primary: { label: "Discuss my project", href: "#vorhaben" },
+    secondary: { label: "See the project", href: "#arbeit" },
   },
   services: {
     label: "Services",

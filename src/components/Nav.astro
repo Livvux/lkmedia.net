@@ -30,7 +30,7 @@ const homeHref = routeFor('home', lang);
 const isCurrent = (href: string) => currentPath === href || (href !== homeHref && currentPath.startsWith(`${href}/`));
 ---
 <a class="skip-link" href="#main-content">{copy.skip}</a>
-<header class="nav" data-site-header>
+<header class:list={['nav', { 'studio-nav': currentPath === homeHref }]} data-site-header>
   <nav class="nav-inner wrap" aria-label={copy.main}>
     <a href={routeFor('home', lang)} class="nav-brand">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 836.36 873.35" fill="currentColor" class="nav-logo" aria-hidden="true">
@@ -46,7 +46,7 @@ const isCurrent = (href: string) => currentPath === href || (href !== homeHref &
 
     <div class="nav-right">
       {switchHref && <a href={switchHref} class="nav-lang" hreflang={other} lang={other} aria-label={copy.switchLabel}>{copy.switchText}</a>}
-      <a href={`${contactHref}#anfrage`} class="btn btn-primary nav-cta" aria-current={isCurrent(contactHref) ? 'page' : undefined}>{t('cta.start')}</a>
+      <a href={`${contactHref}#anfrage`} class="btn btn-primary nav-cta" aria-current={isCurrent(contactHref) ? 'page' : undefined}>{currentPath === homeHref ? (lang === 'en' ? 'Project enquiry ↗' : 'Projekt anfragen ↗') : t('cta.start')}</a>
       <button
         type="button"
         class="nav-toggle"
@@ -82,6 +82,8 @@ const isCurrent = (href: string) => currentPath === href || (href !== homeHref &
 </nav>
 
 <style>
+  .nav.studio-nav { background:#0c0d15eb; }
+  .studio-nav .nav-cta { background:#f5f4ff; color:#15151c; }
   .nav {
     position: sticky;
     top: 0;
@@ -231,6 +233,18 @@ const isCurrent = (href: string) => currentPath === href || (href !== homeHref &
     .nav-toggle,
     :global(.js) .nav-toggle,
     .mobile-menu { display: none; }
+  }
+  @media (max-width:767px) {
+    .studio-nav .nav-inner { gap:4px; }
+    .studio-nav .nav-right { gap:0; }
+    .studio-nav .nav-cta { display:inline-flex; margin:0; padding:8px 11px; font-size:12px; }
+    .studio-nav .nav-brand-caption { position:absolute; width:1px; height:1px; overflow:hidden; clip-path:inset(50%); }
+  }
+  @media (max-width:360px) {
+    .studio-nav .nav-inner { padding-inline:10px; }
+    .studio-nav .nav-brand { gap:5px; }
+    .studio-nav .nav-brand-name { font-size:16px; }
+    .studio-nav .nav-logo { width:19px; }
   }
   @media (prefers-reduced-motion: reduce) {
     .mobile-menu { animation: none; }

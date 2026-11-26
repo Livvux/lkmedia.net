@@ -1,48 +1,88 @@
 ---
 import type { HomeContent } from '../../lib/home-content';
-interface Props { hero: HomeContent['hero']; photoAlt: string }
-const { hero, photoAlt } = Astro.props;
+import type { Lang } from '../../lib/i18n';
+interface Props { hero: HomeContent['hero']; lang: Lang }
+const { hero, lang } = Astro.props;
+const en = lang === 'en';
 ---
-<header class="hero paper" aria-labelledby="hero-title">
-  <div class="wrap cover">
+<header class="hero" data-project-scene>
+  <div class="stage">
     <div class="copy">
-      <p class="studio-label">{hero.label}</p>
-      <h1 id="hero-title">{hero.title} <em>{hero.quiet}</em></h1>
+      <p class="specialty">{hero.label}</p>
+      <h1>{hero.title} <span>{hero.quiet}</span></h1>
       <p class="intro">{hero.lede}</p>
       <div class="actions">
-        <a class="btn btn-primary btn-lg" href={hero.primary.href}>{hero.primary.label}<span aria-hidden="true">↗</span></a>
-        <a class="work-link" href={hero.secondary.href}>{hero.secondary.label}<span aria-hidden="true">↓</span></a>
+        <a class="primary" href={hero.primary.href}>{hero.primary.label}</a>
+        <a class="secondary" href={hero.secondary.href}>{hero.secondary.label} ↓</a>
       </div>
     </div>
-    <figure>
-      <div class="print"><img src="/home/lucas-1600.webp" width="1600" height="1381" alt={photoAlt} fetchpriority="high" /></div>
-      <figcaption><span>lk media</span><span>{hero.caption}</span></figcaption>
-    </figure>
+    <div class="laptop">
+      <div class="screen"><img src="/cases/streamerloft.webp" width="1200" height="750" alt={en ? 'StreamerLoft website with a preview of the WordPress creator kit' : 'StreamerLoft mit Vorschau des WordPress-Kits für Creator'} fetchpriority="high" /></div>
+      <div class="base"></div>
+    </div>
   </div>
 </header>
-
-<style>
-  .hero { background: #f3f1e7; }
-  .cover { display:grid; grid-template-columns:minmax(0,1.18fr) minmax(0,1fr); align-items:center; gap:clamp(30px,5vw,80px); padding-block:clamp(42px,6vw,96px); }
-  .studio-label, figcaption { font-family:var(--font-mono); text-transform:uppercase; letter-spacing:.075em; font-size:11px; }
-  .studio-label { display:flex; align-items:center; gap:12px; }
-  .studio-label::before { content:''; width:26px; height:2px; background:var(--signal); }
-  h1 { margin-block:clamp(26px,3.4vw,52px) 22px; font-size:clamp(48px,6.2vw,98px); font-weight:540; line-height:.97; letter-spacing:-.065em; }
-  h1 em { display:block; max-width:11ch; color:#17604e; font-family:Georgia,serif; font-weight:400; letter-spacing:-.06em; line-height:1.04; }
-  .intro { max-width:43ch; color:var(--fg-muted); font-size:clamp(17px,1.4vw,21px); line-height:1.55; }
-  .actions { display:flex; align-items:center; flex-wrap:wrap; gap:12px 26px; margin-top:30px; }
-  .actions .btn { border-radius:4px; gap:18px; }
-  .work-link { display:inline-flex; align-items:center; gap:10px; min-height:44px; text-decoration:underline; text-underline-offset:5px; }
-  figure { margin:0; }
-  .print { background:#b8d5c4; overflow:hidden; border-radius:48% 48% 2px 2px; }
-  img { display:block; width:100%; aspect-ratio:1/1.02; object-fit:cover; object-position:54% 38%; filter:grayscale(1) contrast(1.08); mix-blend-mode:multiply; }
-  figcaption { display:flex; justify-content:space-between; align-items:center; gap:12px; padding-block:12px; border-bottom:1px solid var(--border-strong); }
-  figcaption span:first-child { font-family:var(--font-sans); font-weight:650; font-size:20px; letter-spacing:-.075em; text-transform:none; }
-  @media (max-width:760px) {
-    .cover { grid-template-columns:1fr; gap:28px; }
-    h1 { font-size:clamp(44px,10vw,72px); }
-    h1 em { max-width:none; }
-    .print { border-radius:110px 2px 2px 2px; }
-    img { aspect-ratio:1.85; object-position:50% 25%; }
+<section id="arbeit" class="case">
+  <div class="wrap case-inner">
+    <div><h2>StreamerLoft</h2><p>{en ? 'What will my creator website look like? An interactive preview lets visitors explore the WordPress kit before downloading it.' : 'Wie sieht meine eigene Creator-Website aus? Eine klickbare Vorschau zeigt das WordPress-Kit schon vor dem Download.'}</p></div>
+    <a class="secondary" href="/cases/streamerloft" hreflang="de">{en ? 'View case study (in German)' : 'Projekt im Detail'} ↗</a>
+  </div>
+</section>
+<script>
+  const scene = document.querySelector<HTMLElement>('[data-project-scene]');
+  if (scene) {
+    const reduced = matchMedia('(prefers-reduced-motion: reduce)');
+    const stage = scene.querySelector<HTMLElement>('.stage')!;
+    let frame = 0;
+    function update() {
+      frame = 0;
+      if (!scene || reduced.matches) return;
+      const distance = scene.offsetHeight - stage.offsetHeight;
+      const offset = stage.getBoundingClientRect().top - scene.getBoundingClientRect().top;
+      const progress = distance > 0 ? Math.min(1, Math.max(0, offset / distance)) : 0;
+      scene.style.setProperty('--p', progress.toFixed(3));
+      scene.toggleAttribute('data-copy-hidden', progress >= 0.99);
+    }
+    function schedule() { if (!frame) frame = requestAnimationFrame(update); }
+    function sync() {
+      scene?.toggleAttribute('data-motion', !reduced.matches);
+      if (reduced.matches) window.removeEventListener('scroll', schedule);
+      else window.addEventListener('scroll', schedule, { passive: true });
+      schedule();
+    }
+    reduced.addEventListener('change', sync);
+    window.addEventListener('resize', schedule);
+    sync();
   }
+</script>
+<style>
+  .hero { --p:0; color:#f7f7fb; background:radial-gradient(ellipse at 50% 65%,#353256 0%,#171825 40%,#0a0b12 76%); }
+  .stage { padding:clamp(32px,5vh,72px) 16px 32px; text-align:center; overflow:clip; perspective:1100px; }
+  .copy { position:relative; z-index:1; }
+  .specialty { color:#b9bbd6; font-size:14px; font-weight:600; letter-spacing:.06em; }
+  h1 { margin:14px 0; font-size:clamp(44px,7vw,92px); font-weight:640; line-height:.98; letter-spacing:-.065em; }
+  h1 span { display:block; color:#bfc3fb; }
+  .intro { max-width:47ch; margin:auto; color:#d0d1dd; font-size:clamp(16px,1.55vw,20px); line-height:1.45; }
+  .actions { display:flex; justify-content:center; align-items:center; flex-wrap:wrap; gap:6px 22px; margin:18px auto 0; }
+  .primary,.secondary { display:inline-flex; align-items:center; min-height:44px; font-size:15px; font-weight:550; }
+  .primary { padding:12px 22px; border-radius:30px; color:white; background:#234ae5; }
+  .secondary { color:#c4c7ff; }
+  a:hover { text-decoration:underline; text-underline-offset:4px; }
+  .laptop { width:min(77%,720px); margin:25px auto 0; transform-origin:50% 12%; }
+  .screen { border:clamp(4px,.65vw,8px) solid #131318; outline:1px solid #8d8b99; border-radius:13px 13px 5px 5px; overflow:hidden; background:#07080c; box-shadow:0 22px 65px #06060b99; }
+  .screen img { display:block; width:100%; height:auto; }
+  .base { height:9px; width:116%; margin:0 -8%; border-radius:2px 2px 65% 65%; background:linear-gradient(90deg,#55545e,#cacbd4 10%,#777781 45%,#c3c4cf 80%,#50505d); }
+  .case { background:#101118; color:#f7f7fb; padding-block:32px; }
+  .case-inner { display:flex; justify-content:space-between; align-items:center; gap:20px; }
+  .case h2 { font-size:22px; font-weight:620; }
+  .case p { max-width:54ch; color:#cdcdd8; margin-top:5px; }
+  @media(prefers-reduced-motion:no-preference) and (min-height:520px) {
+    .hero[data-motion] { height:calc(max(620px,100svh - 72px) + clamp(200px,35vh,350px)); }
+    [data-motion] .stage { position:sticky; top:72px; height:max(620px,100svh - 72px); }
+    [data-motion] .copy:not(:focus-within) { transform:translateY(calc(-60px * var(--p))); opacity:calc(1 - var(--p)); }
+    [data-motion][data-copy-hidden] .copy { pointer-events:none; }
+    [data-motion] .copy:focus-within { pointer-events:auto; }
+    [data-motion] .laptop { transform:translateY(calc(-170px * var(--p))) rotateX(calc(11deg - 11deg * var(--p))) scale(calc(.96 + .23 * var(--p))); }
+  }
+  @media(max-width:600px) { .case-inner { flex-direction:column; align-items:flex-start; gap:4px; } .laptop { width:85%; } }
 </style>

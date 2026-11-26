@@ -3,6 +3,7 @@ import { getCollection } from 'astro:content';
 import type { Lang } from '../../lib/i18n';
 import { homeContent } from '../../lib/home-content';
 import BriefToDraft from '../showcase/BriefToDraft';
+import ProjectChoice from './ProjectChoice.astro';
 import HomeHero from './HomeHero.astro';
 import ServiceIndex from './ServiceIndex.astro';
 import SectionHead from './SectionHead.astro';
@@ -28,7 +29,8 @@ const figures = [new Date().getFullYear() - 2015, cases.length, articles.length]
 ---
 
 <div class="home">
-  <HomeHero hero={c.hero} photoAlt={lang === 'en' ? 'The developer behind lk media at his desk in Rastatt' : 'Der Entwickler von lk media am Arbeitsplatz in Rastatt'} />
+  <HomeHero hero={c.hero} lang={lang} />
+  <ProjectChoice lang={lang} />
   <WorkGrid proof={c.proof} />
   <ServiceIndex services={c.services} />
 

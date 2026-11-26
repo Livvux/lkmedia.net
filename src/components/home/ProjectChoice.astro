@@ -1,0 +1,79 @@
+---
+import { routeFor, type Lang } from '../../lib/i18n';
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const en = lang === 'en';
+const contact = routeFor('contact', lang);
+---
+<section class="choice" id="vorhaben" aria-labelledby="choice-title">
+  <div class="wrap">
+    <h2 id="choice-title">{en ? 'What can I help you with?' : 'Wobei kann ich Ihnen helfen?'}</h2>
+    <div class="switch" role="group" aria-label={en ? 'Choose a project type' : 'Vorhaben auswählen'} hidden>
+      <button type="button" aria-pressed="true" aria-controls="choice-wp">WordPress</button>
+      <button type="button" aria-pressed="false" aria-controls="choice-ai">{en ? 'AI & automation' : 'KI & Automation'}</button>
+    </div>
+    <div class="panel" id="choice-wp">
+      <div>
+        <h3>{en ? 'A direct route to the right offer.' : 'Der kürzeste Weg zum passenden Angebot.'}</h3>
+        <p>{en ? 'Where do visitors drop off? Send me your website and tell me what kind of enquiry you want to receive more often.' : 'Wo steigen Ihre Besucher aus? Schicken Sie mir Ihre Website und sagen Sie mir, welche Anfrage Sie häufiger bekommen möchten.'}</p>
+        <a class="primary" href={`${contact}?service=wordpress#anfrage`}>{en ? 'Discuss a WordPress project' : 'WordPress-Projekt anfragen'} ↗</a>
+      </div>
+      <img src="/cases/streamerloft.webp" width="1200" height="750" alt={en ? 'StreamerLoft WordPress kit preview' : 'Die Website von StreamerLoft im Detail'} loading="lazy" />
+    </div>
+    <div class="panel" id="choice-ai">
+      <div>
+        <h3>{en ? 'From brief to first draft.' : 'Vom Briefing zum ersten Entwurf.'}</h3>
+        <p>{en ? 'Your team provides the key points. AI prepares a draft for a person to review and approve. Which task takes up your time every week?' : 'Ihr Team liefert die Stichpunkte. Die KI bereitet einen Text vor, den ein Mensch prüft und freigibt. Welcher Arbeitsschritt kostet Sie jede Woche Zeit?'}</p>
+        <a class="primary" href={`${contact}?service=ai#anfrage`}>{en ? 'Discuss an AI workflow' : 'KI-Ablauf besprechen'} ↗</a>
+      </div>
+      <div class="flow"><small>{en ? 'Example · Editorial workflow' : 'Beispiel · Redaktion'}</small>
+        <ol>{(en ? ['Capture the brief','Prepare a draft','Review and approve'] : ['Briefing erfassen','Entwurf vorbereiten','Prüfen und freigeben']).map(step => <li>{step}</li>)}</ol>
+        <a href={`${routeFor('ai',lang)}#demo`}>{en ? 'Try the demo' : 'Demo ausprobieren'} ↗</a>
+      </div>
+    </div>
+  </div>
+</section>
+<figure class="quote"><div class="wrap">
+  <blockquote lang="de">„Wünsche, Änderungen und Fragen werden immer sofort bearbeitet und beantwortet.“</blockquote>
+  <figcaption><a href="/cases/patricks-fahrschule" hreflang="de">Patrick Janiak · Patricks Fahrschule{en ? ' (in German)' : ''} ↗</a></figcaption>
+</div></figure>
+<script>
+  const group = document.querySelector<HTMLElement>('#vorhaben .switch');
+  if (group) {
+    const buttons = group.querySelectorAll('button');
+    function select(active: HTMLButtonElement) {
+      for (const button of buttons) {
+        const selected = button === active;
+        button.setAttribute('aria-pressed', String(selected));
+        const panel = document.getElementById(button.getAttribute('aria-controls')!);
+        if (panel) panel.hidden = !selected;
+      }
+    }
+    for (const button of buttons) button.addEventListener('click', () => select(button));
+    select(buttons[0]);
+    group.hidden = false;
+  }
+</script>
+<style>
+  .choice { background:#f4f5fa; color:#111527; padding-block:clamp(46px,7vw,95px); }
+  h2 { max-width:18ch; font-size:clamp(38px,6vw,72px); line-height:.99; letter-spacing:-.06em; font-weight:640; }
+  .switch { display:inline-flex; gap:3px; margin-top:24px; border-radius:30px; background:#e0e2eb; padding:4px; }
+  .switch button { min-height:42px; border-radius:26px; padding:8px 19px; font-weight:600; color:#45495b; }
+  .switch [aria-pressed=true] { background:white; color:#111527; box-shadow:0 1px 6px #161b311b; }
+  .panel { display:grid; grid-template-columns:1fr 1.1fr; align-items:center; gap:clamp(24px,6vw,92px); margin-top:32px; }
+  .panel[hidden],.switch[hidden] { display:none; }
+  h3 { max-width:18ch; font-size:clamp(28px,3.8vw,46px); letter-spacing:-.047em; line-height:1.06; font-weight:620; }
+  .panel p { margin-block:18px; max-width:48ch; color:#484d60; line-height:1.55; }
+  .panel img { width:100%; height:auto; border-radius:12px; }
+  .primary { display:inline-block; border-radius:30px; color:white; background:#234ae5; padding:12px 22px; font-weight:550; }
+  .flow { padding:clamp(24px,4vw,48px); background:#171a2e; color:white; border-radius:14px; }
+  .flow small,.flow a { color:#c4c7fa; }
+  .flow ol { list-style:decimal; padding-left:22px; margin:12px 0 16px; }
+  .flow li { padding:4px; }
+  .quote { margin:0; padding-block:clamp(30px,5vw,64px); background:#e7e9f4; color:#23283d; }
+  blockquote { font-size:clamp(20px,2.4vw,32px); line-height:1.4; letter-spacing:-.03em; max-width:45ch; }
+  figcaption { margin-top:12px; font-size:15px; }
+  a:hover { text-decoration:underline; text-underline-offset:4px; }
+  .choice :focus-visible,.quote :focus-visible { outline:3px solid #415cc4; outline-offset:3px; }
+  @media(max-width:640px) { .panel { grid-template-columns:1fr; } }
+</style>

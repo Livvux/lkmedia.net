@@ -1,5 +1,5 @@
 // Startseite: Abschnitte unterhalb des ersten Bildschirms blenden beim Hereinscrollen kurz ein.
-// Ohne JS oder mit reduzierter Bewegung bleibt alles sichtbar; das Hero-Schnittbild ist reines CSS.
+// Ohne JS oder mit reduzierter Bewegung bleibt alles sichtbar.
 const home = document.querySelector<HTMLElement>(".home");
 const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)");
 
