@@ -46,7 +46,7 @@ const isCurrent = (href: string) => currentPath === href || (href !== homeHref &
 
     <div class="nav-right">
       {switchHref && <a href={switchHref} class="nav-lang" hreflang={other} lang={other} aria-label={copy.switchLabel}>{copy.switchText}</a>}
-      <a href={contactHref} class="btn btn-primary nav-cta" aria-current={isCurrent(contactHref) ? 'page' : undefined}>{t('cta.start')}</a>
+      <a href={`${contactHref}#anfrage`} class="btn btn-primary nav-cta" aria-current={isCurrent(contactHref) ? 'page' : undefined}>{t('cta.start')}</a>
       <button
         type="button"
         class="nav-toggle"

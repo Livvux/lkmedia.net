@@ -1,0 +1,36 @@
+---
+import type { Lang } from '../../lib/i18n';
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const steps = lang === 'en'
+  ? ['Brief received', 'AI prepares a draft', 'You review and approve']
+  : ['Briefing geht ein', 'KI erstellt einen Entwurf', 'Sie prüfen und geben frei'];
+---
+<figure class="schnitt" role="img" aria-label={steps.join(' → ')}>
+  <svg viewBox="0 0 360 180" aria-hidden="true" fill="none">
+    <rect width="360" height="180" rx="4" fill="#182d26" />
+    <path d="M36 36V90H60V144H84" stroke="#6e927f" stroke-width="2" />
+    <path class="signal" d="M36 36V90H60V144H84" pathLength="1" stroke="#92e1b7" stroke-width="2" />
+    {steps.map((label, i) => {
+      const x = 36 + i * 24;
+      const y = 36 + i * 54;
+      return (
+        <g class:list={{ 's-result': i === 2 }}>
+          <circle cx={x} cy={y} r="10" fill={i === 2 ? '#92e1b7' : '#182d26'} stroke="#92e1b7" />
+          {i === 2 && <path d={`M${x-4} ${y}l3 3 5-6`} stroke="#182d26" stroke-width="1.6" />}
+          <text x={x + 22} y={y + 6} fill="#eff5ea" font-size="18">{label}</text>
+        </g>
+      );
+    })}
+  </svg>
+</figure>
+<style>
+  .schnitt { margin:0 0 18px; }
+  svg { display:block; width:100%; height:auto; }
+  @media (prefers-reduced-motion:no-preference) {
+    .signal { stroke-dasharray:1; animation:trace 1.2s ease-out both; }
+    .s-result { animation:approve .35s ease-out 1s both; }
+  }
+  @keyframes trace { from { stroke-dashoffset:1; } to { stroke-dashoffset:0; } }
+  @keyframes approve { from { opacity:.45; } to { opacity:1; } }
+</style>

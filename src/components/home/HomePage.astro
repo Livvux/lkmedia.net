@@ -28,7 +28,8 @@ const figures = [new Date().getFullYear() - 2015, cases.length, articles.length]
 ---
 
 <div class="home">
-  <HomeHero hero={c.hero} />
+  <HomeHero hero={c.hero} photoAlt={lang === 'en' ? 'The developer behind lk media at his desk in Rastatt' : 'Der Entwickler von lk media am Arbeitsplatz in Rastatt'} />
+  <WorkGrid proof={c.proof} />
   <ServiceIndex services={c.services} />
 
   <section class="paper showcase" aria-labelledby="showcase-title">
@@ -46,7 +47,6 @@ const figures = [new Date().getFullYear() - 2015, cases.length, articles.length]
     </div>
   </section>
 
-  <WorkGrid proof={c.proof} />
 
   <div class="paper">
     <WhyList why={c.why} figures={figures} figuresLabel={lang === 'en' ? 'Facts from this website' : 'Zahlen aus dieser Website'} />

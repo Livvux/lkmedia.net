@@ -54,7 +54,7 @@ test('desktop navigation connects offers, project evidence and an accessible enq
   await navigation.locator('a[href="/cases"]').click();
   await page.locator('main a[href^="/cases/"]').first().click();
   await expect(page.locator('article')).toBeVisible();
-  await navigation.locator('a[href="/kontakt"]').click();
+  await navigation.locator('a[href="/kontakt#anfrage"]').click();
   await expect(page.getByLabel('Name', { exact: true })).toBeVisible();
   await expect(page.getByLabel('E-Mail', { exact: true })).toHaveAttribute('type', 'email');
   await expect(page.getByLabel('Nachricht', { exact: true })).toHaveAccessibleDescription(/Website-Adresse/);

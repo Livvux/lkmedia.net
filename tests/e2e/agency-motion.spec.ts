@@ -20,11 +20,12 @@ test('hero cut-away plays once, then rests in its final state', async ({ page })
     if (message.type() === 'error') errors.push(message.text());
   });
   await page.goto('/');
-  await expect(page.getByRole('heading', { level: 1 })).toHaveAccessibleName('Websites und KI-Systeme, die Ihr Unternehmen voranbringen.');
+  await expect(page.getByRole('heading', { level: 1 })).toHaveAccessibleName('WordPress & KI. Direkt vom Entwickler.');
   await expect(page.locator('.nav-brand')).toHaveAccessibleName(/lk media\s*Web · WordPress · KI/);
   await expect(page.locator('.footer-name')).toHaveAccessibleName('lk media – Startseite');
+  await page.goto('/ki-automatisierung');
   const visual = page.locator('.schnitt');
-  await expect(visual).toHaveAttribute('aria-hidden', 'true');
+  await expect(visual).toHaveAccessibleName(/Sie prüfen und geben frei/);
   expect((await heroAnimations(page)).length).toBeGreaterThan(0);
   // Einmalig: keine Endlosschleife, nach dem Ablauf keine laufende Animation mehr.
   await expect.poll(() => heroAnimations(page).then((states) => states.filter((s) => s === 'running').length), { timeout: 6000 }).toBe(0);
@@ -41,7 +42,7 @@ test('reduced motion shows the final state and cancels reveals without hiding co
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await expect(page.locator('.home .is-pending')).toHaveCount(0);
   await expect.poll(() => page.evaluate(() => document.getAnimations().filter((animation) => animation.playState === 'running').length)).toBe(0);
-  expect(await page.locator('.s-check').evaluate((el) => getComputedStyle(el).strokeDashoffset)).toMatch(/^0(px)?$/);
+  await expect(page.locator('.hero img')).toBeVisible();
   await expect(page.getByRole('heading', { name: /So läuft ein Projekt/ })).toBeAttached();
   await page.setViewportSize({ width: 390, height: 844 });
   // Die Größenänderung kommt asynchron im Dokument an.

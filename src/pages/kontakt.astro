@@ -2,6 +2,7 @@
 import Base from '../layouts/Base.astro';
 import ContactForm from '../components/ContactForm.astro';
 import CalEmbed from '../components/CalEmbed.astro';
+import '../styles/contact.css';
 const seo = {
   title: 'Kontakt',
   description: 'Website, WordPress-Projekt oder KI-Integration besprechen. Kurze Anfrage oder kostenloser 15-Minuten-Call mit Lucas aus Rastatt.',
@@ -11,13 +12,16 @@ const seo = {
 const calLink = import.meta.env.PUBLIC_CAL_LINK ?? 'lucas-lkmedia/15min';
 ---
 <Base seo={seo}>
+  <header class="contact-cover paper">
+    <div class="wrap">
+      <p class="label">Kontakt · lk media</p>
+      <h1>Was haben Sie <em>vor?</em></h1>
+      <p class="contact-intro">Erzählen Sie mir von Ihrer Website oder einem Ablauf, den Sie automatisieren möchten. Für den Anfang reichen ein paar Sätze.</p>
+    </div>
+  </header>
   <section class="contact-page wrap">
-    <p class="eyebrow">Ihr nächster Schritt</p>
-    <h1 class="contact-title">Kontakt.</h1>
-    <p class="contact-lead">Erzählen Sie kurz, was Sie bauen oder verbessern möchten: eine Website, ein WordPress-Projekt, eine KI-Integration oder die Optimierung Ihres bestehenden Auftritts.</p>
-    <p class="contact-context">Für <a href="/wordpress" class="underline underline-offset-4">WordPress</a>, <a href="/ki-automatisierung" class="underline underline-offset-4">KI & Automation</a> und <a href="/webentwicklung" class="underline underline-offset-4">Webentwicklung</a> erhalten Sie nach dem Erstgespräch ein Festpreisangebot. Die <a href="/leistungen" class="underline underline-offset-4">Branchenpakete mit Leistungen und Gesamtkosten</a> können Sie vorab vergleichen. Individuelle Website-Projekte beginnen bei 25.000 €. Für <a href="/seo-rastatt" class="underline underline-offset-4">SEO-Analysen und Optimierungen bestehender Websites</a> vereinbaren wir Umfang und Preis separat. Die Website-Preisuntergrenze gilt dafür nicht.</p>
     <div class="contact-options">
-      <div class="contact-form">
+      <div class="contact-form" id="anfrage">
         <h2 class="text-2xl font-medium">Projektanfrage</h2>
         <div class="mt-6"><ContactForm lang="de" /></div>
       </div>
@@ -27,16 +31,6 @@ const calLink = import.meta.env.PUBLIC_CAL_LINK ?? 'lucas-lkmedia/15min';
         <CalEmbed calLink={calLink} label="Call buchen" />
       </aside>
     </div>
+    <p class="contact-context">Für <a href="/wordpress" class="underline underline-offset-4">WordPress</a>, <a href="/ki-automatisierung" class="underline underline-offset-4">KI & Automation</a> und <a href="/webentwicklung" class="underline underline-offset-4">Webentwicklung</a> erhalten Sie nach dem Erstgespräch ein Festpreisangebot. Die <a href="/leistungen" class="underline underline-offset-4">Branchenpakete mit Leistungen und Gesamtkosten</a> können Sie vorab vergleichen. Individuelle Website-Projekte beginnen bei 25.000 €. Für <a href="/seo-rastatt" class="underline underline-offset-4">SEO-Analysen und Optimierungen bestehender Websites</a> vereinbaren wir Umfang und Preis separat. Die Website-Preisuntergrenze gilt dafür nicht.</p>
   </section>
 </Base>
-
-<style>
-  .contact-page { padding-block: clamp(64px, 8vw, 112px) 112px; }
-  .contact-title { margin-top: 20px; font-size: clamp(48px, 7vw, 88px); font-weight: 600; letter-spacing: -0.06em; line-height: 1.05; }
-  .contact-lead { max-width: 48ch; margin-top: 28px; color: var(--fg-muted); font-size: clamp(19px, 2vw, 24px); line-height: 1.55; }
-  .contact-context { max-width: 80ch; margin-top: 24px; color: var(--fg-muted); font-size: 15px; line-height: 1.8; }
-  .contact-options { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); align-items: start; gap: 48px; margin-top: 56px; }
-  .contact-form { padding-top: 32px; border-top: 1px solid var(--border-strong); }
-  .contact-calendar { padding: 32px; border: 1px solid var(--border); border-radius: 24px; background: var(--bg-card); scroll-margin-top: 100px; }
-  @media (max-width: 760px) { .contact-options { grid-template-columns: 1fr; gap: 40px; } .contact-calendar { padding: 24px; } }
-</style>

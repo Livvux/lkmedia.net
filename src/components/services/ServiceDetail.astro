@@ -1,5 +1,6 @@
 ---
 import Base from '../../layouts/Base.astro';
+import WorkflowDiagram from './WorkflowDiagram.astro';
 import ContactForm from '../ContactForm.astro';
 import { routeFor, type Lang } from '../../lib/i18n';
 import { breadcrumbs, faqPage, service } from '../../lib/schema';
@@ -37,9 +38,17 @@ const t = lang === 'en'
             <a class="btn btn-ghost btn-lg" href={p.hero.secondary.href}>{p.hero.secondary.label}</a>
           </div>
         </div>
-        <dl class="sheet">
+        <div class="specimen">
+          {p.route === 'ai' ? <div class="workflow"><WorkflowDiagram lang={lang} /></div> : (
+            <a class="sample" href={p.route === 'wordpress' ? '/cases/streamerloft' : '/cases/eichhoernchenberger'} hreflang="de">
+              <img src={p.route === 'wordpress' ? '/cases/streamerloft.webp' : '/cases/eichhoernchenberger/desktop.webp'} width="1200" height="630" alt="" />
+              <span>{p.route === 'wordpress' ? 'StreamerLoft' : 'Eichhörnchen Berger'} · {lang === 'en' ? 'Case study (DE)' : 'Projekt ansehen'} ↗</span>
+            </a>
+          )}
+          <dl class="sheet">
           {p.hero.facts.map((f) => <div><dt>{f.label}</dt><dd>{f.value}</dd></div>)}
-        </dl>
+          </dl>
+        </div>
       </div>
       <slot name="visual" />
     </header>
@@ -169,6 +178,10 @@ const t = lang === 'en'
   .sd-hero .display { margin-top: 22px; font-size: clamp(40px, 5.6vw, 76px); }
   .sd-hero .lede { margin-top: 26px; }
   .actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 36px; }
+  .sd-hero .display .quiet { font-family:Georgia,serif; font-style:italic; font-weight:400; color:#abcfbb; }
+  .sample, .workflow { display:block; }
+  .sample img { display:block; width:100%; height:auto; aspect-ratio:2/1; object-fit:cover; object-position:top; }
+  .sample span { display:block; padding:10px 14px; color:#183c30; background:#c9e1ce; font:12px/1.5 var(--font-mono); }
   .sheet { border-top: 1px solid var(--border-strong); }
   .sheet div { display: grid; grid-template-columns: 110px 1fr; gap: 16px; padding-block: 14px; border-bottom: 1px solid var(--border); font-size: 14px; }
   .sheet dt { font-family: var(--font-mono); font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: var(--fg-dim); padding-top: 2px; }

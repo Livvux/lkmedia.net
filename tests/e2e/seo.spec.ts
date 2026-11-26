@@ -1,8 +1,8 @@
 import { expect, test } from '@playwright/test';
 
 const pages = [
-  ['/', 'Websites und KI-Systeme'],
-  ['/en', 'Websites and AI systems'],
+  ['/', 'WordPress & KI.'],
+  ['/en', 'WordPress & AI.'],
   ['/anwaelte', 'Webdesign für Anwaltskanzleien'],
   ['/privatkliniken', 'Webdesign für Privatkliniken'],
   ['/luxus-immobilien', 'Webdesign für Luxus-Immobilien'],
@@ -58,6 +58,6 @@ test('homepage hero renders without waiting for deferred scripts', async ({ page
   await page.goto('/');
   await expect(page.locator('h1')).toBeVisible();
   await expect(page.locator('main header.hero [data-reveal]')).toHaveCount(0);
-  // Das Schnittbild ist reines SVG/CSS: der Endzustand steht ohne Skripte.
-  await expect(page.locator('main header.hero .schnitt svg')).toBeVisible();
+  // Das Studiofoto lädt auch ohne JavaScript.
+  await expect(page.locator('main header.hero img')).toBeVisible();
 });

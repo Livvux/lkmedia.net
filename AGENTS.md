@@ -57,7 +57,7 @@ Dynamic routes: `src/pages/[slug].astro` (root-level posts), `src/pages/blog/`, 
 
 ### Landing page
 
-`src/components/home/` builds the homepage for both languages from `src/lib/home-content.ts`. The hero is text (LCP) plus a pure SVG/CSS diagram that plays once; no canvas/WebGL. The only island is the simulated brief-to-draft demo (`src/components/showcase/`, `client:visible`), which must stay labelled as a simulation and send no data. Scroll reveals are progressive enhancement: content is visible without JavaScript; `prefers-reduced-motion` switches motion off.
+`src/components/home/` builds the homepage for both languages from `src/lib/home-content.ts`. The hero pairs a studio portrait with the inquiry CTA. The AI service page illustrates its demo with a pure SVG/CSS diagram that plays once. The only island is the simulated brief-to-draft demo (`src/components/showcase/`, `client:visible`), which must stay labelled as a simulation and send no data. Scroll reveals are progressive enhancement: content is visible without JavaScript; `prefers-reduced-motion` switches motion off.
 
 ### Design system
 

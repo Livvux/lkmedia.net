@@ -30,14 +30,7 @@ export interface HomeContent {
     lede: string;
     primary: Link;
     secondary: Link;
-    facts: string[];
-    visual: {
-      url: string;
-      form: string;
-      result: string;
-      nodes: [string, string, string];
-      notes: [string, string, string];
-    };
+    caption: string;
   };
   services: Head & {
     sub: string;
@@ -109,7 +102,7 @@ const shotsDe: Shot[] = [
     slug: "streamerloft",
     client: "StreamerLoft",
     scope: "Creator-Produkt & WordPress",
-    image: "https://streamerloft.com/og/streamerloft.png",
+    image: "/cases/streamerloft.webp",
     problem: "Streamer verteilen Livestream, Clips und Sendeplan auf viele Plattformen.",
     solution: "Die Bausteine als WordPress-Website-Kit gebündelt.",
     deliverable: "Website-Kit mit Demo, kostenlosem Einstieg und Erweiterungen.",
@@ -212,20 +205,13 @@ const contactEn = routeFor("contact", "en");
 
 const de: HomeContent = {
   hero: {
-    label: "lk media · Technologie-Studio aus Rastatt",
-    title: "Websites und KI-Systeme,",
-    quiet: "die Ihr Unternehmen voranbringen.",
-    lede: "WordPress-Websites, die Ihr Team selbst pflegt, KI-Automatisierung für wiederkehrende Abläufe und individuelle Webentwicklung. Geplant, gebaut und betreut von einem Ansprechpartner.",
-    primary: { label: "Projekt starten", href: contactDe },
+    label: "Unabhängiges Studio in Rastatt",
+    title: "WordPress & KI.",
+    quiet: "Direkt vom Entwickler.",
+    lede: "Ich entwickle Websites, die Ihr Team selbst pflegen kann, und binde KI dort ein, wo sie Ihnen im Alltag Arbeit abnimmt.",
+    primary: { label: "Projekt starten", href: `${contactDe}#anfrage` },
     secondary: { label: "Arbeiten ansehen", href: "#arbeiten" },
-    facts: ["WordPress", "KI-Automatisierung", "Webentwicklung", "Rastatt · seit 2015"],
-    visual: {
-      url: "ihre-website.de",
-      form: "Formular",
-      result: "Neu · freigegeben",
-      nodes: ["Eingang", "KI-Entwurf", "Freigabe"],
-      notes: ["Anfrage", "strukturiert", "durch Sie"],
-    },
+    caption: "Entwicklung · Rastatt",
   },
   services: {
     label: "Leistungen",
@@ -394,7 +380,7 @@ const de: HomeContent = {
       "Angebot zum Festpreis",
       "Start erst nach Ihrer schriftlichen Freigabe",
     ],
-    primary: { label: "Projekt starten", href: contactDe },
+    primary: { label: "Projekt starten", href: `${contactDe}#anfrage` },
     secondary: { label: "15-Minuten-Call buchen", href: `${contactDe}#termin` },
     email: EMAIL,
   },
@@ -402,20 +388,13 @@ const de: HomeContent = {
 
 const en: HomeContent = {
   hero: {
-    label: "lk media · Technology studio, Rastatt, Germany",
-    title: "Websites and AI systems",
-    quiet: "that move your business forward.",
-    lede: "WordPress websites your team can update itself, AI automation for repetitive work, and custom web development. Planned, built and looked after by one contact person.",
-    primary: { label: "Start a project", href: contactEn },
+    label: "Independent studio in Rastatt, Germany",
+    title: "WordPress & AI.",
+    quiet: "Built with you.",
+    lede: "I build websites your team can edit and integrate AI into the repetitive work that takes up your day.",
+    primary: { label: "Start a project", href: `${contactEn}#anfrage` },
     secondary: { label: "Explore our work", href: "#arbeiten" },
-    facts: ["WordPress", "AI automation", "Web development", "Rastatt · since 2015"],
-    visual: {
-      url: "your-site.com",
-      form: "Form",
-      result: "New · approved",
-      nodes: ["Intake", "AI draft", "Approval"],
-      notes: ["request", "structured", "by you"],
-    },
+    caption: "Development · Rastatt",
   },
   services: {
     label: "Services",
@@ -551,7 +530,7 @@ const en: HomeContent = {
       "Fixed-price quote",
       "Work starts only after your written approval",
     ],
-    primary: { label: "Start a project", href: contactEn },
+    primary: { label: "Start a project", href: `${contactEn}#anfrage` },
     secondary: { label: "Book a 15-min call", href: `${contactEn}#termin` },
     email: EMAIL,
   },

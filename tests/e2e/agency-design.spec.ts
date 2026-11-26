@@ -6,10 +6,13 @@ test('homepage connects hero, services, work evidence and the project enquiry', 
   await expect(page.locator('.nav-brand-name')).toContainText('lk media');
   await expect(page.locator('.nav-logo')).toBeVisible();
   const hero = page.locator('main header.hero');
-  await expect(hero.getByRole('heading', { level: 1 })).toHaveText(/Websites und KI-Systeme, die Ihr Unternehmen voranbringen\./);
+  await expect(hero.getByRole('heading', { level: 1 })).toHaveText(/WordPress & KI. Direkt vom Entwickler\./);
   await hero.getByRole('link', { name: 'Arbeiten ansehen' }).click();
   await expect(page).toHaveURL(/#arbeiten$/);
   await expect(page.getByRole('heading', { name: /Ausgewählte Projekte/ })).toBeInViewport();
+
+  await page.locator('#arbeiten summary').click();
+  await expect(page.locator('#arbeiten details a').first()).toBeVisible();
 
   const services = page.locator('#leistungen');
   for (const [name, href] of [
@@ -25,7 +28,8 @@ test('homepage connects hero, services, work evidence and the project enquiry', 
 
   await page.goto('/');
   await hero.getByRole('link', { name: 'Projekt starten' }).click();
-  await expect(page).toHaveURL(/\/kontakt$/);
+  await expect(page).toHaveURL(/\/kontakt#anfrage$/);
+  await expect(page.locator("#anfrage h2")).toBeInViewport();
   await page.goto('/');
   await page.locator('main section[aria-labelledby="close-title"]').getByRole('link', { name: '15-Minuten-Call buchen' }).click();
   await expect(page).toHaveURL(/\/kontakt#termin$/);
@@ -36,7 +40,7 @@ test('English homepage mirrors the German one without German-only offers', async
   const response = await page.goto('/en');
   expect(response?.status()).toBe(200);
   await expect(page.locator('html')).toHaveAttribute('lang', 'en');
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText(/Websites and AI systems that move your business forward\./);
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText(/WordPress & AI. Built with you\./);
   await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', 'https://lkmedia.net/en');
   await expect(page.locator('#leistungen a[href="/en/ai-automation"]')).toHaveCount(1);
   await expect(page.locator('main a[href="/leistungen"]')).toHaveCount(0);
@@ -45,5 +49,5 @@ test('English homepage mirrors the German one without German-only offers', async
   await expect(caseLinks).toHaveCount(8);
   await expect(caseLinks.first()).toHaveAttribute('hreflang', 'de');
   await expect(caseLinks.first()).toContainText('(in German)');
-  await expect(page.locator('main header.hero').getByRole('link', { name: 'Start a project' })).toHaveAttribute('href', '/en/contact');
+  await expect(page.locator('main header.hero').getByRole('link', { name: 'Start a project' })).toHaveAttribute('href', '/en/contact#anfrage');
 });
