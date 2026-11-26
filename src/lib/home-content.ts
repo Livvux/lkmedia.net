@@ -26,7 +26,7 @@ interface Head {
 }
 
 export interface HomeContent {
-  hero: Head & {
+  hero: Omit<Head, "label"> & {
     lede: string;
     primary: Link;
     secondary: Link;
@@ -204,10 +204,9 @@ const contactEn = routeFor("contact", "en");
 
 const de: HomeContent = {
   hero: {
-    label: "WordPress & KI-Entwicklung · Rastatt",
     title: "WordPress und KI",
     quiet: "für Ihr Unternehmen.",
-    lede: "Ich entwickle Websites, die Kunden zum richtigen Angebot führen, und KI-Abläufe, die Ihrem Team Arbeit abnehmen.",
+    lede: "In meinem Studio in Rastatt entwickle ich Websites, die Kunden zum richtigen Angebot führen, und KI-Abläufe, die Ihrem Team Arbeit abnehmen.",
     primary: { label: "Projekt anfragen", href: `${routeFor("contact", "de")}#anfrage` },
     secondary: { label: "Projekt ansehen", href: "#arbeit" },
   },
@@ -386,10 +385,9 @@ const de: HomeContent = {
 
 const en: HomeContent = {
   hero: {
-    label: "WordPress & AI · Rastatt, Germany",
     title: "WordPress and AI",
     quiet: "for your business.",
-    lede: "I build websites that guide customers to the right offer and AI workflows that take repetitive work off your team’s hands.",
+    lede: "From my studio in Rastatt, I build websites that guide customers to the right offer and AI workflows that take repetitive work off your team’s hands.",
     primary: { label: "Discuss my project", href: `${routeFor("contact", "en")}#anfrage` },
     secondary: { label: "See the project", href: "#arbeit" },
   },

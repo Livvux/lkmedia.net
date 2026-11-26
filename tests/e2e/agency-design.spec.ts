@@ -65,18 +65,17 @@ test('English WordPress enquiry opens with the chosen service', async ({ page })
   await expect(page.locator('select[name=service]')).toHaveValue('wordpress');
 });
 
-test('the project screen follows scrolling in both directions', async ({ page }) => {
+test('the featured project follows the scroll position and rests with reduced motion', async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 800 });
   await page.emulateMedia({ reducedMotion: 'no-preference' });
   await page.goto('/');
-  const progress = () => page.locator('[data-project-scene]').evaluate(el => Number(getComputedStyle(el).getPropertyValue('--p')));
-  await page.evaluate(() => scrollTo({ top: 160, behavior: 'instant' }));
-  await expect.poll(progress).toBeGreaterThan(0.2);
-  await page.evaluate(() => scrollTo({ top: 360, behavior: 'instant' }));
-  await expect(page.locator('.hero .copy')).toHaveCSS('pointer-events', 'none');
+  const image = page.locator('#arbeit img');
+  const scale = () => image.evaluate(el => new DOMMatrix(getComputedStyle(el).transform).a);
+  const start = await scale();
+  await page.evaluate(() => scrollBy({ top: 300, behavior: 'instant' }));
+  await expect.poll(scale).toBeLessThan(start);
   await page.evaluate(() => scrollTo({ top: 0, behavior: 'instant' }));
-  await expect(page.locator('.hero .copy')).toHaveCSS('pointer-events', 'auto');
-  await expect.poll(progress).toBe(0);
+  await expect.poll(scale).toBeCloseTo(start, 3);
   await page.emulateMedia({ reducedMotion: 'reduce' });
-  await expect(page.locator('.laptop')).toHaveCSS('transform', 'none');
+  await expect(image).toHaveCSS('transform', 'none');
 });
