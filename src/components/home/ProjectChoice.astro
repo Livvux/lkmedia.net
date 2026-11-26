@@ -7,7 +7,7 @@ const contact = routeFor('contact', lang);
 ---
 <section class="choice" id="vorhaben" aria-labelledby="choice-title">
   <div class="wrap">
-    <h2 id="choice-title">{en ? 'What can I help you with?' : 'Wobei kann ich Ihnen helfen?'}</h2>
+    <h2 data-reveal id="choice-title">{en ? 'What can I help you with?' : 'Wobei kann ich Ihnen helfen?'}</h2>
     <div class="switch" role="group" aria-label={en ? 'Choose a project type' : 'Vorhaben auswählen'} hidden>
       <button type="button" aria-pressed="true" aria-controls="choice-wp">WordPress</button>
       <button type="button" aria-pressed="false" aria-controls="choice-ai">{en ? 'AI & automation' : 'KI & Automation'}</button>
@@ -31,6 +31,10 @@ const contact = routeFor('contact', lang);
         <a href={`${routeFor('ai',lang)}#demo`}>{en ? 'Try the demo' : 'Demo ausprobieren'} ↗</a>
       </div>
     </div>
+      <figure class="testimonial">
+        <blockquote lang="de">„Wünsche, Änderungen und Fragen werden immer sofort bearbeitet und beantwortet.“</blockquote>
+        <figcaption><span class="initials" aria-hidden="true">PJ</span><a href="/cases/patricks-fahrschule" hreflang="de"><strong>Patrick Janiak</strong><span>Patricks Fahrschule{en ? ' (in German)' : ''} ↗</span></a></figcaption>
+      </figure>
   </div>
 </section>
 <script>
@@ -51,22 +55,27 @@ const contact = routeFor('contact', lang);
   }
 </script>
 <style>
-  .choice { background:var(--bg); color:var(--fg); padding-block:clamp(46px,7vw,95px); }
-  h2 { max-width:18ch; font-size:clamp(34px,4vw,48px); line-height:.99; letter-spacing:-.022em; font-weight:510; }
+  .choice { background:#f5f5f7; color:#1d1d1f; color-scheme:light; --fg:#1d1d1f; --fg-muted:#50545c; --bg-card:#e3e5ea; --signal:#1c2535; --signal-ink:white; padding-block:var(--section-space); }
+  h2 { max-width:20ch; font-size:clamp(40px,5.5vw,80px); line-height:.99; letter-spacing:-.022em; font-weight:510; }
   .switch { display:inline-flex; gap:3px; margin-top:24px; border-radius:30px; background:var(--bg-card); padding:4px; }
   .switch button { min-height:42px; border-radius:26px; padding:8px 19px; font-weight:600; color:var(--fg-muted); }
-  .switch [aria-pressed=true] { background:var(--border-strong); color:var(--fg); box-shadow:0 1px 6px #161b311b; }
-  .panel { display:grid; grid-template-columns:1fr 1.1fr; align-items:center; gap:clamp(24px,6vw,92px); margin-top:32px; }
+  .switch [aria-pressed=true] { background:white; color:var(--fg); box-shadow:0 1px 6px #161b311b; }
+  .panel { display:grid; grid-template-columns:1fr 1.1fr; align-items:center; gap:clamp(24px,6vw,92px); margin-top:32px; padding:clamp(24px,4.5vw,72px); border:1px solid #dfe1e6; border-radius:clamp(20px,3vw,36px); background:white; }
   .panel[hidden],.switch[hidden] { display:none; }
   h3 { max-width:18ch; font-size:clamp(28px,3.8vw,46px); letter-spacing:-.022em; line-height:1.1; font-weight:510; }
   .panel p { margin-block:18px; max-width:48ch; color:var(--fg-muted); line-height:1.55; }
   .panel img { width:100%; height:auto; border-radius:12px; }
   .primary { display:inline-block; border-radius:30px; color:var(--signal-ink); background:var(--signal); padding:12px 22px; font-weight:550; }
-  .flow { padding:clamp(24px,4vw,48px); background:var(--bg-card); color:white; border-radius:14px; }
+  .flow { padding:clamp(24px,4vw,48px); background:#edf0f5; color:var(--fg); border-radius:14px; }
   .flow small,.flow a { color:var(--fg-muted); }
   .flow ol { list-style:decimal; padding-left:22px; margin:12px 0 16px; }
   .flow li { padding:4px; }
   a:hover { text-decoration:underline; text-underline-offset:4px; }
+  .testimonial { margin:clamp(40px,6vw,84px) auto 0; max-width:720px; text-align:center; }
+  blockquote { font-size:clamp(21px,2.2vw,32px); font-weight:470; line-height:1.35; letter-spacing:-.028em; text-wrap:balance; }
+  figcaption { display:flex; justify-content:center; align-items:center; gap:10px; margin-top:18px; font-size:13px; }
+  figcaption a { text-align:left; } figcaption a span { display:block; color:var(--fg-muted); }
+  .initials { display:grid; place-items:center; width:40px; height:40px; border-radius:50%; color:#384458; background:#dee4ec; font-weight:600; }
   .choice :focus-visible { outline:3px solid #415cc4; outline-offset:3px; }
   @media(max-width:640px) { .panel { grid-template-columns:1fr; } }
 </style>

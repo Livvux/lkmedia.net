@@ -208,7 +208,7 @@ const de: HomeContent = {
     title: "WordPress und KI",
     quiet: "für Ihr Unternehmen.",
     lede: "Ich entwickle Websites, die Kunden zum richtigen Angebot führen, und KI-Abläufe, die Ihrem Team Arbeit abnehmen.",
-    primary: { label: "Mein Vorhaben besprechen", href: "#vorhaben" },
+    primary: { label: "Projekt anfragen", href: `${routeFor("contact", "de")}#anfrage` },
     secondary: { label: "Projekt ansehen", href: "#arbeit" },
   },
   services: {
@@ -386,11 +386,11 @@ const de: HomeContent = {
 
 const en: HomeContent = {
   hero: {
-    label: "WordPress & AI development · Rastatt, Germany",
+    label: "WordPress & AI · Rastatt, Germany",
     title: "WordPress and AI",
     quiet: "for your business.",
     lede: "I build websites that guide customers to the right offer and AI workflows that take repetitive work off your team’s hands.",
-    primary: { label: "Discuss my project", href: "#vorhaben" },
+    primary: { label: "Discuss my project", href: `${routeFor("contact", "en")}#anfrage` },
     secondary: { label: "See the project", href: "#arbeit" },
   },
   services: {

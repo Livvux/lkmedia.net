@@ -27,7 +27,10 @@ test('homepage connects hero, services, work evidence and the project enquiry', 
   await expect(page).toHaveURL(/\/seo-rastatt$/);
 
   await page.goto('/');
-  await hero.getByRole('link', { name: 'Mein Vorhaben besprechen' }).click();
+  await hero.getByRole('link', { name: 'Projekt anfragen' }).click();
+  await expect(page).toHaveURL(/\/kontakt#anfrage$/);
+  await expect(page.locator('#anfrage h2')).toBeInViewport();
+  await page.goto('/#vorhaben');
   await page.getByRole('button', { name: 'KI & Automation' }).click();
   await page.getByRole('link', { name: /KI-Ablauf besprechen/ }).click();
   await expect(page.locator('select[name=service]')).toHaveValue('ai');
@@ -52,7 +55,7 @@ test('English homepage mirrors the German one without German-only offers', async
   await expect(caseLinks).toHaveCount(8);
   await expect(caseLinks.first()).toHaveAttribute('hreflang', 'de');
   await expect(caseLinks.first()).toContainText('(in German)');
-  await expect(page.locator('main header.hero').getByRole('link', { name: 'Discuss my project' })).toHaveAttribute('href', '#vorhaben');
+  await expect(page.locator('main header.hero').getByRole('link', { name: 'Discuss my project' })).toHaveAttribute('href', '/en/contact#anfrage');
 });
 
 test('English WordPress enquiry opens with the chosen service', async ({ page }) => {

@@ -221,6 +221,7 @@ img {
 /* The studio pages share the same neutral palette from entry to enquiry. */
 .studio-page,
 .studio-page .paper {
+  --section-space: clamp(88px, 12vw, 172px);
   --bg: #090a0b;
   --bg-elev: #111214;
   --bg-card: #191a1c;

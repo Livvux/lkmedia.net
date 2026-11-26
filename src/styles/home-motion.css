@@ -5,12 +5,14 @@
 }
 
 .home [data-reveal].is-revealed {
-  animation: home-rise 420ms var(--ease-out) var(--d, 0ms) both;
+  animation: home-rise 560ms var(--ease-out) var(--d, 0ms) both;
 }
 
 @keyframes home-rise {
   from {
     opacity: 0;
-    transform: translateY(8px);
+    transform: translateY(18px);
   }
 }
+
+.home [data-reveal]:focus-within { opacity: 1; animation: none; }
