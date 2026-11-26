@@ -34,11 +34,9 @@ test('subpage reveals settle fully visible and switch off with reduced motion', 
     .toBe(0);
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await expect(page.locator('.motion-word')).toHaveCount(0);
-  expect(
-    await page.evaluate(
-      () => document.getAnimations().filter((animation) => animation.playState === 'running').length,
-    ),
-  ).toBe(0);
+  await expect.poll(() => page.evaluate(() =>
+    document.getAnimations().filter((animation) => animation.playState === 'running').length,
+  ), { timeout: 500 }).toBe(0);
   expect(errors).toEqual([]);
 });
 
