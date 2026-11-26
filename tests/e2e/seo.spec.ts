@@ -1,8 +1,8 @@
 import { expect, test } from '@playwright/test';
 
 const pages = [
-  ['/', 'Vom ersten Klick'],
-  ['/en', 'From the first click'],
+  ['/', 'WordPress und KI'],
+  ['/en', 'WordPress and AI'],
   ['/anwaelte', 'Webdesign für Anwaltskanzleien'],
   ['/privatkliniken', 'Webdesign für Privatkliniken'],
   ['/luxus-immobilien', 'Webdesign für Luxus-Immobilien'],

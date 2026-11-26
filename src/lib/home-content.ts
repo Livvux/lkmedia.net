@@ -205,8 +205,8 @@ const contactEn = routeFor("contact", "en");
 const de: HomeContent = {
   hero: {
     label: "WordPress & KI-Entwicklung · Rastatt",
-    title: "Vom ersten Klick",
-    quiet: "zur Anfrage.",
+    title: "WordPress und KI",
+    quiet: "für Ihr Unternehmen.",
     lede: "Ich entwickle Websites, die Kunden zum richtigen Angebot führen, und KI-Abläufe, die Ihrem Team Arbeit abnehmen.",
     primary: { label: "Mein Vorhaben besprechen", href: "#vorhaben" },
     secondary: { label: "Projekt ansehen", href: "#arbeit" },
@@ -387,8 +387,8 @@ const de: HomeContent = {
 const en: HomeContent = {
   hero: {
     label: "WordPress & AI development · Rastatt, Germany",
-    title: "From the first click",
-    quiet: "to an enquiry.",
+    title: "WordPress and AI",
+    quiet: "for your business.",
     lede: "I build websites that guide customers to the right offer and AI workflows that take repetitive work off your team’s hands.",
     primary: { label: "Discuss my project", href: "#vorhaben" },
     secondary: { label: "See the project", href: "#arbeit" },

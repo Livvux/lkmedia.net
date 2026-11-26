@@ -1,6 +1,6 @@
-.contact-cover { background:#f3f1e7; padding-block:clamp(42px,6vw,84px); }
-.contact-cover h1 { margin:18px 0; font-size:clamp(42px,6vw,84px); letter-spacing:-.055em; line-height:1.05; font-weight:530; }
-.contact-cover em { color:#17604e; font-family:Georgia,serif; font-weight:400; }
+.contact-cover { background:var(--bg); border-bottom:1px solid var(--border); padding-block:clamp(40px,5vw,64px); }
+.contact-cover h1 { margin:18px 0; font-size:clamp(40px,5vw,64px); letter-spacing:-.022em; line-height:1.05; font-weight:510; }
+.contact-cover em { font-style:normal; }
 .contact-intro { max-width:54ch; font-size:clamp(17px,1.6vw,22px); color:var(--fg-muted); }
 .contact-page { padding-block:clamp(40px,6vw,80px) var(--section-space); }
 .contact-options { display:grid; grid-template-columns:minmax(0,1.25fr) minmax(0,1fr); align-items:start; gap:clamp(28px,6vw,80px); }

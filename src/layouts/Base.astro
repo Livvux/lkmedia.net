@@ -17,6 +17,7 @@ import monoUrl from '@fontsource-variable/geist-mono/files/geist-mono-latin-wght
 // Browser bei Formular-POSTs „Origin: null“ und die CSRF-Prüfung (src/lib/csrf.ts) blockt.
 interface Props { seo: SeoProps; jsonLd?: unknown[]; analytics?: boolean; }
 const { seo, jsonLd = [], analytics = true } = Astro.props as Props;
+const studioPage = /^\/(?:en\/?)?(?:(?:wordpress|ki-automatisierung|ai-automation|webentwicklung|web-development|leistungen|kontakt|contact|ueber|about|blog|cases)(?:\/.*)?)?$/.test(seo.canonical);
 const allLd = [organization(), ...jsonLd];
 // Only a known indexable page with its own canonical may load Umami. Preserve analytics=false.
 const publicPath = analytics && !seo.noindex ? publicUmamiPath(seo.canonical) : null;
@@ -41,7 +42,7 @@ const publicPath = analytics && !seo.noindex ? publicUmamiPath(seo.canonical) : 
     )}
     {publicPath !== null && <Umami path={publicPath} />}
   </head>
-  <body class="min-h-screen flex flex-col">
+  <body class:list={['min-h-screen flex flex-col', { 'studio-page': studioPage }]}>
     <Nav lang={seo.lang} />
     <main id="main-content" tabindex="-1" class="flex-1"><slot /></main>
     <Footer lang={seo.lang} />

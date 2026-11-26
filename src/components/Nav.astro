@@ -82,8 +82,8 @@ const isCurrent = (href: string) => currentPath === href || (href !== homeHref &
 </nav>
 
 <style>
-  .nav.studio-nav { background:#0c0d15eb; }
-  .studio-nav .nav-cta { background:#f5f4ff; color:#15151c; }
+  .nav.studio-nav { background:#090a0bee; }
+  .studio-nav .nav-cta { background:#e7e8e9; color:#090a0b; }
   .nav {
     position: sticky;
     top: 0;
@@ -93,6 +93,8 @@ const isCurrent = (href: string) => currentPath === href || (href !== homeHref &
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
   }
+  .studio-nav .nav-inner { min-height:64px; }
+  .studio-nav .nav-link { font-size:14px; font-weight:510; }
   .nav-logo { width: 26px; height: 28px; }
   .nav-brand-caption { display: block; margin-top: 5px; font-family: var(--font-mono); font-size: 10px; font-weight: 400; letter-spacing: .04em; color: var(--fg-dim); text-transform: uppercase; }
   .nav-lang { display: inline-flex; align-items: center; justify-content: center; min-width: 44px; min-height: 44px; border-radius: 8px; font-family: var(--font-mono); font-size: 12px; letter-spacing: .06em; color: var(--fg-muted); transition: color 180ms; }
@@ -184,6 +186,7 @@ const isCurrent = (href: string) => currentPath === href || (href !== homeHref &
     background: var(--bg-elev);
     animation: menu-enter 220ms var(--ease-out);
   }
+  .studio-nav + .mobile-menu { top:65px; }
   .mobile-menu[hidden] {
     display: none;
   }

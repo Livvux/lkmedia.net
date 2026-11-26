@@ -6,7 +6,7 @@ test('homepage connects hero, services, work evidence and the project enquiry', 
   await expect(page.locator('.nav-brand-name')).toContainText('lk media');
   await expect(page.locator('.nav-logo')).toBeVisible();
   const hero = page.locator('main header.hero');
-  await expect(hero.getByRole('heading', { level: 1 })).toHaveText('Vom ersten Klick zur Anfrage.');
+  await expect(hero.getByRole('heading', { level: 1 })).toHaveText('WordPress und KI für Ihr Unternehmen.');
   await hero.getByRole('link', { name: /Projekt ansehen/ }).click();
   await expect(page).toHaveURL(/#arbeit$/);
   await expect(page.locator('#arbeit h2')).toBeInViewport();
@@ -43,7 +43,7 @@ test('English homepage mirrors the German one without German-only offers', async
   const response = await page.goto('/en');
   expect(response?.status()).toBe(200);
   await expect(page.locator('html')).toHaveAttribute('lang', 'en');
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText('From the first click to an enquiry.');
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('WordPress and AI for your business.');
   await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', 'https://lkmedia.net/en');
   await expect(page.locator('#leistungen a[href="/en/ai-automation"]')).toHaveCount(1);
   await expect(page.locator('main a[href="/leistungen"]')).toHaveCount(0);

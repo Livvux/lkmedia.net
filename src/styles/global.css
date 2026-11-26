@@ -214,6 +214,34 @@ img {
   color: var(--fg);
 }
 
+@media (min-width:801px) {
+  body:has(.home) .wrap { max-width:1376px; padding-inline:48px; }
+}
+
+/* The studio pages share the same neutral palette from entry to enquiry. */
+.studio-page,
+.studio-page .paper {
+  --bg: #090a0b;
+  --bg-elev: #111214;
+  --bg-card: #191a1c;
+  --fg: #f5f6f7;
+  --fg-muted: #b2b5b8;
+  --fg-dim: #a1a4a8;
+  --fg-faint: #979a9e;
+  --border: #ffffff14;
+  --border-strong: #ffffff29;
+  --accent: #e7e8e9;
+  --accent-dim: #ffffff12;
+  --signal: #e7e8e9;
+  --signal-ink: #090a0b;
+  --signal-dim: #ffffff12;
+  color-scheme: dark;
+}
+:is(.home, .sd, .services-page) :is(.display, .section-title) {
+  font-weight: 510;
+  letter-spacing: -.022em;
+}
+
 .section {
   padding-block: var(--section-space);
 }

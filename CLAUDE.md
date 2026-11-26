@@ -63,7 +63,7 @@ Kundenpipeline: `src/lib/site-submit.ts` (Formular-Verarbeitung), `src/lib/pipel
 
 ### Design system
 
-Tokens and shared classes live in `src/styles/global.css`: dark base, `.paper` light band, one accent `--signal` (green; `--signal-ink` is the text on it), Geist / Geist Mono. Use `.wrap`, `.section`, `.display`, `.section-title`, `.lede`, `.label`, `.quiet`, `.btn-*` instead of one-off styles. Product pages keep their own `--tone`.
+Tokens and shared classes live in `src/styles/global.css`: dark base, `.paper` light band, one accent `--signal` (neutral on the studio homepage, services, contact, about, blog and case pages, green by default; `--signal-ink` is the text on it), Geist / Geist Mono. Use `.wrap`, `.section`, `.display`, `.section-title`, `.lede`, `.label`, `.quiet`, `.btn-*` instead of one-off styles. Product pages keep their own `--tone`.
 
 ### Service pages
 

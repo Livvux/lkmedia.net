@@ -178,10 +178,10 @@ const t = lang === 'en'
   .sd-hero .display { margin-top: 22px; font-size: clamp(40px, 5.6vw, 76px); }
   .sd-hero .lede { margin-top: 26px; }
   .actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 36px; }
-  .sd-hero .display .quiet { font-family:Georgia,serif; font-style:italic; font-weight:400; color:#abcfbb; }
+  .sd-hero .display .quiet { font-style:normal; font-weight:inherit; color:var(--fg-muted); }
   .sample, .workflow { display:block; }
   .sample img { display:block; width:100%; height:auto; aspect-ratio:2/1; object-fit:cover; object-position:top; }
-  .sample span { display:block; padding:10px 14px; color:#183c30; background:#c9e1ce; font:12px/1.5 var(--font-mono); }
+  .sample span { display:block; padding:10px 14px; color:var(--fg); background:var(--bg-card); font:12px/1.5 var(--font-mono); }
   .sheet { border-top: 1px solid var(--border-strong); }
   .sheet div { display: grid; grid-template-columns: 110px 1fr; gap: 16px; padding-block: 14px; border-bottom: 1px solid var(--border); font-size: 14px; }
   .sheet dt { font-family: var(--font-mono); font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: var(--fg-dim); padding-top: 2px; }

@@ -20,7 +20,7 @@ test('hero cut-away plays once, then rests in its final state', async ({ page })
     if (message.type() === 'error') errors.push(message.text());
   });
   await page.goto('/');
-  await expect(page.getByRole('heading', { level: 1 })).toHaveAccessibleName('Vom ersten Klick zur Anfrage.');
+  await expect(page.getByRole('heading', { level: 1 })).toHaveAccessibleName('WordPress und KI für Ihr Unternehmen.');
   await expect(page.locator('.nav-brand')).toHaveAccessibleName(/lk media\s*Web · WordPress · KI/);
   await expect(page.locator('.footer-name')).toHaveAccessibleName('lk media – Startseite');
   await page.goto('/ki-automatisierung');
